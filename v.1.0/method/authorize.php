@@ -15,6 +15,8 @@ if ($_GET['resp'] == 'json') { header('Content-type:application/json;charset=utf
 if (!$_GET['resp'])          { header('Content-type:application/json;charset=utf-8'); $response_type = 'json'; }
 
 
+
+
 // // Проверка зарегистрированого домена
 
 
@@ -23,6 +25,7 @@ if (!$token_user) {
     if ($response_type == 'json') { echo json_encode(array('error' => 'token not found')); exit; }
     if ($response_type == 'xml')  { echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?><response><error>token not found</error></response>";}
 }
+
 
 
 // проверка токена на действительность (в базе данных выданных токенов)
