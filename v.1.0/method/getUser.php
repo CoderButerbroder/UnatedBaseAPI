@@ -2,10 +2,8 @@
 $token_user = $_POST['token'];
 
 // Установка заголовков для ответа
-if ($_POST['resp'] == 'xml')  { header("Content-Type: text/xml;charset=utf-8");        $response_type = 'xml';  }
-if ($_POST['resp'] == 'json') { header('Content-type:application/json;charset=utf-8'); $response_type = 'json'; }
-if (!$_POST['resp'])          { header('Content-type:application/json;charset=utf-8'); $response_type = 'json'; }
-if (!headers_sent())          { header('Content-type:application/json;charset=utf-8'); $response_type = 'json'; }
+header('Content-type:application/json;charset=utf-8');
+$response_type = 'json';
 
 // проверка наличия токена авторизации пользователя
 
