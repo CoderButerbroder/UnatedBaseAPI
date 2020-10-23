@@ -11,3 +11,9 @@ RewriteRule ^index/page/(\d+)/?$ index.php?page=$1 [L]
 RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
 RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 AddDefaultCharset UTF-8
+ErrorDocument 404 https://api.kt-segment.ru/bad/404.php
+ErrorDocument 403 https://api.kt-segment.ru/bad/403.php
+ErrorDocument 401 https://api.kt-segment.ru/bad/401.php
+ErrorDocument 500 https://api.kt-segment.ru/bad/500.php
+ErrorDocument 502 https://api.kt-segment.ru/bad/502.php
+ErrorDocument 503 https://api.kt-segment.ru/bad/503.php

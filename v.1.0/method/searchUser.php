@@ -5,6 +5,15 @@ $token_user = $_POST['token'];
 header('Content-type:application/json;charset=utf-8');
 $response_type = 'json';
 
+
+// echo password_hash("D5841495i", PASSWORD_DEFAULT);
+
+$check_json = json_encode(array('error' => 'Вы не имеете прав на данный ресурс'),JSON_UNESCAPED_UNICODE);
+
+
+if (isset(json_decode($check_json)->success)) {
+  echo 'работает';
+}
 // проверка наличия токена авторизации пользователя
 
 // if (!$token_user) {
