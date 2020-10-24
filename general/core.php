@@ -107,7 +107,7 @@ class Settings {
             $today = date("Y-m-d H:i:s");
 
             $new_user = $database->prepare("INSERT INTO $this->history (id_referer,method,bigdata,date_request) VALUES (:id_referer,:method,:bigdata,:date_request)");
-            $new_user->bindParam(':id_referer', $data_referer->id, PDO::PARAM_INT);
+            $new_user->bindParam(':id_referer', json_decode($data_referer)->data->id, PDO::PARAM_INT);
             $new_user->bindParam(':method', $method, PDO::PARAM_STR);
             $new_user->bindParam(':bigdata', $big_data, PDO::PARAM_STR);
             $new_user->bindParam(':date_request', $today, PDO::PARAM_STR);
@@ -275,7 +275,7 @@ class Settings {
       else {
 
           $today = date("Y-m-d H:i:s");
-          $date_die = $data_token->data_die;
+          $date_die = json_decode($data_token)->data_die;
           $result = (strtotime($date_die)>strtotime($today));
 
 
