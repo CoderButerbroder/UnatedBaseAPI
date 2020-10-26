@@ -14,6 +14,6 @@ $token = $_POST['token'];
 $login = 'cf984170e648791061171339dd8b5c9d';
 $pass = 'D5841495i';
 $resource = 'https://api.kt-segment.ru/v.1.0/method/expToken';
-$token = '479AufsJN/hv5ziB+VwgrgiAbMuTbp0EJ5P+tlgPLJ58gj21m0oNcbMMgyAAWHKfGepWw/4uajvStVPqvSwByxtSa1XQ86uJaKKXKO0LqSGsTUjFSbIWsVdz6/6TtmEO+nESCtscCItTzm8bRieIgtS6stary9GMVlF+xREfK2NYRZlYn7/ZqVwueuNA2WZQ';
+$token = 'VVaub1LEL5K5tP1YgPXeXKlb+i4R5JP4LSPdODs4kPT158X7Fucr1irfeJlfvyaEPN4xlfw8IoEz7d9sNgANfwS5xt1I44yR0iDFGfB2DB6XcWf2nJpCEC1edXlOgWDsVhmotCg7J8xjm4seOK8BrfU2RTPZQZJn608LUamMzkw=';
 
 ?>

@@ -185,10 +185,8 @@ class Settings {
                   $date->modify('+1 day');
                   $date_die = $date->format("Y-m-d H:i:s");
 
-
-
                   $obj_data = (object) [
-                                          "user" => $data_user->hash,
+                                          "user_id" => $data_user->id,
                                           "referer" => parse_url($resource, PHP_URL_HOST),
                                           "data_making" => date("Y-m-d H:i:s"),
                                           "data_die" => $date_die
@@ -248,20 +246,20 @@ class Settings {
 
   // Расшифровка токена и получение данных
   public function decode_token($token) {
-    global $database;
+      global $database;
 
-    $data_token = $this->get_data_token($token);
+      $data_token = $this->get_data_token($token);
 
-    $key = $this->get_global_settings('key_sistem');
-    $method = $this->get_global_settings('crypt_method');
+      $key = $this->get_global_settings('key_sistem');
+      $method = $this->get_global_settings('crypt_method');
 
-    $text_encript = openssl_decrypt($data_token->token, $method, $key, $options=0, hex2bin($data_token->pseudo_bytes));
+      $text_encript = openssl_decrypt($data_token->token, $method, $key, $options=0, hex2bin($data_token->pseudo_bytes));
 
-    if ($text_encript) {
-        return $text_encript;
-    } else {
-        return json_encode(array('response' => false, 'description' => 'Не верный токен'),JSON_UNESCAPED_UNICODE);
-    }
+      if ($text_encript) {
+          return json_encode(array('response' => true, 'data' => array(json_decode($text_encript))),JSON_UNESCAPED_UNICODE);
+      } else {
+          return json_encode(array('response' => false, 'description' => 'Не верный токен'),JSON_UNESCAPED_UNICODE);
+      }
 
   }
 
@@ -269,18 +267,17 @@ class Settings {
   public function token_expiration_check($token) {
       $data_token = $this->decode_token($token);
 
-      if (!json_decode($data_token)->user) {
+      if (!json_decode($data_token)->response) {
           return json_decode($data_token)->description;
       }
       else {
 
           $today = date("Y-m-d H:i:s");
-          $date_die = json_decode($data_token)->data_die;
+          $date_die = json_decode($data_token)->data[0]->data_die;
           $result = (strtotime($date_die)>strtotime($today));
 
-
           if ($result) {
-              return json_encode(array('response' => true, 'description' => 'Токен годен до '.$date_die),JSON_UNESCAPED_UNICODE);
+              return json_encode(array('response' => true, 'description' => 'Токен годен '.$date_die),JSON_UNESCAPED_UNICODE);
           } else {
               return json_encode(array('response' => false, 'description' => 'Токен был просрочен '.$date_die),JSON_UNESCAPED_UNICODE);
           }
@@ -288,6 +285,43 @@ class Settings {
       }
 
   }
+
+  // Проверка токена на существование в базе данных
+  public function check_token_base($token) {
+    global $database;
+
+    
+
+  }
+
+
+  // полная проверка токена на валидность
+  public function validate_token($token,$resource) {
+      global $database;
+
+      $data_token = $this->decode_token($token);
+
+        if (json_decode($data_token)->response) {
+            $data_exp = $this->token_expiration_check($token);
+            if (json_decode($data_exp)->response) {
+                $data_refer = $this->user_verification_referer(json_decode($data_token)->data[0]->user_id,$resource);
+
+                if (json_decode($data_exp)->response) {
+                    return json_encode(array('response' => true, 'description' => 'Токен валидный на данный ресурс'),JSON_UNESCAPED_UNICODE);
+                } else {
+                    return $data_refer;
+                }
+
+            } else {
+                return $data_exp;
+            }
+
+        } else {
+            return $data_token;
+        }
+
+  }
+
 
 }
 

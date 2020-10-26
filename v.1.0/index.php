@@ -21,6 +21,9 @@
       <li class="nav-item">
           <a class="nav-link" href="/v.1.0/method/getExpToken"><b>getExpToken</b> - Метод получения срока годности токена</a>
       </li>
+      <li class="nav-item">
+          <a class="nav-link" href="/v.1.0/method/getValidToken"><b>getValidToken</b> - Метод получения валидности токена на определенный ресурс</a>
+      </li>
 
     </ul>
 
