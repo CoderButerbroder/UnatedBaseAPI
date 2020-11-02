@@ -47,14 +47,74 @@ class Settings {
 
   }
 
+  // Получение всех пользователей базы данных
+  public function get_all_bd_users() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->users");
+      $statement->execute();
+      $user = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($user){
+         return $user;
+      }
+      else {
+         return false;
+      }
+
+  }
+
+  // Регитсрация пользователя базы данных
+  public function register_bd_user($email,$name,$lastname,$password) {
+    global $database;
+
+      $check_user = $this->get_all_bd_users();
+
+      $user_already_exists = false;
+
+      for ($i=0; $i < count($check_user); $i++) {
+        if (in_array($email,$check_user[$i])) {
+            $user_already_exists = true;
+        }
+      }
+
+      if ($user_already_exists == false) {
+
+          $password = password_hash($password, PASSWORD_DEFAULT);
+          $today = date("Y-m-d H:i:s");
+          $hash = md5($email.$name.$lastname.$password.rand(0,90000).$today);
+          $status = 'active';
+
+          $new_user = $database->prepare("INSERT INTO $this->users (email,name,lastname,password,hash,status) VALUES (:email,:name,:lastname,:password,:hash,:status)");
+          $new_user->bindParam(':email', $email, PDO::PARAM_STR);
+          $new_user->bindParam(':name', $name, PDO::PARAM_STR);
+          $new_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+          $new_user->bindParam(':password', $password, PDO::PARAM_STR);
+          $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
+          $new_user->bindParam(':status', $status, PDO::PARAM_STR);
+          $check_new_user = $new_user->execute();
+          $count = $new_user->rowCount();
+          if($count > 0) {
+             return json_encode(array('response' => true, 'description' => 'Пользователь БД успешно зарегистрирован', 'user_key' => $hash),JSON_UNESCAPED_UNICODE);
+          } else {
+             return json_encode(array('response' => false, 'description' => 'Ошибка регистрации пользователя, пожалуйста попробуйте позже'),JSON_UNESCAPED_UNICODE);
+          }
+      }
+      else {
+        return json_encode(array('response' => false, 'description' => 'Пользователь с данным email уже зарегистрирован'),JSON_UNESCAPED_UNICODE);
+      }
+
+
+  }
+
   // поиск пользователя базы данных  перед
-  public function search_user($hash) {
+  public function search_user($key) {
       global $database;
 
       $status = 'active';
 
       $statement = $database->prepare("SELECT * FROM $this->users WHERE hash = :hash AND status = :status");
-      $statement->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $statement->bindParam(':hash', $key, PDO::PARAM_STR);
       $statement->bindParam(':status', $status, PDO::PARAM_STR);
       $statement->execute();
       $user = $statement->fetch(PDO::FETCH_OBJ);
@@ -69,7 +129,7 @@ class Settings {
   }
 
   // Получение данных по польователю из расшифровки хэша пользователя
-  public function get_data_user($hash) {
+  public function get_data_user($key) {
       global $database;
 
 
@@ -82,16 +142,20 @@ class Settings {
 
       $resource = parse_url($link, PHP_URL_HOST);
 
-      $statement = $database->prepare("SELECT * FROM $this->api_referer WHERE resource = :resource");
+      $statement = $database->prepare("SELECT * FROM $this->api_referer WHERE resourse = :resource");
       $statement->bindParam(':resource', $resource, PDO::PARAM_STR);
       $statement->execute();
       $data = $statement->fetch(PDO::FETCH_OBJ);
 
-      if ($user){
-         return json_encode(array('response' => true, 'data' => $data),JSON_UNESCAPED_UNICODE);
+      if ($data){
+         if ($data->status == 'active') {
+           return json_encode(array('response' => true, 'data' => $data),JSON_UNESCAPED_UNICODE);
+         } else {
+           return json_encode(array('response' => false, 'description' => 'Данный ресурс не активирован'),JSON_UNESCAPED_UNICODE);
+         }
       }
       else {
-         return json_encode(array('response' => false, 'description' => 'Отказ в доступе, данный ресурс не заругистрирован в базе'),JSON_UNESCAPED_UNICODE);
+         return json_encode(array('response' => false, 'description' => 'Отказ в доступе, данный ресурс не зарегистрирован'),JSON_UNESCAPED_UNICODE);
       }
 
   }
@@ -99,6 +163,8 @@ class Settings {
   // Запсиь в базу данных истории
   public function recording_history($referer,$method,$big_data) {
       global $database;
+
+        // return parse_url($referer, PHP_URL_HOST);
 
         $data_referer = $this->get_data_referer($referer);
 
@@ -119,7 +185,7 @@ class Settings {
                   return json_encode(array('response' => false, 'description' => 'Не удалось записать в историю'),JSON_UNESCAPED_UNICODE);
             }
         } else {
-              return json_decode($data_referer)->description;
+              return $data_referer;
         }
 
   }
@@ -173,10 +239,10 @@ class Settings {
   }
 
   // Выдача токена пользователю
-  public function get_user_token($hash,$password,$resource) {
+  public function get_user_token($key,$password,$resource) {
        global $database;
 
-       $data_user = $this->search_user($hash);
+       $data_user = $this->search_user($key);
 
        if ($data_user) {
                 if (password_verify($password, $data_user->password)) {
@@ -195,7 +261,7 @@ class Settings {
                   $plaintext = json_encode($obj_data, JSON_UNESCAPED_UNICODE);
 
                     if(json_last_error() != 0){
-                      return json_encode(array('error' => 'Внутренная ошибка шифрования, попробуйте чуть позже'));
+                      return json_encode(array('response' => false, 'description' => 'Внутренная ошибка шифрования, попробуйте чуть позже'));
                       exit;
                     }
 
@@ -213,6 +279,7 @@ class Settings {
                   $recording_token = $this->recording_token($data_user->id,$token,bin2hex($pseudo_bytes),$resource);
 
                     if (json_decode($recording_token)->response == true) {
+                        $this->recording_history($resource,'getMeToken','тест');
                         return json_encode(array('response' => true, 'token' => $token),JSON_UNESCAPED_UNICODE);
                     } else {
                         return json_encode(array('response' => false, 'description' => 'Не удалось выдать токен пользователю, попробуйте позже'),JSON_UNESCAPED_UNICODE);
@@ -290,10 +357,9 @@ class Settings {
   public function check_token_base($token) {
     global $database;
 
-    
+
 
   }
-
 
   // полная проверка токена на валидность
   public function validate_token($token,$resource) {

@@ -9,12 +9,8 @@ if (!$token) {
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$token_answer = $settings->decode_token($token);
+$response = $settings->decode_token($token);
 
-if (json_decode($token_answer)->response) {
-   echo $token_answer;
-} else {
-   echo json_decode($token_answer)->description;
-}
+echo $response;
 
 ?>
