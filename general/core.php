@@ -279,7 +279,6 @@ class Settings {
                   $recording_token = $this->recording_token($data_user->id,$token,bin2hex($pseudo_bytes),$resource);
 
                     if (json_decode($recording_token)->response == true) {
-                        $this->recording_history($resource,'getMeToken','тест');
                         return json_encode(array('response' => true, 'token' => $token),JSON_UNESCAPED_UNICODE);
                     } else {
                         return json_encode(array('response' => false, 'description' => 'Не удалось выдать токен пользователю, попробуйте позже'),JSON_UNESCAPED_UNICODE);
@@ -308,6 +307,35 @@ class Settings {
       else {
           return false;
       }
+
+  }
+
+  // Зашифровка данных в токен
+  public function encode_token($data) {
+
+      $key = $this->get_global_settings('key_sistem');
+      $method = $this->get_global_settings('crypt_method');
+
+      $ivlen = openssl_cipher_iv_length($method);
+      $pseudo_bytes = openssl_random_pseudo_bytes($ivlen);
+
+      $token = openssl_encrypt($data, $method, $key, $options=0, $pseudo_bytes);
+
+      $resource = 'without resource';
+
+      $recording_token = $this->recording_token(1,$token,bin2hex($pseudo_bytes),$resource);
+
+        if (json_decode($recording_token)->response == true) {
+            if ($token) {
+                return json_encode(array('response' => true, 'token' => $token),JSON_UNESCAPED_UNICODE);
+            } else {
+                return json_encode(array('response' => false, 'description' => 'Не верный токен'),JSON_UNESCAPED_UNICODE);
+            }
+        } else {
+            return json_encode(array('response' => false, 'description' => 'Не удалось зашифровать токен'),JSON_UNESCAPED_UNICODE);
+        }
+
+
 
   }
 
