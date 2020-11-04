@@ -1,6 +1,6 @@
 ﻿( function($) {
   'use strict';
-  	
+
 
   	/* Window Load */
 	$(window).on('load',function(){
@@ -23,7 +23,7 @@
 
 
 
-    
+
 
     /* Full page scroll*/
     if ($('#pagepiling').length > 0){
@@ -32,8 +32,8 @@
             scrollingSpeed: 280,
             navigation:false,
             menu: '.navbar-nav',
-            anchors: ['home', 'about', 'projects', 'partners', 'news', 'contact'],
-            afterRender: function(anchorLink, index){ 
+            anchors: ['home', 'about', 'partners', 'news', 'developers'],
+            afterRender: function(anchorLink, index){
               NavbarColor();
 
             },
@@ -44,7 +44,7 @@
             }
         });
 
-  
+
 
         function NavbarColor(){
          if ($('.pp-section.active').hasClass('navbar-is-white')){

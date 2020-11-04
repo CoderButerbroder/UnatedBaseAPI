@@ -3,17 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Denel. - Onepage Personal Template">
-    <meta name="author" content="Paul">
+    <meta name="description" content="LPM Connect">
+    <meta name="author" content="LPM">
 
     <!-- CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/jquery.pagepiling.min.css">
     <link rel="stylesheet" href="css/style.css">
 
-    <title>LPM Connect.ru</title>
+    <title>LPM Connect</title>
+
   </head>
 <body>
+
 
    <!-- Loader -->
    <div class="loader">
@@ -24,14 +26,16 @@
    <div class="click-capture"></div>
 
     <!-- Navbar -->
-    <nav  class="navbar navbar-desctop"  style="background-color: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px);">
+    <nav  class="navbar navbar-desctop"  style="border: none; background-color: rgba(255, 255, 255, 0.01); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);">
       <div class="position-relative w-100">
 
 	    <!-- Brand-->
-	    <a class="navbar-brand" href="#"><img src="lpm-connect3.png" height="30"></a>
+	    <a class="navbar-brand" href="#home"><img src="lpm-connect3.png" height="30"></a>
 		<div class="container d-block">
-	      <span class="phone  my-0 d-none d-md-block" style="top: 0px;">8 812 234 85 94</span>
-	        <span class="email  my-0 d-none d-md-block" style="top: 0px;">support@lpm-connect.ru</span>
+        <a href="#"><span class="phone btn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти</span></a>
+	      <a href="tel:78122348594"><span class="phone  my-0 d-none d-md-block" >8 812 234 85 94</span></a>
+	      <a href="mailto:support@lpm-connect.ru"><span class="email  my-0 d-none d-md-block" >support@lpm-connect.ru</span></a>
+
 		</div>
 
 	    <!-- Toggler -->
@@ -73,10 +77,9 @@
       <ul class="navbar-nav navbar-nav-mobile">
         <li class="active"><a class="nav-link active" data-menuanchor="home" href="#home">Начало</a></li>
         <li><a class="nav-link" data-menuanchor="about" href="#about">О платформе</a></li>
-        <li><a class="nav-link" data-menuanchor="projects" href="#projects">Проекты</a></li>
         <li><a class="nav-link" data-menuanchor="partners" href="#partners">Сайты</a></li>
         <li><a class="nav-link" data-menuanchor="news" href="#news">Новости</a></li>
-        <li><a class="nav-link" data-menuanchor="contact" href="#contact">Контакты</a></li>
+        <li><a class="nav-link" data-menuanchor="developers" href="#developers">Разработчикам</a></li>
       </ul>
       <div class="navbar-mobile-footer">
         <p>© LPM. 2020. Все права защищены.</p>
@@ -96,8 +99,7 @@
 	              	<div class="line"></div>
 	                <h1 class="text-white"><span class="text-primary text-typed a-typed a-typed-about">Один</span> аккаунт</h1>
 	                <h1 class="text-white">Тысячи <span class="text-primary text-typed a-typed a-typed-about">возможностей.</span></h1>
-	                <button class="btn" style="border-radius: 100px; background-color: #d4f31c; color: #000000; width: auto; height: auto; font-size: 1rem; margin-top: 30px;
-    font-weight: 700; letter-spacing: 0px;">Присоединиться </button>
+	                <button type="submit" class="btn" style="border-radius: 100px; margin-top: 25px;">Присоединиться</button>
 
 	            </div>
 	            </div>
@@ -124,7 +126,7 @@
                 </div>
                 <div class="mt-5 mt-md-0 col-md-6 col-lg-5  offset-lg-1">
                   <div class="position-relative">
-                  	<img alt="" class="border-radius w-100" src="lpm-connect2.png">
+                  	<img alt="" class="border-radius w-100" src="lpm-connect4.png">
                   	<a href="https://www.youtube.com/watch?v=oBn8xk7mDeM" class="icon-play popup-youtube"></a>
                   	<div class="experience-info">
                   	  <div class="experience-number">4</div>
@@ -242,7 +244,7 @@
       </section> -->
 
       <!-- Projects -->
-      <section id="projects" class="navbar-is-white text-white section pp-scrollable position-absolute">
+      <!-- <section id="projects" class="navbar-is-white text-white section pp-scrollable position-absolute">
       	<div class="project-wrap">
       	 <div class="bg-changer">
 		    <div class="section-bg active" style="background-image:url(https://tboil.spb.ru/local/templates/lpm2019/images/header_main_page.png);"></div>
@@ -283,7 +285,7 @@
 						     </div>
 						  </a>
 						</div>
-<!-- 						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
+						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
 						  <a href="" class="project-box">
 						     <div class="project-box-inner">
 						        <h4>Fox</h4>
@@ -306,44 +308,61 @@
 						        <div class="project-category">Photography</div>
 						     </div>
 						  </a>
-						</div> -->
+						</div>
 					   </div>
 		          </div>
 		        </div>
 	          </div>
 	        </div>
 	     </div>
-      </section>
+      </section> -->
 
       <!-- Partners -->
-      <section id="partners" class="section pp-scrollable position-absolute">
+      <section id="projects" class="section pp-scrollable position-absolute">
         <div class="intro">
           <div class="scroll-wrap">
 	          <div class="container">
-		          <h2 class="mb-0"><span class="text-primary">Наши</span> партнеры</h2>
+		          <h2 class="mb-0"> Сайты</h2>
+              <div class="">Поддерживающие систему авторизаций LPM-connect</div>
 		          	<div class="mt-5 pt-2">
 		            <div class="row-partners row align-items-center ">
-		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/1.png">
-		           </div>
-		            <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/2.png">
-		           </div>
-		            <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/3.png">
-		           </div>
-		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/4.png">
-		           </div>
-		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/5.png">
-		           </div>
-		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/6.png">
-		           </div>
-		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-		              <img alt="" src="img/partners/7.png">
-		           </div>
+    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="/img/lpmtech_logo.png">
+    		           </div>
+    		            <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="/img/tboil_logo.png">
+    		           </div>
+    		            <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="/img/e-spb_logo.png">
+    		           </div>
+    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="/img/barcamp_logo.png">
+    		           </div>
+    		           <!-- <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="img/partners/5.png">
+    		           </div>
+    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="img/partners/6.png">
+    		           </div>
+    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+    		              <img alt="" src="img/partners/7.png">
+    		           </div>
+                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+                      <img alt="" src="img/partners/7.png">
+                   </div>
+
+                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+                      <img alt="" src="img/partners/1.png">
+                   </div>
+                    <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+                      <img alt="" src="img/partners/2.png">
+                   </div>
+                    <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+                      <img alt="" src="img/partners/3.png">
+                   </div>
+                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
+                      <img alt="" src="img/partners/4.png">
+                   </div> -->
 		         </div>
 		       </div>
            </div>
@@ -395,21 +414,21 @@
 		            <div class="news-row row">
 		           <div class="col-lg-4">
 		              <a href="#"><img alt="" class="w-100" src="img/news/1.jpg"></a>
-		              <p class="mt-4">Personal 01 / June, 2020</p>
-					  <h4 class="mt-3">Scent in the voyages</h4>
-					  <a href="">Read more 🡒</a>
+		              <p class="mt-4">01.12.2020</p>
+					  <h4 class="mt-3">Название новости 1</h4>
+					  <a href="">Подробнее 🡒</a>
 		           </div>
 		            <div class="col-lg-4">
 		              <a href="#"><img alt="" class="w-100" src="img/news/2.jpg"></a>
-		              <p class="mt-4">Travel 02 / June, 2020</p>
-					  <h4 class="mt-3">Given void great you’re good</h4>
-					  <a href="">Read more 🡒</a>
+		              <p class="mt-4">01.12.2020</p>
+					  <h4 class="mt-3">Название новости 2</h4>
+					  <a href="">Подробнее 🡒</a>
 		           </div>
 		           <div class="col-lg-4">
 		              <a href="#"><img alt="" class="w-100" src="img/news/3.jpg"></a>
-		              <p class="mt-4">Inspiration 03 / June, 2020</p>
-					  <h4 class="mt-3">Secrets of the serpents</h4>
-					  <a href="">Read more 🡒</a>
+		              <p class="mt-4">01.12.2020</p>
+					  <h4 class="mt-3">Название новости 3</h4>
+					  <a href="">Подробнее 🡒</a>
 		           </div>
 		         </div>
 		       </div>
@@ -419,21 +438,27 @@
       </section>
 
       <!-- Contact -->
-      <section id="contact" class="navbar-is-white text-white section pp-scrollable position-absolute" style="background-image:url('img/bg/contact.jpg');">
+      <section id="developers" class="section pp-scrollable position-absolute">
         <div class="intro">
           <div class="scroll-wrap">
 	          <div class="container">
 		          <div class="row">
 					 <div class="col-md-4">
-					 	<h2 class="text-white">Contact</h2>
-					 	<p class="text-muted">You'll called for yielding male, so lights
-Stars abundantly, is their.</p>
-				<h3 class="text-white mt-5 pt-5">69 Queen St, Melbourne Australia</h3>
-				<h3 class="text-white">(+706) 898-0751</h3>
-				<p class="text-muted mt-3">Denzel.design@gmail.com</p>
+					 	<h2 class="text">Разработчикам</h2>
+					 	<p class="text">Для быстрой и простой интеграции мы разработали API, а также готовые примеры интеграций.</p>
+				<!-- <h3 class="text mt-5 pt-5">69 Queen St, Melbourne Australia</h3>
+				<h3 class="text">(+706) 898-0751</h3> -->
+        <button type="submit" class="btn">Смотреть документацию</button>
+
+        <p style="margin-top: 15px;" class="text">По всем вопросам и предложениям обращайтесь на указаный ниже email.</p>
+
+				<p class="text-muted mt-3">developers@lpm-connect.ru</p>
 				 </div>
 				 <div class="col-md-5 offset-md-2">
-				 	<h3 class="text-white mt-0">Let's grab a coffee and jump on conversation <span class="text-primary">chat with me.</span></h3>
+           <div class="mt-5">
+             <img alt="" style="width: 100%;" src="/img/3795950.jpg">
+           </div>
+				 	<!-- <h3 class="text mt-0">Let's grab a coffee and jump on conversation <span class="text-primary">chat with me.</span></h3>
 				 	<div class="mt-5">
 						<form class="js-ajax-form">
 							<div class="form-group">
@@ -451,7 +476,7 @@ Stars abundantly, is their.</p>
 				               <button type="submit" class="btn">Contact me</button>
 				             </div>
 						</form>
-				 	</div>
+				 	</div> -->
 				 </div>
 	          </div>
 	       </div>
@@ -471,7 +496,7 @@ Stars abundantly, is their.</p>
       <li data-menuanchor="partners"></li>
       <li data-menuanchor="testimonials"></li>
       <li data-menuanchor="news"></li>
-      <li data-menuanchor="contact"></li>
+      <li data-menuanchor="developers"></li>
     </ul>
   </div> -->
 
