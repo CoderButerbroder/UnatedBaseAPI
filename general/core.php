@@ -473,7 +473,7 @@ class DaData extends Settings {
           $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party');
           curl_setopt($ch, CURLOPT_POST, 1);
           curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-          curl_setopt($ch, CURLOPT_POSTFIELDS, 'query='.$inn);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($array_fields));
           curl_setopt($ch, CURLOPT_HTTPHEADER, array(
               'Accept: application/json',
               'Content-Type: application/json',
