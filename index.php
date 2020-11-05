@@ -1,3 +1,12 @@
+<?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$dadata = new DaData;
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -83,6 +92,7 @@
       </ul>
       <div class="navbar-mobile-footer">
         <p>© LPM. 2020. Все права защищены.</p>
+        <p><ion-icon class="text-muted" style="width: 12px; height: 12px; margin-right: 9px;" name="navigate"></ion-icon><?php echo json_decode($dadata->iplocate($dadata->get_ip()))->location->data->city;?></p>
       </div>
     </nav>
 
@@ -140,182 +150,6 @@
         </div>
       </section>
 
-      <!-- Experience -->
-<!--       <section id="experience" class="navbar-is-white text-white section pp-scrollable d-flex align-items-center position-absolute" style="background-image:url('img/bg/experience.jpg');">
-        <div class="intro">
-          <div class="scroll-wrap">
-          <div class="container">
-            <h2 class="text-white mb-0">Experience</h2>
-            <div class="mt-5 pt-5">
-              <div class="carousel-experience owl-carousel">
-	              <div class="experience-item">
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/behance.png"></a></div>
-		              	<div class="col-md-4 my-4">2019-2020 <h3 class="my-0 text-white">Behance</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/cssdesignawards.png"></a></div>
-		              	<div class="col-md-4 my-4">2017-2019 <h3 class="my-0 text-white">CSSDesign</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/envato.png"></a></div>
-		              	<div class="col-md-4">2013-2017 <h3 class="my-0 text-white">Envato</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-	              </div>
-	              <div class="experience-item">
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/behance.png"></a></div>
-		              	<div class="col-md-4 my-4">2019-2020 <h3 class="my-0 text-white">Behance</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/cssdesignawards.png"></a></div>
-		              	<div class="col-md-4 my-4">2017-2019 <h3 class="my-0 text-white">CSSDesignAwards</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-		              <div class="row row-experience">
-		              	<div class="col-md-4"><a href=""><img alt="" src="img/envato.png"></a></div>
-		              	<div class="col-md-4 my-4">2013-2017 <h3 class="my-0 text-white">Envato</h3></div>
-		              	<div class="col-md-4">But I must explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete</div>
-		              </div>
-	              </div>
-              </div>
-            </div>
-            </div>
-          </div>
-        </div>
-      </section> -->
-
-      <!-- Skills -->
-<!--       <section id="skills" class="section pp-scrollable d-flex align-items-center position-absolute">
-        <div class="intro">
-          <div class="scroll-wrap">
-          <div class="container">
-            <div class="row align-items-center">
-              <div class="col-lg-5">
-                <div class="position-relative">
-                	<div class="photo-icon photo-icon-1"><img alt="" class="w-100" src="img/100x100.jpg"></div>
-                	<div class="photo-icon photo-icon-2"><img alt="" class="w-100" src="img/80x80.jpg"></div>
-                	<div class="photo-icon photo-icon-3"><img alt="" class="w-100" src="img/100x100-2.jpg"></div>
-                	<img alt="" class="border-radius w-100" src="img/445x459-2.jpg">
-                </div>
-              </div>
-              <div class="mt-5 mt-lg-0 col-lg-5 offset-lg-1">
-                <h2>My mission is <span class="text-primary">develop</span> best design</h2>
-                <p>I will help you build your brand and grow your business. I create clarifying strategy, beautiful logo and identity design.</p>
-	          	<div class="mt-5 pt-2">
-	          	  <div class="progress-item">
-	              	<div class="row">
-		              <h6 class="col-md-6 mt-0">Web Design</h6>
-		              <h6 class="col-md-6 text-right mt-0">80%</h6>
-	              	</div>
-		            <div class="progress mb-5">
-			          <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-			          </div>
-			        </div>
-			      </div>
-			      <div class="progress-item">
-		            <div class="row">
-	              	  <h6 class="col-md-6 mt-0">Photoshop</h6>
-	              	  <h6 class="col-md-6 text-right mt-0">70%</h6>
-	          	    </div>
-		            <div class="progress mb-5">
-		              <div class="progress-bar" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-		            </div>
-		          </div>
-		          <div class="progress-item">
-		            <div class="row">
-	              	  <h6 class="col-md-6 mt-0">Media & Content</h6>
-	              	  <h6 class="col-md-6 text-right mt-0">90%</h6>
-	          	    </div>
-		            <div class="progress">
-		              <div class="progress-bar" role="progressbar" style="width: 90%" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-		            </div>
-		          </div>
-	            </div>
-	          </div>
-            </div>
-           </div>
-        </div>
-        </div>
-      </section> -->
-
-      <!-- Projects -->
-      <!-- <section id="projects" class="navbar-is-white text-white section pp-scrollable position-absolute">
-      	<div class="project-wrap">
-      	 <div class="bg-changer">
-		    <div class="section-bg active" style="background-image:url(https://tboil.spb.ru/local/templates/lpm2019/images/header_main_page.png);"></div>
-		    <div class="section-bg" style="background-image:url(https://lpmtech.ru/wp-content/uploads/2017/12/IMG_9653.jpg);"></div>
-		    <div class="section-bg" style="background-image:url(https://www.hanselladvisory.com/content/uploads/strategy-1920-1080.png);"></div>
-		    <div class="section-bg" style="background-image:url(img/bg/portfolio/bg4.jpg);"></div>
-		    <div class="section-bg" style="background-image:url(img/bg/portfolio/bg5.jpg);"></div>
-		    <div class="section-bg" style="background-image:url(img/bg/portfolio/bg6.jpg);"></div>
-		  </div>
-	        <div class="intro">
-	          <div class="scroll-wrap">
-		        <div class="container">
-		          <h2 class="text-white mb-0">Проекты</h2>
-		          <div class="">Проекты, которые поддерживают систему авторизаций LPM-connect</div>
-		          <div class="mt-5 pt-2">
-		              <div class="row-project-box row">
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="https://tboil.spb.ru" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>Точка кипения</h4>
-						        <div class="project-category">tboil.spb.ru</div>
-						     </div>
-						  </a>
-						</div>
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="https://lpmtech.ru" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>Технопарк ЛПМ</h4>
-						        <div class="project-category">lpmtech.ru</div>
-						     </div>
-						  </a>
-						</div>
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="https://test.e-spb.tech" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>E-SPB</h4>
-						        <div class="project-category">e-spb.tech</div>
-						     </div>
-						  </a>
-						</div>
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>Fox</h4>
-						        <div class="project-category">Illustration</div>
-						     </div>
-						  </a>
-						</div>
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>Creative Mess</h4>
-						        <div class="project-category">Graphic Design</div>
-						     </div>
-						  </a>
-						</div>
-						<div class="col-project-box col-md-6 col-lg-4 col-xl-3">
-						  <a href="" class="project-box">
-						     <div class="project-box-inner">
-						        <h4>Coffee</h4>
-						        <div class="project-category">Photography</div>
-						     </div>
-						  </a>
-						</div>
-					   </div>
-		          </div>
-		        </div>
-	          </div>
-	        </div>
-	     </div>
-      </section> -->
 
       <!-- Partners -->
       <section id="projects" class="section pp-scrollable position-absolute">
@@ -338,31 +172,7 @@
     		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
     		              <img alt="" src="/img/barcamp_logo.png">
     		           </div>
-    		           <!-- <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-    		              <img alt="" src="img/partners/5.png">
-    		           </div>
-    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-    		              <img alt="" src="img/partners/6.png">
-    		           </div>
-    		           <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-    		              <img alt="" src="img/partners/7.png">
-    		           </div>
-                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-                      <img alt="" src="img/partners/7.png">
-                   </div>
 
-                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-                      <img alt="" src="img/partners/1.png">
-                   </div>
-                    <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-                      <img alt="" src="img/partners/2.png">
-                   </div>
-                    <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-                      <img alt="" src="img/partners/3.png">
-                   </div>
-                   <div class="col-partner col-sm-6 col-md-4  col-xl-3">
-                      <img alt="" src="img/partners/4.png">
-                   </div> -->
 		         </div>
 		       </div>
            </div>
@@ -370,36 +180,6 @@
         </div>
       </section>
 
-      <!-- Testimonials -->
-<!--       <section id="testimonials" class="navbar-is-white text-white section pp-scrollable d-flex align-items-center position-absolute" style="background-image:url('img/bg/testimonials.jpg');">
-        <div class="intro">
-          <div class="scroll-wrap">
-          <div class="container">
-          	<div class="row">
-	             <div class="col-lg-6 col-xl-5">
-					<span class="icon-quote text-primary">"</span>
-					<h2 class="title-uppercase text-white">Hey, this is <span class="text-primary">testimonials</span> from my best clients & partners</h2>
-	            </div>
-	            <div class="col-lg-5 col-xl-5  offset-lg-1 offset-xl-2">
-	            	<div class="carousel-testimonials owl-carousel">
-	            		<div>
-	            			<p class="mb-5"><strong>Amanda</strong><br>Apple inc.</p>
-		            		<p>“There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything..
-							</p>
-
-	            		</div>
-	            		<div>
-	            			<p class="mb-5"><strong>John</strong><br>Google</p>
-		            		<p>“ If you are seeking an Interior designer that will understand exactly your needs, and someone who will utilise their creative and technical skills in parity with your taste, then Suzanne at The Bauhaus Studio is perfect.
-							</p>
-	            		</div>
-	            	</div>
-	            </div>
-            </div>
-          </div>
-        </div>
-        </div>
-      </section> -->
 
       <!-- News-->
       <section id="news" class="section pp-scrollable position-absolute">
@@ -446,6 +226,7 @@
 					 <div class="col-md-4">
 					 	<h2 class="text">Разработчикам</h2>
 					 	<p class="text">Для быстрой и простой интеграции мы разработали API, а также готовые примеры интеграций.</p>
+            <?php var_dump($dadata->find_entity('7840390119'))?>
 				<!-- <h3 class="text mt-5 pt-5">69 Queen St, Melbourne Australia</h3>
 				<h3 class="text">(+706) 898-0751</h3> -->
         <button type="submit" class="btn">Смотреть документацию</button>
@@ -458,25 +239,7 @@
            <div class="mt-5">
              <img alt="" style="width: 100%;" src="/img/3795950.jpg">
            </div>
-				 	<!-- <h3 class="text mt-0">Let's grab a coffee and jump on conversation <span class="text-primary">chat with me.</span></h3>
-				 	<div class="mt-5">
-						<form class="js-ajax-form">
-							<div class="form-group">
-				               <input type="text" name="name" class="form-control" placeholder="Name">
-				            </div>
-				             <div class="form-group">
-				               <input type="email" name="email"  class="form-control" required="" placeholder="Email *">
-				             </div>
-				             <div class="form-group">
-				              <textarea rows="3" name="message"  class="form-control" placeholder="Message"></textarea>
-				             </div>
-				             <div class="message" id="success-message">Your message is successfully sent...</div>
-				             <div class="message" id="error-message">Sorry something went wrong</div>
-				             <div class="form-group mb-0">
-				               <button type="submit" class="btn">Contact me</button>
-				             </div>
-						</form>
-				 	</div> -->
+
 				 </div>
 	          </div>
 	       </div>
@@ -485,16 +248,14 @@
    </section>
   </div>
 
+
+
   <!-- Scrollbar -->
-<!--    <div class="progress-nav">
+  <!-- <div class="progress-nav">
     <ul class="navbar-nav">
       <li data-menuanchor="home" class="active"></li>
       <li data-menuanchor="about"></li>
-      <li data-menuanchor="experience"></li>
-      <li data-menuanchor="skills"></li>
       <li data-menuanchor="projects"></li>
-      <li data-menuanchor="partners"></li>
-      <li data-menuanchor="testimonials"></li>
       <li data-menuanchor="news"></li>
       <li data-menuanchor="developers"></li>
     </ul>

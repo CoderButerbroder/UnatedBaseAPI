@@ -1,5 +1,13 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/DATAroot.php');
+// require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/dadata/DadataClient.php');
+
+
+class ClassName {
+
+
+
+}
 
 
 class Settings {
@@ -233,7 +241,7 @@ class Settings {
             }
         }
         else {
-          return json_encode(array('response' => false, 'description' => 'Вы не имеете прав на данный ресурс'),JSON_UNESCAPED_UNICODE);
+          return $check_user;
         }
 
   }
@@ -281,7 +289,7 @@ class Settings {
                     if (json_decode($recording_token)->response == true) {
                         return json_encode(array('response' => true, 'token' => $token),JSON_UNESCAPED_UNICODE);
                     } else {
-                        return json_encode(array('response' => false, 'description' => 'Не удалось выдать токен пользователю, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                        return $recording_token;
                     }
 
                 } else {
@@ -415,6 +423,68 @@ class Settings {
         }
 
   }
+
+  // Получение ip
+  public function get_ip() {
+      if (!empty($_SERVER['HTTP_CLIENT_IP']))
+      {
+          $ip=$_SERVER['HTTP_CLIENT_IP'];
+      }
+      elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
+      {
+          $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+      }
+      else
+      {
+          $ip=$_SERVER['REMOTE_ADDR'];
+      }
+      return $ip;
+ }
+
+
+}
+
+class DaData extends Settings {
+
+
+
+     public function iplocate($client_ip) {
+
+          $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip='.$client_ip);
+          curl_setopt($ch, CURLOPT_POST, 0);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+          'Accept: application/json',
+          'Content-Type: application/json',
+          'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+          ));
+          $html = curl_exec($ch);
+          curl_close($ch);
+          return $html;
+
+    }
+
+    public function find_entity($inn) {
+         $array_fields = array(
+             'query'   => $inn
+         );
+
+          $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party');
+          curl_setopt($ch, CURLOPT_POST, 1);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, 'query='.$inn);
+          curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+              'Accept: application/json',
+              'Content-Type: application/json',
+              'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+          ));
+          $html = curl_exec($ch);
+          curl_close($ch);
+          return $html;
+
+    }
+
 
 
 }
