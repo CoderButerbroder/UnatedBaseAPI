@@ -447,8 +447,7 @@ class Settings {
 class DaData extends Settings {
 
 
-
-     public function iplocate($client_ip) {
+    public function iplocate($client_ip) {
 
           $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip='.$client_ip);
           curl_setopt($ch, CURLOPT_POST, 0);
@@ -463,7 +462,7 @@ class DaData extends Settings {
           curl_close($ch);
           return $html;
 
-    }
+     }
 
     public function find_entity($inn) {
          $array_fields = array(
