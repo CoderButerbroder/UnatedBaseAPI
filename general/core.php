@@ -17,6 +17,7 @@ class Settings {
   private $tokens = 'API_TOKENS';
   private $api_referer = 'API_REFERER';
   private $history = 'API_HISTORY';
+  private $user_referer = 'TIME_user_referer';
 
   // получение глобального парметра настройки
   public function get_global_settings($meta_key) {
@@ -601,6 +602,18 @@ class Settings {
      }
    }
 
+ // Запись переходов реферов
+ public function record_user_referer($session_id,$ip_user,$refer) {
+    global $database;
+
+
+                     $add_fns_database = $database->prepare("INSERT INTO $this->user_referer () VALUES ()");
+                     $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                     $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                     $check_add = $add_fns_database->execute();
+
+
+ }
 
 }
 
@@ -627,7 +640,7 @@ class DaData extends Settings {
     public function find_entity($inn) {
           $data = [
               'query' => $inn
-          ];
+           ];
           $options = [
               'http' => [
                   'method' => 'POST',
@@ -638,7 +651,7 @@ class DaData extends Settings {
                   ],
                   'content' => json_encode($data)
               ]
-          ];
+           ];
           $builder = stream_context_create($options);
           $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/party', false, $builder);
           $output = json_decode($document);
