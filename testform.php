@@ -1,19 +1,8 @@
 <?php
-$array = array(
-	'login'   => 'admin',
-	'password' => '1234'
-);
+header('Content-type:application/json;charset=utf-8');
 
-$curl = curl_init();
-curl_setopt($curl, CURLOPT_URL, 'https://api.kt-segment.ru/v.1.0/method/getUser');
-curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_POSTFIELDS, $array);
-$out = curl_exec($curl);
-$admin_token = (json_decode($out));
-curl_close($curl);
+$s = file_get_contents('http://ulogin.ru/token.php?token=' . $_POST['token'] . '&host=' . $_SERVER['HTTP_HOST']);
+$user = json_decode($s, true);
 
-var_dump($admin_token);
-
-
+var_dump($user);
 ?>

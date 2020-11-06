@@ -296,77 +296,13 @@ a:focus{
 }
 
 
-/* 1.3 Fields */
-
-
-.form-group{
-  margin-bottom: 2rem;
-}
-
-.form-control,
-textarea.form-control{
-  font-size: 1em;
-  height: 3.625em;
-  border-radius: 0;
-  padding-left: 22px;
-  color: #bbbbbb;
-  background-color: transparent;
-  border:0;
-  border-bottom:1px solid rgba(255,255,255,0.6);
-  -webkit-box-shadow:none;
-          box-shadow:none;
-      -webkit-appearance: none;
-  -webkit-transition: all .15s;
-       -o-transition: all .15s;
-          transition: all .15s;
-}
-
-textarea.form-control{
-  height: 7.9em;
-  padding-top:1.1em;
-  resize:none;
-}
-
-.form-control:focus{
-  border-color:#D4F21B;
-  outline: 0;
-  -webkit-box-shadow:none;
-          box-shadow:none;
-          background-color: none;
-}
-
-.form-control::-moz-placeholder {
-  color: #bbbbbb;
-  opacity: 1;
-}
-
-.form-control:-ms-input-placeholder {
-  color: #bbbbbb;
-}
-
-.form-control::-webkit-input-placeholder {
-  color: #bbbbbb;
-}
-
-label.error{
-  border-color:#D4F21B;
-  padding:9px 0 0 22px;
-  font-size:0.9rem;
-}
-
-.mc-label{
-  padding:9px 0 0 22px;
-  font-size:0.9rem;
-  color: #fff;
-}
-
 
 
 /* 1.4 Buttons */
 
 
 
-.btn{
+.btnn{
   font-family: 'Karla', sans-serif;
   position: relative;
   display: inline-block;
@@ -387,9 +323,9 @@ label.error{
           transition: all .3s ease-out!important;
 }
 
-.btn:hover,
-.btn:focus,
-.btn:active{
+.btnn:hover,
+.btnn:focus,
+.btnn:active{
   color: #000;
   background-color: #ecff73;
   border-color:#ecff73;
@@ -398,30 +334,30 @@ label.error{
   outline: none!important;
 }
 
-.btn-white{
+.btnn-white{
   background-color: #fff;
   border-color: #fff;
   color: #343434;
 }
 
-.btn-white:hover{
+.btnn-white:hover{
   background: transparent;
   border-color: #fff;
   color: #fff;
 }
 
-.btn-b-white{
+.btnn-b-white{
   background-color: transparent;
   border-color: #fff;
 }
 
-.btn-b-white:hover{
+.btnn-b-white:hover{
   background-color: #fff;
   color: #000;
 }
 
-.btn-bg-dark:hover,
-.btn-bg-dark:focus{
+.btnn-bg-dark:hover,
+.btnn-bg-dark:focus{
   color: #fff;
   border-color:#fff;
 }
@@ -552,8 +488,8 @@ ion-icon{
   background-color:#272727;
 }
 
-.bg-dark .btn:hover,
-.bg-dark .btn:focus{
+.bg-dark .btnn:hover,
+.bg-dark .btnn:focus{
   color: #fff
 }
 
