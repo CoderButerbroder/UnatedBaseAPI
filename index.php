@@ -26,6 +26,15 @@ if ($_SERVER['HTTP_REFERER']) {
     <link rel="stylesheet" href="css/style.css">
     <script src="//ulogin.ru/js/ulogin.js"></script>
     <script src="js/jquery-1.12.4.min.js"></script>
+    <script src="js/auth.js"></script>
+
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+    <!-- swetalert2 -->
+    <script src="js/sweetalert2.all.js"></script>
+    <link rel="stylesheet" href="css/sweetalert2.css">
+
+
     <title>LPM Connect</title>
 
   </head>
@@ -119,12 +128,12 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Авторизация</h4>
                     </center>
-                    <form>
-                      <div class="form-group" style="margin: 4% 3%;">
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Телефон или почта" aria-describedby="emailHelp">
+                    <form onsubmit="check_auth(this); return false;">
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="text" class="form-control" name="email" placeholder="Телефон или почта" aria-describedby="" autofocus required autocomplete="email">
                       </div>
-                      <div class="form-group" style="margin: 4% 3%;">
-                        <input type="password" class="form-control" placeholder="Пароль" id="exampleInputPassword1">
+                      <div class="form-group" style="margin-top: 4%; margin-top: 4%;">
+                        <input type="password" class="form-control" name="pass"  placeholder="Пароль" required autocomplete="password" >
                         <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
                       </div>
                       <button type="submit" class="btnn btn-block">Войти</button>
@@ -164,13 +173,18 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Регистрация</h4>
                     </center>
-                    <form>
-                      <div class="form-group" style="margin: 4% 3%;">
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Телефон или почта" aria-describedby="emailHelp">
+                    <form onsubmit="check_auth(this); return false;">
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="text" name="email" class="form-control" placeholder="Телефон или почта" aria-describedby="" required autocomplete="new-email">
                       </div>
-                      <div class="form-group" style="margin: 4% 3%;">
-                        <input type="password" class="form-control" placeholder="Пароль" id="exampleInputPassword1">
+
+                      <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
+                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
+                        <div class="input-group-append">
+                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i class="far fa-eye"></i></button>
+                        </div>
                       </div>
+
                       <button type="submit" class="btnn btn-block">Регистрация</button>
                       <div class="text-center text-small" style="margin-top: 10px;"><a href="/?auth" style="color: #afc71e;">Уже зарегистрированы?</a></div>
                     </form>
