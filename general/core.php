@@ -372,7 +372,7 @@ class Settings {
       $data_token = $this->decode_token($token);
 
       if (!json_decode($data_token)->response) {
-          return json_decode($data_token)->description;
+          return $data_token;
       }
       else {
 
@@ -440,180 +440,209 @@ class Settings {
           $ip=$_SERVER['REMOTE_ADDR'];
       }
       return $ip;
- }
+  }
 
- // Проверка корректности ввода ИНН
- public function is_valid_inn($inn) {
-   if ( preg_match('/\D/', $inn) ) return false;
+  // Проверка корректности ввода ИНН
+  public function is_valid_inn($inn) {
+     if ( preg_match('/\D/', $inn) ) return false;
 
-   $inn = (string) $inn;
-   $len = strlen($inn);
+     $inn = (string) $inn;
+     $len = strlen($inn);
 
-   if ( $len === 10 )
-   {
-       return $inn[9] === (string) (((
-           2*$inn[0] + 4*$inn[1] + 10*$inn[2] +
-           3*$inn[3] + 5*$inn[4] +  9*$inn[5] +
-           4*$inn[6] + 6*$inn[7] +  8*$inn[8]
-       ) % 11) % 10);
-   }
-   elseif ( $len === 12 )
-   {
-       $num10 = (string) (((
-            7*$inn[0] + 2*$inn[1] + 4*$inn[2] +
-           10*$inn[3] + 3*$inn[4] + 5*$inn[5] +
-            9*$inn[6] + 4*$inn[7] + 6*$inn[8] +
-            8*$inn[9]
-       ) % 11) % 10);
-
-       $num11 = (string) (((
-           3*$inn[0] +  7*$inn[1] + 2*$inn[2] +
-           4*$inn[3] + 10*$inn[4] + 3*$inn[5] +
-           5*$inn[6] +  9*$inn[7] + 4*$inn[8] +
-           6*$inn[9] +  8*$inn[10]
-       ) % 11) % 10);
-
-       return $inn[11] === $num11 && $inn[10] === $num10;
-   }
-
-   return false;
- }
-
- // Забор данных из ФНС
- public function fns_base($inn,$json = false) {
-   global $database;
-
-       $valid_inn = $this->is_valid_inn($inn);
-
-       if (!$valid_inn) {
-           return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
-       }
-
-         $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
-         $fnc = json_decode($data_fnc);
-
-         $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
-         $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
-
-         if ($chek_inn == '') {
-               if ($chek_inn2 == '') {
-                   return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
-               }
-               else {
-
-                 $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                 $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                 $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                 $check_add = $add_fns_database->execute();
-                 if (!$check_add) {
-                       return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
-                 }
-                 else {
-                       return json_encode(array('response' => true, 'data' => $fnc),JSON_UNESCAPED_UNICODE);
-                 }
-               }
-      }
- }
-
- // Загрузка данных из ФНС
- public function get_fns_base($inn,$json = false) {
-   global $database,$unated_database,$UNATED_BASE_PREFIX__;
-
-   $valid_inn = $this->is_valid_inn($inn);
-
-   if (!$valid_inn) {
-       return '615';
-   }
-
-   $chek_reg_uruser = $database->prepare("SELECT * FROM $this->company WHERE inn = :inn");
-   $chek_reg_uruser->bindParam(':inn', $inn, PDO::PARAM_STR);
-   $chek_reg_uruser->execute();
-   $data_chek_reg_uruser = $chek_reg_uruser->fetch(PDO::FETCH_OBJ);
-
-   $chek_reg_inobj = $database->prepare("SELECT * FROM $this->inobject WHERE inn = :inn");
-   $chek_reg_inobj->bindParam(':inn', $inn, PDO::PARAM_STR);
-   $chek_reg_inobj->execute();
-   $data_chek_reg_inobj = $chek_reg_inobj->fetch(PDO::FETCH_OBJ);
-
-
-     //Выполняем поиск по ИНН уже ранее запрошенных из ФНС ИНН
-     $chek_fns_database = $database->prepare("SELECT * FROM $this->fns_database WHERE inn = :inn");
-     $chek_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-     $chek_fns_database->execute();
-     $data_fns_database = $chek_fns_database->fetch(PDO::FETCH_OBJ);
-
-     if ($data_fns_database) {
-             if (!$json){$fnc = json_decode($data_fns_database->info);}
-             else {$fnc = $data_fns_database->info;}
-             return $fnc;
+     if ( $len === 10 )
+     {
+         return $inn[9] === (string) (((
+             2*$inn[0] + 4*$inn[1] + 10*$inn[2] +
+             3*$inn[3] + 5*$inn[4] +  9*$inn[5] +
+             4*$inn[6] + 6*$inn[7] +  8*$inn[8]
+         ) % 11) % 10);
      }
-     else {
+     elseif ( $len === 12 )
+     {
+         $num10 = (string) (((
+              7*$inn[0] + 2*$inn[1] + 4*$inn[2] +
+             10*$inn[3] + 3*$inn[4] + 5*$inn[5] +
+              9*$inn[6] + 4*$inn[7] + 6*$inn[8] +
+              8*$inn[9]
+         ) % 11) % 10);
 
-         $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
-         $fnc = json_decode($data_fnc);
+         $num11 = (string) (((
+             3*$inn[0] +  7*$inn[1] + 2*$inn[2] +
+             4*$inn[3] + 10*$inn[4] + 3*$inn[5] +
+             5*$inn[6] +  9*$inn[7] + 4*$inn[8] +
+             6*$inn[9] +  8*$inn[10]
+         ) % 11) % 10);
 
-         $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
-         $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+         return $inn[11] === $num11 && $inn[10] === $num10;
+     }
 
+     return false;
+   }
 
-         if ($chek_inn == '') {
-               if ($chek_inn2 == '') {
-                   return '613';
-               }
-               else {
+  // Забор данных из ФНС
+  public function fns_base($inn,$json = false) {
+     global $database;
 
-                 $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                 $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                 $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                 $check_add = $add_fns_database->execute();
-                 if (!$check_add) {
-                       return '614';
+         $valid_inn = $this->is_valid_inn($inn);
+
+         if (!$valid_inn) {
+             return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
+         }
+
+           $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+           $fnc = json_decode($data_fnc);
+
+           $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+           $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+
+           if ($chek_inn == '') {
+                 if ($chek_inn2 == '') {
+                     return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
                  }
                  else {
-                       $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
-                       $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                       $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                       $check_add = $add_fns_database->execute();
-                       if (!$json) {return $fnc;}
-                       else {return $data_fnc;}
-                 }
 
-               }
-         }
-         else {
-
-               $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-               $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-               $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-               $check_add = $add_fns_database->execute();
-               if (!$check_add) {
-                   return '614';
-               }
-               else {
-                   $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
+                   $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
                    $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
                    $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
                    $check_add = $add_fns_database->execute();
-                   if (!$json) {return $fnc;}
-                   else {return $data_fnc;}
-               }
-
-         }
-     }
+                   if (!$check_add) {
+                         return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                   }
+                   else {
+                         return json_encode(array('response' => true, 'data' => $fnc),JSON_UNESCAPED_UNICODE);
+                   }
+                 }
+        }
    }
 
- // Запись переходов реферов
- public function record_user_referer($session_id,$ip_user,$refer) {
-    global $database;
+  // Загрузка данных из ФНС
+  public function get_fns_base($inn,$json = false) {
+     global $database,$unated_database,$UNATED_BASE_PREFIX__;
+
+     $valid_inn = $this->is_valid_inn($inn);
+
+     if (!$valid_inn) {
+         return '615';
+     }
+
+     $chek_reg_uruser = $database->prepare("SELECT * FROM $this->company WHERE inn = :inn");
+     $chek_reg_uruser->bindParam(':inn', $inn, PDO::PARAM_STR);
+     $chek_reg_uruser->execute();
+     $data_chek_reg_uruser = $chek_reg_uruser->fetch(PDO::FETCH_OBJ);
+
+     $chek_reg_inobj = $database->prepare("SELECT * FROM $this->inobject WHERE inn = :inn");
+     $chek_reg_inobj->bindParam(':inn', $inn, PDO::PARAM_STR);
+     $chek_reg_inobj->execute();
+     $data_chek_reg_inobj = $chek_reg_inobj->fetch(PDO::FETCH_OBJ);
 
 
-                     $add_fns_database = $database->prepare("INSERT INTO $this->user_referer () VALUES ()");
+       //Выполняем поиск по ИНН уже ранее запрошенных из ФНС ИНН
+       $chek_fns_database = $database->prepare("SELECT * FROM $this->fns_database WHERE inn = :inn");
+       $chek_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+       $chek_fns_database->execute();
+       $data_fns_database = $chek_fns_database->fetch(PDO::FETCH_OBJ);
+
+       if ($data_fns_database) {
+               if (!$json){$fnc = json_decode($data_fns_database->info);}
+               else {$fnc = $data_fns_database->info;}
+               return $fnc;
+       }
+       else {
+
+           $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+           $fnc = json_decode($data_fnc);
+
+           $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+           $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+
+
+           if ($chek_inn == '') {
+                 if ($chek_inn2 == '') {
+                     return '613';
+                 }
+                 else {
+
+                   $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
+                   $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                   $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                   $check_add = $add_fns_database->execute();
+                   if (!$check_add) {
+                         return '614';
+                   }
+                   else {
+                         $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
+                         $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                         $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                         $check_add = $add_fns_database->execute();
+                         if (!$json) {return $fnc;}
+                         else {return $data_fnc;}
+                   }
+
+                 }
+           }
+           else {
+
+                 $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
+                 $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                 $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                 $check_add = $add_fns_database->execute();
+                 if (!$check_add) {
+                     return '614';
+                 }
+                 else {
+                     $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
                      $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
                      $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
                      $check_add = $add_fns_database->execute();
+                     if (!$json) {return $fnc;}
+                     else {return $data_fnc;}
+                 }
 
+           }
+       }
+    }
 
- }
+  // Запись переходов реферов
+  public function record_user_referer($session_id,$ip_user,$refer) {
+      global $database;
+
+          $today = date("Y-m-d H:i:s");
+
+          $resource = parse_url($refer, PHP_URL_HOST);
+          $resource2 = $this->get_global_settings('hosting_name');
+          if ($resource2 != $resource) {
+
+            $add_user_referer = $database->prepare("UPDATE $this->user_referer SET ip = :ip, referer = :referer, date_record = :date_record WHERE session_id = :session_id");
+            $add_user_referer->bindParam(':ip', $ip_user, PDO::PARAM_STR);
+            $add_user_referer->bindParam(':referer', $refer, PDO::PARAM_STR);
+            $add_user_referer->bindParam(':date_record', $today, PDO::PARAM_STR);
+            $add_user_referer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
+            $temp = $add_user_referer->execute();
+            $count = $add_user_referer->rowCount();
+
+            if ($count) {
+                  return json_encode(array('response' => true, 'description' => 'Рефер пользователя успешно обновлен'),JSON_UNESCAPED_UNICODE);
+            } else {
+
+                $add_user_referer = $database->prepare("INSERT INTO $this->user_referer (session_id,ip,referer,date_record) VALUES (:session_id,:ip,:referer,:date_record)");
+                $add_user_referer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
+                $add_user_referer->bindParam(':ip', $ip_user, PDO::PARAM_STR);
+                $add_user_referer->bindParam(':referer', $refer, PDO::PARAM_STR);
+                $add_user_referer->bindParam(':date_record', $today, PDO::PARAM_STR);
+                $check_referer = $add_user_referer->execute();
+                if ($check_referer) {
+                  return json_encode(array('response' => true, 'description' => 'Рефер пользователя успешно добавлен'),JSON_UNESCAPED_UNICODE);
+                } else {
+                  return json_encode(array('response' => false, 'description' => 'Рефер пользователя не был добавлен, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                }
+
+            }
+
+          } else {
+             return json_encode(array('response' => false, 'description' => 'Этот же хост'),JSON_UNESCAPED_UNICODE);
+          }
+
+   }
 
 }
 

@@ -1,10 +1,15 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $dadata = new DaData;
-
+$settings = new Settings;
+$ip = $settings->get_ip();
+$session_id = session_id();
+if ($_SERVER['HTTP_REFERER']) {
+  $check_record_user_referer = $settings->record_user_referer($session_id,$ip,$_SERVER['HTTP_REFERER']);
+}
 ?>
 
 <!doctype html>
@@ -132,7 +137,7 @@ $dadata = new DaData;
                       <h4>Социальные сети</h4>
                       <div class="col-md-8 col-xs-9">
                         <div id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
-                        <!-- <?php echo $_SERVER['HTTP_REFERER']; ?> -->
+                        <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти через Tboil</span></a>
                       </div>
 
                     </center>
@@ -174,9 +179,9 @@ $dadata = new DaData;
                     <center>
                       <img src="/img/icons8-social.png" class="d-none d-sm-block" alt="" width="42">
                       <h4>Социальные сети</h4>
-                      <div class="col-md-8 col-xs-9">
+                      <div class="col-md-12 col-xs-12">
                         <div id="uLogin7cda9a92" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
-                        <!-- <?php echo $_SERVER['HTTP_REFERER']; ?> -->
+                        <button type="submit" class="btnn">Точка кипения</button>
                       </div>
 
                     </center>
