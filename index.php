@@ -130,12 +130,17 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form onsubmit="check_auth(this); return false;">
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" class="form-control" name="email" placeholder="Телефон или почта" aria-describedby="" autofocus required autocomplete="email">
+                        <input type="text" class="form-control" name="email" placeholder="Телефон или почта" aria-describedby="" autofocus required autocomplete="email" oninput="check_log_input(this)">
                       </div>
-                      <div class="form-group" style="margin-top: 4%; margin-top: 4%;">
-                        <input type="password" class="form-control" name="pass"  placeholder="Пароль" required autocomplete="password" >
-                        <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
+
+                      <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
+                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="password">
+                        <div class="input-group-append">
+                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i class="far fa-eye"></i></button>
+                        </div>
                       </div>
+                      <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
+
                       <button type="submit" class="btnn btn-block">Войти</button>
                       <div class="text-center text-small" style="margin-top: 10px;"><a href="/?register" style="color: #afc71e;">Еще нет аккаунта?</a></div>
                     </form>
@@ -173,9 +178,9 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Регистрация</h4>
                     </center>
-                    <form onsubmit="check_auth(this); return false;">
+                    <form onsubmit="return false;">
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" name="email" class="form-control" placeholder="Телефон или почта" aria-describedby="" required autocomplete="new-email">
+                        <input type="text" name="email" class="form-control" placeholder="Почта" aria-describedby="" required autocomplete="new-email" >
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
