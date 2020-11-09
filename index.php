@@ -56,7 +56,12 @@ if ($_SERVER['HTTP_REFERER']) {
 	    <!-- Brand-->
 	    <a class="navbar-brand" href="#home"><img src="lpm-connect3.png" height="30"></a>
 		<div class="container d-block">
+        <?php if (!$_SESSION["key_user"]) {?>
         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти</span></a>
+      <?php } else { ?>
+        <a href="/profile"><span class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Кабинет <i class="far fa-user-circle"></i></span></a>
+        <a href="/logout"><span class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Выход <i class="fas fa-door-open"></i></span></a>
+      <?php } ?>
 	      <a href="tel:78122348594"><span class="phone  my-0 d-none d-md-block" >8 812 234 85 94</span></a>
 	      <a href="mailto:support@lpm-connect.ru"><span class="email  my-0 d-none d-md-block" >support@lpm-connect.ru</span></a>
 
@@ -104,7 +109,12 @@ if ($_SERVER['HTTP_REFERER']) {
         <li><a class="nav-link" data-menuanchor="partners" href="#partners">Сайты</a></li>
         <li><a class="nav-link" data-menuanchor="news" href="#news">Новости</a></li>
         <li><a class="nav-link" data-menuanchor="developers" href="#developers">Разработчикам</a></li>
-        <li><a class="nav-link" href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1" style="padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 0px;">Войти</span></a></li>
+        <?php if (!$_SESSION["key_user"]) {?>
+            <li><a class="nav-link" href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1" style="padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 0px;">Войти</span></a></li>
+        <?php } else { ?>
+            <li><a class="nav-link" href="/profile">Кабинет</a></li>
+            <li><a class="nav-link" href="/logout">Выход</a></li>
+        <?php } ?>
       </ul>
       <div class="navbar-mobile-footer">
         <p>© LPM. 2020. Все права защищены.</p>
@@ -136,7 +146,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
                         <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="password">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i class="far fa-eye"></i></button>
+                            <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
@@ -224,8 +234,11 @@ if ($_SERVER['HTTP_REFERER']) {
 	              	<div class="line"></div>
 	                <h1 class="text-white"><span class="text-primary text-typed a-typed a-typed-about">Один</span> аккаунт</h1>
 	                <h1 class="text-white">Тысячи <span class="text-primary text-typed a-typed a-typed-about">возможностей.</span></h1>
-	                <button data-toggle="modal" data-target="#register" type="submit" class="btnn" style="border-radius: 100px; margin-top: 25px;">Присоединиться</button>
-
+                  <?php if (!$_SESSION["key_user"]) {?>
+	                    <button data-toggle="modal" data-target="#register" type="submit" class="btnn" style="border-radius: 100px; margin-top: 25px;">Присоединиться</button>
+                  <?php } else { ?>
+                      <a href="/profile"><button type="button" class="btnn" style="border-radius: 100px; margin-top: 25px;">Войти в кабинет</button></a>
+                  <?php }  ?>
 	            </div>
 	            </div>
             </div>

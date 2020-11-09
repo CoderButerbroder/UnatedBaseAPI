@@ -1,6 +1,5 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-$dadata = new DaData;
 $settings = new Settings;
 $ip = $settings->get_ip();
 $session_id = session_id();

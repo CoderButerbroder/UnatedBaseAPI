@@ -743,8 +743,8 @@ class Settings {
                 $DOB = '0000-00-00';
 
                 $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
-                $session_refer->bindParam(':network', $session_id, PDO::PARAM_STR);
-                $session_refer->bindParam(':network_id', $ip, PDO::PARAM_STR);
+                $session_refer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
+                $session_refer->bindParam(':ip', $ip, PDO::PARAM_STR);
                 $session_refer->execute();
                 $user_session_refer = $session_refer->fetch(PDO::FETCH_OBJ);
 
@@ -824,7 +824,7 @@ class Settings {
       return true;
   }
 
-  
+
 
 }
 
