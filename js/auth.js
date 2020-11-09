@@ -1,34 +1,8 @@
 function check_auth(form) {
   //console.log(form.elements.email);
   //console.log(form.elements.pass);
-// index_dog = form.elements.email.value.indexOf('@');
-// if (index_dog >= 0 && index_dog <= 1)
-//     Swal.fire(
-//     'Некорректно введен email',
-//     '',
-//     'warning');
-
-var count_dog = (form.elements.email.value.split('@').length - 1);
-if(count_dog >= 1 ) {
-  var count_err = (form.elements.email.value.split('-_').length-1) + (form.elements.email.value.split('_-').length-1) + (form.elements.email.value.split('-@').length-1) + (form.elements.email.value.split('@-').length-1) + (form.elements.email.value.split('-.').length-1) + (form.elements.email.value.split('.-').length-1) + (form.elements.email.value.split('..').length-1) + (form.elements.email.value.split('.@').length-1) + (form.elements.email.value.split('@.').length-1);
-  // var count_point = (form.elements.email.value.split('.').length - 1);
-
-  if (count_err > 0 || form.elements.email.value[form.elements.email.value.length-1] == '.' || form.elements.email.value[form.elements.email.value.length-1] == '-' || form.elements.email.value[form.elements.email.value.length-1] == '_') {
-      Swal.fire(
-      'Некорректно введен email',
-      '',
-      'warning');
-  } else {
-      Swal.fire(
-      'Продолжение авторизации',
-      '',
-      'warning');
-  }
-}
-
-};
-
-function check_log_input(el) {
+console.log(form.elements.email.value);
+//console.log(form.elements.email.value.indexOf('@'));
 
 
   el.value=el.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');
