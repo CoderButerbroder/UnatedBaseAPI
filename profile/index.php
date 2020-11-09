@@ -1,12 +1,18 @@
+<?php
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+if (!$_SESSION["key_user"]) {
+		header('Location: /?auth');
+		exit;
+}
 
+?>
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="ru-RU">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Bako - Personal Portfolio & Resume HTML Template</title>
-	<meta name="description" content="Bako - Personal Portfolio & Resume HTML Template">
+	<title>Личный кабинет</title>
+	<meta name="description" content="Личный кабинет">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<link rel="shortcut icon" type="image/x-icon" href="https://via.placeholder.com/32x32">
 
 	<!-- STYLESHEETS -->
 	<link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" media="all">
@@ -24,7 +30,11 @@
 
 </head>
 
-<body>
+<body style="background: url('/normal-1.jpg.png') no-repeat center center fixed;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;">
 
 <!-- preloader -->
 <div id="preloader">

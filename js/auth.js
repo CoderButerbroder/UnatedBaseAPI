@@ -1,8 +1,8 @@
 function check_auth(form) {
   //console.log(form.elements.email);
   //console.log(form.elements.pass);
-
-console.log(form.elements.email.search('/@/')); 
+console.log(form.elements.email.value);
+//console.log(form.elements.email.value.indexOf('@'));
 
 
 }
