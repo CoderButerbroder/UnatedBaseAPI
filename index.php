@@ -142,11 +142,11 @@ if ($_SERVER['HTTP_REFERER']) {
                     <form onsubmit="check_auth(this); return false;">
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" class="form-control" name="email" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
+                        <input type="text" class="form-control" name="login" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required autocomplete="password">
+                        <input type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <div class="input-group-append">
                           <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
