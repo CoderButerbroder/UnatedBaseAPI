@@ -27,6 +27,10 @@ function check_auth(act,form) {
             alerts('success', arr["description"], '');
             $('#recovery').modal('hide');
           }
+          if(act == 'rec_p') {
+            alerts('success', arr["description"], '');
+            $('#recovery_pass').modal('hide');
+          }
 
 
         } else {
@@ -77,8 +81,8 @@ function check_char(flag,value) {
 function verification_passwords(el) {
 
   form = document.getElementById('form_rec_p');
-  pass1 = form.elements.pass1;
-  pass2 = form.elements.pass2;
+  pass1 = form.elements.password;
+  pass2 = form.elements.confirm_password;
   btn = form.elements.btn_sub;
   sm_txt = document.getElementById('small_text_rec_p');
 
