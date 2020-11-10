@@ -54,7 +54,7 @@ if ($_SERVER['HTTP_REFERER']) {
       <div class="position-relative w-100">
 
 	    <!-- Brand-->
-	    <a class="navbar-brand" href="#home"><img src="lpm-connect3.png" height="30"></a>
+	    <a class="navbar-brand" href="#home"><img src="/img/lpm-connect3.png" height="30"></a>
 		<div class="container d-block">
         <?php if (!$_SESSION["key_user"]) {?>
         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти</span></a>
@@ -226,7 +226,7 @@ if ($_SERVER['HTTP_REFERER']) {
     <div id="pagepiling">
 
       <!-- Masthead -->
-      <section id="home" class="navbar-is-white text-white pp-scrollable d-flex align-items-center section position-absolute" style="background-image:url('normal-1.jpg.png'); background-blend-mode: multiply;" role="main">
+      <section id="home" class="navbar-is-white text-white pp-scrollable d-flex align-items-center section position-absolute" style="background-image:url('/img/normal-1.jpg.png'); background-blend-mode: multiply;" role="main">
         <div class="intro">
           <div class="scroll-wrap">
 	          <div class="container">

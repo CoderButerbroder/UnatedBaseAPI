@@ -30,7 +30,7 @@ if (!$_SESSION["key_user"]) {
 
 </head>
 
-<body style="background: url('/normal-1.jpg.png') no-repeat center center fixed;
+<body style="background: url('/img/normal-1.jpg.png') no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
         -o-background-size: cover;
