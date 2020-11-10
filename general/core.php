@@ -1,14 +1,9 @@
 <?php
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/PHPMailer.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/SMTP.php');
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/Exception.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/DATAroot.php');
 // require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/dadata/DadataClient.php');
-
-
-class ClassName {
-
-
-
-}
-
 
 class Settings {
 
@@ -21,7 +16,53 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
 
+  // Отправка email любому пользователю с любой темой и текстом из системы
+  public function send_email_user($user_email,$tema,$content) {
+      global $database;
 
+          $mail = new PHPMailer\PHPMailer\PHPMailer();
+          try {
+              $msg = "OK";
+              $mail->isSMTP();
+              $mail->CharSet = "UTF-8";
+              $mail->SMTPAuth   = true;
+
+              $email_host2 = $this->get_global_settings('email_host');
+              $email_username2 = $this->get_global_settings('email_username');
+              $email_pass2 = $this->get_global_settings('email_pass');
+              $email_secure2 = $this->get_global_settings('email_secure');
+              $email_port2 = $this->get_global_settings('email_port');
+              $email_name2 = $this->get_global_settings('email_name');
+
+              $mail->Host       = $email_host2;
+              $mail->Username   = $email_username2;
+              $mail->Password   = $email_pass2;
+              $mail->SMTPSecure = $email_secure2;
+              $mail->Port       = $email_port2;
+              $mail->setFrom($email_username2,$email_name2);
+
+              // include($_SERVER['DOCUMENT_ROOT'].'/security/root.php');
+
+              // Получатель письма
+              $mail->addAddress($user_email);
+
+                  $mail->isHTML(true);
+
+                  $mail->Subject = $tema;
+                  $mail->Body    = $content;
+                  $mail->IsHTML(true);
+
+                if ($mail->send()) {
+                    return true;
+                } else {
+                    return false;
+                }
+
+          } catch (Exception $e) {
+              return false;
+          }
+
+  }
 
   // получение глобального парметра настройки
   public function get_global_settings($meta_key) {
@@ -483,129 +524,6 @@ class Settings {
      return false;
    }
 
-  // Забор данных из ФНС
-  public function fns_base($inn,$json = false) {
-     global $database;
-
-         $valid_inn = $this->is_valid_inn($inn);
-
-         if (!$valid_inn) {
-             return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
-         }
-
-           $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
-           $fnc = json_decode($data_fnc);
-
-           $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
-           $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
-
-           if ($chek_inn == '') {
-                 if ($chek_inn2 == '') {
-                     return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
-                 }
-                 else {
-
-                   $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                   $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                   $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                   $check_add = $add_fns_database->execute();
-                   if (!$check_add) {
-                         return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
-                   }
-                   else {
-                         return json_encode(array('response' => true, 'data' => $fnc),JSON_UNESCAPED_UNICODE);
-                   }
-                 }
-        }
-   }
-
-  // Загрузка данных из ФНС
-  public function get_fns_base($inn,$json = false) {
-     global $database,$unated_database,$UNATED_BASE_PREFIX__;
-
-     $valid_inn = $this->is_valid_inn($inn);
-
-     if (!$valid_inn) {
-         return '615';
-     }
-
-     $chek_reg_uruser = $database->prepare("SELECT * FROM $this->company WHERE inn = :inn");
-     $chek_reg_uruser->bindParam(':inn', $inn, PDO::PARAM_STR);
-     $chek_reg_uruser->execute();
-     $data_chek_reg_uruser = $chek_reg_uruser->fetch(PDO::FETCH_OBJ);
-
-     $chek_reg_inobj = $database->prepare("SELECT * FROM $this->inobject WHERE inn = :inn");
-     $chek_reg_inobj->bindParam(':inn', $inn, PDO::PARAM_STR);
-     $chek_reg_inobj->execute();
-     $data_chek_reg_inobj = $chek_reg_inobj->fetch(PDO::FETCH_OBJ);
-
-
-       //Выполняем поиск по ИНН уже ранее запрошенных из ФНС ИНН
-       $chek_fns_database = $database->prepare("SELECT * FROM $this->fns_database WHERE inn = :inn");
-       $chek_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-       $chek_fns_database->execute();
-       $data_fns_database = $chek_fns_database->fetch(PDO::FETCH_OBJ);
-
-       if ($data_fns_database) {
-               if (!$json){$fnc = json_decode($data_fns_database->info);}
-               else {$fnc = $data_fns_database->info;}
-               return $fnc;
-       }
-       else {
-
-           $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
-           $fnc = json_decode($data_fnc);
-
-           $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
-           $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
-
-
-           if ($chek_inn == '') {
-                 if ($chek_inn2 == '') {
-                     return '613';
-                 }
-                 else {
-
-                   $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                   $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                   $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                   $check_add = $add_fns_database->execute();
-                   if (!$check_add) {
-                         return '614';
-                   }
-                   else {
-                         $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
-                         $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                         $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                         $check_add = $add_fns_database->execute();
-                         if (!$json) {return $fnc;}
-                         else {return $data_fnc;}
-                   }
-
-                 }
-           }
-           else {
-
-                 $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                 $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                 $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                 $check_add = $add_fns_database->execute();
-                 if (!$check_add) {
-                     return '614';
-                 }
-                 else {
-                     $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
-                     $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                     $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                     $check_add = $add_fns_database->execute();
-                     if (!$json) {return $fnc;}
-                     else {return $data_fnc;}
-                 }
-
-           }
-       }
-    }
-
   // Запись переходов реферов
   public function record_user_referer($session_id,$ip_user,$refer) {
       global $database;
@@ -649,16 +567,23 @@ class Settings {
    }
 
   // Получение данных пользователя
-  public function get_cur_user($hash) {
+  public function get_cur_user($hash_or_id) {
       global $database;
 
-      $check_user_data = $database->prepare("SELECT * FROM $this->main_users WHERE hash = :hash");
-      $check_user_data->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $check_activiti = $this->update_activity($hash_or_id);
+
+      if (is_numeric($hash_or_id)) {
+          $check_user_data = $database->prepare("SELECT * FROM $this->main_users WHERE id = :id");
+          $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
+      } else {
+          $check_user_data = $database->prepare("SELECT * FROM $this->main_users WHERE hash = :hash");
+          $check_user_data->bindParam(':hash', $hash_or_id, PDO::PARAM_STR);
+      }
       $check_user_data->execute();
       $user = $check_user_data->fetch(PDO::FETCH_OBJ);
 
       if ($user) {
-           return json_encode(array('response' => false, 'data' => $user),JSON_UNESCAPED_UNICODE);
+           return json_encode(array('response' => true, 'data' => $user),JSON_UNESCAPED_UNICODE);
       }
       else {
            return json_encode(array('response' => false, 'description' => 'Нет данных по пользователю с данным ключем'),JSON_UNESCAPED_UNICODE);
@@ -676,7 +601,7 @@ class Settings {
        $user_email = $check_email->fetch(PDO::FETCH_OBJ);
 
        if (password_verify($password, $user_email->password)) {
-              $_SESSION["key_user"] = $user->hash;
+              $_SESSION["key_user"] = $user_email->hash;
 
               $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
               $session_refer->bindParam(':network', $session_id, PDO::PARAM_STR);
@@ -756,8 +681,11 @@ class Settings {
 
                 $today = date("Y-m-d H:i:s");
 
+                $recocery_link = md5($hash);
 
-                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity)");
+                $status = 'active';
+
+                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status)");
                 $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
                 $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
                 $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
@@ -775,7 +703,8 @@ class Settings {
                 $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
                 $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
                 $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
-                $new_uruser->bindParam(':recovery_link', $today, PDO::PARAM_STR);
+                $new_uruser->bindParam(':recovery_link', $recocery_link, PDO::PARAM_STR);
+                $new_uruser->bindParam(':status', $status, PDO::PARAM_STR);
                 $new_uruser->execute();
                 $count = $new_uruser->rowCount();
                 $id_new_user = $database->lastInsertId();
@@ -804,10 +733,10 @@ class Settings {
                             $check_social = $database->prepare("DELETE FROM $this->main_users WHERE id = :id");
                             $check_social->bindParam(':id', $id_new_user, PDO::PARAM_INT);
                             $check_social->execute();
-                            return json_encode(array('response' => false, 'description' => 'Ошибка создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(array('response' => false, 'description' => 'Ошибка 1 создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
                       }
                 } else {
-                      return json_encode(array('response' => false, 'description' => 'Ошибка создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => false, 'description' => 'Ошибка 2 создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
                 }
             } else {
                   return json_encode(array('response' => false, 'description' => 'Данный аккунт социальной сети уже привязан к другой учетной записи'),JSON_UNESCAPED_UNICODE);
@@ -817,88 +746,88 @@ class Settings {
   }
 
   // Воссстановление достпа пользователя
-  public function recovery_user($email) {
-      global $database;
-
-              if ((strripos($email, '@')) && strripos($email, '.')) {
-
-              }
-              else {
-                    return '618';
-              }
-
-              $statement = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
-              $statement->bindParam(':email', $email, PDO::PARAM_STR);
-              $statement->execute();
-              $user = $statement->fetch(PDO::FETCH_OBJ);
-
-              if (!$user) {
-                 return '619';
-              }
-
-              $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
-              $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
-              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
-              $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
-
-              $mail = new PHPMailer\PHPMailer\PHPMailer();
-              try {
-                  $msg = "OK";
-                  $mail->isSMTP();
-                  $mail->CharSet = "UTF-8";
-                  $mail->SMTPAuth   = true;
-
-                  include($_SERVER['DOCUMENT_ROOT'].'/general/MAILroot.php');
-
-                  // Получатель письма
-                  $mail->addAddress($email);
-
-                      $mail->isHTML(true);
-
-                      $mail->Subject = 'Восстановление доступа к аккаунту на сайте ';
-                      $mail->Body    = $content;
-
-
-                    if ($mail->send()) {
-                        return '620';
-                    } else {
-                        return '621';
-                    }
-
-              } catch (Exception $e) {
-                  return '622';
-              }
-
-  }
+  // public function recovery_user($email) {
+  //     global $database;
+  //
+  //             if ((strripos($email, '@')) && strripos($email, '.')) {
+  //
+  //             }
+  //             else {
+  //                   return '618';
+  //             }
+  //
+  //             $statement = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
+  //             $statement->bindParam(':email', $email, PDO::PARAM_STR);
+  //             $statement->execute();
+  //             $user = $statement->fetch(PDO::FETCH_OBJ);
+  //
+  //             if (!$user) {
+  //                return '619';
+  //             }
+  //
+  //             $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
+  //             $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
+  //             $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
+  //             $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
+  //
+  //             $mail = new PHPMailer\PHPMailer\PHPMailer();
+  //             try {
+  //                 $msg = "OK";
+  //                 $mail->isSMTP();
+  //                 $mail->CharSet = "UTF-8";
+  //                 $mail->SMTPAuth   = true;
+  //
+  //                 include($_SERVER['DOCUMENT_ROOT'].'/general/MAILroot.php');
+  //
+  //                 // Получатель письма
+  //                 $mail->addAddress($email);
+  //
+  //                     $mail->isHTML(true);
+  //
+  //                     $mail->Subject = 'Восстановление доступа к аккаунту на сайте ';
+  //                     $mail->Body    = $content;
+  //
+  //
+  //                   if ($mail->send()) {
+  //                       return '620';
+  //                   } else {
+  //                       return '621';
+  //                   }
+  //
+  //             } catch (Exception $e) {
+  //                 return '622';
+  //             }
+  //
+  // }
 
   // Задание нового пароля пользователя после восстановления доступа
-  public function new_pass_user($recovery_link,$password) {
-      global $database,$unated_database,$UNATED_BASE_PREFIX__;
-
-      $hash_password = md5($password);
-      $today = date("Y-m-d H:i:s");
-      $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
-
-      $new_password_user = $database->prepare("UPDATE $this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
-      $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
-      $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
-      $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
-      $check_new_password_user = $new_password_user->execute();
-      $count = $new_password_user->rowCount();
-
-      if ($count) {
-            $new_password_user = $unated_database->prepare("UPDATE $UNATED_BASE_PREFIX__$this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
-            $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
-            $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
-            $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
-            $check_new_password_user = $new_password_user->execute();
-            return '623';
-      }
-      else {
-            return '624';
-      }
-
-  }
+  // public function new_pass_user($recovery_link,$password) {
+  //     global $database,$unated_database,$UNATED_BASE_PREFIX__;
+  //
+  //     $hash_password = md5($password);
+  //     $today = date("Y-m-d H:i:s");
+  //     $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
+  //
+  //     $new_password_user = $database->prepare("UPDATE $this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
+  //     $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
+  //     $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
+  //     $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+  //     $check_new_password_user = $new_password_user->execute();
+  //     $count = $new_password_user->rowCount();
+  //
+  //     if ($count) {
+  //           $new_password_user = $unated_database->prepare("UPDATE $UNATED_BASE_PREFIX__$this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
+  //           $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
+  //           $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
+  //           $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+  //           $check_new_password_user = $new_password_user->execute();
+  //           return '623';
+  //     }
+  //     else {
+  //           return '624';
+  //     }
+  //
+  // }
 
   // Функция разофторизации пользотвателя
   public function logout() {
@@ -915,7 +844,7 @@ class Settings {
       return true;
   }
 
-  // проверка логина и телеофна
+  // проверка логина и телефона
   public function check_login_valid($login) {
 
     if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
@@ -942,13 +871,173 @@ class Settings {
   }
 
   // Обновление активности аккаунта
-  // public function
+  public function update_activity($hash_user_or_id) {
+      global $database;
+
+      $today = date("Y-m-d H:i:s");
+
+      if (is_numeric($hash_or_id)) {
+        $upd_activity_user = $database->prepare("UPDATE $this->main_users SET last_activity = :last_activity WHERE id = :id");
+        $upd_activity_user->bindParam(':id', $hash_user_or_id, PDO::PARAM_INT);
+      } else {
+        $upd_activity_user = $database->prepare("UPDATE $this->main_users SET last_activity = :last_activity WHERE hash = :hash");
+        $upd_activity_user->bindParam(':hash', $hash_user_or_id, PDO::PARAM_STR);
+      }
+      $upd_activity_user->bindParam(':last_activity', $today, PDO::PARAM_STR);
+      $check_upd_activity_user = $upd_activity_user->execute();
+      $count = $upd_activity_user->rowCount();
+
+      if ($count) {
+          return json_encode(array('response' => true, 'description' => 'Активность пользователя обновлена'),JSON_UNESCAPED_UNICODE);
+      } else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка обновления активности пользователя'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
 
 }
 
+class FNS extends Settings {
+
+    // Забор данных из ФНС
+    public function fns_base($inn,$json = false) {
+       global $database;
+
+           $valid_inn = $this->is_valid_inn($inn);
+
+           if (!$valid_inn) {
+               return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
+           }
+
+             $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+             $fnc = json_decode($data_fnc);
+
+             $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+             $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+
+             if ($chek_inn == '') {
+                   if ($chek_inn2 == '') {
+                       return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
+                   }
+                   else {
+
+                     $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
+                     $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                     $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                     $check_add = $add_fns_database->execute();
+                     if (!$check_add) {
+                           return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                     }
+                     else {
+                           return json_encode(array('response' => true, 'data' => $fnc),JSON_UNESCAPED_UNICODE);
+                     }
+                   }
+          }
+     }
+
+    // Загрузка данных из ФНС
+    public function get_fns_base($inn,$json = false) {
+       global $database,$unated_database,$UNATED_BASE_PREFIX__;
+
+       $valid_inn = $this->is_valid_inn($inn);
+
+       if (!$valid_inn) {
+           return '615';
+       }
+
+       $chek_reg_uruser = $database->prepare("SELECT * FROM $this->company WHERE inn = :inn");
+       $chek_reg_uruser->bindParam(':inn', $inn, PDO::PARAM_STR);
+       $chek_reg_uruser->execute();
+       $data_chek_reg_uruser = $chek_reg_uruser->fetch(PDO::FETCH_OBJ);
+
+       $chek_reg_inobj = $database->prepare("SELECT * FROM $this->inobject WHERE inn = :inn");
+       $chek_reg_inobj->bindParam(':inn', $inn, PDO::PARAM_STR);
+       $chek_reg_inobj->execute();
+       $data_chek_reg_inobj = $chek_reg_inobj->fetch(PDO::FETCH_OBJ);
+
+
+         //Выполняем поиск по ИНН уже ранее запрошенных из ФНС ИНН
+         $chek_fns_database = $database->prepare("SELECT * FROM $this->fns_database WHERE inn = :inn");
+         $chek_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+         $chek_fns_database->execute();
+         $data_fns_database = $chek_fns_database->fetch(PDO::FETCH_OBJ);
+
+         if ($data_fns_database) {
+                 if (!$json){$fnc = json_decode($data_fns_database->info);}
+                 else {$fnc = $data_fns_database->info;}
+                 return $fnc;
+         }
+         else {
+
+             $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+             $fnc = json_decode($data_fnc);
+
+             $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+             $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+
+
+             if ($chek_inn == '') {
+                   if ($chek_inn2 == '') {
+                       return '613';
+                   }
+                   else {
+
+                     $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
+                     $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                     $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                     $check_add = $add_fns_database->execute();
+                     if (!$check_add) {
+                           return '614';
+                     }
+                     else {
+                           $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
+                           $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                           $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                           $check_add = $add_fns_database->execute();
+                           if (!$json) {return $fnc;}
+                           else {return $data_fnc;}
+                     }
+
+                   }
+             }
+             else {
+
+                   $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
+                   $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                   $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                   $check_add = $add_fns_database->execute();
+                   if (!$check_add) {
+                       return '614';
+                   }
+                   else {
+                       $add_fns_database = $unated_database->prepare("INSERT INTO $UNATED_BASE_PREFIX__$this->fns_database (inn,info) VALUES (:inn,:info)");
+                       $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
+                       $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
+                       $check_add = $add_fns_database->execute();
+                       if (!$json) {return $fnc;}
+                       else {return $data_fnc;}
+                   }
+
+             }
+         }
+      }
+
+    // Проверка контрагента
+    public function check_contragent($inn,$json = false) {
+
+      $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+      $fnc = json_decode($data_fnc);
+
+
+
+    }
+
+}
+
+
 class DaData extends Settings {
 
-
+    // Поиск местоположения по ip
     public function iplocate($client_ip) {
 
           $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip='.$client_ip);
@@ -966,6 +1055,7 @@ class DaData extends Settings {
 
      }
 
+    // поиск компании по dadata
     public function find_entity($inn) {
           $data = [
               'query' => $inn
@@ -989,7 +1079,236 @@ class DaData extends Settings {
 
     }
 
+    // проверка самогозанятого по ИНН
+    public function checkStatus($inn, $date = null) {
+        if (!$date) {
+            $date = new DateTime("now");
+        }
+        $dateStr = $date->format("Y-m-d");
+        $url = "https://statusnpd.nalog.ru/api/v1/tracker/taxpayer_status";
+        $data = array(
+            "inn" => $inn,
+            "requestDate" => $dateStr
+        );
+        $options = array(
+            'http' => array(
+                'method'  => 'POST',
+                'header'  => array(
+                    'Content-type: application/json',
+                ),
+                'content' => json_encode($data)
+            ),
+        );
 
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        return $result;
+    }
+
+    // Адрес в ФИАС по идентификатору
+    public function check_adres_fias($fias) {
+        $data = [
+            'query' => $fias
+         ];
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                ],
+                'content' => json_encode($data)
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/fias', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+    }
+
+    // Геокодирование (координаты по адресу)
+    public function check_geo_adres($adres) {
+        // $data = [
+        //     'query' => $adres
+        //  ];
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                ],
+                'content' => $adres
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/address', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+
+
+    }
+
+    // Адрес по коду КЛАДР или ФИАС
+    public function check_adres_kladr_or_fias($kod) {
+      $data = [
+          'query' => $kod
+       ];
+      $options = [
+          'http' => [
+              'method' => 'POST',
+              'header' => [
+                  'Content-Type: application/json',
+                  'Accept: application/json',
+                  'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+              ],
+              'content' => json_encode($data)
+          ]
+       ];
+      $builder = stream_context_create($options);
+      $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/address', false, $builder);
+      $output = json_decode($document);
+
+      return $document;
+    }
+
+    // Поиск аффилированных компаний
+    public function find_afiling_entity($inn) {
+        $data = [
+            'query' => $inn
+         ];
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                ],
+                'content' => json_encode($data)
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findAffiliated/party', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+    }
+
+    // Банк по БИК, SWIFT, ИНН или регистрационному номеру
+    public function check_bank($bik_swift_inn_regnum) {
+        $data = [
+          'query' => $bik_swift_inn_regnum
+        ];
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                ],
+                'content' => json_encode($data)
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/findById/bank', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+    }
+
+    // API стандартизации телефонов
+    public function standart_phone($phone) {
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
+                    'X-Secret: '.$this->get_global_settings('dadata_key_standard')
+                ],
+                'content' => $phone
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/phone', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+    }
+
+    // Проверка паспорта по справочнику недействительных паспортов МВД.
+    public function standart_passport($passport_id) {
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
+                    'X-Secret: '.$this->get_global_settings('dadata_key_standard')
+                ],
+                'content' => $passport_id
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/passport', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+    }
+
+    // кем выдан паспорт
+    public function who_get_passport($kod_podrazdel) {
+        $data = [
+          'query' => $kod_podrazdel
+        ];
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                ],
+                'content' => json_encode($data)
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/fms_unit', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+
+    }
+
+    // API стандартизации email
+    public function check_email($email) {
+        $options = [
+            'http' => [
+                'method' => 'POST',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
+                    'X-Secret: '.$this->get_global_settings('dadata_key_standard')
+                ],
+                'content' => $email
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/email', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+
+    }
 
 }
 

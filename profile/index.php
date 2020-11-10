@@ -6,17 +6,17 @@ if (!$_SESSION["key_user"]) {
 		exit;
 }
 
-$user_data = $settings->get_cur_user($hash);
+$user_data = $settings->get_cur_user($_SESSION['key_user']);
 
-
+$user_data = json_decode($user_data);
 
 ?>
 <!DOCTYPE html>
 <html lang="ru-RU">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Личный кабинет</title>
-	<meta name="description" content="Личный кабинет">
+	<title><?php echo $user_data->data->name.' '.$user_data->data->last_name;?> - Личный кабинет LPM-connect</title>
+	<meta name="description" content="<?php echo $user_data->data->name.' '.$user_data->data->last_name;?> - Личный кабинет LPM-connect">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 	<!-- STYLESHEETS -->
@@ -27,6 +27,8 @@ $user_data = $settings->get_cur_user($hash);
 	<link rel="stylesheet" href="css/simplebar.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="all">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
 
 	<!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -62,7 +64,7 @@ $user_data = $settings->get_cur_user($hash);
 			<span></span>
 		</button>
 		<a href="index.html" class="logo"><img src="https://via.placeholder.com/70x70" alt="Дмитрий Иванов" /></a>
-		<a href="index.html" class="site-title dot ml-2">Дмитрий Иванов</a>
+		<a href="index.html" class="site-title dot ml-2"><?php echo $user_data->data->name.' '.$user_data->data->last_name;?></a>
 	</div>
 
 	<!-- header -->
@@ -71,20 +73,21 @@ $user_data = $settings->get_cur_user($hash);
 			<span aria-hidden="true">&times;</span>
 		</button>
 		<div class="header-inner d-flex align-items-start flex-column">
-			<a href="index.html"><img src="https://via.placeholder.com/70x70" alt="Дмитрий Иванов" /></a>
-			<a href="index.html" class="site-title dot mt-3">Дмитрий Иванов</a>
-			<span class="site-slogan">Web Developer</span>
+			<a href="#"><img class="rounded-circle" src="https://via.placeholder.com/70x70" alt="Дмитрий Иванов" /></a>
+			<a href="#" class="site-title dot mt-3"><?php echo $user_data->data->name.' '.$user_data->data->last_name;?></a>
+			<span class="site-slogan"></span>
 
 			<!-- navigation menu -->
 			<nav>
 				<ul class="vertical-menu scrollspy">
-					<li><a href="#home" class="active"><i class="icon-home"></i>Home</a></li>
-					<li><a href="#about"><i class="icon-user"></i>About</a></li>
-					<li><a href="#services"><i class="icon-bulb"></i>Services</a></li>
-					<li><a href="#resume"><i class="icon-graduation"></i>Resume</a></li>
-					<li><a href="#works"><i class="icon-grid"></i>Works</a></li>
-					<li><a href="#blog"><i class="icon-pencil"></i>Blog</a></li>
-					<li><a href="#contact"><i class="icon-phone"></i>Contact</a></li>
+					<li><a href="#request" class="active" style=""><i class="far fa-question-circle"></i>Запрос</a></li>
+					<li><a href="#home" class="active" style=""><i class="icon-user"></i>Аккаунт</a></li>
+					<!-- <li><a href="#about"><i class="icon-user"></i>About</a></li> -->
+					<li><a href="#services"><i class="fas fa-share-alt"></i>Социальные сети</a></li>
+					<li><a href="#resume"><i class="fas fa-shield-alt"></i>Безопасность</a></li>
+					<!-- <li><a href="#works"><i class="icon-grid"></i>Works</a></li>
+					<li><a href="#blog"><i class="icon-pencil"></i>Blog</a></li>-->
+					<li><a href="#contact"><i class="fas fa-headset"></i>Поддержка</a></li>
 				</ul>
 			</nav>
 
@@ -92,16 +95,16 @@ $user_data = $settings->get_cur_user($hash);
 			<div class="footer mt-auto">
 
 				<!-- social icons -->
-				<ul class="social-icons list-inline">
+				<!-- <ul class="social-icons list-inline">
 					<li class="list-inline-item"><a href="#"><i class="fab fa-facebook-f"></i></a></li>
 					<li class="list-inline-item"><a href="#"><i class="fab fa-twitter"></i></a></li>
 					<li class="list-inline-item"><a href="#"><i class="fab fa-instagram"></i></a></li>
 					<li class="list-inline-item"><a href="#"><i class="fab fa-youtube"></i></a></li>
 					<li class="list-inline-item"><a href="#"><i class="fab fa-dribbble"></i></a></li>
-				</ul>
+				</ul> -->
 
 				<!-- copyright -->
-				<span class="copyright">© 2020 Bako Template</span>
+				<span class="copyright">© LPM. 2020.</span>
 			</div>
 		</div>
 	</header>
@@ -110,29 +113,30 @@ $user_data = $settings->get_cur_user($hash);
 	<main class="content float-right">
 
 		<!-- section hero -->
-		<section class="hero background parallax shadow-dark d-flex align-items-center" id="home" data-image-src="https://via.placeholder.com/900x600">
+		<section class="hero background parallax shadow-dark d-flex align-items-center" id="request">
 			<div class="cta mx-auto mt-2">
-				<h1 class="mt-0 mb-4">Здравствуйте, <br><br>Дмитрий<span class="dot"></span></h1>
-				<p class="mb-4">He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections.</p>
-				<a href="#" class="btn btn-default btn-lg mr-3"><i class="icon-grid"></i>View Portfolio</a>
+				<h1 class="mt-0 mb-4"><?php echo $user_data->data->name; ?><span class="dot"></span></h1>
+				<p class="mb-4">Похоже что вы не завешили регистрацию на сайте {тут рефер}, хотите продолжить данную регистрацию?</p>
+				<!-- <p class="mb-4">Похоже что вы не завешили регистрацию на сайте {тут рефер}, хотите продолжить данную регистрацию?</p> -->
+				<a href="#" class="btn btn-default btn-lg mr-3"><i class="fas fa-check"></i>Продолжить</a>
 				<div class="spacer d-md-none d-lg-none d-sm-none" data-height="10"></div>
-				<a href="#" class="btn btn-border-light btn-lg"><i class="icon-envelope"></i>Hire me</a>
+				<a href="#" class="btn btn-border-light btn-lg"><i class="fas fa-times"></i>Отказаться</a>
 			</div>
 			<div class="overlay"></div>
 		</section>
 
 		<!-- section about -->
-		<section id="about" class="shadow-blue white-bg padding">
-			<h3 class="section-title">About Me</h3>
+		<section id="home" class="shadow-blue white-bg padding">
+			<h3 class="section-title">Данные физического лица</h3>
 			<div class="spacer" data-height="80"></div>
 
 			<div class="row">
 				<div class="col-md-3">
-					<img src="https://via.placeholder.com/150x150" alt="about" />
+					<img class="rounded-circle" src="https://via.placeholder.com/150x150" alt="about" />
 				</div>
 				<div class="col-md-9">
-					<h2 class="mt-4 mt-md-0 mb-4">Hello,</h2>
-					<p class="mb-0">I am Дмитрий Иванов, web developer from London, United Kingdom. I have rich experience in web site design and building and customization, also I am good at wordpress.</p>
+					<h2 class="mt-4 mt-md-0 mb-4"><?php echo $user_data->data->last_name.' '.$user_data->data->name.' '.$user_data->data->second_name;?></h2>
+					<p class="mb-0"></p>
 					<div class="row my-4">
 						<div class="col-md-6">
 							<p class="mb-2">Name: <span class="text-dark">Дмитрий Иванов</span></p>
@@ -143,8 +147,8 @@ $user_data = $settings->get_cur_user($hash);
 							<p class="mb-0">Email: <span class="text-dark">hello@bako.com</span></p>
 						</div>
 					</div>
-					<a href="#" class="btn btn-default mr-3"><i class="icon-cloud-download"></i>Download CV</a>
-					<a href="#" class="btn btn-alt mt-2 mt-md-0 mt-xs-2"><i class="icon-envelope"></i>Hire me</a>
+					<a href="#" class="btn btn-default mr-3"><i class="fas fa-pencil-alt"></i>Редактировать информацию</a>
+					<!-- <a href="#" class="btn btn-alt mt-2 mt-md-0 mt-xs-2"><i class="icon-envelope"></i>Hire me</a> -->
 				</div>
 			</div>
 		</section>

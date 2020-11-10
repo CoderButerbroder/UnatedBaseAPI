@@ -26,7 +26,7 @@ Description: Personal Portfolio & Resume HTML Template
 @import url("https://fonts.googleapis.com/css?family=Poppins:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i&display=swap&subset=cyrillic-ext");
 /*=================================================================*/
-/*                      BASE                              
+/*                      BASE
 /*=================================================================*/
 body {
   color: #888;
@@ -70,11 +70,11 @@ img {
 }
 
 .background-blue {
-  background: #4A63E7;
+  background: #46004c;
 }
 
 /*=================================================================*/
-/*                      TYPOGRAPHY                              
+/*                      TYPOGRAPHY
 /*=================================================================*/
 h1, h2, h3, h4, h5, h6 {
   color: #000;
@@ -107,7 +107,7 @@ a {
   transition: all 0.3s ease-in-out;
 }
 a:hover {
-  color: #FF5959;
+  color: #d4f31c;
   text-decoration: none;
 }
 a:focus {
@@ -143,12 +143,12 @@ pre {
 
 ::selection {
   color: #FFF;
-  background: #FF5959;
+  background: #d4f31c;
 }
 
 ::-moz-selection {
   color: #FFF;
-  background: #FF5959;
+  background: #d4f31c;
 }
 
 .z-1 {
@@ -166,11 +166,11 @@ pre {
 }
 
 /*=================================================================*/
-/*                      HEADER                              
+/*                      HEADER
 /*=================================================================*/
 header.left {
   color: #FFF;
-  background: #4A63E7;
+  background: #46004c;
   border-radius: 20px;
   min-height: 620px;
   max-height: 620px;
@@ -227,7 +227,7 @@ header.left button.close {
   border: 0;
   -webkit-appearance: none;
   opacity: 1;
-  color: #FF5959;
+  color: #d4f31c;
   font-weight: 400;
   font-size: 16px;
   border-radius: 50%;
@@ -253,7 +253,7 @@ header .site-title {
 }
 header .site-title.dot:after {
   content: "";
-  background-color: #FF5959;
+  background-color: #d4f31c;
   border-radius: 50%;
   display: inline-block;
   margin-left: 5px;
@@ -290,7 +290,7 @@ header .vertical-menu li a:hover {
 }
 header .vertical-menu li a.active:before {
   content: "";
-  background: #FF5959;
+  background: #d4f31c;
   display: block;
   height: 18px;
   left: -30px;
@@ -304,7 +304,7 @@ header .copyright {
 }
 
 .mobile-header {
-  background: #4A63E7;
+  background: #46004c;
   border-radius: 20px;
   display: none;
   -webkit-transform: translateX(0);
@@ -334,7 +334,7 @@ header .copyright {
 }
 .mobile-header .site-title.dot:after {
   content: "";
-  background-color: #FF5959;
+  background-color: #d4f31c;
   border-radius: 50%;
   display: inline-block;
   margin-left: 5px;
@@ -410,7 +410,7 @@ main.content.push {
 }
 .hero .cta h1 .dot:after {
   content: "";
-  background-color: #FF5959;
+  background-color: #d4f31c;
   border-radius: 50%;
   display: inline-block;
   margin-left: 5px;
@@ -446,7 +446,7 @@ section.padding-60 {
 }
 .section-title:after {
   content: "";
-  background: #FF5959;
+  background: #d4f31c;
   border-radius: 25px;
   display: block;
   height: 5px;
@@ -455,7 +455,7 @@ section.padding-60 {
 }
 
 /*=================================================================*/
-/*                      SKILLS                              
+/*                      SKILLS
 /*=================================================================*/
 .skill-item .skill-info span {
   font-size: 14px;
@@ -488,8 +488,8 @@ section.padding-60 {
   transition: all 0.3s ease-in-out;
 }
 .service-item:hover {
-  border-color: #FF5959;
-  background: #FF5959;
+  border-color: #d4f31c;
+  background: #d4f31c;
   color: #FFF;
   -webkit-box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.15);
   -moz-box-shadow: 0px 6px 15px 0px rgba(0, 0, 0, 0.15);
@@ -510,13 +510,13 @@ section.padding-60 {
   left: calc(20% + 2px);
   bottom: 0px;
   width: 1px;
-  background: #FF5959;
+  background: #d4f31c;
 }
 .timeline-line::before, .timeline-line::after {
   content: "";
   display: block;
   border-radius: 100%;
-  background: #FF5959;
+  background: #d4f31c;
   position: absolute;
   left: -3px;
   height: 7px;
@@ -554,7 +554,7 @@ section.padding-60 {
   position: absolute;
   width: 8px;
   height: 8px;
-  border: 1px solid #FF5959;
+  border: 1px solid #d4f31c;
   background-color: #fff;
   border-radius: 100%;
   padding: 4.5px;
@@ -574,7 +574,7 @@ section.padding-60 {
 }
 
 /*=================================================================*/
-/*                      PORTFOLIO                              
+/*                      PORTFOLIO
 /*=================================================================*/
 .portfolio-wrapper [class*=col-] {
   margin-top: 10px;
@@ -629,7 +629,7 @@ section.padding-60 {
   transition: all cubic-bezier(0.075, 0.82, 0.165, 1) 1s;
 }
 .portfolio-item .plus-icon {
-  color: #FF5959;
+  color: #d4f31c;
   background: #FFF;
   border-radius: 100%;
   position: absolute;
@@ -647,7 +647,7 @@ section.padding-60 {
   transition: all 0.3s ease-in-out;
 }
 .portfolio-item .mask {
-  background: #FF5959;
+  background: #d4f31c;
   position: absolute;
   left: 0;
   top: 0;
@@ -695,7 +695,7 @@ section.padding-60 {
 }
 
 .portfolio-info i {
-  color: #FF5959;
+  color: #d4f31c;
   font-size: 14px;
   margin-right: 10px;
 }
@@ -717,7 +717,7 @@ section.padding-60 {
   height: 7px;
 }
 .portfolio-filter li.current {
-  background: #FF5959;
+  background: #d4f31c;
   color: #FFF;
   padding: 6px 14px 4px;
   border-radius: 30px;
@@ -734,7 +734,7 @@ section.padding-60 {
 .price-item i {
   background: #FFF;
   font-size: 24px;
-  color: #FF5959;
+  color: #d4f31c;
   display: block;
   border-radius: 50%;
   border: solid 1px #EFEFEF;
@@ -757,7 +757,7 @@ section.padding-60 {
 .price-item .plan {
   font-size: 12px;
   color: #FFF;
-  background: #FF5959;
+  background: #d4f31c;
   border-radius: 25px;
   display: inline-block;
   padding: 1px 9px;
@@ -790,7 +790,7 @@ section.padding-60 {
 }
 .price-item.recommended {
   color: #FFF;
-  background: #4A63E7;
+  background: #46004c;
 }
 .price-item.recommended .price {
   color: #FFF;
@@ -806,7 +806,7 @@ section.padding-60 {
 }
 .testimonial-item .symbol {
   font-weight: bold;
-  color: #FF5959;
+  color: #d4f31c;
   font-size: 12px;
   margin-bottom: 20px;
   display: block;
@@ -840,7 +840,7 @@ section.padding-60 {
 }
 
 /*=================================================================*/
-/*                      CLIENTS                              
+/*                      CLIENTS
 /*=================================================================*/
 .client-item {
   min-height: 60px;
@@ -861,7 +861,7 @@ section.padding-60 {
 }
 
 /*=================================================================*/
-/*                      BLOG                              
+/*                      BLOG
 /*=================================================================*/
 .blog-item .thumb {
   border-radius: 10px;
@@ -891,7 +891,7 @@ section.padding-60 {
 }
 .blog-item .category {
   border-radius: 50px;
-  background: #FF5959;
+  background: #d4f31c;
   color: #FFF;
   font-size: 12px;
   padding: 1px 8px;
@@ -909,7 +909,7 @@ section.padding-60 {
 }
 .blog-item .meta li:after {
   content: "";
-  background: #FF5959;
+  background: #d4f31c;
   border-radius: 100%;
   display: inline-block;
   height: 3px;
@@ -923,7 +923,7 @@ section.padding-60 {
 
 .contact-info i {
   font-size: 24px;
-  color: #FF5959;
+  color: #d4f31c;
   float: left;
 }
 .contact-info .details {
@@ -935,11 +935,11 @@ section.padding-60 {
 }
 
 /*=================================================================*/
-/*                      HELPER                              
+/*                      HELPER
 /*=================================================================*/
 .overlay {
   border-radius: 20px;
-  background: #4A63E7;
+  background: #46004c;
   left: 0;
   top: 0;
   opacity: 0.9;
@@ -952,7 +952,7 @@ section.padding-60 {
   font-size: 24px;
   color: #FFF;
   display: inline-block;
-  background: #FF5959;
+  background: #d4f31c;
   border-radius: 50%;
   height: 50px;
   line-height: 50px;
@@ -961,7 +961,7 @@ section.padding-60 {
 }
 
 .icon-simple {
-  color: #FF5959;
+  color: #d4f31c;
   font-size: 24px;
 }
 
@@ -1024,11 +1024,11 @@ section.padding-60 {
 }
 
 .btn-default {
-  color: #FFF;
-  background: #FF5959;
+  color: #000;
+  background: #d4f31c;
 }
 .btn-default:hover {
-  background: #4A63E7;
+  background: #46004c;
   color: #FFF;
   -webkit-transform: translateY(-3px);
   -moz-transform: translateY(-3px);
@@ -1042,11 +1042,11 @@ section.padding-60 {
 
 .btn-alt {
   color: #FFF;
-  background: #4A63E7;
+  background: #46004c;
 }
 .btn-alt:hover {
   color: #FFF;
-  background: #FF5959;
+  background: #d4f31c;
   -webkit-transform: translateY(-3px);
   -moz-transform: translateY(-3px);
   -ms-transform: translateY(-3px);
@@ -1059,7 +1059,7 @@ section.padding-60 {
 
 .btn-border {
   color: #FFF;
-  background: #4A63E7;
+  background: #46004c;
 }
 .btn-border:hover {
   color: #FFF;
@@ -1140,7 +1140,7 @@ section.padding-60 {
   display: inline-block;
   position: absolute;
   top: 0;
-  background-color: #FF5959;
+  background-color: #d4f31c;
   border-radius: 100%;
   -webkit-animation: sk-bounce 2s infinite ease-in-out;
   animation: sk-bounce 2s infinite ease-in-out;
@@ -1217,7 +1217,7 @@ section.padding-60 {
 }
 
 .form-control:focus {
-  border-color: #FF5959;
+  border-color: #d4f31c;
   outline: 0;
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -1339,7 +1339,7 @@ section.padding-60 {
   line-height: 3px;
   color: #fff;
   text-align: center;
-  background-color: #FF5959;
+  background-color: #d4f31c;
   -webkit-box-shadow: none;
   box-shadow: none;
   -webkit-transition: width 0.6s ease;
@@ -1354,8 +1354,8 @@ section.padding-60 {
   margin-right: 0.3rem;
 }
 .social-icons li a {
-  color: #FFF;
-  background: #FF5959;
+  color: #000;
+  background: #d4f31c;
   border-radius: 50%;
   display: block;
   height: 30px;
@@ -1364,7 +1364,7 @@ section.padding-60 {
   width: 30px;
 }
 .social-icons li a:hover {
-  color: #FF5959;
+  color: #d4f31c;
   background: #FFF;
 }
 
@@ -1406,7 +1406,7 @@ section.padding-60 {
 }
 
 #return-to-top:hover {
-  background: #FF5959;
+  background: #d4f31c;
 }
 
 .videoWrapper {
@@ -1570,7 +1570,7 @@ section.padding-60 {
 }
 
 .slick-dots li.slick-active button:before {
-  background: #FF5959;
+  background: #d4f31c;
   opacity: 1;
   height: 7px;
   width: 7px;
@@ -1587,7 +1587,7 @@ section.padding-60 {
 
 .slick-dots li button:hover:before, .slick-dots li button:focus:before {
   opacity: 1;
-  background: #FF5959;
+  background: #d4f31c;
 }
 
 /*=================================================================*/
