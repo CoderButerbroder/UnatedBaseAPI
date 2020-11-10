@@ -3,7 +3,6 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-$dadata = new DaData;
 $settings = new Settings;
 $ip = $settings->get_ip();
 $session_id = session_id();
@@ -122,7 +121,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </ul>
       <div class="navbar-mobile-footer">
         <p>© LPM. 2020. Все права защищены.</p>
-        <p><ion-icon class="text-muted" style="width: 12px; height: 12px; margin-right: 9px;" name="navigate"></ion-icon><?php echo json_decode($dadata->iplocate($dadata->get_ip()))->location->data->city;?></p>
+        <p><ion-icon class="text-muted" style="width: 12px; height: 12px; margin-right: 9px;" name="navigate"></ion-icon><?php echo json_decode($settings->iplocate($settings->get_ip()))->location->data->city;?></p>
       </div>
     </nav>
 
@@ -286,7 +285,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Востановление пароля</h4>
                     </center>
-                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="/general/actions/based_recovery">
+                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="/general/actions/based_recovery?action=recovery">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
                         <input type="password" name="pass1" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
@@ -447,7 +446,7 @@ if ($_SERVER['HTTP_REFERER']) {
 					 	<h2 class="text">Разработчикам</h2>
 					 	<p class="text">Для быстрой и простой интеграции мы разработали API, а также готовые примеры интеграций.</p>
 
-            <!-- <?php var_dump($dadata->find_entity('7840390119'))?> -->
+            <!-- <?php var_dump($settings->find_entity('7840390119'))?> -->
 				<!-- <h3 class="text mt-5 pt-5">69 Queen St, Melbourne Australia</h3>
 				<h3 class="text">(+706) 898-0751</h3> -->
         <button type="submit" class="btnn">Смотреть документацию</button>

@@ -16,6 +16,11 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
 
+  // проверка json на валидность
+  public function isJSON($string) {
+      return ((is_string($string) && (is_object(json_decode($string)) || is_array(json_decode($string))))) ? true : false;
+  }
+
   // Отправка email любому пользователю с любой темой и текстом из системы
   public function send_email_user($user_email,$tema,$content) {
       global $database;
@@ -519,7 +524,7 @@ class Settings {
          return $inn[11] === $num11 && $inn[10] === $num10;
      }
 
-     return false;
+       return json_encode(array('response' => false, 'description' => 'Ошибка инн не валидный'),JSON_UNESCAPED_UNICODE);
    }
 
   // Запись переходов реферов
@@ -765,7 +770,7 @@ class Settings {
 
               $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
               $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
-              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
+              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/?link='.$user->recovery_link.'</a>';
               $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
 
               $tema = 'Восстановление пароля LPM connect';
@@ -786,7 +791,7 @@ class Settings {
           $user = $statement->fetch(PDO::FETCH_OBJ);
 
           if (!$user) {
-                return json_encode(array('response' => false, 'description' => 'Ссылка для восстановления пароля не действительна'),JSON_UNESCAPED_UNICODE);
+                return json_encode(array('response' => false, 'description' => 'Ссылка для восстановления пароля недействительна'),JSON_UNESCAPED_UNICODE);
           }
 
           $hash_password = password_hash($password);
@@ -875,12 +880,36 @@ class Settings {
 
   }
 
-}
+  // отправка смс СНЯТЬ ТЕСТОВЫЙ РЕЖИМ ПРИ СОЗДАНИИ ИНТЕРФЕЙСА ДЛЯ АДМИНОВ
+  public function sistem_sms($phone,$text) {
+    global $database;
 
-class FNS extends Settings {
+    $code_sms = $this->get_global_settings('api_smsru_key');
+    $vowels = array("(", ")", "+", "_", "-", " ");
+    $phone = str_replace($vowels, "", $phone);
+    $body = file_get_contents("https://sms.ru/sms/send?api_id=".$code_sms."&to=".$phone."&msg=".urlencode(iconv("windows-1251","utf-8",$text))."&json=1");
+    $json = json_decode($body);
 
-    // Забор данных из ФНС
-    public function fns_base($inn,$json = false) {
+    if ($json) {
+        if ($json->status == "OK") {
+            return json_encode(array('response' => true, 'description' => 'СМС сообщении успешно отпралено', 'data' => $json),JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка отправки смс, пожалуйста попробуйте чуть позже', 'data' => $json),JSON_UNESCAPED_UNICODE);
+        }
+    } else {
+            return json_encode(array('response' => false, 'description' => 'Системная ошибка отправки СМС сообщения', 'data' => $json),JSON_UNESCAPED_UNICODE);
+
+    }
+
+  }
+
+
+
+  /* API ФУНКЦИИ - ФЕДЕРАЛЬНАЯ НАЛОГОВАЯ СЛУЖБА  */
+
+
+  // Забор данных из ФНС
+  public function fns_base($inn,$json = false) {
        global $database;
 
            $valid_inn = $this->is_valid_inn($inn);
@@ -915,14 +944,14 @@ class FNS extends Settings {
           }
      }
 
-    // Загрузка данных из ФНС
-    public function get_fns_base($inn,$json = false) {
+  // Загрузка данных из ФНС
+  public function get_fns_base($inn,$json = false) {
        global $database,$unated_database,$UNATED_BASE_PREFIX__;
 
        $valid_inn = $this->is_valid_inn($inn);
 
-       if (!$valid_inn) {
-           return '615';
+       if ($this->isJSON($valid_inn)) {
+           return $valid_inn;
        }
 
        $chek_reg_uruser = $database->prepare("SELECT * FROM $this->company WHERE inn = :inn");
@@ -1002,23 +1031,176 @@ class FNS extends Settings {
          }
       }
 
-    // Проверка контрагента
-    public function check_contragent($inn,$json = false) {
+  // Проверка контрагента
+  public function check_contragent($inn) {
 
-      $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
-      $fnc = json_decode($data_fnc);
+        $valid_inn = $this->is_valid_inn($inn);
 
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
 
+        $data_fnc = file_get_contents("https://api-fns.ru/api/check?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
 
     }
 
-}
+  // Позволяет получить изменения данных о компании в ЕГРЮЛ или ЕГРИП
+  public function check_change_egrl($inn) {
+
+        $valid_inn = $this->is_valid_inn($inn);
+
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/changes?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Позволяет получить официальную выписку ФНС из ЕГРЮЛ или ЕГРИП
+  public function check_excerpt_egrl($inn) {
+
+        $valid_inn = $this->is_valid_inn($inn);
+
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/vyp?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Бухгалтерская отчетность организации по данным ФНС (только юридические лица).
+  public function check_financ_stat($inn) {
+
+        $valid_inn = $this->is_valid_inn($inn);
+
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/bo?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Бухгалтерская отчетность организации в виде файла по данным ФНС (только юридические лица).
+  public function check_financ_stat_file($inn,$year,$type=null) {
+
+        $valid_inn = $this->is_valid_inn($inn);
+
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
+
+        if(!$type) {
+              $data_fnc = file_get_contents("https://api-fns.ru/api/bo_file?req=".$inn."&year=".intval($year)."&key=".$this->get_global_settings('api_fns_key'));
+        } else {
+              $data_fnc = file_get_contents("https://api-fns.ru/api/bo_file?req=".$inn."&year=".intval($year)."&xls=1&key=".$this->get_global_settings('api_fns_key'));
+        }
 
 
-class DaData extends Settings {
+        $fnc = json_decode($data_fnc);
 
-    // Поиск местоположения по ip
-    public function iplocate($client_ip) {
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Узнать ИНН физического лица
+  public function check_fiz_inn($name,$last_name,$second_name,$DOB,$type_document,$number_document) {
+
+        $array = array('Паспорт гражданина СССР' => '01',
+                       'Свидетельство о рождении' => '03',
+                       'Паспорт иностранного гражданина' => '10',
+                       'Вид на жительство в Российской Федерации' => '12',
+                       'Разрешение на временное проживание в Российской Федерации' => '15',
+                       'Свидетельство о предоставлении временного убежища на территории Российской Федерации' => '19',
+                       'Паспорт гражданина Российской Федерации' => '21',
+                       'Свидетельство о рождении, выданное уполномоченным органом иностранного государства' => '23');
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/innfl?fam=".$last_name."&nam=".$name."&otch=".$second_name."&bdate=".$DOB."&doctype=".$array[$type_document]."&docno=".$number_document."&key=".$this->get_global_settings('api_fns_key'));
+
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс ИНН физического лица'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Проверка паспорта на недействительность
+  public function check_passport($number_passport) {
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/mvdpass?docno=".$number_passport."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // Лицензии Федеральной службы по регулированию алкогольного рынка (ФСРАР)
+  public function check_fsar($inn) {
+
+        $valid_inn = $this->is_valid_inn($inn);
+
+        if ($this->isJSON($valid_inn)) {
+            return $valid_inn;
+        }
+
+        $data_fnc = file_get_contents("https://api-fns.ru/api/fsrar?inn=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+        $fnc = json_decode($data_fnc);
+
+        if ($fnc->items) {
+              return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Запрос в фнс по проверке конрагента'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка запроса в ФНС'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+
+  /* API ФУНКЦИИ - DADATA  */
+
+
+  // Поиск местоположения по ip
+  public function iplocate($client_ip) {
 
           $ch = curl_init('https://suggestions.dadata.ru/suggestions/api/4_1/rs/iplocate/address?ip='.$client_ip);
           curl_setopt($ch, CURLOPT_POST, 0);
@@ -1035,8 +1217,8 @@ class DaData extends Settings {
 
      }
 
-    // поиск компании по dadata
-    public function find_entity($inn) {
+  // поиск компании по dadata
+  public function find_entity($inn) {
           $data = [
               'query' => $inn
            ];
@@ -1059,8 +1241,8 @@ class DaData extends Settings {
 
     }
 
-    // проверка самогозанятого по ИНН
-    public function checkStatus($inn, $date = null) {
+  // проверка самогозанятого по ИНН
+  public function checkStatus($inn, $date = null) {
         if (!$date) {
             $date = new DateTime("now");
         }
@@ -1085,8 +1267,8 @@ class DaData extends Settings {
         return $result;
     }
 
-    // Адрес в ФИАС по идентификатору
-    public function check_adres_fias($fias) {
+  // Адрес в ФИАС по идентификатору
+  public function check_adres_fias($fias) {
         $data = [
             'query' => $fias
          ];
@@ -1108,8 +1290,8 @@ class DaData extends Settings {
         return $document;
     }
 
-    // Геокодирование (координаты по адресу)
-    public function check_geo_adres($adres) {
+  // Геокодирование (координаты по адресу)
+  public function check_geo_adres($adres) {
         // $data = [
         //     'query' => $adres
         //  ];
@@ -1133,8 +1315,8 @@ class DaData extends Settings {
 
     }
 
-    // Адрес по коду КЛАДР или ФИАС
-    public function check_adres_kladr_or_fias($kod) {
+  // Адрес по коду КЛАДР или ФИАС
+  public function check_adres_kladr_or_fias($kod) {
       $data = [
           'query' => $kod
        ];
@@ -1156,8 +1338,8 @@ class DaData extends Settings {
       return $document;
     }
 
-    // Поиск аффилированных компаний
-    public function find_afiling_entity($inn) {
+  // Поиск аффилированных компаний
+  public function find_afiling_entity($inn) {
         $data = [
             'query' => $inn
          ];
@@ -1179,8 +1361,8 @@ class DaData extends Settings {
         return $document;
     }
 
-    // Банк по БИК, SWIFT, ИНН или регистрационному номеру
-    public function check_bank($bik_swift_inn_regnum) {
+  // Банк по БИК, SWIFT, ИНН или регистрационному номеру
+  public function check_bank($bik_swift_inn_regnum) {
         $data = [
           'query' => $bik_swift_inn_regnum
         ];
@@ -1202,8 +1384,8 @@ class DaData extends Settings {
         return $document;
     }
 
-    // API стандартизации телефонов
-    public function standart_phone($phone) {
+  // API стандартизации телефонов
+  public function standart_phone($phone) {
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1223,8 +1405,8 @@ class DaData extends Settings {
         return $document;
     }
 
-    // Проверка паспорта по справочнику недействительных паспортов МВД.
-    public function standart_passport($passport_id) {
+  // Проверка паспорта по справочнику недействительных паспортов МВД.
+  public function standart_passport($passport_id) {
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1244,8 +1426,8 @@ class DaData extends Settings {
         return $document;
     }
 
-    // кем выдан паспорт
-    public function who_get_passport($kod_podrazdel) {
+  // кем выдан паспорт
+  public function who_get_passport($kod_podrazdel) {
         $data = [
           'query' => $kod_podrazdel
         ];
@@ -1268,8 +1450,8 @@ class DaData extends Settings {
 
     }
 
-    // API стандартизации email
-    public function check_email($email) {
+  // API стандартизации email
+  public function check_email($email) {
         $options = [
             'http' => [
                 'method' => 'POST',
