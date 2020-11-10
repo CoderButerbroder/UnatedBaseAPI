@@ -15,6 +15,7 @@ if (json_decode($check_login)->response) {
       exit;
 } else {
       echo $check_login;
+      exit;
 }
 
 
