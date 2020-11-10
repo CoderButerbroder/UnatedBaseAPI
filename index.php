@@ -20,9 +20,6 @@ if ($_SERVER['HTTP_REFERER']) {
     <meta name="description" content="LPM Connect">
     <meta name="author" content="LPM">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-
     <!-- CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/jquery.pagepiling.min.css">
