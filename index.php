@@ -125,7 +125,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </nav>
 
-    <div class="modal fade" id="auth" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authLabel" aria-hidden="true" style="overflow: hidden;">
+    <div class="modal fade" id="auth" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -151,7 +151,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
                         <input type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <div class="input-group-append">
-                          <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                          <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" onclick="$('#auth').modal('hide'); $('#recovery').modal('show'); " style="color: #afc71e;">Забыли пароль?</a></div>
@@ -177,7 +177,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </div>
 
-    <div class="modal fade" id="register" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true" style="overflow: hidden;">
+    <div class="modal fade" id="register" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true" >
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -214,7 +214,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
                         <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i class="far fa-eye"></i></button>
+                            <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
 
@@ -239,8 +239,8 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </div>
 
-    <div class="modal fade" id="recovery" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" style="overflow: hidden;">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal fade" id="recovery" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
             <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
@@ -249,17 +249,17 @@ if ($_SERVER['HTTP_REFERER']) {
             </button>
           </div>
           <div class="modal-body" style="top: -15px;">
-              <div class="row">
-                  <div class="col-md-12" >
+              <div class="row justify-content-center">
+                  <div class="col-md-9 col-sm-12" >
                     <center>
-                      <img src="/img/icons8-palec.png" alt="" width="42">
-                      <h4>Востановление пароля</h4>
+                      <img src="/img/paper-plane.png" alt="" width="42">
+                      <h4>Восстановление пароля</h4>
                     </center>
                     <form onsubmit="check_auth('rec',this); return false;" action="general/actions/based_recovery_password?action=recovery">
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
                       </div>
-                      <button type="submit" class="btnn btn-block">Востановить</button>
+                      <button type="submit" class="btnn btn-block">Восстановить</button>
                     </form>
                   </div>
               </div>
