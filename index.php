@@ -154,10 +154,10 @@ if ($_SERVER['HTTP_REFERER']) {
                           <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
-                      <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
+                      <div class="text-right text-small"><a href="#" onclick="$('#auth').modal('hide'); $('#recovery').modal('show'); " style="color: #afc71e;">Забыли пароль?</a></div>
 
                       <button type="submit" class="btnn btn-block">Войти</button>
-                      <div class="text-center text-small" style="margin-top: 10px;"><a href="/?register" style="color: #afc71e;">Еще нет аккаунта?</a></div>
+                      <div class="text-center text-small" style="margin-top: 10px;"><a href="#" onclick="$('#auth').modal('hide'); $('#register').modal('show'); " style="color: #afc71e;">Еще нет аккаунта?</a></div>
                     </form>
                   </div>
                   <div class="col-md-6">
@@ -219,7 +219,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <button type="submit" class="btnn btn-block">Регистрация</button>
-                      <div class="text-center text-small" style="margin-top: 10px;"><a href="/?auth" style="color: #afc71e;">Уже зарегистрированы?</a></div>
+                      <div class="text-center text-small" style="margin-top: 10px;"><a href="#" onclick="$('#register').modal('hide'); $('#auth').modal('show');" style="color: #afc71e;">Уже зарегистрированы?</a></div>
                     </form>
                   </div>
                   <div class="col-md-6">
@@ -255,7 +255,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Востановление пароля</h4>
                     </center>
-                    <form onsubmit="check_auth('rec',this); return false;" action="/general/actions/based_recovery">
+                    <form onsubmit="check_auth('rec',this); return false;" action="general/actions/based_recovery_password?action=recovery">
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
                       </div>
@@ -285,15 +285,15 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Востановление пароля</h4>
                     </center>
-                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="/general/actions/based_recovery?action=recovery">
+                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass1" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input type="password" name="password" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
                             <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass2" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input type="password" name="confirm_password" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
                             <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
@@ -476,6 +476,9 @@ if ($_SERVER['HTTP_REFERER']) {
 <script> $(document).ready(function() {$('#register').modal('show')});</script>
 <?php } ?>
 
+<?php if (isset($_GET['link'])) {?>
+<script> $(document).ready(function() {$('#recovery_pass').modal('show'); });</script>
+<?php } ?>
 
 
   <!-- Optional JavaScript -->
