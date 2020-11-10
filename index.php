@@ -129,7 +129,7 @@ if ($_SERVER['HTTP_REFERER']) {
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
-            <img src="lpm-connect3.png" height="20"style="margin: 10px 10px;">
+            <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true"><ion-icon style="width: 35px; height: 35px;" class="text-secondary" name="close-outline"></ion-icon></span>
             </button>
@@ -181,7 +181,7 @@ if ($_SERVER['HTTP_REFERER']) {
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
-            <img src="lpm-connect3.png" height="20"style="margin: 10px 10px;">
+            <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true"><ion-icon style="width: 35px; height: 35px;" class="text-secondary" name="close-outline"></ion-icon></span>
             </button>
