@@ -162,7 +162,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-social.png" class="d-none d-sm-block" alt="" width="42">
                       <h4>Социальные сети</h4>
                       <div class="col-md-8 col-xs-9">
-                        <div id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
+                        <div id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти через Tboil</span></a>
                       </div>
 
@@ -211,7 +211,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-social.png" class="d-none d-sm-block" alt="" width="42">
                       <h4>Социальные сети</h4>
                       <div class="col-md-8 col-xs-9">
-                        <div id="uLogin7cda9a92" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
+                        <div id="uLogin7cda9a92" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти через Tboil</span></a>
                       </div>
 
