@@ -1,4 +1,5 @@
 <?php
+header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 $ip = $settings->get_ip();
@@ -13,8 +14,8 @@ if (json_decode($check_login)->response) {
       echo $check_auth;
       exit;
 } else {
-      header('Content-type:application/json;charset=utf-8');
       echo $check_login;
+      exit;
 }
 
 
