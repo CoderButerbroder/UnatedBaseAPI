@@ -1,6 +1,25 @@
 function check_auth(form) {
 
-
+  $.ajax({
+  	url: '/general/actions/based_auth.php',
+  	method: 'POST',
+  	dataType: 'html',
+    data: form.serialize(),
+  	success: function(result){
+      Swal.fire(
+        'что то ',
+        ''+result,
+        'success'
+      );
+  	},
+    error: function (jqXHR, exception) {
+      Swal.fire(
+        'Ошибка подключения',
+        '',
+        'error'
+      );
+	}
+  });
 
 };
 
