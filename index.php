@@ -54,9 +54,14 @@ if ($_SERVER['HTTP_REFERER']) {
       <div class="position-relative w-100">
 
 	    <!-- Brand-->
-	    <a class="navbar-brand" href="#home"><img src="lpm-connect3.png" height="30"></a>
+	    <a class="navbar-brand" href="#home"><img src="/img/lpm-connect3.png" height="30"></a>
 		<div class="container d-block">
+        <?php if (!$_SESSION["key_user"]) {?>
         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти</span></a>
+      <?php } else { ?>
+        <a href="/profile"><span class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Кабинет <i class="far fa-user-circle"></i></span></a>
+        <a href="/logout"><span class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Выход <i class="fas fa-door-open"></i></span></a>
+      <?php } ?>
 	      <a href="tel:78122348594"><span class="phone  my-0 d-none d-md-block" >8 812 234 85 94</span></a>
 	      <a href="mailto:support@lpm-connect.ru"><span class="email  my-0 d-none d-md-block" >support@lpm-connect.ru</span></a>
 
@@ -104,7 +109,12 @@ if ($_SERVER['HTTP_REFERER']) {
         <li><a class="nav-link" data-menuanchor="partners" href="#partners">Сайты</a></li>
         <li><a class="nav-link" data-menuanchor="news" href="#news">Новости</a></li>
         <li><a class="nav-link" data-menuanchor="developers" href="#developers">Разработчикам</a></li>
-        <li><a class="nav-link" href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1" style="padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 0px;">Войти</span></a></li>
+        <?php if (!$_SESSION["key_user"]) {?>
+            <li><a class="nav-link" href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1" style="padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 0px;">Войти</span></a></li>
+        <?php } else { ?>
+            <li><a class="nav-link" href="/profile">Кабинет</a></li>
+            <li><a class="nav-link" href="/logout">Выход</a></li>
+        <?php } ?>
       </ul>
       <div class="navbar-mobile-footer">
         <p>© LPM. 2020. Все права защищены.</p>
@@ -128,15 +138,17 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Авторизация</h4>
                     </center>
+
                     <form onsubmit="check_auth(this); return false;">
+
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" class="form-control" name="email" placeholder="Телефон или почта" aria-describedby="" autofocus required autocomplete="email" oninput="check_log_input(this)">
+                        <input type="text" class="form-control" name="login" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="password">
+                        <input type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i class="far fa-eye"></i></button>
+                          <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
@@ -150,7 +162,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-social.png" class="d-none d-sm-block" alt="" width="42">
                       <h4>Социальные сети</h4>
                       <div class="col-md-8 col-xs-9">
-                        <div id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
+                        <div id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти через Tboil</span></a>
                       </div>
 
@@ -180,7 +192,7 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form onsubmit="return false;">
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" name="email" class="form-control" placeholder="Почта" aria-describedby="" required autocomplete="new-email" >
+                        <input type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="new-email" >
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
@@ -199,7 +211,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-social.png" class="d-none d-sm-block" alt="" width="42">
                       <h4>Социальные сети</h4>
                       <div class="col-md-8 col-xs-9">
-                        <div id="uLogin7cda9a92" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https%3A%2F%2Fapi.kt-segment.ru%2Ftestform.php"></div>
+                        <div id="uLogin7cda9a92" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,linkedin,google,livejournal,lastfm,foursquare;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                         <a href="#"><span data-toggle="modal" data-target="#auth" class="phone btnn my-1 d-none d-md-block" style="top: 0px; padding: 2px 10px; border-radius: 15px; color: #000; letter-spacing: 1px;">Войти через Tboil</span></a>
                       </div>
 
@@ -214,7 +226,7 @@ if ($_SERVER['HTTP_REFERER']) {
     <div id="pagepiling">
 
       <!-- Masthead -->
-      <section id="home" class="navbar-is-white text-white pp-scrollable d-flex align-items-center section position-absolute" style="background-image:url('normal-1.jpg.png'); background-blend-mode: multiply;" role="main">
+      <section id="home" class="navbar-is-white text-white pp-scrollable d-flex align-items-center section position-absolute" style="background-image:url('/img/normal-1.jpg.png'); background-blend-mode: multiply;" role="main">
         <div class="intro">
           <div class="scroll-wrap">
 	          <div class="container">
@@ -224,8 +236,11 @@ if ($_SERVER['HTTP_REFERER']) {
 	              	<div class="line"></div>
 	                <h1 class="text-white"><span class="text-primary text-typed a-typed a-typed-about">Один</span> аккаунт</h1>
 	                <h1 class="text-white">Тысячи <span class="text-primary text-typed a-typed a-typed-about">возможностей.</span></h1>
-	                <button data-toggle="modal" data-target="#register" type="submit" class="btnn" style="border-radius: 100px; margin-top: 25px;">Присоединиться</button>
-
+                  <?php if (!$_SESSION["key_user"]) {?>
+	                    <button data-toggle="modal" data-target="#register" type="submit" class="btnn" style="border-radius: 100px; margin-top: 25px;">Присоединиться</button>
+                  <?php } else { ?>
+                      <a href="/profile"><button type="button" class="btnn" style="border-radius: 100px; margin-top: 25px;">Войти в кабинет</button></a>
+                  <?php }  ?>
 	            </div>
 	            </div>
             </div>
