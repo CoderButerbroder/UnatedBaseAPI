@@ -756,6 +756,7 @@ class Settings {
 
                 $today = date("Y-m-d H:i:s");
 
+
                 $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity)");
                 $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
                 $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
@@ -774,6 +775,7 @@ class Settings {
                 $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
                 $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
                 $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
+                $new_uruser->bindParam(':recovery_link', $today, PDO::PARAM_STR);
                 $new_uruser->execute();
                 $count = $new_uruser->rowCount();
                 $id_new_user = $database->lastInsertId();
@@ -810,6 +812,90 @@ class Settings {
             } else {
                   return json_encode(array('response' => false, 'description' => 'Данный аккунт социальной сети уже привязан к другой учетной записи'),JSON_UNESCAPED_UNICODE);
             }
+      }
+
+  }
+
+  // Воссстановление достпа пользователя
+  public function recovery_user($email) {
+      global $database;
+
+              if ((strripos($email, '@')) && strripos($email, '.')) {
+
+              }
+              else {
+                    return '618';
+              }
+
+              $statement = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
+              $statement->bindParam(':email', $email, PDO::PARAM_STR);
+              $statement->execute();
+              $user = $statement->fetch(PDO::FETCH_OBJ);
+
+              if (!$user) {
+                 return '619';
+              }
+
+              $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
+              $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
+              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
+              $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
+
+              $mail = new PHPMailer\PHPMailer\PHPMailer();
+              try {
+                  $msg = "OK";
+                  $mail->isSMTP();
+                  $mail->CharSet = "UTF-8";
+                  $mail->SMTPAuth   = true;
+
+                  include($_SERVER['DOCUMENT_ROOT'].'/general/MAILroot.php');
+
+                  // Получатель письма
+                  $mail->addAddress($email);
+
+                      $mail->isHTML(true);
+
+                      $mail->Subject = 'Восстановление доступа к аккаунту на сайте ';
+                      $mail->Body    = $content;
+
+
+                    if ($mail->send()) {
+                        return '620';
+                    } else {
+                        return '621';
+                    }
+
+              } catch (Exception $e) {
+                  return '622';
+              }
+
+  }
+
+  // Задание нового пароля пользователя после восстановления доступа
+  public function new_pass_user($recovery_link,$password) {
+      global $database,$unated_database,$UNATED_BASE_PREFIX__;
+
+      $hash_password = md5($password);
+      $today = date("Y-m-d H:i:s");
+      $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
+
+      $new_password_user = $database->prepare("UPDATE $this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
+      $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
+      $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
+      $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+      $check_new_password_user = $new_password_user->execute();
+      $count = $new_password_user->rowCount();
+
+      if ($count) {
+            $new_password_user = $unated_database->prepare("UPDATE $UNATED_BASE_PREFIX__$this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
+            $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
+            $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
+            $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+            $check_new_password_user = $new_password_user->execute();
+            return '623';
+      }
+      else {
+            return '624';
       }
 
   }
@@ -856,7 +942,7 @@ class Settings {
   }
 
   // Обновление активности аккаунта
-  // public function 
+  // public function
 
 }
 

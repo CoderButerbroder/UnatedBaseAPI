@@ -1,9 +1,14 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$settings = new Settings;
 if (!$_SESSION["key_user"]) {
 		header('Location: /?auth');
 		exit;
 }
+
+$user_data = $settings->get_cur_user($hash);
+
+
 
 ?>
 <!DOCTYPE html>
