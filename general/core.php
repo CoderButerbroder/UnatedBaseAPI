@@ -837,7 +837,7 @@ class Settings {
     }
     else {
 
-        $phoneNumber = preg_replace('/\s|\+|-|\(|\)/','', $login); // удалим пробелы, и прочие не нужные знаки
+        $phoneNumber = preg_replace('/^\d/','', $login); // удалим пробелы, и прочие не нужные знаки
 
       	if(is_numeric($phoneNumber))
       	{

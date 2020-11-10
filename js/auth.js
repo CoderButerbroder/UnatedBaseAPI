@@ -1,27 +1,27 @@
 function check_auth(form) {
   //console.log(form.elements.email);
   //console.log(form.elements.pass);
-console.log(form.elements.email.value);
-//console.log(form.elements.email.value.indexOf('@'));
-
-
-  el.value=el.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');
-
-  if(el.value.length == 0 || el.value.length <= 1) {
-  el.value=el.value.replace(/[^0-9A-Za-z]{1,}/g, '');
-} else {
-  el.value=el.value.replace(/[\@]{2,}/g, '@');
-  el.value=el.value.replace(/[\_]{2,}/g, '_');
-  el.value=el.value.replace(/[\-]{2,}/g, '-');
-  var count_dog = (el.value.split('@').length - 1);
-
-  count_err = count_dog+(el.value.split('-@').length-1) + (el.value.split('-_').length-1) + (el.value.split('_-').length-1) + (el.value.split('@-').length-1) + (el.value.split('-.').length-1) + (el.value.split('.-').length-1) + (el.value.split('..').length-1) + (el.value.split('.@').length-1) + (el.value.split('@.').length-1);
-
-  if( count_err > 1 ) {
-    el.value=el.value.slice(0,-1);
-  }
-
-}
+// console.log(form.elements.email.value);
+// //console.log(form.elements.email.value.indexOf('@'));
+//
+//
+//   el.value=el.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');
+//
+//   if(el.value.length == 0 || el.value.length <= 1) {
+//   el.value=el.value.replace(/[^0-9A-Za-z]{1,}/g, '');
+// } else {
+//   el.value=el.value.replace(/[\@]{2,}/g, '@');
+//   el.value=el.value.replace(/[\_]{2,}/g, '_');
+//   el.value=el.value.replace(/[\-]{2,}/g, '-');
+//   var count_dog = (el.value.split('@').length - 1);
+//
+//   count_err = count_dog+(el.value.split('-@').length-1) + (el.value.split('-_').length-1) + (el.value.split('_-').length-1) + (el.value.split('@-').length-1) + (el.value.split('-.').length-1) + (el.value.split('.-').length-1) + (el.value.split('..').length-1) + (el.value.split('.@').length-1) + (el.value.split('@.').length-1);
+//
+//   if( count_err > 1 ) {
+//     el.value=el.value.slice(0,-1);
+//   }
+//
+// }
 
 };
 

@@ -138,15 +138,17 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Авторизация</h4>
                     </center>
+
                     <form onsubmit="check_auth(this); return false;">
+
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" class="form-control" name="email" placeholder="Телефон или почта" aria-describedby="" autofocus required autocomplete="email" oninput="check_log_input(this)">
+                        <input type="text" class="form-control" name="email" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="password">
+                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                          <button class="form-control btn-link" style="border-radius: 0px 8px 8px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" style="color: #afc71e;">Забыли пароль?</a></div>
@@ -190,7 +192,7 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form onsubmit="return false;">
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" name="email" class="form-control" placeholder="Почта" aria-describedby="" required autocomplete="new-email" >
+                        <input type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="new-email" >
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
