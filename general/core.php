@@ -841,18 +841,13 @@ class Settings {
 
       	if(is_numeric($phoneNumber))
       	{
-      		if(strlen($phoneNumber) < 8) // если длина номера слишком короткая, вернем false
-      		{
+      		if(strlen($phoneNumber) < 10) {
       			  return json_encode(array('response' => false, 'description' => 'Слишком короткий телефон'),JSON_UNESCAPED_UNICODE);
-      		}
-      		else
-      		{
+      		} else {
               return json_encode(array('response' => false, 'description' => 'Пользотватель использовал телефон'),JSON_UNESCAPED_UNICODE);
       		}
-      	}
-      	else
-      	{
-      		  return json_encode(array('response' => false, 'description' => 'Не верный формат телефона, присутсвуют посторонние символы'),JSON_UNESCAPED_UNICODE);
+        } else {
+      		    return json_encode(array('response' => false, 'description' => 'Не верный формат телефона, присутсвуют посторонние символы'),JSON_UNESCAPED_UNICODE);
       	}
 
     }
@@ -861,7 +856,7 @@ class Settings {
   }
 
   // Обновление активности аккаунта
-  // public function
+  // public function 
 
 }
 
