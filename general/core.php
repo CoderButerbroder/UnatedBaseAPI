@@ -754,7 +754,9 @@ class Settings {
                     $first_referer = '';
                 }
 
-                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer)");
+                $today = date("Y-m-d H:i:s");
+
+                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity)");
                 $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
                 $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
                 $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
@@ -770,6 +772,8 @@ class Settings {
                 $new_uruser->bindParam(':position', $default, PDO::PARAM_STR);
                 $new_uruser->bindParam(':hash', $hash, PDO::PARAM_STR);
                 $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
+                $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
+                $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
                 $new_uruser->execute();
                 $count = $new_uruser->rowCount();
                 $id_new_user = $database->lastInsertId();
@@ -778,7 +782,7 @@ class Settings {
 
                       if ($data_user['access_token']) {$token = $data_user['access_token'];} else {$token = '';}
 
-                            $new_uruser = $database->prepare("INSERT INTO $this->main_users_social (id_user,network,network_id,profile,email,first_name,last_name,token) VALUES (:id_user,:network,:network_id,:profile,:email,:first_name,:last_name,:token)");
+                            $new_uruser = $database->prepare("INSERT INTO $this->main_users_social (id_user,network,network_id,profile,email,first_name,last_name,token,date_binding) VALUES (:id_user,:network,:network_id,:profile,:email,:first_name,:last_name,:token,:date_binding)");
                             $new_uruser->bindParam(':id_user', $id_new_user, PDO::PARAM_INT);
                             $new_uruser->bindParam(':network', $data_user['network'], PDO::PARAM_STR);
                             $new_uruser->bindParam(':network_id', $data_user['uid'], PDO::PARAM_INT);
@@ -787,6 +791,7 @@ class Settings {
                             $new_uruser->bindParam(':first_name', $data_user['first_name'], PDO::PARAM_STR);
                             $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
                             $new_uruser->bindParam(':token', $token, PDO::PARAM_STR);
+                            $new_uruser->bindParam(':date_binding', $today, PDO::PARAM_STR);
                             $new_uruser->execute();
                             $count = $new_uruser->rowCount();
 
@@ -824,7 +829,39 @@ class Settings {
       return true;
   }
 
+  // проверка логина и телеофна
+  public function check_login_valid($login) {
 
+    if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+        return json_encode(array('response' => true, 'description' => 'Пользотватель использовал email'),JSON_UNESCAPED_UNICODE);
+    }
+    else {
+
+        $phoneNumber = preg_replace('/\s|\+|-|\(|\)/','', $login); // удалим пробелы, и прочие не нужные знаки
+
+      	if(is_numeric($phoneNumber))
+      	{
+      		if(strlen($phoneNumber) < 8) // если длина номера слишком короткая, вернем false
+      		{
+      			  return json_encode(array('response' => false, 'description' => 'Слишком короткий телефон'),JSON_UNESCAPED_UNICODE);
+      		}
+      		else
+      		{
+              return json_encode(array('response' => false, 'description' => 'Пользотватель использовал телефон'),JSON_UNESCAPED_UNICODE);
+      		}
+      	}
+      	else
+      	{
+      		  return json_encode(array('response' => false, 'description' => 'Не верный формат телефона, присутсвуют посторонние символы'),JSON_UNESCAPED_UNICODE);
+      	}
+
+    }
+
+
+  }
+
+  // Обновление активности аккаунта
+  // public function
 
 }
 
