@@ -41,8 +41,6 @@ class Settings {
               $mail->Port       = $email_port2;
               $mail->setFrom($email_username2,$email_name2);
 
-              // include($_SERVER['DOCUMENT_ROOT'].'/security/root.php');
-
               // Получатель письма
               $mail->addAddress($user_email);
 
@@ -53,13 +51,13 @@ class Settings {
                   $mail->IsHTML(true);
 
                 if ($mail->send()) {
-                    return true;
+                      return json_encode(array('response' => true, 'description' => 'Письмо для восстановления доступа успешно отправлено на адрес '.$user_email),JSON_UNESCAPED_UNICODE);
                 } else {
-                    return false;
+                     return json_encode(array('response' => false, 'description' => 'Ошибка отправки письма на адрес '.$user_email.', пожалуйста, попробуйте позже'),JSON_UNESCAPED_UNICODE);
                 }
 
           } catch (Exception $e) {
-              return false;
+                return json_encode(array('response' => false, 'description' => 'Системная ошибка отправки письма, пожалуйста попробуйте позже'),JSON_UNESCAPED_UNICODE);
           }
 
   }
@@ -746,88 +744,70 @@ class Settings {
   }
 
   // Воссстановление достпа пользователя
-  // public function recovery_user($email) {
-  //     global $database;
-  //
-  //             if ((strripos($email, '@')) && strripos($email, '.')) {
-  //
-  //             }
-  //             else {
-  //                   return '618';
-  //             }
-  //
-  //             $statement = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
-  //             $statement->bindParam(':email', $email, PDO::PARAM_STR);
-  //             $statement->execute();
-  //             $user = $statement->fetch(PDO::FETCH_OBJ);
-  //
-  //             if (!$user) {
-  //                return '619';
-  //             }
-  //
-  //             $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
-  //             $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
-  //             $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
-  //             $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
-  //
-  //             $mail = new PHPMailer\PHPMailer\PHPMailer();
-  //             try {
-  //                 $msg = "OK";
-  //                 $mail->isSMTP();
-  //                 $mail->CharSet = "UTF-8";
-  //                 $mail->SMTPAuth   = true;
-  //
-  //                 include($_SERVER['DOCUMENT_ROOT'].'/general/MAILroot.php');
-  //
-  //                 // Получатель письма
-  //                 $mail->addAddress($email);
-  //
-  //                     $mail->isHTML(true);
-  //
-  //                     $mail->Subject = 'Восстановление доступа к аккаунту на сайте ';
-  //                     $mail->Body    = $content;
-  //
-  //
-  //                   if ($mail->send()) {
-  //                       return '620';
-  //                   } else {
-  //                       return '621';
-  //                   }
-  //
-  //             } catch (Exception $e) {
-  //                 return '622';
-  //             }
-  //
-  // }
+  public function recovery_user($email) {
+      global $database;
+
+              if ((strripos($email, '@')) && strripos($email, '.')) {
+
+              }
+              else {
+                    return json_encode(array('response' => false, 'description' => 'Данный email не валидный'),JSON_UNESCAPED_UNICODE);
+              }
+
+              $statement = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email");
+              $statement->bindParam(':email', $email, PDO::PARAM_STR);
+              $statement->execute();
+              $user = $statement->fetch(PDO::FETCH_OBJ);
+
+              if (!$user) {
+                    return json_encode(array('response' => false, 'description' => 'Пользователь с данным email не найден'),JSON_UNESCAPED_UNICODE);
+              }
+
+              $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
+              $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
+              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/actions/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/actions/recovery/?link='.$user->recovery_link.'</a>';
+              $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
+
+              $tema = 'Восстановление пароля LPM connect';
+
+              $check_mail = $this->send_email_user($email,$tema,$content);
+
+              return $check_mail;
+
+  }
 
   // Задание нового пароля пользователя после восстановления доступа
-  // public function new_pass_user($recovery_link,$password) {
-  //     global $database,$unated_database,$UNATED_BASE_PREFIX__;
-  //
-  //     $hash_password = md5($password);
-  //     $today = date("Y-m-d H:i:s");
-  //     $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
-  //
-  //     $new_password_user = $database->prepare("UPDATE $this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
-  //     $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
-  //     $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
-  //     $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
-  //     $check_new_password_user = $new_password_user->execute();
-  //     $count = $new_password_user->rowCount();
-  //
-  //     if ($count) {
-  //           $new_password_user = $unated_database->prepare("UPDATE $UNATED_BASE_PREFIX__$this->users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
-  //           $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
-  //           $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
-  //           $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
-  //           $check_new_password_user = $new_password_user->execute();
-  //           return '623';
-  //     }
-  //     else {
-  //           return '624';
-  //     }
-  //
-  // }
+  public function new_pass_user($recovery_link,$password) {
+      global $database;
+
+          $statement = $database->prepare("SELECT * FROM $this->main_users WHERE recovery_link = :recovery_link");
+          $statement->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+          $statement->execute();
+          $user = $statement->fetch(PDO::FETCH_OBJ);
+
+          if (!$user) {
+                return json_encode(array('response' => false, 'description' => 'Ссылка для восстановления пароля не действительна'),JSON_UNESCAPED_UNICODE);
+          }
+
+          $hash_password = password_hash($password);
+          $today = date("Y-m-d H:i:s");
+          $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
+
+          $new_password_user = $database->prepare("UPDATE $this->main_users SET password = :hash_password, recovery_link = :new_recovery_link WHERE recovery_link = :recovery_link");
+          $new_password_user->bindParam(':hash_password', $hash_password, PDO::PARAM_STR);
+          $new_password_user->bindParam(':new_recovery_link', $hash_new_link, PDO::PARAM_STR);
+          $new_password_user->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
+          $check_new_password_user = $new_password_user->execute();
+          $count = $new_password_user->rowCount();
+
+          if ($count) {
+                return json_encode(array('response' => true, 'description' => 'Новый пароль успешно задан'),JSON_UNESCAPED_UNICODE);
+          }
+          else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка задания нового пароля'),JSON_UNESCAPED_UNICODE);
+          }
+
+  }
 
   // Функция разофторизации пользотвателя
   public function logout() {
