@@ -36,7 +36,8 @@ if ($_SERVER['HTTP_REFERER']) {
     <!-- swetalert2 -->
     <script src="js/sweetalert2.all.js"></script>
     <link rel="stylesheet" href="css/sweetalert2.css">
-
+    <!-- inputmask -->
+    <script src="js/jquery.inputmask.bundle.js"></script>
 
     <title>LPM Connect</title>
 
@@ -142,7 +143,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <h4>Авторизация</h4>
                     </center>
 
-                    <form onsubmit="check_auth(this); return false;">
+                    <form onsubmit="check_auth('auth',this); return false;" action="/general/actions/based_auth">
 
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="text" class="form-control" name="login" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
@@ -193,9 +194,22 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Регистрация</h4>
                     </center>
-                    <form onsubmit="return false;">
+                    <form onsubmit="check_auth('reg',this); return false;" action="/general/actions/based_regis">
+
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="new-email" >
+                        <input type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
+                      </div>
+
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="text" name="name" class="form-control" placeholder="Имя" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="given-name" >
+                      </div>
+
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="text" class="form-control"  id="phone_number"  title="Введите телефон для связи"  placeholder="+7 (999) 000 00 00" data-inputmask="'alias': 'phonebe'" value="" name="phone" required>
+                      </div>
+
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="email" >
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
@@ -225,6 +239,79 @@ if ($_SERVER['HTTP_REFERER']) {
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="recovery" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" style="overflow: hidden;">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
+            <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><ion-icon style="width: 35px; height: 35px;" class="text-secondary" name="close-outline"></ion-icon></span>
+            </button>
+          </div>
+          <div class="modal-body" style="top: -15px;">
+              <div class="row">
+                  <div class="col-md-12" >
+                    <center>
+                      <img src="/img/icons8-palec.png" alt="" width="42">
+                      <h4>Востановление пароля</h4>
+                    </center>
+                    <form onsubmit="check_auth('rec',this); return false;" action="/general/actions/based_recovery">
+                      <div class="form-group" style="margin-top: 4%;">
+                        <input type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
+                      </div>
+                      <button type="submit" class="btnn btn-block">Востановить</button>
+                    </form>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="recovery_pass" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" style="overflow: hidden;">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
+            <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true"><ion-icon style="width: 35px; height: 35px;" class="text-secondary" name="close-outline"></ion-icon></span>
+            </button>
+          </div>
+          <div class="modal-body" style="top: -15px;">
+              <div class="row">
+                  <div class="offset-2 col-8" >
+                    <center>
+                      <img src="/img/icons8-palec.png" alt="" width="42">
+                      <h4>Востановление пароля</h4>
+                    </center>
+                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="/general/actions/based_recovery">
+                      <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
+                        <input type="password" name="pass1" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <div class="input-group-append">
+                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                        </div>
+                      </div>
+                      <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
+                        <input type="password" name="pass2" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <div class="input-group-append">
+                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                        </div>
+                      </div>
+                      <div class="text-center" style="margin-bottom: 4%;">
+                        <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя спец. символы, цифры и буквы разного регистра</small>
+                      </div>
+                      <button type="submit" name="btn_sub" class="btnn btn-block" disabled>Сохранить</button>
+                    </form>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     <div id="pagepiling">
 
