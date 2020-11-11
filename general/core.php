@@ -16,30 +16,6 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
 
-  // Приведение телефона к единому типу по маске
-  public function phone_format($phone, $format, $mask = '#') {
-      $phone = preg_replace('/[^0-9]/', '', $phone);
-
-      if (is_array($format)) {
-          if (array_key_exists(strlen($phone), $format)) {
-              $format = $format[strlen($phone)];
-          } else {
-              return false;
-          }
-      }
-
-      $pattern = '/' . str_repeat('([0-9])?', substr_count($format, $mask)) . '(.*)/';
-
-      $format = preg_replace_callback(
-          str_replace('#', $mask, '/([#])/'),
-          function () use (&$counter) {
-              return '${' . (++$counter) . '}';
-          },
-          $format
-      );
-
-      return ($phone) ? trim(preg_replace($pattern, $format, $phone, 1)) : false;
-  }
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -624,16 +600,20 @@ class Settings {
    global $database;
 
        if ($type == 'phone') {
-
-         $phones = array($login);
-
-          $formats = array(
-             '10' => '7##########',
-             '11' => '7##########'
-          );
-
-          $login = $this->phone_format($phone, $format, $mask = '#');
-
+            $login = preg_replace('![^0-9]+!', '', $login);
+            $login = trim($login);
+            if (mb_strlen($login) <= 9 || mb_strlen($login) > 11) {
+                  return json_encode(array('response' => false, 'description' => 'Неверный формат номера'),JSON_UNESCAPED_UNICODE);
+            }
+            if (mb_strlen($login) == 11) {
+                if ($login[0] != '7') {
+                  $login = substr($login, 1);
+                  $login = '7'.$login;
+                }
+            }
+            if (mb_strlen($login) == 10) {
+                $login = '7'.$login;
+            }
        }
 
        $check_email = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email OR phone = :email");
@@ -1017,9 +997,6 @@ class Settings {
         } else {
               return json_encode(array('response' => false, 'description' => 'СМС сообщении успешно отпралено', 'data' => $json),JSON_UNESCAPED_UNICODE);
         }
-
-
-
 
   }
 
