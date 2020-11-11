@@ -687,8 +687,9 @@ class Settings {
                 $recocery_link = md5($hash);
 
                 $status = 'active';
+                $role = 'user';
 
-                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status)");
+                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
                 $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
                 $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
                 $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
@@ -708,6 +709,7 @@ class Settings {
                 $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
                 $new_uruser->bindParam(':recovery_link', $recocery_link, PDO::PARAM_STR);
                 $new_uruser->bindParam(':status', $status, PDO::PARAM_STR);
+                $new_uruser->bindParam(':role', $role, PDO::PARAM_STR);
                 $new_uruser->execute();
                 $count = $new_uruser->rowCount();
                 $id_new_user = $database->lastInsertId();
@@ -903,6 +905,85 @@ class Settings {
 
   }
 
+  // функция регистрации пользователя
+  public function base_register_user($email,$password,$phone,$name,$last_name,$session_id,$ip) {
+    global $database;
+
+        $check_email = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email OR phone = :phone");
+        $check_email->bindParam(':email', $email, PDO::PARAM_STR);
+        $check_email->bindParam(':phone', $phone, PDO::PARAM_STR);
+        $check_email->execute();
+        $user = $check_email->fetch(PDO::FETCH_OBJ);
+
+        if ($user) {
+              if ($user->email == $email) {
+                    return json_encode(array('response' => false, 'description' => 'Пользователь с данным email уже зарегистрирован'),JSON_UNESCAPED_UNICODE);
+              } else {
+                    return json_encode(array('response' => false, 'description' => 'Данный телефон привязан к другому аккаунту'),JSON_UNESCAPED_UNICODE);
+              }
+        }
+
+
+        $password = password_hash($data_user['email'].$data_user['uid'], PASSWORD_DEFAULT);
+        $default = '';
+        $default_int = 0;
+        $hash = md5($data_user['email'].$data_user['uid'].$data_user['first_name'].$data_user['last_name'].$password);
+        $DOB = '0000-00-00';
+
+        $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
+        $session_refer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
+        $session_refer->bindParam(':ip', $ip, PDO::PARAM_STR);
+        $session_refer->execute();
+        $user_session_refer = $session_refer->fetch(PDO::FETCH_OBJ);
+
+        if ($user_session_refer) {
+          $first_referer = parse_url($user_session_refer->referer, PHP_URL_HOST);
+        } else {
+          $first_referer = '';
+        }
+
+        $today = date("Y-m-d H:i:s");
+        $recocery_link = md5($hash);
+        $status = 'not active';
+        $role = 'user';
+        $default_photo = $this->get_global_settings('default_photo_user');
+
+        $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
+        $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
+        $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':name', $data_user['first_name'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':second_name', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':DOB', $DOB, PDO::PARAM_STR);
+        $new_uruser->bindParam(':photo', $default_photo, PDO::PARAM_STR);
+        $new_uruser->bindParam(':adres', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':inn', $default_int, PDO::PARAM_INT);
+        $new_uruser->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
+        $new_uruser->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
+        $new_uruser->bindParam(':position', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':hash', $hash, PDO::PARAM_STR);
+        $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
+        $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
+        $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
+        $new_uruser->bindParam(':recovery_link', $recocery_link, PDO::PARAM_STR);
+        $new_uruser->bindParam(':status', $status, PDO::PARAM_STR);
+        $new_uruser->bindParam(':role', $role, PDO::PARAM_STR);
+        $new_uruser->execute();
+        $count = $new_uruser->rowCount();
+        $id_new_user = $database->lastInsertId();
+
+        if ($count) {
+              $_SESSION["key_user"] = $hash;
+              return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'СМС сообщении успешно отпралено', 'data' => $json),JSON_UNESCAPED_UNICODE);
+        }
+
+
+
+
+  }
 
 
   /* API ФУНКЦИИ - ФЕДЕРАЛЬНАЯ НАЛОГОВАЯ СЛУЖБА  */
