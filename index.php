@@ -29,7 +29,7 @@ if ($_SERVER['HTTP_REFERER']) {
     <link rel="stylesheet" href="css/style.css">
     <script src="//ulogin.ru/js/ulogin.js"></script>
     <script src="js/jquery-1.12.4.min.js"></script>
-    <script src="js/auth.js"></script>
+
 
     <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
@@ -38,7 +38,11 @@ if ($_SERVER['HTTP_REFERER']) {
     <link rel="stylesheet" href="css/sweetalert2.css">
     <!-- inputmask -->
     <script src="js/jquery.inputmask.bundle.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!-- recaptcha -->
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async ></script> -->
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+    <script src="js/auth.js"></script>
 
     <title>LPM Connect</title>
 
@@ -144,7 +148,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <h4>Авторизация</h4>
                     </center>
 
-                    <form onsubmit="check_auth('auth',this); return false;" action="/general/actions/based_auth">
+                    <form id="form_auth" action="/general/actions/based_auth">
 
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="text" class="form-control" name="login" placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
@@ -157,7 +161,8 @@ if ($_SERVER['HTTP_REFERER']) {
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" onclick="$('#auth').modal('hide'); $('#recovery').modal('show'); " style="color: #afc71e;">Забыли пароль?</a></div>
-                        <div id="recaptcha" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="check_auth" data-size="invisible"></div>
+                        <!-- <div  id="capcha_auth" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_auth" data-size="invisible"></div> -->
+                        <div  id="capcha_auth"></div>
                       <button type="submit" class="btnn btn-block">Войти</button>
                       <div class="text-center text-small" style="margin-top: 10px;"><a href="#" onclick="$('#auth').modal('hide'); $('#register').modal('show'); " style="color: #afc71e;">Еще нет аккаунта?</a></div>
                     </form>
@@ -195,7 +200,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Регистрация</h4>
                     </center>
-                    <form onsubmit="check_auth('reg',this); return false;" action="/general/actions/based_register" novalidate>
+                    <form id="form_reg" action="/general/actions/based_register" >
 
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
@@ -219,7 +224,8 @@ if ($_SERVER['HTTP_REFERER']) {
                             <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
-                      <div id="recaptcha" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="check_auth" data-size="invisible"></div>
+                      <!-- <div  id="capcha_reg" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_reg" data-size="invisible"></div> -->
+                      <div  id="capcha_reg"></div>
                       <button type="submit" class="btnn btn-block">Регистрация</button>
                       <div class="text-center text-small" style="margin-top: 10px;"><a href="#" onclick="$('#register').modal('hide'); $('#auth').modal('show');" style="color: #afc71e;">Уже зарегистрированы?</a></div>
                     </form>
@@ -257,11 +263,12 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/paper-plane.png" alt="" width="42">
                       <h4>Восстановление пароля</h4>
                     </center>
-                    <form onsubmit="check_auth('rec',this); return false;" action="general/actions/based_recovery_password?action=recovery" novalidate>
+                    <form id="form_rec" action="general/actions/based_recovery_password?action=recovery">
                       <div class="form-group" style="margin-top: 4%;">
                         <input type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
                       </div>
-                      <div id="recaptcha" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="check_auth" data-size="invisible"></div>
+                      <!-- <div  id="capcha_rec" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_rec" data-size="invisible"></div> -->
+                      <div id="capcha_rec"></div>
                       <button type="submit" class="btnn btn-block">Восстановить</button>
                     </form>
                   </div>
@@ -288,7 +295,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       <img src="/img/icons8-palec.png" alt="" width="42">
                       <h4>Востановление пароля</h4>
                     </center>
-                    <form id="form_rec_p" onsubmit="check_auth('rec_p',this); return false;" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>" novalidate>
+                    <form id="form_rec_p" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
                         <input type="password" name="password" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
@@ -304,7 +311,8 @@ if ($_SERVER['HTTP_REFERER']) {
                       <div class="text-center" style="margin-bottom: 4%;">
                         <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя спец. символы, цифры и буквы разного регистра</small>
                       </div>
-                        <div id="recaptcha" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="check_auth" data-size="invisible"></div>
+                        <!-- <div  id="capcha_rec_p" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_rec_p" data-size="invisible"></div> -->
+                        <div id="capcha_rec_p"></div>
                       <button type="submit" name="btn_sub" class="btnn btn-block" disabled>Сохранить</button>
                     </form>
                   </div>
@@ -495,6 +503,7 @@ if ($_SERVER['HTTP_REFERER']) {
   <script src="js/jquery.pagepiling.min.js"></script>
   <script src="js/owl.carousel.min.js"></script>
   <script src="js/interface.js"></script>
+
 
 </body>
 </html>

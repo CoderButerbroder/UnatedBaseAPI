@@ -1,4 +1,55 @@
+// var idCaptcha1, idCaptcha2, idCaptcha3, idCaptcha4;
+// var onloadReCaptchaInvisible = function() {
+//   idCaptcha1 = grecaptcha.render('capcha_auth', {
+//    "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
+//     "callback": "submit_auth",
+//     "size":"invisible"
+//   });
+//   idCaptcha2 = grecaptcha.render('capcha_reg', {
+//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
+//     "callback": "submit_reg",
+//     "size":"invisible"
+//   });
+//   idCaptcha3 = grecaptcha.render('capcha_rec', {
+//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
+//     "callback": "submit_rec",
+//     "size":"invisible"
+//   });
+//   idCaptcha4 = grecaptcha.render('capcha_rec_p', {
+//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
+//     "callback": "submit_rec_p",
+//     "size":"invisible"
+//   });
+// };
+
+var capcha1,capcha2,capcha3,capcha4;
+
+var onloadCallback = function() {
+           capcha1 = grecaptcha.render('capcha_auth', {
+               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'callback': 'submit_auth',
+               'size':'invisible'
+           });
+           capcha2 = grecaptcha.render('capcha_reg', {
+               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'callback': 'submit_reg',
+               'size':'invisible'
+           });
+           capcha3 = grecaptcha.render('capcha_rec', {
+               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'callback': 'submit_rec',
+               'size':'invisible'
+           });
+           capcha4 = grecaptcha.render('capcha_rec_p', {
+               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'callback': 'submit_rec_p',
+               'size':'invisible'
+           });
+       };
+
 $(document).ready(function() {
+
+
   $("#phone_number").inputmask({
     mask: '+7 (999) 999 99 99',
     placeholder: ' ',
@@ -9,10 +60,24 @@ $(document).ready(function() {
       return processedValue;
     }
   });
+
+
+
+  $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
+  $('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
+  $('#form_rec').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha3); });
+  $('#form_rec_p').submit(function (event)  {   event.preventDefault();   grecaptcha.execute(capcha4); });
+
 });
 
-function check_auth(act,form) {
+function submit_auth()  {   check_auth('auth','form_auth'); };
+function submit_reg()   {   alert('a регистрации то нету'); alert('что не смеетесь? не смешно? аа ааа аааа');/*check_auth('auth','form_auth');*/ };
+function submit_rec()   {   check_auth('rec','form_rec'); };
+function submit_rec_p() {   check_auth('rec_p','form_rec_p'); };
 
+function check_auth(act,form_id) {
+  form = document.getElementById(form_id);
+  grecaptcha.reset();
   $.ajax({
     url: $(form).attr('action'),
     method: 'POST',
