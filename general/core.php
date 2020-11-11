@@ -942,10 +942,10 @@ class Settings {
         }
 
 
-        $password = password_hash($data_user['email'].$data_user['uid'], PASSWORD_DEFAULT);
+        $password = password_hash($password, PASSWORD_DEFAULT);
         $default = '';
         $default_int = 0;
-        $hash = md5($data_user['email'].$data_user['uid'].$data_user['first_name'].$data_user['last_name'].$password);
+        $hash = md5($email.$name.$last_name.$password);
         $DOB = '0000-00-00';
 
         $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
@@ -967,11 +967,11 @@ class Settings {
         $default_photo = $this->get_global_settings('default_photo_user');
 
         $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
-        $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':email', $email, PDO::PARAM_STR);
         $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
         $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
-        $new_uruser->bindParam(':name', $data_user['first_name'], PDO::PARAM_STR);
-        $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':name', $name, PDO::PARAM_STR);
+        $new_uruser->bindParam(':last_name', $last_name, PDO::PARAM_STR);
         $new_uruser->bindParam(':second_name', $default, PDO::PARAM_STR);
         $new_uruser->bindParam(':DOB', $DOB, PDO::PARAM_STR);
         $new_uruser->bindParam(':photo', $default_photo, PDO::PARAM_STR);
