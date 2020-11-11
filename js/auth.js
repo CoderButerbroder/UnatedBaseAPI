@@ -73,20 +73,13 @@ $(document).ready(function() {
 
 });
 
-function submit_auth()  {   check_auth('auth','form_auth'); };
-function submit_reg()   {   alert('a регистрации то нету'); alert('что не смеетесь? не смешно? аа ааа аааа');/*check_auth('auth','form_auth');*/ };
-function submit_rec()   {   check_auth('rec','form_rec'); };
-function submit_rec_p() {   check_auth('rec_p','form_rec_p'); };
+function submit_auth(token)  {   check_auth('auth','form_auth'); };
+function submit_reg(token)   {   check_auth('reg','form_reg'); };
+function submit_rec(token)   {   check_auth('rec','form_rec'); };
+function submit_rec_p(token) {   check_auth('rec_p','form_rec_p'); };
 
 function check_auth(act,form_id) {
-  
-  if(act == 'auth')    grecaptcha.reset(capcha1);
-  if(act == 'reg')     grecaptcha.reset(capcha2);
-  if(act == 'rec')     grecaptcha.reset(capcha3);
-  if(act == 'rec_p')   grecaptcha.reset(capcha4);
-
   form = document.getElementById(form_id);
-
   $.ajax({
     url: $(form).attr('action'),
     method: 'POST',
@@ -116,6 +109,11 @@ function check_auth(act,form_id) {
       alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
     }
   });
+
+  if(act == 'auth')    grecaptcha.reset(capcha1);
+  if(act == 'reg')     grecaptcha.reset(capcha2);
+  if(act == 'rec')     grecaptcha.reset(capcha3);
+  if(act == 'rec_p')   grecaptcha.reset(capcha4);
 };
 
 function IsJsonString(str) {
