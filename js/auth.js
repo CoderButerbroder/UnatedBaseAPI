@@ -79,8 +79,14 @@ function submit_rec()   {   check_auth('rec','form_rec'); };
 function submit_rec_p() {   check_auth('rec_p','form_rec_p'); };
 
 function check_auth(act,form_id) {
+  
+  if(act == 'auth')    grecaptcha.reset(capcha1);
+  if(act == 'reg')     grecaptcha.reset(capcha2);
+  if(act == 'rec')     grecaptcha.reset(capcha3);
+  if(act == 'rec_p')   grecaptcha.reset(capcha4);
+
   form = document.getElementById(form_id);
-  grecaptcha.reset();
+
   $.ajax({
     url: $(form).attr('action'),
     method: 'POST',
