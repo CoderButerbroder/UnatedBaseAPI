@@ -64,6 +64,7 @@ body{
   overflow-y: hidden;
 }
 
+
 ::-webkit-scrollbar{
   width: 8px;
   height: 8px;
@@ -1470,22 +1471,4 @@ h1 + .line{
 }
 .grecaptcha-logo {
   display: none!important;
-}
-
-
-@media (min-width: 576px) {
-
-}
-
-
-@media (min-width: 768px) {
-
-}
-
-@media (min-width: 992px) {
-
-}
-
-@media (min-width: 1200px) {
-
 }

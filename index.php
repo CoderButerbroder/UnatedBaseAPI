@@ -131,7 +131,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </nav>
 
-    <div class="modal fade" id="auth" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="authLabel" aria-hidden="true">
+    <div class="modal fade" id="auth" data-backdrop="static" class="modal_backdrop" tabindex="-1" role="dialog" aria-labelledby="authLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -155,9 +155,9 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
+                        <input type="password" name="password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <div class="input-group-append">
-                          <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                          <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-right text-small"><a href="#" onclick="$('#auth').modal('hide'); $('#recovery').modal('show'); " style="color: #afc71e;">Забыли пароль?</a></div>
@@ -184,7 +184,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </div>
 
-    <div class="modal fade" id="register" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true" >
+    <div class="modal fade" id="register" data-backdrop="static" class="modal_backdrop" tabindex="-1" role="dialog" aria-labelledby="registerLabel" aria-hidden="true" >
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -203,11 +203,11 @@ if ($_SERVER['HTTP_REFERER']) {
                     <form id="form_reg" action="/general/actions/based_register" >
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
+                        <input type="text" name="name" class="form-control" placeholder="Имя" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="given-name" >
                       </div>
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input type="text" name="name" class="form-control" placeholder="Имя" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="given-name" >
+                        <input type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
                       </div>
 
                       <div class="form-group" style="margin-top: 4%;">
@@ -219,9 +219,9 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
+                        <input type="password" name="pass" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                            <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <!-- <div  id="capcha_reg" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_reg" data-size="invisible"></div> -->
@@ -247,7 +247,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </div>
 
-    <div class="modal fade" id="recovery" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
+    <div class="modal fade" id="recovery" class="modal_backdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -279,7 +279,7 @@ if ($_SERVER['HTTP_REFERER']) {
     </div>
 
 
-    <div class="modal fade" id="recovery_pass" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" style="overflow: hidden;">
+    <div class="modal fade" id="recovery_pass" class="modal_backdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
           <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
@@ -297,15 +297,15 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form id="form_rec_p" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="password" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input type="password" name="password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                            <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="confirm_password" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input type="password" name="confirm_password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <div class="input-group-append">
-                            <button class="form-control btn-link" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                            <button class="form-control btn-link" type="button" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div>
                       </div>
                       <div class="text-center" style="margin-bottom: 4%;">

@@ -24,24 +24,27 @@
 
 var capcha1,capcha2,capcha3,capcha4;
 
+
+
 var onloadCallback = function() {
+           var sitekey = '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx';
            capcha1 = grecaptcha.render('capcha_auth', {
-               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'sitekey' : sitekey,
                'callback': 'submit_auth',
                'size':'invisible'
            });
            capcha2 = grecaptcha.render('capcha_reg', {
-               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'sitekey' : sitekey,
                'callback': 'submit_reg',
                'size':'invisible'
            });
            capcha3 = grecaptcha.render('capcha_rec', {
-               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'sitekey' : sitekey,
                'callback': 'submit_rec',
                'size':'invisible'
            });
            capcha4 = grecaptcha.render('capcha_rec_p', {
-               'sitekey' : '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx',
+               'sitekey' : sitekey,
                'callback': 'submit_rec_p',
                'size':'invisible'
            });
@@ -93,18 +96,18 @@ function check_auth(act,form_id) {
             $('#recovery').modal('hide');
           }
           if(act == 'rec_p') {
-            alerts('success', arr["description"], '');
+            alerts('success', 'Проверьте email', arr["description"]);
             $('#recovery_pass').modal('hide');
           }
 
 
         } else {
-          alerts('warning', arr["description"], '');
+          alerts('warning', 'Ошибка', arr["description"]);
         }
       }
     },
     error: function(jqXHR, exception) {
-      alerts('error', 'Ошибка подключения', '');
+      alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
     }
   });
 };

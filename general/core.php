@@ -16,6 +16,31 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
 
+  // Приведение телефона к единому типу по маске
+  public function phone_format($phone, $format, $mask = '#') {
+      $phone = preg_replace('/[^0-9]/', '', $phone);
+
+      if (is_array($format)) {
+          if (array_key_exists(strlen($phone), $format)) {
+              $format = $format[strlen($phone)];
+          } else {
+              return false;
+          }
+      }
+
+      $pattern = '/' . str_repeat('([0-9])?', substr_count($format, $mask)) . '(.*)/';
+
+      $format = preg_replace_callback(
+          str_replace('#', $mask, '/([#])/'),
+          function () use (&$counter) {
+              return '${' . (++$counter) . '}';
+          },
+          $format
+      );
+
+      return ($phone) ? trim(preg_replace($pattern, $format, $phone, 1)) : false;
+  }
+
   // проверка json на валидность
   public function isJSON($string) {
       return ((is_string($string) && (is_object(json_decode($string)) || is_array(json_decode($string))))) ? true : false;
@@ -595,8 +620,21 @@ class Settings {
   }
 
   // Авторизация пользователя
-  public function auth_user($login,$password,$session_id,$ip) {
+  public function auth_user($login,$password,$session_id,$ip,$type) {
    global $database;
+
+       if ($type == 'phone') {
+
+         $phones = array($login);
+
+          $formats = array(
+             '10' => '7##########',
+             '11' => '7##########'
+          );
+
+          $login = $this->phone_format($phone, $format, $mask = '#');
+
+       }
 
        $check_email = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email OR phone = :email");
        $check_email->bindParam(':email', $login, PDO::PARAM_STR);
@@ -835,7 +873,7 @@ class Settings {
   public function check_login_valid($login) {
 
     if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
-        return json_encode(array('response' => true, 'description' => 'Пользотватель использовал email'),JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'description' => 'Пользотватель использовал email', 'type' => 'email'),JSON_UNESCAPED_UNICODE);
     }
     else {
 
@@ -846,7 +884,7 @@ class Settings {
       		if(strlen($phoneNumber) < 10) {
       			  return json_encode(array('response' => false, 'description' => 'Слишком короткий телефон'),JSON_UNESCAPED_UNICODE);
       		} else {
-              return json_encode(array('response' => false, 'description' => 'Пользотватель использовал телефон'),JSON_UNESCAPED_UNICODE);
+              return json_encode(array('response' => true, 'description' => 'Пользотватель использовал телефон', 'type' => 'phone'),JSON_UNESCAPED_UNICODE);
       		}
         } else {
       		    return json_encode(array('response' => false, 'description' => 'Не верный формат телефона, присутсвуют посторонние символы'),JSON_UNESCAPED_UNICODE);
