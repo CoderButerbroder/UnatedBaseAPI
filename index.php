@@ -50,6 +50,9 @@ if ($_SERVER['HTTP_REFERER']) {
 <body>
 
 
+
+
+
    <!-- Loader -->
    <div class="loader">
     <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
@@ -503,7 +506,6 @@ if ($_SERVER['HTTP_REFERER']) {
   <script src="js/jquery.pagepiling.min.js"></script>
   <script src="js/owl.carousel.min.js"></script>
   <script src="js/interface.js"></script>
-
 
 </body>
 </html>
