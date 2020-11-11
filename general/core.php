@@ -57,7 +57,7 @@ class Settings {
                   $mail->IsHTML(true);
 
                 if ($mail->send()) {
-                      return json_encode(array('response' => true, 'description' => 'Письмо для восстановления доступа успешно отправлено на адрес '.$user_email),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => true, 'description' => 'Письмо успешно отправлено на адрес '.$user_email),JSON_UNESCAPED_UNICODE);
                 } else {
                      return json_encode(array('response' => false, 'description' => 'Ошибка отправки письма на адрес '.$user_email.', пожалуйста, попробуйте позже'),JSON_UNESCAPED_UNICODE);
                 }
@@ -995,11 +995,89 @@ class Settings {
               $_SESSION["key_user"] = $hash;
               return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован'),JSON_UNESCAPED_UNICODE);
         } else {
-              return json_encode(array('response' => false, 'description' => 'СМС сообщении успешно отпралено', 'data' => $json),JSON_UNESCAPED_UNICODE);
+              return json_encode(array('response' => false, 'description' => 'Пользователь не зарегистрирован, попробуйте позже'),JSON_UNESCAPED_UNICODE);
         }
 
   }
 
+  // функция отсылки письма об активации аккаунта
+  public function send_email_activation($hash) {
+      global $database;
+
+
+      $statement = $database->prepare("SELECT * FROM $this->main_users WHERE hash = :hash");
+      $statement->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $statement->execute();
+      $user = $statement->fetch(PDO::FETCH_OBJ);
+
+      if (!$user) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь не найден'),JSON_UNESCAPED_UNICODE);
+      }
+
+      $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
+      $content .= 'Активация аккаунта на сайте LPM-connect<br>';
+      $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/general/actions/activate_account?link='.$user->hash.'">https://'.$_SERVER['SERVER_NAME'].'/general/actions/activate_account?link='.$user->hash.'</a>';
+      $content .= '<br></br> После активации аккаунта Вы сможете пользоваться всеми доступными Вам функциями';
+
+      $tema = 'Активация аккаунта на сайте';
+
+      $check_mail = $this->send_email_user($user->email,$tema,$content);
+
+      if (json_decode($check_mail)->response) {
+          return json_encode(array('response' => true, 'description' => 'Письмо для активации аккаунта успешно выслано на email '.$user->email),JSON_UNESCAPED_UNICODE);
+      } else {
+          return $check_mail;
+      }
+
+  }
+
+  // функция активации аккаунта
+  public function email_activation($hash) {
+      global $database;
+
+      $old_status = 'not active';
+
+      $statement = $database->prepare("SELECT * FROM $this->main_users WHERE hash = :hash AND status = :status");
+      $statement->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $statement->bindParam(':status', $old_status, PDO::PARAM_STR);
+      $statement->execute();
+      $user = $statement->fetch(PDO::FETCH_OBJ);
+
+      if (!$user) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь не зарегистрирован'),JSON_UNESCAPED_UNICODE);
+      }
+
+      $status = 'active';
+
+      $activate_new_user = $database->prepare("UPDATE $this->main_users SET status = :status WHERE id = :id_user");
+      $activate_new_user->bindParam(':status', $status, PDO::PARAM_STR);
+      $activate_new_user->bindParam(':id_user', $user->id, PDO::PARAM_INT);
+      $check_activate_new_user = $activate_new_user->execute();
+      $count = $activate_new_user->rowCount();
+
+      if ($count) {
+            return json_encode(array('response' => true, 'description' => 'Аккаунт пользователя активирован'),JSON_UNESCAPED_UNICODE);
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Не удалось активировать аккаунт, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+  // Функция прохождения капчи
+  public function validate_recaptcha($captcha) {
+
+      $secretKey = $this->get_global_settings('google_recaptacha_secret');
+      $url = 'https://www.google.com/recaptcha/api/siteverify?secret='.urlencode($secretKey).'&response='.urlencode($captcha);
+      $response = file_get_contents($url);
+      $responseKeys = json_decode($response,true);
+      if($responseKeys["success"]) {
+            return json_encode(array('response' => true, 'description' => 'Капча успешно пройдена'),JSON_UNESCAPED_UNICODE);
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка, капча не была пройдена'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
 
   /* API ФУНКЦИИ - ФЕДЕРАЛЬНАЯ НАЛОГОВАЯ СЛУЖБА  */
 
