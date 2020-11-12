@@ -139,12 +139,12 @@ $user_data = json_decode($user_data);
 					<p class="mb-0"></p>
 					<div class="row my-4">
 						<div class="col-md-6">
-							<p class="mb-2">Name: <span class="text-dark">Дмитрий Иванов</span></p>
-							<p class="mb-0">Birthday: <span class="text-dark">14 August, 1990</span></p>
+							<p class="mb-2">ФИО: <span class="text-dark">Дмитрий Иванов</span></p>
+							<p class="mb-0">Дата рождения: <span class="text-dark">1 Апреля, 1997</span></p>
 						</div>
 						<div class="col-md-6 mt-2 mt-md-0 mt-sm-2">
-							<p class="mb-2">Location: <span class="text-dark">London, UK</span></p>
-							<p class="mb-0">Email: <span class="text-dark">hello@bako.com</span></p>
+							<p class="mb-2">Адрес: <span class="text-dark">Cанкт-Петербург</span></p>
+							<p class="mb-0">Email: <span class="text-dark">web@kt-segment.ru</span></p>
 						</div>
 					</div>
 					<a href="#" class="btn btn-default mr-3"><i class="fas fa-pencil-alt"></i>Редактировать информацию</a>
