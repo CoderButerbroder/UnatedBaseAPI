@@ -706,6 +706,11 @@ class Settings {
 
                 $status = 'active';
                 $role = 'user';
+                $data_adres = json_decode($this->iplocate($this->get_ip()));
+                $adres = $data_adres->location->unrestricted_value;
+                if (!$adres) {
+                    $adres = '';
+                }
 
                 $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
                 $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
@@ -857,7 +862,7 @@ class Settings {
     }
     else {
 
-        $phoneNumber = preg_replace('/^\d/','', $login); // удалим пробелы, и прочие не нужные знаки
+        $phoneNumber = preg_replace('![^0-9]+!', '', $login); // удалим пробелы, и прочие не нужные знаки
 
       	if(is_numeric($phoneNumber))
       	{
@@ -942,10 +947,10 @@ class Settings {
         }
 
 
-        $password = password_hash($data_user['email'].$data_user['uid'], PASSWORD_DEFAULT);
+        $password = password_hash($password, PASSWORD_DEFAULT);
         $default = '';
         $default_int = 0;
-        $hash = md5($data_user['email'].$data_user['uid'].$data_user['first_name'].$data_user['last_name'].$password);
+        $hash = md5($email.$name.$last_name.$password);
         $DOB = '0000-00-00';
 
         $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
@@ -964,18 +969,22 @@ class Settings {
         $recocery_link = md5($hash);
         $status = 'not active';
         $role = 'user';
-        $default_photo = $this->get_global_settings('default_photo_user');
+        $data_adres = json_decode($this->iplocate($this->get_ip()));
+        $adres = $data_adres->location->unrestricted_value;
+        if (!$adres) {
+            $adres = '';
+        }
 
         $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
-        $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':email', $email, PDO::PARAM_STR);
         $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
         $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
-        $new_uruser->bindParam(':name', $data_user['first_name'], PDO::PARAM_STR);
-        $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
+        $new_uruser->bindParam(':name', $name, PDO::PARAM_STR);
+        $new_uruser->bindParam(':last_name', $last_name, PDO::PARAM_STR);
         $new_uruser->bindParam(':second_name', $default, PDO::PARAM_STR);
         $new_uruser->bindParam(':DOB', $DOB, PDO::PARAM_STR);
-        $new_uruser->bindParam(':photo', $default_photo, PDO::PARAM_STR);
-        $new_uruser->bindParam(':adres', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':photo', $default, PDO::PARAM_STR);
+        $new_uruser->bindParam(':adres', $adres, PDO::PARAM_STR);
         $new_uruser->bindParam(':inn', $default_int, PDO::PARAM_INT);
         $new_uruser->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
         $new_uruser->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
@@ -1078,6 +1087,11 @@ class Settings {
       }
 
   }
+
+
+
+
+
 
   /* API ФУНКЦИИ - ФЕДЕРАЛЬНАЯ НАЛОГОВАЯ СЛУЖБА  */
 
@@ -1368,6 +1382,10 @@ class Settings {
         }
 
     }
+
+
+
+
 
 
   /* API ФУНКЦИИ - DADATA  */

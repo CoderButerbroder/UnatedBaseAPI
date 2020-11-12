@@ -19,31 +19,20 @@ if ($_SERVER['HTTP_REFERER']) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="LPM Connect">
     <meta name="author" content="LPM">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
-
-    <!-- CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/jquery.pagepiling.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="//ulogin.ru/js/ulogin.js"></script>
     <script src="js/jquery-1.12.4.min.js"></script>
-
-
-    <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-    <!-- swetalert2 -->
     <script src="js/sweetalert2.all.js"></script>
     <link rel="stylesheet" href="css/sweetalert2.css">
-    <!-- inputmask -->
     <script src="js/jquery.inputmask.bundle.js"></script>
-
-    <!-- recaptcha -->
-    <!-- <script src="https://www.google.com/recaptcha/api.js" async ></script> -->
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
-    <script src="js/auth.js"></script>
-
+    <?php if (!$_SESSION["key_user"]) {?>
+      <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
+      <script src="js/auth.js"></script>
+    <?php } ?>
     <title>LPM Connect</title>
 
   </head>
@@ -130,6 +119,8 @@ if ($_SERVER['HTTP_REFERER']) {
         <p><ion-icon class="text-muted" style="width: 12px; height: 12px; margin-right: 9px;" name="navigate"></ion-icon><?php echo json_decode($settings->iplocate($settings->get_ip()))->location->data->city;?></p>
       </div>
     </nav>
+
+    <?php if (!$_SESSION["key_user"]) {?>
 
     <div class="modal fade" id="auth" data-backdrop="static" class="modal_backdrop" tabindex="-1" role="dialog" aria-labelledby="authLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -326,7 +317,7 @@ if ($_SERVER['HTTP_REFERER']) {
       </div>
     </div>
 
-
+    <?php } ?>
 
     <div id="pagepiling" >
 
@@ -484,16 +475,18 @@ if ($_SERVER['HTTP_REFERER']) {
    </section>
   </div>
 
-<?php if (isset($_GET['auth'])) {?>
-<script> $(document).ready(function() {$('#auth').modal('show')});</script>
-<?php } ?>
+<?php if (!$_SESSION["key_user"]) {?>
+    <?php if (isset($_GET['auth'])) {?>
+    <script> $(document).ready(function() {$('#auth').modal('show')});</script>
+    <?php } ?>
 
-<?php if (isset($_GET['register'])) {?>
-<script> $(document).ready(function() {$('#register').modal('show')});</script>
-<?php } ?>
+    <?php if (isset($_GET['register'])) {?>
+    <script> $(document).ready(function() {$('#register').modal('show')});</script>
+    <?php } ?>
 
-<?php if (isset($_GET['link'])) {?>
-<script> $(document).ready(function() {$('#recovery_pass').modal('show'); });</script>
+    <?php if (isset($_GET['link'])) {?>
+    <script> $(document).ready(function() {$('#recovery_pass').modal('show'); });</script>
+    <?php } ?>
 <?php } ?>
 
 
