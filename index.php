@@ -50,9 +50,6 @@ if ($_SERVER['HTTP_REFERER']) {
 <body>
 
 
-
-
-
    <!-- Loader -->
    <div class="loader">
     <div class="spinner"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>
@@ -158,10 +155,11 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required autocomplete="password">
-                        <div class="input-group-append">
+                        <input type="password" name="password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required autocomplete="password">
+                        <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                        <!-- <div class="input-group-append">
                           <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
-                        </div>
+                        </div> -->
                       </div>
                       <div class="text-right text-small"><a href="#" onclick="$('#auth').modal('hide'); $('#recovery').modal('show'); " style="color: #afc71e;">Забыли пароль?</a></div>
                         <!-- <div  id="capcha_auth" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_auth" data-size="invisible"></div> -->
@@ -222,10 +220,11 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="pass" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
-                        <div class="input-group-append">
+                        <input type="password" name="pass" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
+                        <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                        <!-- <div class="input-group-append">
                             <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
-                        </div>
+                        </div> -->
                       </div>
                       <!-- <div  id="capcha_reg" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_reg" data-size="invisible"></div> -->
                       <div  id="capcha_reg"></div>
@@ -300,19 +299,21 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form id="form_rec_p" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
-                        <div class="input-group-append">
+                        <input type="password" name="password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                        <!-- <div class="input-group-append">
                             <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
-                        </div>
+                        </div> -->
                       </div>
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input type="password" name="confirm_password" style="border-left: 1px solid #ced4da; border-top: 1px solid #ced4da; border-right: none;  border-bottom: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
-                        <div class="input-group-append">
+                        <input type="password" name="confirm_password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                        <!-- <div class="input-group-append">
                             <button class="form-control btn-link" type="button" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
-                        </div>
+                        </div> -->
                       </div>
                       <div class="text-center" style="margin-bottom: 4%;">
-                        <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя спец. символы, цифры и буквы разного регистра</small>
+                        <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя цифры и символы разного регистра</small>
                       </div>
                         <!-- <div  id="capcha_rec_p" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_rec_p" data-size="invisible"></div> -->
                         <div id="capcha_rec_p"></div>
@@ -327,11 +328,11 @@ if ($_SERVER['HTTP_REFERER']) {
 
 
 
-    <div id="pagepiling">
+    <div id="pagepiling" >
 
       <!-- Masthead -->
       <section id="home" class="navbar-is-white text-white pp-scrollable d-flex align-items-center section position-absolute" style="background-image:url('/img/normal-1.jpg.png'); background-blend-mode: multiply;" role="main">
-        <div class="intro">
+        <div class="intro" >
           <div class="scroll-wrap">
 	          <div class="container">
 	            <div class="row">
@@ -496,8 +497,14 @@ if ($_SERVER['HTTP_REFERER']) {
 <?php } ?>
 
 
-  <!-- Optional JavaScript -->
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.loader').fadeOut(200);
+    $('.line').addClass('active');
+  });
+</script>
 
+  <!-- Optional JavaScript -->
   <script src="js/popper.min.js" ></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>

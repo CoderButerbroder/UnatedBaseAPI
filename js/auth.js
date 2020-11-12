@@ -1,31 +1,5 @@
-// var idCaptcha1, idCaptcha2, idCaptcha3, idCaptcha4;
-// var onloadReCaptchaInvisible = function() {
-//   idCaptcha1 = grecaptcha.render('capcha_auth', {
-//    "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
-//     "callback": "submit_auth",
-//     "size":"invisible"
-//   });
-//   idCaptcha2 = grecaptcha.render('capcha_reg', {
-//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
-//     "callback": "submit_reg",
-//     "size":"invisible"
-//   });
-//   idCaptcha3 = grecaptcha.render('capcha_rec', {
-//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
-//     "callback": "submit_rec",
-//     "size":"invisible"
-//   });
-//   idCaptcha4 = grecaptcha.render('capcha_rec_p', {
-//     "sitekey":"6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx",
-//     "callback": "submit_rec_p",
-//     "size":"invisible"
-//   });
-// };
 
 var capcha1,capcha2,capcha3,capcha4;
-
-
-
 var onloadCallback = function() {
            var sitekey = '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx';
            capcha1 = grecaptcha.render('capcha_auth', {
@@ -52,7 +26,6 @@ var onloadCallback = function() {
 
 $(document).ready(function() {
 
-
   $("#phone_number").inputmask({
     mask: '+7 (999) 999 99 99',
     placeholder: ' ',
@@ -63,8 +36,6 @@ $(document).ready(function() {
       return processedValue;
     }
   });
-
-
 
   $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
   $('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
@@ -137,17 +108,17 @@ function alerts(v_icon, v_title, v_msg) {
 function check_spec_char(flag, value) {
     var pattern = (flag) ? new RegExp(/[0-9]/) : new RegExp(/[~`!#$@%\^&*+=\-\[\]\\';,/{}|\\":<>\?]/);
     if (pattern.test(value)) {
-        return false;
+        return true;
     }
-    return true; //good user input
+    return false; //good user input
 };
 
 function check_char(flag,value) {
-  var pattern = (flag) ? new RegExp(/[A-Z]/) : new RegExp(/[a-z]/);
+  var pattern = (flag) ? new RegExp(/[A-ZА-Я]/) : new RegExp(/[a-zа-я]/);
     if (pattern.test(value)) {
-        return false;
+        return true;
     }
-    return true; //good user input
+    return false; //good user input
 };
 
 function verification_passwords(el) {
@@ -158,15 +129,38 @@ function verification_passwords(el) {
   btn = form.elements.btn_sub;
   sm_txt = document.getElementById('small_text_rec_p');
 
-  if(pass1.length <= 5 || pass2.length <= 5 || pass1.value != pass2.value || check_char(false, el.value) || check_char(true, el.value) || check_spec_char(true,el.value) || check_spec_char(false,el.value) )  {
+  if(pass1.length <= 5 || pass2.length <= 5 || pass1.value != pass2.value || !check_char(false, el.value) || !check_char(true, el.value) || !check_spec_char(true,el.value) )  {
     $(btn).attr('disabled', 'disabled');
     $(btn).css('opacity', '0.5');
-    sm_txt.innerHTML = 'Укажите пароль от 6 символов используя спец. символы, цифры и буквы разного регистра';
+    $(sm_txt).css('opacity', '1');
+
+    if (!check_char(false, el.value) || !check_char(true, el.value)) {
+      msg = 'Укажите пароль из символов латинского или русского алфавита разного регистра';
+      sm_txt.innerHTML = msg;
+      return 0;
+    }
+
+    if (pass1.length <= 5 || pass2.length <= 5) {
+      msg = 'Укажите пароль длинной не менее 6 символов';
+      sm_txt.innerHTML = msg;
+      return 0;
+    }
+
+    if ( pass1.value != pass2.value) {
+      msg = 'Пароли не совпадают';
+      sm_txt.innerHTML = msg;
+      return 0;
+    }
+
+    msg = 'Укажите пароль от 6 символов используя цифры и буквы разного регистра';
+    sm_txt.innerHTML = msg;
     return 0;
+
   } else {
     $(btn).removeAttr('disabled');
     $(btn).css('opacity', '1');
-    sm_txt.innerHTML = '';
+    $(sm_txt).css('opacity', '0');
+    //sm_txt.innerHTML = '';
     return 0;
   }
 
@@ -178,12 +172,21 @@ function verification_passwords(el) {
 };
 
 function change_view_pass(el) {
-  if ($(el.parentNode.parentNode.childNodes[1]).attr('type') == 'password') {
-    el.innerHTML = '<i style="color: #afc71e;" class="far fa-eye-slash"></i>';
-    $(el.parentNode.parentNode.childNodes[1]).attr('type', 'text');
-  } else {
-    el.innerHTML = '<i style="color: #afc71e;" class="far fa-eye"></i>';
-    $(el.parentNode.parentNode.childNodes[1]).attr('type', 'password');
-  }
+    if ($(el.previousElementSibling).attr('type') == 'password'){
+      $(el).removeClass();
+      $(el).addClass("icon_pass far fa-eye-slash");
+      $(el.previousElementSibling).attr('type', 'text');
+    } else {
+      $(el).removeClass();
+      $(el).addClass("icon_pass far fa-eye");
+      $(el.previousElementSibling).attr('type', 'password');
+    }
+  // if ($(el.parentNode.parentNode.childNodes[1]).attr('type') == 'password') {
+  //   el.innerHTML = '<i style="color: #afc71e;" class="far fa-eye-slash"></i>';
+  //   $(el.parentNode.parentNode.childNodes[1]).attr('type', 'text');
+  // } else {
+  //   el.innerHTML = '<i style="color: #afc71e;" class="far fa-eye"></i>';
+  //   $(el.parentNode.parentNode.childNodes[1]).attr('type', 'password');
+  // }
   return false;
 };

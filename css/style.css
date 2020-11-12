@@ -1472,3 +1472,13 @@ h1 + .line{
 .grecaptcha-logo {
   display: none!important;
 }
+
+
+/* иконка с глазиком*/
+.icon_pass {
+  color: #afc71e;
+  z-index: 10;
+  position: absolute;
+  top: 28%;
+  right: 3%;
+}

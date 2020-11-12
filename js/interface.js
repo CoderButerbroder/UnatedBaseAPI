@@ -3,10 +3,10 @@
 
 
   	/* Window Load */
-	$(window).on('load',function(){
-		$('.loader').fadeOut(200);
-        $('.line').addClass('active');
-	});
+	// $(window).on('load',function(){
+	// 	$('.loader').fadeOut(200);
+  //       $('.line').addClass('active');
+	// });
 
 
     /* Navbar scroll*/
