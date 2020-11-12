@@ -1481,4 +1481,5 @@ h1 + .line{
   position: absolute;
   top: 28%;
   right: 3%;
+  cursor: pointer;
 }
