@@ -27,8 +27,13 @@ $user_data = json_decode($user_data);
 	<link rel="stylesheet" href="css/simplebar.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/style.css" type="text/css" media="all">
-
+	<!-- font-awesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
+	<!-- jq -->
+	<script src="js/jquery-1.12.3.min.js"></script>
+	<!-- sweetalert2 -->
+	<script src="../js/sweetalert2.all.js"></script>
+	<link rel="stylesheet" href="../css/sweetalert2.css">
 
 	<!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -884,7 +889,7 @@ $user_data = json_decode($user_data);
 <a href="javascript:" id="return-to-top"><i class="fa fa-chevron-up"></i></a>
 
 <!-- SCRIPTS -->
-<script src="js/jquery-1.12.3.min.js"></script>
+<!-- <script src="js/jquery-1.12.3.min.js"></script> -->
 <script src="js/jquery.easing.min.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
@@ -898,6 +903,27 @@ $user_data = json_decode($user_data);
 <script src="js/contact.js"></script>
 <script src="js/validator.js"></script>
 <script src="js/custom.js"></script>
+
+<script type="text/javascript">
+
+function alerts(v_icon, v_title, v_msg) {
+  Swal.fire({
+    scrollbarPadding: false,
+    icon: v_icon,
+    title: v_title,
+    text: v_msg
+  })
+};
+
+function IsJsonString(str) {
+	try {
+		JSON.parse(str);
+	} catch (e) {
+		return false;
+	}
+	return true;
+};
+</script>
 
 </body>
 </html>

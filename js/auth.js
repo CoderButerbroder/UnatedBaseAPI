@@ -26,16 +26,16 @@ var onloadCallback = function() {
 
 $(document).ready(function() {
 
-  $("#phone_number").inputmask({
-    mask: '+7 (999) 999 99 99',
-    placeholder: ' ',
-    showMaskOnHover: false,
-    showMaskOnFocus: false,
-    onBeforePaste: function(pastedValue, opts) {
-      var processedValue = pastedValue;
-      return processedValue;
-    }
-  });
+  // $("#phone_number").inputmask({
+  //   mask: '+7 (999) 999 99 99',
+  //   placeholder: ' ',
+  //   showMaskOnHover: false,
+  //   showMaskOnFocus: false,
+  //   onBeforePaste: function(pastedValue, opts) {
+  //     var processedValue = pastedValue;
+  //     return processedValue;
+  //   }
+  // });
 
   $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
   $('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });

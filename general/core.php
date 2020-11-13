@@ -1054,6 +1054,7 @@ class Settings {
 
       if (!$user) {
           return json_encode(array('response' => false, 'description' => 'Пользователь не зарегистрирован'),JSON_UNESCAPED_UNICODE);
+          exit();
       }
 
       $status = 'active';

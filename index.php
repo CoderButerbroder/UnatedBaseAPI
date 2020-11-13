@@ -202,9 +202,9 @@ if ($_SERVER['HTTP_REFERER']) {
                         <input style="border-radius: 5px;" type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
                       </div>
 
-                      <div class="form-group" style="margin-top: 4%;">
+                      <!-- <div class="form-group" style="margin-top: 4%;">
                         <input style="border-radius: 5px;" type="text" class="form-control"  id="phone_number"  title="Введите телефон для связи"  placeholder="+7 (999) 000 00 00" data-inputmask="'alias': 'phonebe'" value="" name="phone" required>
-                      </div>
+                      </div> -->
 
                       <div class="form-group" style="margin-top: 4%;">
                         <input style="border-radius: 5px;" type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="email" >
