@@ -1484,25 +1484,26 @@ class Settings {
 
   // Геокодирование (координаты по адресу)
   public function check_geo_adres($adres) {
-        // $data = [
-        //     'query' => $adres
-        //  ];
+        $data = json_encode([$adres]);
         $options = [
             'http' => [
                 'method' => 'POST',
                 'header' => [
-                    'Content-Type: application/json',
-                    'Accept: application/json',
-                    'Authorization: Token '.$this->get_global_settings('dadata_api_key')
+                      'Content-Type: application/json',
+                      'Accept: application/json',
+                      'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
+                      'X-Secret: '.$this->get_global_settings('dadata_key_standard')
                 ],
-                'content' => $adres
+                'content' => $data
             ]
          ];
         $builder = stream_context_create($options);
         $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/address', false, $builder);
         $output = json_decode($document);
 
-        return $document;
+        $return = json_encode($output[0]);
+
+        return $return;
 
 
     }
@@ -1557,7 +1558,7 @@ class Settings {
   public function check_bank($bik_swift_inn_regnum) {
         $data = [
           'query' => $bik_swift_inn_regnum
-        ];
+         ];
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1578,6 +1579,7 @@ class Settings {
 
   // API стандартизации телефонов
   public function standart_phone($phone) {
+        $data = json_encode([$phone]);
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1587,18 +1589,21 @@ class Settings {
                     'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
                     'X-Secret: '.$this->get_global_settings('dadata_key_standard')
                 ],
-                'content' => $phone
+                'content' => $data
             ]
          ];
         $builder = stream_context_create($options);
         $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/phone', false, $builder);
         $output = json_decode($document);
 
-        return $document;
-    }
+        $return = json_encode($output[0]);
+
+        return $return;
+  }
 
   // Проверка паспорта по справочнику недействительных паспортов МВД.
   public function standart_passport($passport_id) {
+        $data = json_encode([$passport_id]);
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1608,14 +1613,16 @@ class Settings {
                     'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
                     'X-Secret: '.$this->get_global_settings('dadata_key_standard')
                 ],
-                'content' => $passport_id
+                'content' => $data
             ]
          ];
         $builder = stream_context_create($options);
         $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/passport', false, $builder);
         $output = json_decode($document);
 
-        return $document;
+        $return = json_encode($output[0]);
+
+        return $return;
     }
 
   // кем выдан паспорт
@@ -1644,6 +1651,7 @@ class Settings {
 
   // API стандартизации email
   public function check_email($email) {
+        $data = json_encode([$email]);
         $options = [
             'http' => [
                 'method' => 'POST',
@@ -1653,14 +1661,16 @@ class Settings {
                     'Authorization: Token '.$this->get_global_settings('dadata_api_key'),
                     'X-Secret: '.$this->get_global_settings('dadata_key_standard')
                 ],
-                'content' => $email
+                'content' => $data
             ]
          ];
         $builder = stream_context_create($options);
         $document = file_get_contents('https://cleaner.dadata.ru/api/v1/clean/email', false, $builder);
         $output = json_decode($document);
 
-        return $document;
+        $return = json_encode($output[0]);
+
+        return $return;
 
     }
 
