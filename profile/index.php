@@ -37,6 +37,8 @@ $user_data = json_decode($user_data);
 
 </head>
 
+<?php require_once($_SERVER['DOCUMENT_ROOT'].'/profile/modal.php'); ?>
+
 <body style="background: url('/img/normal-1.jpg.png') no-repeat center center fixed;
         -webkit-background-size: cover;
         -moz-background-size: cover;
