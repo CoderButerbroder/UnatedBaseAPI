@@ -26,7 +26,7 @@
           </div>
           <div class="modal-body" >
               <div class="row justify-content-center">
-                  <div class="col-md-9 col-sm-12" >
+                  <div class="col-md-12 col-sm-12" >
                     <center>
                       <img src="/img/paper-plane.png" alt="" width="42">
                       <h4>Подтверждение почты</h4>
@@ -101,7 +101,7 @@
         -webkit-box-sizing: content-box;
         -moz-box-sizing: content-box;
         box-sizing: content-box;
-        width: 20px;
+        width: 0.45em;
         height: 50px;
         padding: 10px 20px;
         margin: 5px;
@@ -138,9 +138,9 @@
         margin-left: 1%;
       } */
 
-      /* .signin-sms__wrap.done {
+      .signin-sms__wrap.done {
         opacity: 0;
-      } */
+      }
     </style>
     <script src="../js/jquery.inputmask.bundle.js"></script>
     <div class="modal fade modal_backdrop" id="confirmation_phone" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
@@ -151,8 +151,8 @@
           </div>
           <div class="modal-body" >
               <div class="row justify-content-center">
-                  <div class="col-md-10 col-sm-12" style="position:relative; min-height:15em;">
-                    <div class="col-12" id="div_confirmation_phone" style="position:absolute; z-index:5; opacity:1;">
+                  <div class="col-md-12 col-sm-12" style="position:relative; min-height:15em;">
+                    <div class="col-12" id="div_confirmation_phone" style="position:absolute; left:0; right:0; z-index:5; opacity:1;">
                       <center>
                         <img src="/img/paper-plane.png" alt="" width="42">
                         <h4>Подтверждение телефона</h4>
@@ -172,7 +172,7 @@
                         </div>
                       </center>
                     </div>
-                    <div class="col-12" id="div_confirmation_code" style="position:absolute; z-index:2; opacity:0;">
+                    <div class="col-12" id="div_confirmation_code" style="position:absolute; left:0; right:0; z-index:2; opacity:0;">
                       <center>
                         <img src="/img/paper-plane.png" alt="" width="42">
                         <h4>Укажите код поддтвержения</h4>
@@ -184,11 +184,10 @@
 
                             <!-- <button class="btn btn-block" type="submit" name="submit" disabled style="opacity:0.5;">Подтвердить</button> -->
                             <div class="signin-sms__wrap">
-                              <input class="sms-input" type="tel" maxlength="1" tabindex="1">
-                              <input class="sms-input" type="tel" maxlength="1" tabindex="2">
-                              <input class="sms-input" type="tel" maxlength="1" tabindex="3">
-                              <input class="sms-input" type="tel" maxlength="1" tabindex="4">
-                              <input class="sms-input" type="tel" maxlength="1" tabindex="5">
+                              <input class="sms-input" type="number" maxlength="1" tabindex="1">
+                              <input class="sms-input" type="number" maxlength="1" tabindex="2">
+                              <input class="sms-input" type="number" maxlength="1" tabindex="3">
+                              <input class="sms-input" type="number" maxlength="1" tabindex="4">
                             </div>
 
                           </form>
@@ -239,7 +238,7 @@
     $(div_cod).css('z-index', '5');
     $(div_cod).css('opacity', '1');
 
-    //  $('.sms-input:first-child').focus();
+    $('.sms-input:first-child').focus();
   }
 
   $('.sms-input').on('keydown', function(e) {
@@ -256,11 +255,12 @@
     }
   });
 
-  // $('.sms-input:last-child').on('keyup', function(e) {
-  //   if($(this).val() != '') {
-  //     $('.signin-sms__wrap').addClass('done')
-  //   }
-  // })
+  $('.sms-input:last-child').on('keyup', function(e) {
+    if($(this).val() != '') {
+      $('.signin-sms__wrap').addClass('done');
+      alert('некая отправка кода и тп тд');
+    }
+  })
 
 </script>
 
