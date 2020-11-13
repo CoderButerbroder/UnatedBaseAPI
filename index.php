@@ -142,11 +142,11 @@ if ($_SERVER['HTTP_REFERER']) {
                     <form id="form_auth" action="/general/actions/based_auth">
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" text" class="form-control" name="login" style="border-radius: 5px;"  placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
+                        <input style="border-radius: 5px;" type="text" class="form-control" name="login" style="border-radius: 5px;"  placeholder="Почта или телефон" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.\+]/g, '');">
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input style="border-radius: 5px;" type=" password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
+                        <input style="border-radius: 5px;" type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                         <!-- <div class="input-group-append">
                           <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
@@ -195,23 +195,23 @@ if ($_SERVER['HTTP_REFERER']) {
                     <form id="form_reg" action="/general/actions/based_register" >
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" text" name="name" class="form-control" placeholder="Имя" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="given-name" >
+                        <input style="border-radius: 5px;" type="text" name="name" class="form-control" placeholder="Имя" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="given-name" >
                       </div>
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
+                        <input style="border-radius: 5px;" type="text" name="last_name" class="form-control" placeholder="Фамилия" aria-describedby="" minlength="2" maxlength="30" oninput="this.value=this.value.replace(/[^A-Za-zА-яа-я\-]/g, '');" required autocomplete="family-name" >
                       </div>
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" text" class="form-control"  id="phone_number"  title="Введите телефон для связи"  placeholder="+7 (999) 000 00 00" data-inputmask="'alias': 'phonebe'" value="" name="phone" required>
+                        <input style="border-radius: 5px;" type="text" class="form-control"  id="phone_number"  title="Введите телефон для связи"  placeholder="+7 (999) 000 00 00" data-inputmask="'alias': 'phonebe'" value="" name="phone" required>
                       </div>
 
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="email" >
+                        <input style="border-radius: 5px;" type="email" name="email" class="form-control" placeholder="Почта" aria-describedby="" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');" required autocomplete="email" >
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input style="border-radius: 5px;" type=" password" name="pass" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
+                        <input style="border-radius: 5px;" type="password" name="pass" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                         <!-- <div class="input-group-append">
                             <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
@@ -258,7 +258,7 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form id="form_rec" action="general/actions/based_recovery_password?action=recovery">
                       <div class="form-group" style="margin-top: 4%;">
-                        <input style="border-radius: 5px;" type=" email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
+                        <input style="border-radius: 5px;" type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
                       </div>
                       <!-- <div  id="capcha_rec" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_rec" data-size="invisible"></div> -->
                       <div id="capcha_rec"></div>
@@ -290,14 +290,14 @@ if ($_SERVER['HTTP_REFERER']) {
                     </center>
                     <form id="form_rec_p" action="general/actions/based_recovery_password?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input style="border-radius: 5px;" type=" password" name="password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input style="border-radius: 5px;" type="password" name="password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                         <!-- <div class="input-group-append">
                             <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
                         </div> -->
                       </div>
                       <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
-                        <input style="border-radius: 5px;" type=" password" name="confirm_password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                        <input style="border-radius: 5px;" type="password" name="confirm_password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                         <!-- <div class="input-group-append">
                             <button class="form-control btn-link" type="button" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
