@@ -80,7 +80,7 @@ $user_data = json_decode($user_data);
 			<!-- navigation menu -->
 			<nav>
 				<ul class="vertical-menu scrollspy">
-					<li><a href="#request" class="active" style=""><i class="far fa-question-circle"></i>Запрос</a></li>
+					<!-- <li><a href="#request" class="active" style=""><i class="far fa-question-circle"></i>Запрос</a></li> -->
 					<li><a href="#home" class="active" style=""><i class="icon-user"></i>Аккаунт</a></li>
 					<!-- <li><a href="#about"><i class="icon-user"></i>About</a></li> -->
 					<li><a href="#services"><i class="fas fa-share-alt"></i>Социальные сети</a></li>
@@ -113,21 +113,48 @@ $user_data = json_decode($user_data);
 	<main class="content float-right">
 
 		<!-- section hero -->
-		<section class="hero background parallax shadow-dark d-flex align-items-center" id="request">
+		<!-- <section class="hero background parallax shadow-dark d-flex align-items-center" id="request">
 			<div class="cta mx-auto mt-2">
 				<h1 class="mt-0 mb-4"><?php echo $user_data->data->name; ?><span class="dot"></span></h1>
 				<p class="mb-4">Похоже что вы не завешили регистрацию на сайте {тут рефер}, хотите продолжить данную регистрацию?</p>
-				<!-- <p class="mb-4">Похоже что вы не завешили регистрацию на сайте {тут рефер}, хотите продолжить данную регистрацию?</p> -->
 				<a href="#" class="btn btn-default btn-lg mr-3"><i class="fas fa-check"></i>Продолжить</a>
 				<div class="spacer d-md-none d-lg-none d-sm-none" data-height="10"></div>
 				<a href="#" class="btn btn-border-light btn-lg"><i class="fas fa-times"></i>Отказаться</a>
 			</div>
 			<div class="overlay"></div>
-		</section>
+		</section> -->
 
 		<!-- section about -->
-		<section id="home" class="shadow-blue white-bg padding">
+		<section id="home" class="shadow-blue white-bg padding" style="margin-top: 0px;">
 			<h3 class="section-title">Данные физического лица</h3>
+			<div class="spacer" data-height="80"></div>
+
+			<div class="row">
+				<div class="col-md-3">
+					<img class="rounded-circle" src="https://via.placeholder.com/150x150" alt="about" />
+
+				</div>
+				<div class="col-md-9">
+					<h2 class="mt-4 mt-md-0 mb-4"><?php echo $user_data->data->last_name.' '.$user_data->data->name.' '.$user_data->data->second_name;?></h2>
+					<p class="mb-0"></p>
+					<div class="row my-4">
+						<div class="col-md-6">
+							<p class="mb-2">ФИО: <span class="text-dark"></span></p>
+							<p class="mb-0">Дата рождения: <span class="text-dark">1 Апреля, 1997</span></p>
+						</div>
+						<div class="col-md-6 mt-2 mt-md-0 mt-sm-2">
+							<p class="mb-2">Адрес: <span class="text-dark">Cанкт-Петербург</span></p>
+							<p class="mb-0">Email: <span class="text-dark"><?php echo $user_data->data->email;?></span></p>
+						</div>
+					</div>
+					<a href="#" class="btn btn-default mr-3"><i class="fas fa-pencil-alt"></i>Редактировать информацию</a>
+					<!-- <a href="#" class="btn btn-alt mt-2 mt-md-0 mt-xs-2"><i class="icon-envelope"></i>Hire me</a> -->
+				</div>
+			</div>
+		</section>
+
+		<section class="shadow-blue white-bg padding">
+			<h3 class="section-title">Данные юридического лица</h3>
 			<div class="spacer" data-height="80"></div>
 
 			<div class="row">

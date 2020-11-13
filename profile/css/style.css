@@ -248,7 +248,7 @@ header a:hover {
 }
 header .site-title {
   display: block;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
 }
 header .site-title.dot:after {
@@ -432,7 +432,7 @@ section.white-bg {
   background: #FFF;
 }
 section.padding {
-  padding: 80px 50px;
+  padding: 40px 50px;
 }
 section.padding-50 {
   padding: 50px;
