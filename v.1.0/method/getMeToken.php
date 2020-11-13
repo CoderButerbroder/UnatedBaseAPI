@@ -10,7 +10,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 $response = $settings->get_user_token($key,$pass,$resource);
-    // $settings->recording_history($resource,'getMeToken',$response);
+            $settings->recording_history($resource,'getMeToken',$response);
 echo $response;
 
 

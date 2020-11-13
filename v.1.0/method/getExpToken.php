@@ -10,12 +10,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 $response = $settings->token_expiration_check($token);
-
+            $settings->recording_history($resource,'getExpToken',$response);
 echo $response;
-
-// $date_test = '{"response":true,"data":[{"user":"cf984170e648791061171339dd8b5c9d","referer":"api.kt-segment.ru","data_making":"2020-10-23 20:39:48","data_die":"2020-10-24 20:39:48"}]}';
-//
-// var_dump(json_decode($date_test));
-
 
 ?>

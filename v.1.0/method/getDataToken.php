@@ -10,7 +10,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 $response = $settings->decode_token($token);
-
+            $settings->recording_history($resource,'getDataToken',$response);
 echo $response;
 
 ?>
