@@ -146,7 +146,7 @@ if ($_SERVER['HTTP_REFERER']) {
                       </div>
 
                       <div class="input-group" style="margin-top: 4%; margin-bottom: 4%;">
-                        <input style="border-radius: 5px;" type=" password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
+                        <input style="border-radius: 5px;" type="password" name="password" class="form-control" placeholder="Пароль" required autocomplete="password">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                         <!-- <div class="input-group-append">
                           <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
