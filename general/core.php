@@ -265,7 +265,7 @@ class Settings {
           return json_encode(array('response' => true, 'data' => $user),JSON_UNESCAPED_UNICODE);
       }
       else {
-          return json_encode(array('response' => false, 'description' => 'Вы не имеете прав на данный ресурс'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => false, 'description' => 'Вы не имеете прав на данный ресурс', 'resource' => $resource, 'id_user' => $id_user),JSON_UNESCAPED_UNICODE);
       }
 
   }

@@ -1,5 +1,5 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
+include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$key || !$pass) {
     echo json_encode(array('error' => 'Обязательно требуется логин и пароль'),JSON_UNESCAPED_UNICODE);
