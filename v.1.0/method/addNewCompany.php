@@ -24,36 +24,5 @@ if ($id_user_tboil && $inn && $msp && $site && $region && $staff && $district &&
 }
 
 
-/*
- Регистрация пользователя с перенаправлением из письма:
-
- POST /api/v2/registerRedirect/?token=токен
- поля формы (соответствуют полям при регистрации, тут после двоеточия пример значения):
- email:te22st2tes2t@test.ru
- name:Test
- secondName:TestTest
- lastName:Testest
- profession:test
- phone:+79180169656
- company:test
- city:Piter
- redirectUrl:http://vk.com
- password:PasswordD1
-
-регистрируем пользовател на tboil
-получаем ответ и причину уже возвращаем если ошибка
-или продолжаем регистрацию у себя в бд приязывая ид тбоил к себе..
-*/
-
-
-
-
-
-
-
-
-
-
-
 
 ?>
