@@ -800,10 +800,28 @@ class Settings {
 
   }
 
+  // обновление данных физического лица
+  public function update_entity_user($id_user_tboil,$id_entity) {
+      global $database;
 
+          $add_fns_database = $database->prepare("UPDATE $this->main_users SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
+          $add_fns_database->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+          $add_fns_database->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $check_add = $add_fns_database->execute();
+          $count = $request->rowCount();
+
+          if ($count) {
+              return json_encode(array('response' => true, 'description' => 'Компания пользователя успешно обновлена'),JSON_UNESCAPED_UNICODE);
+              exit;
+          } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка обновления компании пользователя'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+
+  }
 
   // Добавление компании и привязка ее к физическому лицу
-  public function insert_company($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally){
+  public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally){
       global $database;
 
       $check_company = $this->get_data_entity_inn($inn);
@@ -816,7 +834,8 @@ class Settings {
 
               if ($data) {
                   if ($data->id_tboil != $id_user_tboil) {
-                      return json_encode(array('response' => false, 'description' => 'Данная Компания привязана к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо привязано к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
+                      exit;
                   } else {
                       $statement = $database->prepare("SELECT $this->MAIN_user SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
                       $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
@@ -824,22 +843,21 @@ class Settings {
                       $statement->execute();
                       $count = $statement->rowCount();
                       $data_user_new = $this->get_all_data_user_id_tboil($id_user_tboil);
-                      return json_encode(array('response' => true, 'user' => json_decode($data_user_new)->user, 'user' => json_decode($data_user_new)->entity, 'description' => ''),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => true, 'user' => json_decode($data_user_new)->user, 'user' => json_decode($data_user_new)->entity, 'description' => 'Юридическое лицо успешно привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
+                      exit;
                   }
               }
       } else {
 
             $date_pickup = date("Y-m-d H:i:s");
-
-
-
-            $hash =
+            $default = '';
+            $hash = md5($id_user_tboil.$inn.$msp.$site.$region.$staff.$district.$street.$house.$type_inf.$additionally.$date_pickup);
 
             $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,hash,date_pickup)
                                                   VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:hash,:date_pickup)");
             $request->bindParam(':inn', $inn, PDO::PARAM_INT);
-            $request->bindParam(':data_fns', $data_fns, PDO::PARAM_STR);
-            $request->bindParam(':data_dadata', $data_dadata, PDO::PARAM_STR);
+            $request->bindParam(':data_fns', $default, PDO::PARAM_STR);
+            $request->bindParam(':data_dadata', $default, PDO::PARAM_STR);
             $request->bindParam(':msp', $msp, PDO::PARAM_STR);
             $request->bindParam(':site', $site, PDO::PARAM_STR);
             $request->bindParam(':region', $region, PDO::PARAM_STR);
@@ -852,19 +870,44 @@ class Settings {
             $request->bindParam(':hash', $hash, PDO::PARAM_STR);
             $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
             $check_request = $request->execute();
-            $count_request = $request->rowCount();
-            if($count_request > 0) {
-                  return true;
-                  exit;
+            $id_request = $request->lastInsertId();
+            if($id_request > 0) {
+
+                  $check_fns = json_decode($this->fns_base($inn));
+
+                  if (json_decode($check_fns)->responce) {
+
+                      $check_update_user = $this->update_entity_user($id_user_tboil,$id_request);
+
+                      if (json_decode($check_update_user)->responce) {
+
+                            $check_dadata = $this->find_entity($inn);
+
+                            $add_fns_database = $database->prepare("UPDATE $this->MAIN_entity SET data_dadata = :data_dadata, date_pickup = :date_pickup  WHERE inn = :inn");
+                            $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_INT);
+                            $add_fns_database->bindParam(':data_dadata', $check_dadata, PDO::PARAM_STR);
+                            $add_fns_database->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+                            $check_add = $add_fns_database->execute();
+
+                            $check_data_entity = $this->get_data_entity_inn($inn);
+
+                            return json_encode(array('response' => true, 'user' => json_decode($check_update_user)->data, 'entity' => json_decode($check_data_entity)->data, 'description' => 'Юридическое лицо успешно зарегитрировано и привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
+                            exit;
+                      } else {
+                          return $check_update_user;
+                          exit;
+                      }
+
+                  } else {
+                       return $check_fns;
+                       exit;
+                  }
+
             } else {
-                  return false;
-                  exit;
+                return json_encode(array('response' => false, 'description' => 'Неудалось зарегистрировать и приявзять компанию к акксунту'),JSON_UNESCAPED_UNICODE);
+                exit;
             }
-
       }
-
-
-
 
     }
 

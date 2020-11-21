@@ -25,6 +25,16 @@ $id_entity = $_POST['id_entity'];
 $inn = $_POST['inn'];
 $position = $_POST["position"];
 
+$msp = $_POST["msp"];
+$site = $_POST["site"];
+$region = $_POST["region"];
+$staff = $_POST["staff"];
+$district = $_POST["district"];
+$street = $_POST["street"];
+$house = $_POST["house"];
+$type_inf = $_POST["type_inf"];
+$additionally = $_POST["additionally"];
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';

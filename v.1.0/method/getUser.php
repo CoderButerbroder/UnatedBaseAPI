@@ -13,11 +13,11 @@ if ($id_user) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
-                           $settings->recording_history($resource,'getUserTboil',$check_valid_token);
+                           $settings->recording_history($resource,'getUser',$check_valid_token);
 
       if (json_decode($check_valid_token)->response) {
               $response = $settings->get_all_data_user_id($id_user);
-                          $settings->recording_history($resource,'getUserTboil',$response);
+                          $settings->recording_history($resource,'getUser',$response);
               echo $response;
       } else {
               echo $check_valid_token;
