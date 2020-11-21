@@ -1090,6 +1090,63 @@ class Settings {
   }
 
 
+  /* API ФУНКЦИИ - TBOIL  */
+
+  // обновление токена Tboil id
+  public function refresh_token_tboil() {
+
+        $login = $this->get_global_settings('tboil_admin_login');
+        $password = $this->get_global_settings('tboil_admin_password');
+        $tboil_domen = $this->get_global_settings('tboil_domen');
+
+
+        $data_post = array('login' => $login,
+                           'password' => $password
+                          );
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, 'https://'.$tboil_domen.'/api/v2/auth/');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+        $out = curl_exec($curl);
+        $admin_token = (json_decode($out));
+        curl_close($curl);
+
+        $token = $this->update_global_settings('tboil_token',$admin_token->data->token);
+        if ($token) {
+            return json_encode(array('response' => true, 'description' => 'Обновление токена tboil прошло успешно', 'token' => $admin_token->data->token),JSON_UNESCAPED_UNICODE);
+        } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка Обновления токена tboil', 'token' => $admin_token->data->token),JSON_UNESCAPED_UNICODE);
+        }
+
+
+  }
+
+
+  // Получение информации о пользователе c tboil
+  public function getUser_tboil($id_user_tboil) {
+
+        $token = $this->get_global_settings('tboil_token');
+        $tboil_domen = $this->get_global_settings('tboil_domen');
+        $one_user = file_get_contents('https://'.$tboil_domen.'/api/v2/getUser/?token='.$token.'&userId='.$id_user_tboil);
+        $data_one_user = json_decode($one_user);
+
+        if (!$data_one_user->success) {
+            $data_refresh = json_decode($this->refresh_token_tboil());
+            $one_user = file_get_contents('https://'.$tboil_domen.'/api/v2/getUser/?token='.$data_refresh->token.'&userId='.$id_user_tboil);
+            $data_one_user = json_decode($one_user);
+        }
+
+        if ($data_one_user->success) {
+              return json_encode(array('response' => true, 'data' => $data_one_user->data, 'description' => 'Данные пользователя успешно забраны с tboil'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => $data_one_user->error),JSON_UNESCAPED_UNICODE);
+        }
+
+
+  }
+
 
 
 

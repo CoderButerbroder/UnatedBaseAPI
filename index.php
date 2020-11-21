@@ -2,6 +2,12 @@
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
+header('Content-type:application/json;charset=utf-8');
+
+echo json_encode(array('response' => false, 'description' => 'Ошибка 404, не верный метод API'),JSON_UNESCAPED_UNICODE);
+exit;
+
+/*
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 $ip = $settings->get_ip();
@@ -509,3 +515,5 @@ if ($_SERVER['HTTP_REFERER']) {
 
 </body>
 </html>
+
+<?php */ ?>
