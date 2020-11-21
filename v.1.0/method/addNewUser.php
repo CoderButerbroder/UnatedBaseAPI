@@ -22,7 +22,20 @@
 или продолжаем регистрацию у себя в бд приязывая ид тбоил к себе..
 */
 
-
+$key = $_POST['login'];
+$login = $_POST['login'];
+$pass = $_POST['password'];
+$email = $_POST['email'];
+$resource = $_POST['referer'];
+$token = $_POST['token'];
+$name = $_POST['name'];
+$secondName = $_POST['secondname'];
+$lastName = $_POST['lastname'];
+$profession = $_POST['profession'];
+$phone = $_POST['phone'];
+$company = $_POST['company'];
+$city = $_POST['Piter'];
+$redirectUrl = $_POST['redirectUrl'];
 
 
 $pass = $_POST['password'];
@@ -35,6 +48,9 @@ $phone = $_POST['phone'];
 $company = $_POST['company'];
 $city = $_POST['Piter'];
 $redirectUrl = $_POST['redirectUrl'];
+
+
+
 
 
 if (!$key || !$pass) {

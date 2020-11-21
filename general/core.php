@@ -529,22 +529,44 @@ class Settings {
    }
 
   // функция регистрации физического лица
-  public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password) {
+  public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password,$resource) {
     global $database;
 
-      $check_reg_tboil = $this->registerRedirect_tboil($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password);
+      $check_reg_tboil = json_decode($this->registerRedirect_tboil($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password));
 
       // Регистрация пользователя на tboil прошла успешно
-      if (json_decode($check_reg_tboil)->response) {
+      if ($check_reg_tboil->response) {
 
+                $data_user = json_decode($this->getUser_tboil($check_reg_tboil->data->userId))->data;
                 $today = date("Y-m-d H:i:s");
+                $resource = parse_url($resource, PHP_URL_HOST);
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:hash,:first_referer,:reg_date,:role)");
+                $hash = md5($email.$name.$secondName.$lastName.$profession.$phone.$company.$city.$redirectUrl.$password.$resource.$today);
 
-                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader) VALUES (:id_referer,:method,:bigdata,:date_request)");
+                $phone = trim($phone);
+                $vowels = array("(", ")", "+", "_", "-", " ");
+                $phone = str_replace($vowels, "", $phone);
 
-                $new_user->bindParam(':id_referer', json_decode($data_referer)->data->id, PDO::PARAM_INT);
-                $new_user->bindParam(':method', $method, PDO::PARAM_STR);
-                $new_user->bindParam(':bigdata', $big_data, PDO::PARAM_STR);
-                $new_user->bindParam(':date_request', $today, PDO::PARAM_STR);
+                $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
+                $new_user->bindParam(':id_leader', $data_user->data->leaderId, PDO::PARAM_INT);
+                $new_user->bindParam(':email', $email, PDO::PARAM_STR);
+                $new_user->bindParam(':phone', $phone, PDO::PARAM_STR);
+                $new_user->bindParam(':name', $name, PDO::PARAM_STR);
+                $new_user->bindParam(':last_name', $lastName, PDO::PARAM_STR);
+                $new_user->bindParam(':second_name', $secondName, PDO::PARAM_STR);
+                $new_user->bindParam(':DOB', '', PDO::PARAM_STR);
+                $new_user->bindParam(':photo', '', PDO::PARAM_STR);
+                $new_user->bindParam(':adres', $city, PDO::PARAM_STR);
+                $new_user->bindParam(':inn', 0,  PDO::PARAM_INT);
+                $new_user->bindParam(':passport_id', 0, PDO::PARAM_INT);
+                $new_user->bindParam(':id_entity', 0, PDO::PARAM_INT);
+                $new_user->bindParam(':company', $company, PDO::PARAM_STR);
+                $new_user->bindParam(':position', $profession, PDO::PARAM_STR);
+                $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
+                $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
+                $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
+                $new_user->bindParam(':role', 'user', PDO::PARAM_STR);
+
                 $check_new_user = $new_user->execute();
                 $count = $new_user->rowCount();
                 if($count > 0) {
@@ -554,11 +576,15 @@ class Settings {
                 }
 
       } else {
-        echo $check_reg_tboil;
-
+          echo $check_reg_tboil;
       }
 
   }
+
+  //
+
+
+
 
 
 
@@ -582,7 +608,7 @@ class Settings {
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
         $out = curl_exec($curl);
-        $admin_token = (json_decode($out));
+        $admin_token = json_decode($out);
         curl_close($curl);
 
         $token = $this->update_global_settings('tboil_token',$admin_token->data->token);
@@ -643,7 +669,7 @@ class Settings {
           curl_setopt($curl, CURLOPT_POST, true);
           curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
           $out = curl_exec($curl);
-          $data_one_user = (json_decode($out));
+          $data_one_user = json_decode($out);
           curl_close($curl);
 
           if (!$data_one_user->success) {
@@ -654,7 +680,7 @@ class Settings {
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
                 $out = curl_exec($curl);
-                $data_one_user = (json_decode($out));
+                $data_one_user = json_decode($out);
                 curl_close($curl);
           }
 
