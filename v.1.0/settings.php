@@ -18,7 +18,6 @@ $phone = $_POST['phone'];
 $company = $_POST['company'];
 $city = $_POST['Piter'];
 $redirectUrl = $_POST['redirectUrl'];
-$phone = $_POST['phone'];
 
 /* для тестового режима */
 
