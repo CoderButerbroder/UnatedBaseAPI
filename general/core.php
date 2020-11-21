@@ -529,7 +529,36 @@ class Settings {
    }
 
   // функция регистрации физического лица
-  // public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password)
+  public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password) {
+    global $database;
+
+      $check_reg_tboil = $this->registerRedirect_tboil($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password);
+
+      // Регистрация пользователя на tboil прошла успешно
+      if (json_decode($check_reg_tboil)->response) {
+
+                $today = date("Y-m-d H:i:s");
+
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader) VALUES (:id_referer,:method,:bigdata,:date_request)");
+
+                $new_user->bindParam(':id_referer', json_decode($data_referer)->data->id, PDO::PARAM_INT);
+                $new_user->bindParam(':method', $method, PDO::PARAM_STR);
+                $new_user->bindParam(':bigdata', $big_data, PDO::PARAM_STR);
+                $new_user->bindParam(':date_request', $today, PDO::PARAM_STR);
+                $check_new_user = $new_user->execute();
+                $count = $new_user->rowCount();
+                if($count > 0) {
+                      return json_encode(array('response' => true, 'description' => 'Запись в истории успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                } else {
+                      return json_encode(array('response' => false, 'description' => 'Не удалось записать в историю'),JSON_UNESCAPED_UNICODE);
+                }
+
+      } else {
+        echo $check_reg_tboil;
+
+      }
+
+  }
 
 
 
