@@ -12,7 +12,7 @@ if ($pass && $email && $name && $secondName && $lastName && $profession && $phon
                            $settings->recording_history($resource,'addNewUser',$check_valid_token);
 
       if (json_decode($check_valid_token)->response) {
-              $response = $settings->register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password,$resource);
+              $response = $settings->register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$pass,$resource);
                           $settings->recording_history($resource,'addNewUser',$response);
               echo $response;
       } else {
