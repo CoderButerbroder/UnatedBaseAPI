@@ -530,26 +530,44 @@ class Settings {
 
   // Функция полячения данных пользователя из единой базы данных
   public function get_user_data($id_user) {
-    global $database;
+      global $database;
 
-    $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id = :id");
-    $statement->bindParam(':id', $id_user, PDO::PARAM_INT);
-    $statement->execute();
-    $data = $statement->fetch(PDO::FETCH_OBJ);
+      $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id = :id");
+      $statement->bindParam(':id', $id_user, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
 
-    if ($data) {
-          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
-    } else {
-          return json_encode(array('response' => false, 'description' => 'Пользотваль c данным id не найден'),JSON_UNESCAPED_UNICODE);
-    }
+      if ($data) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Пользотваль c данным id не найден'),JSON_UNESCAPED_UNICODE);
+      }
 
   }
 
+  // Функция полячения данных пользователя из единой базы данных по id_tboil
+  public function get_user_data_id_boil($id_user_id_tboil) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id_tboil = :id_tboil");
+      $statement->bindParam(':id_tboil', $id_user_id_tboil, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Пользотваль c данным id не найден'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+
   // функция регистрации физического лица
-  public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password,$resource) {
+  public function register_user($email,$name,$secondName,$lastName,$position,$phone,$company,$city,$redirectUrl,$password,$resource) {
     global $database;
 
-      $check_reg_tboil = json_decode($this->registerRedirect_tboil($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password));
+      $check_reg_tboil = json_decode($this->registerRedirect_tboil($email,$name,$secondName,$lastName,$position,$phone,$company,$city,$redirectUrl,$password));
 
       // Регистрация пользователя на tboil прошла успешно
       if ($check_reg_tboil->response) {
@@ -557,7 +575,7 @@ class Settings {
                 $data_user = json_decode($this->getUser_tboil($check_reg_tboil->data->userId))->data;
                 $today = date("Y-m-d H:i:s");
                 $resource = parse_url($resource, PHP_URL_HOST);
-                $hash = md5($email.$name.$secondName.$lastName.$profession.$phone.$company.$city.$redirectUrl.$password.$resource.$today);
+                $hash = md5($email.$name.$secondName.$lastName.$position.$phone.$company.$city.$redirectUrl.$password.$resource.$today);
                 $phone = trim($phone);
                 $vowels = array("(", ")", "+", "_", "-", " ");
                 $phone = str_replace($vowels, "", $phone);
@@ -567,7 +585,7 @@ class Settings {
                 $default_int = 0;
                 $role = 'user';
 
-                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:hash,:first_referer,:reg_date,:role)");
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
                 $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
                 $new_user->bindParam(':id_leader', $data_user->data->leaderId, PDO::PARAM_INT);
                 $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -582,7 +600,8 @@ class Settings {
                 $new_user->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
                 $new_user->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
                 $new_user->bindParam(':company', $company, PDO::PARAM_STR);
-                $new_user->bindParam(':position', $profession, PDO::PARAM_STR);
+                $new_user->bindParam(':position', $position, PDO::PARAM_STR);
+                $new_user->bindParam(':profession', $default, PDO::PARAM_STR);
                 $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
                 $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
                 $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
@@ -595,29 +614,90 @@ class Settings {
                       $id_last_user = $database->lastInsertId();
                       $data_user = json_decode($this->get_user_data($id_last_user));
                       return json_encode(array('response' => true, 'data' => $data_user->data, 'description' => 'Пользотваль успешно зарегистрирован в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
                 } else {
                       return json_encode(array('response' => false, 'description' => 'Пользотваля не удалось зарегистрировать в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
                 }
 
       } else {
-          echo $check_reg_tboil;
+          return json_encode($check_reg_tboil);
+          exit;
       }
 
   }
 
-  // авторизация пользотваеля через tboil
-  public function auth_from_tboil($id_user_tboil) {
+  // авторизация пользотваеля через tboil (сюда приходят декодированые данные полученные данные с платформы по методу /api/v2/getUser/?token=)
+  public function auth_from_tboil($data_user_tboil,$resource) {
 
-    $data_user_tboil = json_decode($this->getUser_tboil($id_user_tboil));
+      $data_user_tboil = json_decode($data_user_tboil);
 
-    if ($data_user_tboil->response) {
+      if ($data_user_tboil->success) {
+              // проверяем есть ли данный пользователь с таким id_tboil уже в базе даных
+              $check_reg_user_in_base = json_decode($this->get_user_data_id_boil($data_user_tboil->data->userId));
+              if ($check_reg_user_in_base->response) {
+                      return json_encode(array('response' => true, 'data' => $check_reg_user_in_base->data, 'description' => 'Пользотваль найден в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+              } else {
+                      $data_user = json_decode($this->getUser_tboil($check_reg_user_in_base->data->userId))->data;
+                      $today = date("Y-m-d H:i:s");
+                      $resource = parse_url($resource, PHP_URL_HOST);
+                      $hash = md5($data_user.$resource.$today);
+                      $phone = trim($phone);
+                      $vowels = array("(", ")", "+", "_", "-", " ");
+                      $phone = str_replace($vowels, "", $check_reg_user_in_base->data->phone);
+                      $default = '';
+                      $default_int = 0;
+                      $role = 'user';
 
-    } else {
-        return $data_user_tboil;
-        exit;
-    }
+                      if (!$check_reg_user_in_base->data->lastName) {$secondName = '';} else {$secondName = $check_reg_user_in_base->data->lastName;}
+                      if (!$check_reg_user_in_base->data->birthday) {$dob = "0000-00-00";} else {$dob = $check_reg_user_in_base->data->birthday;}
+                      if (!$check_reg_user_in_base->data->leaderId) {$leaderId = 0;} else {$leaderId = $check_reg_user_in_base->data->leaderId;}
+                      if (!$check_reg_user_in_base->data->secondName) {$secondName = '';} else {$secondName = $check_reg_user_in_base->data->secondName;}
+                      if (!$check_reg_user_in_base->data->city) {$city = '';} else {$city = $check_reg_user_in_base->data->city;}
+                      if (!$check_reg_user_in_base->data->company) {$company = '';} else {$company = $check_reg_user_in_base->data->company;}
+                      if (!$check_reg_user_in_base->data->position) {$position = '';} else {$position = $check_reg_user_in_base->data->position;}
+                      if (!$check_reg_user_in_base->data->profession) {$profession = '';} else {$profession = $check_reg_user_in_base->data->profession;}
 
+                      $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
+                      $new_user->bindParam(':id_tboil', $check_reg_user_in_base->data->userId, PDO::PARAM_INT);
+                      $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
+                      $new_user->bindParam(':email', $check_reg_user_in_base->data->email, PDO::PARAM_STR);
+                      $new_user->bindParam(':phone', $phone, PDO::PARAM_STR);
+                      $new_user->bindParam(':name', $check_reg_user_in_base->data->name, PDO::PARAM_STR);
+                      $new_user->bindParam(':last_name', $check_reg_user_in_base->data->lastName, PDO::PARAM_STR);
+                      $new_user->bindParam(':second_name', $secondName, PDO::PARAM_STR);
+                      $new_user->bindParam(':DOB', $dob, PDO::PARAM_STR);
+                      $new_user->bindParam(':photo', $default, PDO::PARAM_STR);
+                      $new_user->bindParam(':adres', $city, PDO::PARAM_STR);
+                      $new_user->bindParam(':inn', $default_int,  PDO::PARAM_INT);
+                      $new_user->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
+                      $new_user->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
+                      $new_user->bindParam(':company', $company, PDO::PARAM_STR);
+                      $new_user->bindParam(':position', $position, PDO::PARAM_STR);
+                      $new_user->bindParam(':profession', $profession, PDO::PARAM_STR);
+                      $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
+                      $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
+                      $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
+                      $new_user->bindParam(':role', $role, PDO::PARAM_STR);
 
+                      $check_new_user = $new_user->execute();
+                      $count = $new_user->rowCount();
+
+                      if($count > 0) {
+                            $id_last_user = $database->lastInsertId();
+                            $data_user = json_decode($this->get_user_data($id_last_user));
+                            return json_encode(array('response' => true, 'data' => $data_user->data, 'description' => 'Пользотваль успешно зарегистрирован в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                            exit;
+                      } else {
+                            return json_encode(array('response' => false, 'description' => 'Пользотваля не удалось зарегистрировать в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                            exit;
+                      }
+              }
+      } else {
+          return json_encode($data_user_tboil);
+          exit;
+      }
 
   }
 
@@ -683,7 +763,7 @@ class Settings {
   }
 
   // Регситрация пользователя на Tboil
-  public function registerRedirect_tboil($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password) {
+  public function registerRedirect_tboil($email,$name,$secondName,$lastName,$position,$phone,$company,$city,$redirectUrl,$password) {
 
           $token = $this->get_global_settings('tboil_token');
           $tboil_domen = $this->get_global_settings('tboil_domen');
@@ -693,7 +773,7 @@ class Settings {
                              'name' => $name,
                              'secondName' => $secondName,
                              'lastName' => $lastName,
-                             'profession' => $profession,
+                             'profession' => $position,
                              'phone' => $phone,
                              'company' => $company,
                              'city' => $city,

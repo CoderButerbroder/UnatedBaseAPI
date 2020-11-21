@@ -18,6 +18,10 @@ $phone = $_POST['phone'];
 $company = $_POST['company'];
 $city = $_POST['city'];
 $redirectUrl = $_POST['redirectUrl'];
+$data_user_tboil = $_POST['data_user_tboil'];
+$id_user_tboil = $_POST['id_user_tboil'];
+
+
 
 /* для тестового режима */
 
