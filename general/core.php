@@ -528,6 +528,23 @@ class Settings {
        return json_encode(array('response' => false, 'description' => 'Ошибка инн не валидный'),JSON_UNESCAPED_UNICODE);
    }
 
+  // Функция полячения данных пользователя из единой базы данных
+  public function get_user_data($id_user) {
+    global $database;
+
+    $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id = :id");
+    $statement->bindParam(':id', $id_user, PDO::PARAM_INT);
+    $statement->execute();
+    $data = $statement->fetch(PDO::FETCH_OBJ);
+
+    if ($data) {
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
+    } else {
+          return json_encode(array('response' => false, 'description' => 'Пользотваль c данным id не найден'),JSON_UNESCAPED_UNICODE);
+    }
+
+  }
+
   // функция регистрации физического лица
   public function register_user($email,$name,$secondName,$lastName,$profession,$phone,$company,$city,$redirectUrl,$password,$resource) {
     global $database;
@@ -540,13 +557,17 @@ class Settings {
                 $data_user = json_decode($this->getUser_tboil($check_reg_tboil->data->userId))->data;
                 $today = date("Y-m-d H:i:s");
                 $resource = parse_url($resource, PHP_URL_HOST);
-                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:hash,:first_referer,:reg_date,:role)");
                 $hash = md5($email.$name.$secondName.$lastName.$profession.$phone.$company.$city.$redirectUrl.$password.$resource.$today);
-
                 $phone = trim($phone);
                 $vowels = array("(", ")", "+", "_", "-", " ");
                 $phone = str_replace($vowels, "", $phone);
 
+                $dob = "0000-00-00";
+                $default = '';
+                $default_int = 0;
+                $role = 'user';
+
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:hash,:first_referer,:reg_date,:role)");
                 $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
                 $new_user->bindParam(':id_leader', $data_user->data->leaderId, PDO::PARAM_INT);
                 $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -554,25 +575,28 @@ class Settings {
                 $new_user->bindParam(':name', $name, PDO::PARAM_STR);
                 $new_user->bindParam(':last_name', $lastName, PDO::PARAM_STR);
                 $new_user->bindParam(':second_name', $secondName, PDO::PARAM_STR);
-                $new_user->bindParam(':DOB', '', PDO::PARAM_STR);
-                $new_user->bindParam(':photo', '', PDO::PARAM_STR);
+                $new_user->bindParam(':DOB', $dob, PDO::PARAM_STR);
+                $new_user->bindParam(':photo', $default, PDO::PARAM_STR);
                 $new_user->bindParam(':adres', $city, PDO::PARAM_STR);
-                $new_user->bindParam(':inn', 0,  PDO::PARAM_INT);
-                $new_user->bindParam(':passport_id', 0, PDO::PARAM_INT);
-                $new_user->bindParam(':id_entity', 0, PDO::PARAM_INT);
+                $new_user->bindParam(':inn', $default_int,  PDO::PARAM_INT);
+                $new_user->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
+                $new_user->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
                 $new_user->bindParam(':company', $company, PDO::PARAM_STR);
                 $new_user->bindParam(':position', $profession, PDO::PARAM_STR);
                 $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
                 $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
                 $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
-                $new_user->bindParam(':role', 'user', PDO::PARAM_STR);
+                $new_user->bindParam(':role', $role, PDO::PARAM_STR);
 
                 $check_new_user = $new_user->execute();
                 $count = $new_user->rowCount();
+
                 if($count > 0) {
-                      return json_encode(array('response' => true, 'description' => 'Запись в истории успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                      $id_last_user = $database->lastInsertId();
+                      $data_user = json_decode($this->get_user_data($id_last_user));
+                      return json_encode(array('response' => true, 'data' => $data_user->data, 'description' => 'Пользотваль успешно зарегистрирован в единой базе данных'),JSON_UNESCAPED_UNICODE);
                 } else {
-                      return json_encode(array('response' => false, 'description' => 'Не удалось записать в историю'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => false, 'description' => 'Пользотваля не удалось зарегистрировать в единой базе данных'),JSON_UNESCAPED_UNICODE);
                 }
 
       } else {
@@ -581,7 +605,21 @@ class Settings {
 
   }
 
-  // 
+  // авторизация пользотваеля через tboil
+  public function auth_from_tboil($id_user_tboil) {
+
+    $data_user_tboil = json_decode($this->getUser_tboil($id_user_tboil));
+
+    if ($data_user_tboil->response) {
+
+    } else {
+        return $data_user_tboil;
+        exit;
+    }
+
+
+
+  }
 
 
 

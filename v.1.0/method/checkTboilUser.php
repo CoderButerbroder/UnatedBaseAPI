@@ -13,7 +13,7 @@ $settings = new Settings;
 
 $response = $settings->getUser_tboil($id_user_tboil);
 
-echo $response;
+var_dump(json_decode($response));
 
 
 ?>
