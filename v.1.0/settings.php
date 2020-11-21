@@ -16,7 +16,7 @@ $lastName = $_POST['lastname'];
 $profession = $_POST['profession'];
 $phone = $_POST['phone'];
 $company = $_POST['company'];
-$city = $_POST['Piter'];
+$city = $_POST['city'];
 $redirectUrl = $_POST['redirectUrl'];
 
 /* для тестового режима */
