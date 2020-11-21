@@ -20,7 +20,9 @@ $city = $_POST['city'];
 $redirectUrl = $_POST['redirectUrl'];
 $data_user_tboil = $_POST['data_user_tboil'];
 $id_user_tboil = $_POST['id_user_tboil'];
-
+$id_user = $_POST['id_user'];
+$id_entity = $_POST['id_entity'];
+$inn = $_POST['inn'];
 
 
 /* для тестового режима */

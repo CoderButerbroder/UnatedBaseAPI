@@ -15,6 +15,13 @@ class Settings {
   private $user_referer = 'TIME_user_referer';
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
+  private $MAIN_entity = 'MAIN_entity';
+  private $MAIN_entity_tech_requests = 'MAIN_entity_tech_requests';
+  private $MAIN_entity_tech_requests_solutions = 'MAIN_entity_tech_requests_solutions';
+  private $MAIN_entity_tech_services = 'MAIN_entity_tech_services';
+  private $MAIN_entity_tech_services_comments = 'MAIN_entity_tech_services_comments';
+  private $MAIN_entity_tech_services_rating = 'MAIN_entity_tech_services_rating';
+  private $MAIN_entity_tech_services_view = 'MAIN_entity_tech_services_view';
 
 
   // проверка json на валидность
@@ -701,6 +708,346 @@ class Settings {
 
   }
 
+  // получение данных по юридичесокму лицу по id в ебд
+  public function get_data_entity($id_entity) {
+      global $database;
+
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id");
+        $statement->bindParam(':id', $id_entity, PDO::PARAM_INT);
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_OBJ);
+
+        if ($data) {
+              return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные о юридическом лице'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Компания с даннам id не найдена'),JSON_UNESCAPED_UNICODE);
+        }
+
+  }
+
+  // поиск компании по инн в единой базе данных
+  public function get_data_entity_inn($inn) {
+        global $database;
+
+        $check_inn =  $this->is_valid_inn($inn);
+
+        if (!json_decode(is_valid_inn($inn)->response)) {
+            return $check_inn;
+            exit;
+        }
+
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn = :inn");
+        $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_OBJ);
+
+        if ($data) {
+              return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные о юридическом лице'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Компания с даннам id не найдена'),JSON_UNESCAPED_UNICODE);
+        }
+  }
+
+  // Получение всех данных по пользователю и его юридическому лицу из ЕБД по id tboil
+  public function get_all_data_user_id_tboil($id_user_tboil) {
+        global $database;
+
+        $data_user = $this->get_user_data_id_boil($id_user_tboil);
+
+        if (json_decode($data_user)->response) {
+            if (json_decode($data_user)->data->id_entity != 0) {
+                $data_entity = $this->get_data_entity($id_entity);
+                if (json_decode($data_entity)->response) {
+                    return json_encode(array('response' => true, 'user' => json_decode($data_user)->data, 'entity' => json_decode($data_entity)->data, 'description' => 'Данные о физическом и юридическом лице'),JSON_UNESCAPED_UNICODE);
+                } else {
+                    return $data_user;
+                    exit;
+                }
+            } else {
+              return $data_user;
+              exit;
+            }
+        } else {
+            return $data_user;
+            exit;
+        }
+
+  }
+
+  // Получение всех данных по пользователю и его юридическому лицу из ЕБД
+  public function get_all_data_user_id($id_user) {
+        global $database;
+
+        $data_user = $this->get_user_data($id_user);
+
+        if (json_decode($data_user)->response) {
+            if (json_decode($data_user)->data->id_entity != 0) {
+                $data_entity = $this->get_data_entity($id_entity);
+                if (json_decode($data_entity)->response) {
+                    return json_encode(array('response' => true, 'user' => json_decode($data_user)->data, '' => json_decode($data_entity)->data, 'description' => 'Данные о физическом и юридическом лице'),JSON_UNESCAPED_UNICODE);
+                } else {
+                    return $data_user;
+                    exit;
+                }
+            } else {
+              return $data_user;
+              exit;
+            }
+        } else {
+            return $data_user;
+            exit;
+        }
+
+  }
+
+
+
+  // Добавление компании и привязка ее к физическому лицу
+  public function insert_company($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally){
+      global $database;
+
+      $check_company = $this->get_data_entity_inn($inn);
+
+      if (json_decode($check_company)->response) {
+              $statement = $database->prepare("SELECT * FROM $this->MAIN_user WHERE id_entity = :id_entity");
+              $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
+              $statement->execute();
+              $data = $statement->fetch(PDO::FETCH_OBJ);
+
+              if ($data) {
+                  if ($data->id_tboil != $id_user_tboil) {
+                      return json_encode(array('response' => false, 'description' => 'Данная Компания привязана к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
+                  } else {
+                      $statement = $database->prepare("SELECT $this->MAIN_user SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
+                      $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
+                      $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+                      $statement->execute();
+                      $count = $statement->rowCount();
+                      $data_user_new = $this->get_all_data_user_id_tboil($id_user_tboil);
+                      return json_encode(array('response' => true, 'user' => json_decode($data_user_new)->user, 'user' => json_decode($data_user_new)->entity, 'description' => ''),JSON_UNESCAPED_UNICODE);
+                  }
+              }
+      } else {
+
+            $date_pickup = date("Y-m-d H:i:s");
+
+
+
+            $hash =
+
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,hash,date_pickup)
+                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:hash,:date_pickup)");
+            $request->bindParam(':inn', $inn, PDO::PARAM_INT);
+            $request->bindParam(':data_fns', $data_fns, PDO::PARAM_STR);
+            $request->bindParam(':data_dadata', $data_dadata, PDO::PARAM_STR);
+            $request->bindParam(':msp', $msp, PDO::PARAM_STR);
+            $request->bindParam(':site', $site, PDO::PARAM_STR);
+            $request->bindParam(':region', $region, PDO::PARAM_STR);
+            $request->bindParam(':staff', $staff, PDO::PARAM_STR);
+            $request->bindParam(':district', $district, PDO::PARAM_STR);
+            $request->bindParam(':street', $street, PDO::PARAM_STR);
+            $request->bindParam(':house', $house, PDO::PARAM_STR);
+            $request->bindParam(':type_inf', $type_inf, PDO::PARAM_STR);
+            $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
+            $request->bindParam(':hash', $hash, PDO::PARAM_STR);
+            $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+            $check_request = $request->execute();
+            $count_request = $request->rowCount();
+            if($count_request > 0) {
+                  return true;
+                  exit;
+            } else {
+                  return false;
+                  exit;
+            }
+
+      }
+
+
+
+
+    }
+
+  //
+  public function insert_tech_requests($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests (id_requests_on_referer,id_entity,name_request,description,demand,collection_time,links_to_logos,type_request,links_add_files,request_hash,status,date_added,id_referer)
+                                            VALUES (:id_requests_on_referer,:id_entity,:name_request,:description,:demand,:collection_time,:links_to_logos,:type_request,:links_add_files,:request_hash,:status,:date_added,:id_referer)");
+
+      $request->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_STR);
+      $request->bindParam(':id_entity', $id_entity, PDO::PARAM_STR);
+      $request->bindParam(':name_request', $name_request, PDO::PARAM_STR);
+      $request->bindParam(':description', $description, PDO::PARAM_STR);
+      $request->bindParam(':demand', $demand, PDO::PARAM_STR);
+      $request->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
+      $request->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
+      $request->bindParam(':type_request', $type_request, PDO::PARAM_STR);
+      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $request->bindParam(':request_hash', $request_hash, PDO::PARAM_STR);
+      $request->bindParam(':status', $status, PDO::PARAM_STR);
+      $request->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_STR);
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+  public function insert_tech_requests_solutions($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests_solutions (id_request_on_referer,id_solution_on_referer,id_tboil,name_project,description,result_project,readiness,period,forms_of_support,protection,links_add_files,solutions_hash,status,date_receiving,id_referer)
+                                            VALUES (:id_request_on_referer,:id_solution_on_referer,:id_tboil,:name_project,:description,:result_project,:readiness,:period,:forms_of_support,:protection,:links_add_files,:solutions_hash,:status,:date_receiving,:id_referer)");
+
+      $request->bindParam(':id_request_on_referer', $id_request_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_solution_on_referer', $id_solution_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $request->bindParam(':name_project', $name_project, PDO::PARAM_STR);
+      $request->bindParam(':description', $description, PDO::PARAM_STR);
+      $request->bindParam(':result_project', $result_project, PDO::PARAM_STR);
+      $request->bindParam(':readiness', $readiness, PDO::PARAM_STR);
+      $request->bindParam(':period', $period, PDO::PARAM_STR);
+      $request->bindParam(':forms_of_support', $forms_of_support, PDO::PARAM_STR);
+      $request->bindParam(':protection', $protection, PDO::PARAM_STR);
+      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $request->bindParam(':solutions_hash', $solutions_hash, PDO::PARAM_STR);
+      $request->bindParam(':status', $status, PDO::PARAM_STR);
+      $request->bindParam(':date_receiving', $date_receiving, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+  public function insert_tech_services($id_service_on_referer,$id_entity,$name,$category,$object_type,$description,$district,$street,$link_preview,$links_add_files,$status,$additionally,$data_added,$service_hash,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services (id_service_on_referer,id_entity,name,category,object_type,description,district,street,link_preview,links_add_files,status,additionally,data_added,service_hash,id_referer)
+                                            VALUES (:id_service_on_referer,:id_entity,:name,:category,:object_type,:description,:district,:street,:link_preview,:links_add_files,:status,:additionally,:data_added,:service_hash,:id_referer)");
+
+
+      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_STR);
+      $request->bindParam(':id_entity', $id_entity, PDO::PARAM_STR);
+      $request->bindParam(':name', $name, PDO::PARAM_STR);
+      $request->bindParam(':category', $category, PDO::PARAM_STR);
+      $request->bindParam(':object_type', $object_type, PDO::PARAM_STR);
+      $request->bindParam(':description', $description, PDO::PARAM_STR);
+      $request->bindParam(':district', $district, PDO::PARAM_STR);
+      $request->bindParam(':street', $street, PDO::PARAM_STR);
+      $request->bindParam(':link_preview', $link_preview, PDO::PARAM_STR);
+      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $request->bindParam(':status', $status, PDO::PARAM_STR);
+      $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
+      $request->bindParam(':data_added', $data_added, PDO::PARAM_STR);
+      $request->bindParam(':service_hash', $service_hash, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_STR);
+
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+
+  public function insert_tech_services_comments($id_services_comments_on_referer,$id_service_on_referer,$id_tboil,$comment,$status,$date_update,$comments_hash,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services_comments (id_services_comments_on_referer,id_service_on_referer,id_tboil,comment,status,date_update,comments_hash,id_referer)
+                                            VALUES (:id_services_comments_on_referer,:id_service_on_referer,:id_tboil,:comment,:status,:date_update,:comments_hash,:id_referer)");
+
+      $request->bindParam(':id_services_comments_on_referer', $id_services_comments_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $request->bindParam(':comment', $comment, PDO::PARAM_STR);
+      $request->bindParam(':status', $status, PDO::PARAM_STR);
+      $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+      $request->bindParam(':comments_hash', $comments_hash, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+
+  public function insert_tech_services_rating($id_services_rating_on_referer,$id_service_on_referer,$id_comment,$id_tboil,$rating,$date_update,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services_rating (id_services_rating_on_referer,id_service_on_referer,id_comment,id_tboil,rating,date_update,id_referer)
+                                            VALUES (:id_services_rating_on_referer,:id_service_on_referer,:id_comment,:id_tboil,:rating,:date_update,:id_referer)");
+
+      $request->bindParam(':id_services_rating_on_referer', $id_services_rating_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_comment', $id_comment, PDO::PARAM_INT);
+      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $request->bindParam(':rating', $rating, PDO::PARAM_INT);
+      $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+
+  public function insert_tech_services_view($id_services_rating_on_referer,$id_service_on_referer,$id_comment,$id_tboil,$rating,$date_update,$id_referer){
+      global $database;
+
+      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services_view (id_services_rating_on_referer,id_service_on_referer,id_comment,id_tboil,rating,date_update,id_referer)
+                                            VALUES (:id_services_rating_on_referer,:id_service_on_referer,:id_comment,:id_tboil,:rating,:date_update,:id_referer)");
+
+      $request->bindParam(':id_services_rating_on_referer', $id_services_rating_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+      $request->bindParam(':id_comment', $id_comment, PDO::PARAM_INT);
+      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $request->bindParam(':rating', $rating, PDO::PARAM_INT);
+      $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+      $check_request = $request->execute();
+      $count_request = $request->rowCount();
+      if($count_request > 0) {
+        return true;
+        exit;
+      } else {
+        return false;
+        exit;
+      }
+    }
+
+
 
 
 
@@ -820,14 +1167,14 @@ class Settings {
 
 
   // Забор данных из ФНС
-  public function fns_base($inn,$json = false) {
+  public function fns_base($inn) {
        global $database;
 
-           $valid_inn = $this->is_valid_inn($inn);
+            $valid_inn = $this->is_valid_inn($inn);
 
-           if (!$valid_inn) {
-               return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
-           }
+             if (!$valid_inn) {
+                 return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
+             }
 
              $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
              $fnc = json_decode($data_fnc);
@@ -836,23 +1183,24 @@ class Settings {
              $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
 
              if ($chek_inn == '') {
-                   if ($chek_inn2 == '') {
-                       return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
-                   }
-                   else {
+                       if($chek_inn2 == '') {
+                            return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
+                       }
+             }
 
-                     $add_fns_database = $database->prepare("INSERT INTO $this->fns_database (inn,info) VALUES (:inn,:info)");
-                     $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_STR);
-                     $add_fns_database->bindParam(':info', $data_fnc, PDO::PARAM_STR);
-                     $check_add = $add_fns_database->execute();
-                     if (!$check_add) {
-                           return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
-                     }
-                     else {
-                           return json_encode(array('response' => true, 'data' => $fnc),JSON_UNESCAPED_UNICODE);
-                     }
-                   }
-          }
+             $date_pickup = date("Y-m-d H:i:s");
+
+             $add_fns_database = $database->prepare("UPDATE $this->MAIN_entity SET data_fns = :data_fns, date_pickup = :date_pickup  WHERE inn = :inn");
+             $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_INT);
+             $add_fns_database->bindParam(':data_fns', $data_fnc, PDO::PARAM_STR);
+             $add_fns_database->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+             $check_add = $add_fns_database->execute();
+             $count = $add_fns_database->rowCount();
+             if (!$count) {
+                   return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+             } else {
+                   return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Данные о компании обновленны в базе данных'),JSON_UNESCAPED_UNICODE);
+             }
      }
 
   // Загрузка данных из ФНС
