@@ -1,7 +1,7 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
 
 $key = $_POST['login'];
@@ -23,7 +23,7 @@ $id_user_tboil = $_POST['id_user_tboil'];
 $id_user = $_POST['id_user'];
 $id_entity = $_POST['id_entity'];
 $inn = $_POST['inn'];
-
+$position = $_POST["position"];
 
 /* для тестового режима */
 
