@@ -35,7 +35,8 @@ $house = $_POST["house"];
 $type_inf = $_POST["type_inf"];
 $additionally = $_POST["additionally"];
 
-
+$export = $_POST["export"];
+$branch = $_POST["branch"];
 
 $id_requests_on_referer = $_POST['id_requests_on_referer'];
 $id_solution_on_referer = $_POST['id_solution_on_referer'];
