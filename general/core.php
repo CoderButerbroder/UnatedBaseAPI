@@ -837,7 +837,7 @@ class Settings {
                       return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо привязано к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
                       exit;
                   } else {
-                      $statement = $database->prepare("SELECT $this->MAIN_user SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
+                      $statement = $database->prepare("UPDATE $this->MAIN_user SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
                       $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
                       $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
                       $statement->execute();
