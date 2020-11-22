@@ -646,7 +646,7 @@ class Settings {
                       return json_encode(array('response' => true, 'data' => $check_reg_user_in_base->data, 'description' => 'Пользотваль найден в единой базе данных'),JSON_UNESCAPED_UNICODE);
                       exit;
               } else {
-                      $data_user = json_decode($this->getUser_tboil($check_reg_user_in_base->data->userId))->data;
+                      $data_user = json_decode($this->getUser_tboil($data_user_tboil->data->userId))->data;
                       $today = date("Y-m-d H:i:s");
                       $resource = parse_url($resource, PHP_URL_HOST);
                       $hash = md5($data_user.$resource.$today);
@@ -657,6 +657,9 @@ class Settings {
                       $default_int = 0;
                       $role = 'user';
 
+                      return 'wtf23';
+
+
                       if (!$check_reg_user_in_base->data->lastName) {$secondName = '';} else {$secondName = $check_reg_user_in_base->data->lastName;}
                       if (!$check_reg_user_in_base->data->birthday) {$dob = "0000-00-00";} else {$dob = $check_reg_user_in_base->data->birthday;}
                       if (!$check_reg_user_in_base->data->leaderId) {$leaderId = 0;} else {$leaderId = $check_reg_user_in_base->data->leaderId;}
@@ -665,6 +668,7 @@ class Settings {
                       if (!$check_reg_user_in_base->data->company) {$company = '';} else {$company = $check_reg_user_in_base->data->company;}
                       if (!$check_reg_user_in_base->data->position) {$position = '';} else {$position = $check_reg_user_in_base->data->position;}
                       if (!$check_reg_user_in_base->data->profession) {$profession = '';} else {$profession = $check_reg_user_in_base->data->profession;}
+
 
                       $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
                       $new_user->bindParam(':id_tboil', $check_reg_user_in_base->data->userId, PDO::PARAM_INT);

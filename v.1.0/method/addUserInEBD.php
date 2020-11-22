@@ -11,6 +11,9 @@
    если пользовать не зарегистрирован то регистрирует пользователя и отдает его даные
 
 */
+
+
+
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
@@ -21,6 +24,7 @@ if ($data_user_tboil) {
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
                            $settings->recording_history($resource,'addUserInEBD',$check_valid_token);
+
 
       if (json_decode($check_valid_token)->response) {
               $response = $settings->auth_from_tboil($data_user_tboil,$resource);
