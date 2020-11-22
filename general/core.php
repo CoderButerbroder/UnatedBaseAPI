@@ -878,8 +878,58 @@ class Settings {
 
   }
 
+  // Обновление данных юридических лиц в единой базе данных
+  public function update_entity_field($field,$value_field,$id_entity) {
+    global $database;
+
+          $validFields = ['inn','data_fns','data_dadata','msp','site','region','staff','district','street','house','type_inf','additionally'];
+
+          if (!in_array($field, $validFields)) {
+              return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+
+          $check_entity = $this->get_data_entity($id_entity);
+
+          if (!json_decode($check_entity)->response) {
+              return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+
+          $field_ineger = [
+            'inn' => 'int',
+            'data_fns' => 'str',
+            'data_dadata' => 'str',
+            'msp' => 'str',
+            'site' => 'str',
+            'region' => 'str',
+            'staff' => 'str',
+            'district' => 'str',
+            'street' => 'str',
+            'house' => 'str',
+            'type_inf' => 'str',
+            'additionally' => 'str'
+          ];
+
+          $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id = :id_entity");
+          if ($field_ineger[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}
+          else                               { $statement->bindParam(':value', $value_field, PDO::PARAM_STR);}
+          $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $statement->execute();
+          $count = $statement->rowCount();
+
+          if($count > 0) {
+                return json_encode(array('response' => true, 'description' => 'Поле '.$field.' успешно было обновлено у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          } else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка обновления поля '.$field.' в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+
+  }
+
   // Добавление компании и привязка ее к физическому лицу
-  public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally){
+  public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch){
       global $database;
 
       $check_company = $this->get_data_entity_inn($inn);
@@ -911,8 +961,8 @@ class Settings {
             $default = '';
             $hash = md5($id_user_tboil.$inn.$msp.$site.$region.$staff.$district.$street.$house.$type_inf.$additionally.$date_pickup);
 
-            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,hash,date_pickup)
-                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:hash,:date_pickup)");
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branchhash,date_pickup)
+                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:hash,:date_pickup)");
             $request->bindParam(':inn', $inn, PDO::PARAM_INT);
             $request->bindParam(':data_fns', $default, PDO::PARAM_STR);
             $request->bindParam(':data_dadata', $default, PDO::PARAM_STR);
@@ -925,6 +975,8 @@ class Settings {
             $request->bindParam(':house', $house, PDO::PARAM_STR);
             $request->bindParam(':type_inf', $type_inf, PDO::PARAM_STR);
             $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
+            $request->bindParam(':export', $export, PDO::PARAM_STR);
+            $request->bindParam(':branch', $branch, PDO::PARAM_STR);
             $request->bindParam(':hash', $hash, PDO::PARAM_STR);
             $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
             $check_request = $request->execute();
