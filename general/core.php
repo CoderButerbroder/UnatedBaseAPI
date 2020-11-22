@@ -739,8 +739,9 @@ class Settings {
         global $database;
 
         $check_inn =  $this->is_valid_inn($inn);
+        $check_false_inn = $this->isJSON($check_inn);
 
-        if (!json_decode(is_valid_inn($inn)->response)) {
+        if ($check_false_inn) {
             return $check_inn;
             exit;
         }
@@ -765,7 +766,7 @@ class Settings {
 
         if (json_decode($data_user)->response) {
             if (json_decode($data_user)->data->id_entity != 0) {
-                $data_entity = $this->get_data_entity($id_entity);
+                $data_entity = $this->get_data_entity(json_decode($data_user)->data->id_entity);
                 if (json_decode($data_entity)->response) {
                     return json_encode(array('response' => true, 'user' => json_decode($data_user)->data, 'entity' => json_decode($data_entity)->data, 'description' => 'Данные о физическом и юридическом лице'),JSON_UNESCAPED_UNICODE);
                 } else {
@@ -817,7 +818,7 @@ class Settings {
           $add_fns_database->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
           $add_fns_database->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
           $check_add = $add_fns_database->execute();
-          $count = $request->rowCount();
+          $count = $add_fns_database->rowCount();
 
           if ($count) {
               return json_encode(array('response' => true, 'description' => 'Компания пользователя успешно обновлена'),JSON_UNESCAPED_UNICODE);
@@ -830,103 +831,103 @@ class Settings {
   }
 
   // Обновление данных пользователя в единой базе данных
-  public function update_user_field($field,$value_field,$id_user_tboil) {
-    global $database;
-
-      $validFields = ['email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession'];
-
-      if (!in_array($field, $validFields)) {
-          return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
-          exit;
-      }
-
-      $check_user = $this->get_all_data_user_id_tboil($id_user_tboil);
-
-      if (!json_decode($check_user)->response) {
-          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
-          exit;
-      }
-
-      $field_ineger = ['email' => 'str',
-                      'phone'=> 'str',
-                      'name'=> 'str',
-                      'last_name'=> 'str',
-                      'second_name'=> 'str',
-                      'DOB'=> 'str',
-                      'photo'=> 'str',
-                      'adres'=> 'str',
-                      'inn'=> 'int',
-                      'passport_id' => 'int',
-                      'company' => 'str',
-                      'position' => 'str',,
-                      'profession' => 'str'];
-
-      $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id_tboil = :id_tboil");
-      if ($field_ineger[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}
-      else                               { $statement->bindParam(':value', $value_field, PDO::PARAM_STR);}
-      $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
-      $statement->execute();
-      $count = $statement->rowCount();
-
-      if($count > 0) {
-            return json_encode(array('response' => true, 'description' => 'Поле '.$field.' успешно было обновлено у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
-            exit;
-      } else {
-            return json_encode(array('response' => false, 'description' => 'Ошибка обновления поля '.$field.' в единой базе данных'),JSON_UNESCAPED_UNICODE);
-            exit;
-      }
-
-  }
+  // public function update_user_field($field,$value_field,$id_user_tboil) {
+  //     global $database;
+  //
+  //     $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession');
+  //
+  //     if (!in_array($field, $validFields)) {
+  //         return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
+  //         exit;
+  //     }
+  //
+  //     $check_user = $this->get_all_data_user_id_tboil($id_user_tboil);
+  //
+  //     if (!json_decode($check_user)->response) {
+  //         return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
+  //         exit;
+  //     }
+  //
+  //     $field_integer = array('email' => 'str',
+  //                     'phone' => 'str',
+  //                     'name' => 'str',
+  //                     'last_name' => 'str',
+  //                     'second_name' => 'str',
+  //                     'DOB' => 'str',
+  //                     'photo' => 'str',
+  //                     'adres' => 'str',
+  //                     'inn' => 'int',
+  //                     'passport_id' => 'int',
+  //                     'company' => 'str',
+  //                     'position' => 'str',,
+  //                     'profession' => 'str');
+  //
+  //     $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id_tboil = :id_tboil");
+  //     if ($field_integer[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}
+  //     else                               { $statement->bindParam(':value', $value_field, PDO::PARAM_STR);}
+  //     $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+  //     $statement->execute();
+  //     $count = $statement->rowCount();
+  //
+  //     if($count > 0) {
+  //           return json_encode(array('response' => true, 'description' => 'Поле '.$field.' успешно было обновлено у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+  //           exit;
+  //     } else {
+  //           return json_encode(array('response' => false, 'description' => 'Ошибка обновления поля '.$field.' в единой базе данных'),JSON_UNESCAPED_UNICODE);
+  //           exit;
+  //     }
+  //
+  // }
 
   // Обновление данных юридических лиц в единой базе данных
-  public function update_entity_field($field,$value_field,$id_entity) {
-    global $database;
-
-          $validFields = ['inn','data_fns','data_dadata','msp','site','region','staff','district','street','house','type_inf','additionally'];
-
-          if (!in_array($field, $validFields)) {
-              return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
-              exit;
-          }
-
-          $check_entity = $this->get_data_entity($id_entity);
-
-          if (!json_decode($check_entity)->response) {
-              return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
-              exit;
-          }
-
-          $field_ineger = [
-            'inn' => 'int',
-            'data_fns' => 'str',
-            'data_dadata' => 'str',
-            'msp' => 'str',
-            'site' => 'str',
-            'region' => 'str',
-            'staff' => 'str',
-            'district' => 'str',
-            'street' => 'str',
-            'house' => 'str',
-            'type_inf' => 'str',
-            'additionally' => 'str'
-          ];
-
-          $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id = :id_entity");
-          if ($field_ineger[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}
-          else                               { $statement->bindParam(':value', $value_field, PDO::PARAM_STR);}
-          $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-          $statement->execute();
-          $count = $statement->rowCount();
-
-          if($count > 0) {
-                return json_encode(array('response' => true, 'description' => 'Поле '.$field.' успешно было обновлено у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
-                exit;
-          } else {
-                return json_encode(array('response' => false, 'description' => 'Ошибка обновления поля '.$field.' в единой базе данных'),JSON_UNESCAPED_UNICODE);
-                exit;
-          }
-
-  }
+  // public function update_entity_field($field,$value_field,$id_entity) {
+  //   global $database;
+  //
+  //         $validFields = array('inn','data_fns','data_dadata','msp','site','region','staff','district','street','house','type_inf','additionally');
+  //
+  //         if (!in_array($field, $validFields)) {
+  //             return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
+  //             exit;
+  //         }
+  //
+  //         $check_entity = $this->get_data_entity($id_entity);
+  //
+  //         if (!json_decode($check_entity)->response) {
+  //             return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
+  //             exit;
+  //         }
+  //
+  //         $field_ineger = array(
+  //           'inn' => 'int',
+  //           'data_fns' => 'str',
+  //           'data_dadata' => 'str',
+  //           'msp' => 'str',
+  //           'site' => 'str',
+  //           'region' => 'str',
+  //           'staff' => 'str',
+  //           'district' => 'str',
+  //           'street' => 'str',
+  //           'house' => 'str',
+  //           'type_inf' => 'str',
+  //           'additionally' => 'str'
+  //         );
+  //
+  //         $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id = :id_entity");
+  //         if ($field_ineger[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}
+  //         else                               { $statement->bindParam(':value', $value_field, PDO::PARAM_STR);}
+  //         $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+  //         $statement->execute();
+  //         $count = $statement->rowCount();
+  //
+  //         if($count > 0) {
+  //               return json_encode(array('response' => true, 'description' => 'Поле '.$field.' успешно было обновлено у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+  //               exit;
+  //         } else {
+  //               return json_encode(array('response' => false, 'description' => 'Ошибка обновления поля '.$field.' в единой базе данных'),JSON_UNESCAPED_UNICODE);
+  //               exit;
+  //         }
+  //
+  // }
 
   // Добавление компании и привязка ее к физическому лицу
   public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch){
@@ -935,7 +936,8 @@ class Settings {
       $check_company = $this->get_data_entity_inn($inn);
 
       if (json_decode($check_company)->response) {
-              $statement = $database->prepare("SELECT * FROM $this->MAIN_user WHERE id_entity = :id_entity");
+
+              $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id_entity = :id_entity");
               $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
               $statement->execute();
               $data = $statement->fetch(PDO::FETCH_OBJ);
@@ -945,7 +947,7 @@ class Settings {
                       return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо привязано к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
                       exit;
                   } else {
-                      $statement = $database->prepare("UPDATE $this->MAIN_user SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
+                      $statement = $database->prepare("UPDATE $this->main_users SET id_entity = :id_entity WHERE id_tboil = :id_tboil");
                       $statement->bindParam(':id_entity', json_decode($check_company)->data->id, PDO::PARAM_INT);
                       $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
                       $statement->execute();
@@ -959,9 +961,10 @@ class Settings {
 
             $date_pickup = date("Y-m-d H:i:s");
             $default = '';
+
             $hash = md5($id_user_tboil.$inn.$msp.$site.$region.$staff.$district.$street.$house.$type_inf.$additionally.$date_pickup);
 
-            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branchhash,date_pickup)
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branch,hash,date_pickup)
                                                   VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:hash,:date_pickup)");
             $request->bindParam(':inn', $inn, PDO::PARAM_INT);
             $request->bindParam(':data_fns', $default, PDO::PARAM_STR);
@@ -980,16 +983,18 @@ class Settings {
             $request->bindParam(':hash', $hash, PDO::PARAM_STR);
             $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
             $check_request = $request->execute();
-            $id_request = $request->lastInsertId();
+            //$id_request = $request->rowCount();
+            $id_request = $database->lastInsertId();
+
             if($id_request > 0) {
 
-                  $check_fns = json_decode($this->fns_base($inn));
+                  $check_fns = $this->fns_base($inn);
 
-                  if (json_decode($check_fns)->responce) {
+                  if (json_decode($check_fns)->response) {
 
                       $check_update_user = $this->update_entity_user($id_user_tboil,$id_request);
 
-                      if (json_decode($check_update_user)->responce) {
+                      if (json_decode($check_update_user)->response) {
 
                             $check_dadata = $this->find_entity($inn);
 
@@ -1001,7 +1006,9 @@ class Settings {
 
                             $check_data_entity = $this->get_data_entity_inn($inn);
 
-                            return json_encode(array('response' => true, 'user' => json_decode($check_update_user)->data, 'entity' => json_decode($check_data_entity)->data, 'description' => 'Юридическое лицо успешно зарегитрировано и привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
+                            $check_data_user = $this->get_user_data_id_boil($id_user_tboil);
+
+                            return json_encode(array('response' => true,  'user' => json_decode($check_data_user)->data, 'entity' => json_decode(json_decode($check_data_entity)->data), 'description' => 'Юридическое лицо успешно зарегиcтрировано и привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
                             exit;
                       } else {
                           return $check_update_user;
@@ -1409,12 +1416,15 @@ class Settings {
        global $database;
 
             $valid_inn = $this->is_valid_inn($inn);
+            $check_false_inn = $this->isJSON($valid_inn);
 
-             if (!$valid_inn) {
+            if ($check_false_inn) {
                  return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
              }
 
-             $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$this->get_global_settings('api_fns_key'));
+             $token_fns = $this->get_global_settings('api_fns_key');
+
+             $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$token_fns);
              $fnc = json_decode($data_fnc);
 
              $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
@@ -1423,6 +1433,7 @@ class Settings {
              if ($chek_inn == '') {
                        if($chek_inn2 == '') {
                             return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
+                            exit;
                        }
              }
 
@@ -1436,8 +1447,10 @@ class Settings {
              $count = $add_fns_database->rowCount();
              if (!$count) {
                    return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                   exit;
              } else {
                    return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Данные о компании обновленны в базе данных'),JSON_UNESCAPED_UNICODE);
+                   exit;
              }
      }
 

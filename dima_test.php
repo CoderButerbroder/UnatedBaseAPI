@@ -6,13 +6,13 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$phone = '79819867151';
-
-$check_email = $settings->standart_phone($phone);
+// $inn = '7840390119';
+//
+// $check_email = $settings->fns_base($inn);
 
 // $check_email =  json_encode([$email]);
 
-var_dump(json_decode($check_email));
+var_dump($check_email);
 
 
 ?>
