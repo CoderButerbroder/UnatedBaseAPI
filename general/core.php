@@ -569,7 +569,6 @@ class Settings {
 
   }
 
-
   // функция регистрации физического лица
   public function register_user($email,$name,$secondName,$lastName,$position,$phone,$company,$city,$redirectUrl,$password,$resource) {
     global $database;
@@ -636,6 +635,9 @@ class Settings {
 
   // авторизация пользотваеля через tboil (сюда приходят декодированые данные полученные данные с платформы по методу /api/v2/getUser/?token=)
   public function auth_from_tboil($data_user_tboil,$resource) {
+
+      $check_json = $this->isJSON($string);
+
 
       $data_user_tboil = json_decode($data_user_tboil);
 
@@ -915,69 +917,151 @@ class Settings {
 
     }
 
-  //
-  public function insert_tech_requests($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
+  // функция добавления или обновления данных по технологическому запросу
+  public function tech_requests($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
       global $database;
 
-      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests (id_requests_on_referer,id_entity,name_request,description,demand,collection_time,links_to_logos,type_request,links_add_files,request_hash,status,date_added,id_referer)
-                                            VALUES (:id_requests_on_referer,:id_entity,:name_request,:description,:demand,:collection_time,:links_to_logos,:type_request,:links_add_files,:request_hash,:status,:date_added,:id_referer)");
 
-      $request->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_STR);
-      $request->bindParam(':id_entity', $id_entity, PDO::PARAM_STR);
-      $request->bindParam(':name_request', $name_request, PDO::PARAM_STR);
-      $request->bindParam(':description', $description, PDO::PARAM_STR);
-      $request->bindParam(':demand', $demand, PDO::PARAM_STR);
-      $request->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
-      $request->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
-      $request->bindParam(':type_request', $type_request, PDO::PARAM_STR);
-      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $request->bindParam(':request_hash', $request_hash, PDO::PARAM_STR);
-      $request->bindParam(':status', $status, PDO::PARAM_STR);
-      $request->bindParam(':date_added', $date_added, PDO::PARAM_STR);
-      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_STR);
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_tech_requests WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
+      $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+      $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
+      $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
 
-      $check_request = $request->execute();
-      $count_request = $request->rowCount();
-      if($count_request > 0) {
-        return true;
-        exit;
+      if ($data) {
+
+          $statement = $database->prepare("UPDATE $this->MAIN_entity_tech_requests SET name_request = :name_request, description = :description, demand = :demand, collection_time = :collection_time, links_to_logos = :links_to_logos, type_request = :type_request, links_add_files = :links_add_files, request_hash = :request_hash, status = :status, date_added = :date_added WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
+          $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+          $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+          $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
+          $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $statement->bindParam(':name_request', $name_request, PDO::PARAM_STR);
+          $statement->bindParam(':description', $description, PDO::PARAM_STR);
+          $statement->bindParam(':demand', $demand, PDO::PARAM_STR);
+          $statement->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
+          $statement->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
+          $statement->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+          $statement->bindParam(':request_hash', $request_hash, PDO::PARAM_STR);
+          $statement->bindParam(':status', $status, PDO::PARAM_STR);
+          $statement->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+          $check_add = $statement->execute();
+          $count = $statement->rowCount();
+
+          if($count > 0) {
+                return json_encode(array('response' => true, 'description' => 'Технологический запрос успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          } else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка обновления данных по технологическому запросу в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+
       } else {
-        return false;
-        exit;
+
+          $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests (id_requests_on_referer,id_entity,name_request,description,demand,collection_time,links_to_logos,type_request,links_add_files,request_hash,status,date_added,id_referer)
+                                                VALUES (:id_requests_on_referer,:id_entity,:name_request,:description,:demand,:collection_time,:links_to_logos,:type_request,:links_add_files,:request_hash,:status,:date_added,:id_referer)");
+
+          $request->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
+          $request->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $request->bindParam(':name_request', $name_request, PDO::PARAM_STR);
+          $request->bindParam(':description', $description, PDO::PARAM_STR);
+          $request->bindParam(':demand', $demand, PDO::PARAM_STR);
+          $request->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
+          $request->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
+          $request->bindParam(':type_request', $type_request, PDO::PARAM_STR);
+          $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+          $request->bindParam(':request_hash', $request_hash, PDO::PARAM_STR);
+          $request->bindParam(':status', $status, PDO::PARAM_STR);
+          $request->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+          $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+          $check_request = $request->execute();
+          $count_request = $request->rowCount();
+          if($count_request > 0) {
+                return json_encode(array('response' => true, 'description' => 'Технологического запрос успешно добавлен в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          } else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка добавления данных по технологическому запросу в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+
       }
+
     }
 
-  public function insert_tech_requests_solutions($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
+  //
+  public function tech_requests_solutions($id_requests_on_referer,$id_solution_on_referer,$id_tboil,$name_project,$description,$result_project,$readiness,$period,$forms_of_support){
       global $database;
 
-      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests_solutions (id_request_on_referer,id_solution_on_referer,id_tboil,name_project,description,result_project,readiness,period,forms_of_support,protection,links_add_files,solutions_hash,status,date_receiving,id_referer)
-                                            VALUES (:id_request_on_referer,:id_solution_on_referer,:id_tboil,:name_project,:description,:result_project,:readiness,:period,:forms_of_support,:protection,:links_add_files,:solutions_hash,:status,:date_receiving,:id_referer)");
+            $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_tech_requests_solutions WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
+            $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+            $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+            $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
+            $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+            $statement->execute();
+            $data = $statement->fetch(PDO::FETCH_OBJ);
 
-      $request->bindParam(':id_request_on_referer', $id_request_on_referer, PDO::PARAM_INT);
-      $request->bindParam(':id_solution_on_referer', $id_solution_on_referer, PDO::PARAM_INT);
-      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-      $request->bindParam(':name_project', $name_project, PDO::PARAM_STR);
-      $request->bindParam(':description', $description, PDO::PARAM_STR);
-      $request->bindParam(':result_project', $result_project, PDO::PARAM_STR);
-      $request->bindParam(':readiness', $readiness, PDO::PARAM_STR);
-      $request->bindParam(':period', $period, PDO::PARAM_STR);
-      $request->bindParam(':forms_of_support', $forms_of_support, PDO::PARAM_STR);
-      $request->bindParam(':protection', $protection, PDO::PARAM_STR);
-      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $request->bindParam(':solutions_hash', $solutions_hash, PDO::PARAM_STR);
-      $request->bindParam(':status', $status, PDO::PARAM_STR);
-      $request->bindParam(':date_receiving', $date_receiving, PDO::PARAM_STR);
-      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+            if ($data) {
 
-      $check_request = $request->execute();
-      $count_request = $request->rowCount();
-      if($count_request > 0) {
-        return true;
-        exit;
-      } else {
-        return false;
-        exit;
-      }
+                $statement = $database->prepare("UPDATE $this->MAIN_entity_tech_requests_solutions SET name_request = :name_request, description = :description, demand = :demand, collection_time = :collection_time, links_to_logos = :links_to_logos, type_request = :type_request, links_add_files = :links_add_files, request_hash = :request_hash, status = :status, date_added = :date_added WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
+                $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+                $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+                $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
+                $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+                $statement->bindParam(':name_request', $name_request, PDO::PARAM_STR);
+                $statement->bindParam(':description', $description, PDO::PARAM_STR);
+                $statement->bindParam(':demand', $demand, PDO::PARAM_STR);
+                $statement->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
+                $statement->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
+                $statement->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+                $statement->bindParam(':request_hash', $request_hash, PDO::PARAM_STR);
+                $statement->bindParam(':status', $status, PDO::PARAM_STR);
+                $statement->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+                $check_add = $statement->execute();
+                $count = $statement->rowCount();
+
+                if($count > 0) {
+                      return json_encode(array('response' => true, 'description' => 'Технологический запрос успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                } else {
+                      return json_encode(array('response' => false, 'description' => 'Ошибка обновления данных по технологическому запросу в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                }
+
+            } else {
+
+                $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests_solutions (id_request_on_referer,id_solution_on_referer,id_tboil,name_project,description,result_project,readiness,period,forms_of_support,protection,links_add_files,solutions_hash,status,date_receiving,id_referer)
+                                                      VALUES (:id_request_on_referer,:id_solution_on_referer,:id_tboil,:name_project,:description,:result_project,:readiness,:period,:forms_of_support,:protection,:links_add_files,:solutions_hash,:status,:date_receiving,:id_referer)");
+
+                $request->bindParam(':id_request_on_referer', $id_request_on_referer, PDO::PARAM_INT);
+                $request->bindParam(':id_solution_on_referer', $id_solution_on_referer, PDO::PARAM_INT);
+                $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+                $request->bindParam(':name_project', $name_project, PDO::PARAM_STR);
+                $request->bindParam(':description', $description, PDO::PARAM_STR);
+                $request->bindParam(':result_project', $result_project, PDO::PARAM_STR);
+                $request->bindParam(':readiness', $readiness, PDO::PARAM_STR);
+                $request->bindParam(':period', $period, PDO::PARAM_STR);
+                $request->bindParam(':forms_of_support', $forms_of_support, PDO::PARAM_STR);
+                $request->bindParam(':protection', $protection, PDO::PARAM_STR);
+                $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+                $request->bindParam(':solutions_hash', $solutions_hash, PDO::PARAM_STR);
+                $request->bindParam(':status', $status, PDO::PARAM_STR);
+                $request->bindParam(':date_receiving', $date_receiving, PDO::PARAM_STR);
+                $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+                $check_request = $request->execute();
+                $count_request = $request->rowCount();
+                if($count_request > 0) {
+                      return json_encode(array('response' => true, 'description' => 'Технологическое решение успешно добавлено в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                } else {
+                      return json_encode(array('response' => false, 'description' => 'Ошибка добавления данных по технологическому запросу в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                }
+
+            }
+
     }
 
   public function insert_tech_services($id_service_on_referer,$id_entity,$name,$category,$object_type,$description,$district,$street,$link_preview,$links_add_files,$status,$additionally,$data_added,$service_hash,$id_referer){
