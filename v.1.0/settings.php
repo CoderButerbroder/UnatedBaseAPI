@@ -35,6 +35,28 @@ $house = $_POST["house"];
 $type_inf = $_POST["type_inf"];
 $additionally = $_POST["additionally"];
 
+
+
+$id_requests_on_referer = $_POST['id_requests_on_referer'];
+$id_solution_on_referer = $_POST['id_solution_on_referer'];
+$name_project = $_POST['name_project'];
+$description = $_POST['description'];
+$result_project = $_POST['result_project'];
+$readiness = $_POST['readiness'];
+$period = $_POST['period'];
+$forms_of_support = $_POST['forms_of_support'];
+$protection = $_POST['protection'];
+$links_add_files = $_POST['links_add_files'];
+$solutions_hash = $_POST['solutions_hash'];
+$status = $_POST['status'];
+$date_receiving = $_POST['date_receiving'];
+$id_referer = $_POST['id_referer'];
+
+
+$field = $_POST['field'];
+$value_field = $_POST['value_field'];
+
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';
