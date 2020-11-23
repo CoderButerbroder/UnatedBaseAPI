@@ -70,6 +70,11 @@ $date_update = $_POST['comment'];
 $comments_hash = $_POST['comments_hash'];
 
 
+$id_services_rating_on_referer = $_POST['id_services_rating_on_referer'];
+$id_comment = $_POST['id_comment'];
+$rating = $_POST['rating'];
+
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';

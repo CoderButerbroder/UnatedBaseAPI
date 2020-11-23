@@ -1289,10 +1289,10 @@ class Settings {
                 $count = $statement->rowCount();
 
                 if($count > 0) {
-                      return json_encode(array('response' => true, 'description' => 'Технологический запрос успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => true, 'description' => 'Комментарий к сервису успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
                       exit;
                 } else {
-                      return json_encode(array('response' => false, 'description' => 'Ошибка обновления данных по технологическому запросу в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => false, 'description' => 'Ошибка обновления комментаря к сервису по технологическому запросу в единой базе данных'),JSON_UNESCAPED_UNICODE);
                       exit;
                 }
 
@@ -1326,7 +1326,7 @@ class Settings {
     }
 
   // Добавление и обновление данных по рейтингу к сервису
-  public function insert_tech_services_rating($id_services_rating_on_referer,$id_service_on_referer,$id_comment,$id_user_tboil,$rating,$date_update,$id_referer){
+  public function tech_services_rating($id_services_rating_on_referer,$id_service_on_referer,$id_comment,$id_user_tboil,$rating,$date_update,$id_referer){
       global $database;
 
 
@@ -1341,7 +1341,7 @@ class Settings {
 
       if ($data) {
 
-            $request = $database->prepare("UPDATE $this->MAIN_entity_tech_services_rating SET comment = :comment, status = :status, date_update = :date_update, comments_hash = :comments_hash WHERE id_referer = :id_referer AND id_services_comments_on_referer = :id_services_comments_on_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
+            $request = $database->prepare("UPDATE $this->MAIN_entity_tech_services_rating SET id_services_rating_on_referer = :id_services_rating_on_referer, id_service_on_referer = :id_service_on_referer, id_comment = :id_comment, id_tboil = :id_tboil, rating = :rating, date_update = :date_update, id_referer = :id_referer WHERE id_referer = :id_referer AND id_services_comments_on_referer = :id_services_comments_on_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
 
             $request->bindParam(':id_services_rating_on_referer', $id_services_rating_on_referer, PDO::PARAM_INT);
             $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
