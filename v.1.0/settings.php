@@ -64,6 +64,11 @@ $link_preview = $_POST['link_preview'];
 $data_added = $_POST['data_added'];
 $service_hash = $_POST['service_hash'];
 
+$id_services_comments_on_referer = $_POST['id_services_comments_on_referer'];
+$comment =  $_POST['comment'];
+$date_update = $_POST['comment'];
+$comments_hash = $_POST['comments_hash'];
+
 
 /* для тестового режима */
 

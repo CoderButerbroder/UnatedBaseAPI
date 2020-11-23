@@ -23,7 +23,7 @@ if ($id_user) {
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для регистрации на tboil'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для получения данных пользоватея из единой базы данных по id'),JSON_UNESCAPED_UNICODE);
       exit;
 }
 
