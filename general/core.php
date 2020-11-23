@@ -1166,8 +1166,8 @@ class Settings {
                 $statement->bindParam(':date_receiving', $date_receiving, PDO::PARAM_STR);
                 $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
 
-                $check_request = $request->execute();
-                $count_request = $request->rowCount();
+                $check_request = $statement->execute();
+                $count_request = $statement->rowCount();
                 if($count_request > 0) {
                       return json_encode(array('response' => true, 'description' => ' Ответ на технологический запрос успешно добавлен в единую базу данных'),JSON_UNESCAPED_UNICODE);
                       exit;
@@ -1285,8 +1285,8 @@ class Settings {
                 $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
                 $request->bindParam(':comments_hash', $comments_hash, PDO::PARAM_STR);
                 $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
-                $check_add = $statement->execute();
-                $count = $statement->rowCount();
+                $check_add = $request->execute();
+                $count = $request->rowCount();
 
                 if($count > 0) {
                       return json_encode(array('response' => true, 'description' => 'Комментарий к сервису успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
@@ -1350,8 +1350,8 @@ class Settings {
             $request->bindParam(':rating', $rating, PDO::PARAM_INT);
             $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
             $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
-            $check_add = $statement->execute();
-            $count = $statement->rowCount();
+            $check_add = $request->execute();
+            $count = $request->rowCount();
 
             if($count > 0) {
                   return json_encode(array('response' => true, 'description' => 'Технологический запрос успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
@@ -1391,30 +1391,64 @@ class Settings {
 
     }
 
-
-  public function insert_tech_services_view($id_services_rating_on_referer,$id_service_on_referer,$id_comment,$id_tboil,$rating,$date_update,$id_referer){
+  // добавление просмотра сервиса
+  public function tech_services_view($id_services_view_on_referer,$id_service_on_referer,$id_user_tboil,$view,$date_update,$id_referer){
       global $database;
 
-      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services_view (id_services_rating_on_referer,id_service_on_referer,id_comment,id_tboil,rating,date_update,id_referer)
-                                            VALUES (:id_services_rating_on_referer,:id_service_on_referer,:id_comment,:id_tboil,:rating,:date_update,:id_referer)");
 
-      $request->bindParam(':id_services_rating_on_referer', $id_services_rating_on_referer, PDO::PARAM_INT);
-      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
-      $request->bindParam(':id_comment', $id_comment, PDO::PARAM_INT);
-      $request->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-      $request->bindParam(':rating', $rating, PDO::PARAM_INT);
-      $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
-      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+            $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_tech_services_view WHERE id_referer = :id_referer AND id_services_view_on_referer = :id_services_view_on_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
+            $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+            $statement->bindParam(':id_services_view_on_referer', $id_services_view_on_referer, PDO::PARAM_INT);
+            $statement->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+            $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+            $statement->execute();
+            $data = $statement->fetch(PDO::FETCH_OBJ);
 
-      $check_request = $request->execute();
-      $count_request = $request->rowCount();
-      if($count_request > 0) {
-        return true;
-        exit;
-      } else {
-        return false;
-        exit;
-      }
+            if ($data) {
+
+                  $request = $database->prepare("UPDATE $this->MAIN_entity_tech_services_view SET id_services_view_on_referer = :id_services_view_on_referer, id_service_on_referer = :id_service_on_referer, id_user_tboil = :id_user_tboil, view = :view, date_update = :date_update, id_referer = :id_referer WHERE id_referer = :id_referer AND id_services_view_on_referer = :id_services_view_on_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
+
+                  $request->bindParam(':id_services_view_on_referer', $id_services_view_on_referer, PDO::PARAM_INT);
+                  $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+                  $request->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+                  $request->bindParam(':view', $view, PDO::PARAM_INT);
+                  $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+                  $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+                  $check_add = $request->execute();
+                  $count = $request->rowCount();
+
+                  if($count > 0) {
+                        return json_encode(array('response' => true, 'description' => 'Просмотр сервиса успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                        exit;
+                  } else {
+                        return json_encode(array('response' => false, 'description' => 'Ошибка обновления просмотра к сервису по технологическому запросу в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                        exit;
+                  }
+
+            } else {
+
+                  $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services_view (id_services_view_on_referer,id_service_on_referer,id_user_tboil,view,date_update,id_referer)
+                                                        VALUES (:id_services_view_on_referer,:id_service_on_referer,:id_user_tboil,:view,:date_update,:id_referer)");
+
+                  $request->bindParam(':id_services_view_on_referer', $id_services_view_on_referer, PDO::PARAM_INT);
+                  $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+                  $request->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+                  $request->bindParam(':view', $view, PDO::PARAM_INT);
+                  $request->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+                  $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+                  $check_request = $request->execute();
+                  $count_request = $request->rowCount();
+                  if($count_request > 0) {
+                        return json_encode(array('response' => true, 'description' => 'Просмотр сервиса успешно добавлен в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                        exit;
+                  } else {
+                        return json_encode(array('response' => false, 'description' => 'Ошибка добавления просмотра к сервису в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                        exit;
+                  }
+
+            }
+
     }
 
 

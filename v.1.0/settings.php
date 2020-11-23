@@ -74,6 +74,8 @@ $id_services_rating_on_referer = $_POST['id_services_rating_on_referer'];
 $id_comment = $_POST['id_comment'];
 $rating = $_POST['rating'];
 
+$id_services_view_on_referer = $_POST['id_services_view_on_referer'];
+$view = $_POST['view'];
 
 /* для тестового режима */
 
