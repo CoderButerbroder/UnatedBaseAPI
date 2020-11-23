@@ -1008,7 +1008,7 @@ class Settings {
 
                             $check_data_user = $this->get_user_data_id_boil($id_user_tboil);
 
-                            return json_encode(array('response' => true,  'user' => json_decode($check_data_user)->data, 'entity' => json_decode(json_decode($check_data_entity)->data), 'description' => 'Юридическое лицо успешно зарегиcтрировано и привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(array('response' => true,  'user' => json_decode($check_data_user)->data, 'entity' => json_decode($check_data_entity)->data, 'description' => 'Юридическое лицо успешно зарегиcтрировано и привязано к вашему аккаунту'),JSON_UNESCAPED_UNICODE);
                             exit;
                       } else {
                           return $check_update_user;
@@ -1029,7 +1029,7 @@ class Settings {
     }
 
   // функция добавления и обновления данных по технологическому запросу
-  public function tech_requests($id_requests_on_referer,$id_entity,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
+  public function tech_requests($id_requests_on_referer,$id_entity,$id_user_tboil,$name_request,$description,$demand,$collection_time,$links_to_logos,$type_request,$links_add_files,$request_hash,$status,$date_added,$id_referer){
       global $database;
 
 
@@ -1042,10 +1042,11 @@ class Settings {
 
       if ($data) {
 
-          $statement = $database->prepare("UPDATE $this->MAIN_entity_tech_requests SET name_request = :name_request, description = :description, demand = :demand, collection_time = :collection_time, links_to_logos = :links_to_logos, type_request = :type_request, links_add_files = :links_add_files, request_hash = :request_hash, status = :status, date_added = :date_added WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
+          $statement = $database->prepare("UPDATE $this->MAIN_entity_tech_requests SET name_request = :name_request, id_tboil = :id_tboil, description = :description, demand = :demand, collection_time = :collection_time, links_to_logos = :links_to_logos, type_request = :type_request, links_add_files = :links_add_files, request_hash = :request_hash, status = :status, date_added = :date_added WHERE id_referer = :id_referer AND id_requests_on_referer = :id_requests_on_referer AND id_entity = :id_entity");
           $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
           $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
           $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
           $statement->bindParam(':name_request', $name_request, PDO::PARAM_STR);
           $statement->bindParam(':description', $description, PDO::PARAM_STR);
           $statement->bindParam(':demand', $demand, PDO::PARAM_STR);
@@ -1068,11 +1069,12 @@ class Settings {
 
       } else {
 
-          $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests (id_requests_on_referer,id_entity,name_request,description,demand,collection_time,links_to_logos,type_request,links_add_files,request_hash,status,date_added,id_referer)
-                                                VALUES (:id_requests_on_referer,:id_entity,:name_request,:description,:demand,:collection_time,:links_to_logos,:type_request,:links_add_files,:request_hash,:status,:date_added,:id_referer)");
+          $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests (id_requests_on_referer,id_entity,id_tboil,name_request,description,demand,collection_time,links_to_logos,type_request,links_add_files,request_hash,status,date_added,id_referer)
+                                                VALUES (:id_requests_on_referer,:id_entity,:id_tboil,:name_request,:description,:demand,:collection_time,:links_to_logos,:type_request,:links_add_files,:request_hash,:status,:date_added,:id_referer)");
 
           $request->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
           $request->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $request->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
           $request->bindParam(':name_request', $name_request, PDO::PARAM_STR);
           $request->bindParam(':description', $description, PDO::PARAM_STR);
           $request->bindParam(':demand', $demand, PDO::PARAM_STR);
@@ -1177,40 +1179,83 @@ class Settings {
 
     }
 
-
-  public function insert_tech_services($id_service_on_referer,$id_entity,$name,$category,$object_type,$description,$district,$street,$link_preview,$links_add_files,$status,$additionally,$data_added,$service_hash,$id_referer){
+  // функция добавления и обновления данных по сервису в базу данных
+  public function tech_services($id_service_on_referer,$id_entity,$id_user_tboil,$name,$category,$object_type,$description,$district,$street,$link_preview,$links_add_files,$status,$additionally,$data_added,$service_hash,$id_referer){
       global $database;
 
-      $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services (id_service_on_referer,id_entity,name,category,object_type,description,district,street,link_preview,links_add_files,status,additionally,data_added,service_hash,id_referer)
-                                            VALUES (:id_service_on_referer,:id_entity,:name,:category,:object_type,:description,:district,:street,:link_preview,:links_add_files,:status,:additionally,:data_added,:service_hash,:id_referer)");
 
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_tech_services WHERE id_referer = :id_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
+      $statement->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $statement->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+      $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
 
-      $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_STR);
-      $request->bindParam(':id_entity', $id_entity, PDO::PARAM_STR);
-      $request->bindParam(':name', $name, PDO::PARAM_STR);
-      $request->bindParam(':category', $category, PDO::PARAM_STR);
-      $request->bindParam(':object_type', $object_type, PDO::PARAM_STR);
-      $request->bindParam(':description', $description, PDO::PARAM_STR);
-      $request->bindParam(':district', $district, PDO::PARAM_STR);
-      $request->bindParam(':street', $street, PDO::PARAM_STR);
-      $request->bindParam(':link_preview', $link_preview, PDO::PARAM_STR);
-      $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $request->bindParam(':status', $status, PDO::PARAM_STR);
-      $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
-      $request->bindParam(':data_added', $data_added, PDO::PARAM_STR);
-      $request->bindParam(':service_hash', $service_hash, PDO::PARAM_STR);
-      $request->bindParam(':id_referer', $id_referer, PDO::PARAM_STR);
+      if ($data) {
 
+          $request = $database->prepare("UPDATE $this->MAIN_entity_tech_services SET id_entity = :id_entity, name = :name, category = :category, object_type = :object_type, description = :description, district = :district, street = :street, link_preview = :link_preview, links_add_files = :links_add_files, status = :status, additionally = :additionally, data_added = :data_added, service_hash = :service_hash WHERE id_referer = :id_referer AND id_service_on_referer = :id_service_on_referer AND id_tboil = :id_tboil");
 
-      $check_request = $request->execute();
-      $count_request = $request->rowCount();
-      if($count_request > 0) {
-        return true;
-        exit;
+          $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+          $request->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+          $request->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+          $request->bindParam(':name', $name, PDO::PARAM_STR);
+          $request->bindParam(':category', $category, PDO::PARAM_STR);
+          $request->bindParam(':object_type', $object_type, PDO::PARAM_STR);
+          $request->bindParam(':description', $description, PDO::PARAM_STR);
+          $request->bindParam(':district', $district, PDO::PARAM_STR);
+          $request->bindParam(':street', $street, PDO::PARAM_STR);
+          $request->bindParam(':link_preview', $link_preview, PDO::PARAM_STR);
+          $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+          $request->bindParam(':status', $status, PDO::PARAM_STR);
+          $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
+          $request->bindParam(':data_added', $data_added, PDO::PARAM_STR);
+          $request->bindParam(':service_hash', $service_hash, PDO::PARAM_STR);
+          $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+          $check_add = $request->execute();
+          $count = $request->rowCount();
+
+          if($count > 0) {
+                return json_encode(array('response' => true, 'description' => 'Сервис успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          } else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка обновления сервиса в единой базе данных'),JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+
       } else {
-        return false;
-        exit;
+
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_services (id_service_on_referer,id_entity,id_tboil,name,category,object_type,description,district,street,link_preview,links_add_files,status,additionally,data_added,service_hash,id_referer)
+                                                  VALUES (:id_service_on_referer,:id_entity,:id_tboil,:name,:category,:object_type,:description,:district,:street,:link_preview,:links_add_files,:status,:additionally,:data_added,:service_hash,:id_referer)");
+            $request->bindParam(':id_service_on_referer', $id_service_on_referer, PDO::PARAM_INT);
+            $request->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+            $request->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+            $request->bindParam(':name', $name, PDO::PARAM_STR);
+            $request->bindParam(':category', $category, PDO::PARAM_STR);
+            $request->bindParam(':object_type', $object_type, PDO::PARAM_STR);
+            $request->bindParam(':description', $description, PDO::PARAM_STR);
+            $request->bindParam(':district', $district, PDO::PARAM_STR);
+            $request->bindParam(':street', $street, PDO::PARAM_STR);
+            $request->bindParam(':link_preview', $link_preview, PDO::PARAM_STR);
+            $request->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+            $request->bindParam(':status', $status, PDO::PARAM_STR);
+            $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
+            $request->bindParam(':data_added', $data_added, PDO::PARAM_STR);
+            $request->bindParam(':service_hash', $service_hash, PDO::PARAM_STR);
+            $request->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+
+            $check_request = $request->execute();
+            $count_request = $request->rowCount();
+            if($count_request > 0) {
+                  return json_encode(array('response' => true, 'description' => 'Сервис успешно добавлен в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                  exit;
+            } else {
+                  return json_encode(array('response' => false, 'description' => 'Ошибка добавления сервиса в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                  exit;
+            }
+
       }
+
+
     }
 
 

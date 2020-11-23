@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if ($id_requests_on_referer && $id_solution_on_referer && $id_entity && $id_user_tboil && $name_project && $description && $result_project && $readiness && $period && $forms_of_support && $protection && $links_add_files && $solutions_hash && $status && $date_receiving && $id_referer) {
+if ($id_requests_on_referer && $id_solution_on_referer && isset($id_entity) && $id_user_tboil && isset($name_project) && isset($description) && isset($result_project) && isset($readiness) && isset($period) && isset($forms_of_support) && isset($protection) && isset($links_add_files) && isset($solutions_hash) && isset($status) && isset($date_receiving) && $id_referer) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);

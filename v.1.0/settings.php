@@ -57,6 +57,13 @@ $id_referer = $_POST['id_referer'];
 $field = $_POST['field'];
 $value_field = $_POST['value_field'];
 
+$id_service_on_referer = $_POST['id_service_on_referer'];
+$category = $_POST['category'];
+$object_type = $_POST['object_type'];
+$link_preview = $_POST['link_preview'];
+$data_added = $_POST['data_added'];
+$service_hash = $_POST['service_hash'];
+
 
 /* для тестового режима */
 
