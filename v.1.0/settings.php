@@ -79,6 +79,15 @@ $view = $_POST['view'];
 
 $massiv_field_value = $_POST['massiv_field_value'];
 
+
+$name_request = $_POST['name_request'];
+$id_requests_on_referer = $_POST['id_requests_on_referer'];
+$links_to_logos = $_POST['links_to_logos'];
+$demand = $_POST['demand'];
+$collection_time = $_POST['collection_time'];
+$request_hash = $_POST['request_hash'];
+$date_added = $_POST['date_added'];
+$type_request = $_POST['type_request'];
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';
