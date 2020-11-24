@@ -66,7 +66,7 @@ $service_hash = $_POST['service_hash'];
 
 $id_services_comments_on_referer = $_POST['id_services_comments_on_referer'];
 $comment =  $_POST['comment'];
-$date_update = $_POST['comment'];
+$date_update = $_POST['date_update'];
 $comments_hash = $_POST['comments_hash'];
 
 
@@ -76,6 +76,8 @@ $rating = $_POST['rating'];
 
 $id_services_view_on_referer = $_POST['id_services_view_on_referer'];
 $view = $_POST['view'];
+
+$massiv_field_value = $_POST['massiv_field_value'];
 
 /* для тестового режима */
 
