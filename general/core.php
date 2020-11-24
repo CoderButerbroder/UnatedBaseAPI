@@ -590,10 +590,15 @@ class Settings {
                 $default = '';
                 $default_int = 0;
                 $role = 'user';
+                if ($data_user->data->leaderId == '') {
+                    $leaderId = 0;
+                } else {
+                    $leaderId = $data_user->data->leaderId;
+                }
 
                 $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
                 $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
-                $new_user->bindParam(':id_leader', $data_user->data->leaderId, PDO::PARAM_INT);
+                $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
                 $new_user->bindParam(':email', $email, PDO::PARAM_STR);
                 $new_user->bindParam(':phone', $phone, PDO::PARAM_STR);
                 $new_user->bindParam(':name', $name, PDO::PARAM_STR);
@@ -1292,13 +1297,13 @@ class Settings {
 
             } else {
 
-                $request = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests_solutions (id_requests_on_referer,id_solution_on_referer,id_entity,id_tboil,name_project,description,result_project,readiness,period,forms_of_support,protection,links_add_files,solutions_hash,status,date_receiving,id_referer)
-                                                      VALUES (:id_requests_on_referer,:id_solution_on_referer,:id_entity,:id_tboil,:name_project,:description,:result_project,:readiness,:period,:forms_of_support,:protection,:links_add_files,:solutions_hash,:status,:date_receiving,:id_referer)");
+                $statement = $database->prepare("INSERT INTO $this->MAIN_entity_tech_requests_solutions (id_requests_on_referer,id_solution_on_referer,id_entity,id_tboil,name_project,description,result_project,readiness,period,forms_of_support,protection,links_add_files,solutions_hash,status,date_receiving,id_referer)
+                                                      VALUES (:id_requests_on_referer,:id_solution_on_referer,:id_entity,:id_user_tboil,:name_project,:description,:result_project,:readiness,:period,:forms_of_support,:protection,:links_add_files,:solutions_hash,:status,:date_receiving,:id_referer)");
 
                 $statement->bindParam(':id_requests_on_referer', $id_requests_on_referer, PDO::PARAM_INT);
                 $statement->bindParam(':id_solution_on_referer', $id_solution_on_referer, PDO::PARAM_INT);
                 $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-                $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+                $statement->bindParam(':id_user_tboil', $id_user_tboil, PDO::PARAM_INT);
                 $statement->bindParam(':name_project', $name_project, PDO::PARAM_STR);
                 $statement->bindParam(':description', $description, PDO::PARAM_STR);
                 $statement->bindParam(':result_project', $result_project, PDO::PARAM_STR);

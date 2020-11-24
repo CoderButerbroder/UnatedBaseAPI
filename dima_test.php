@@ -2,7 +2,7 @@
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-// header('Content-type:application/json;charset=utf-8');
+header('Content-type:application/json;charset=utf-8');
 // require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 // $settings = new Settings;
 
@@ -16,6 +16,8 @@ ini_set('display_startup_errors', 1);
 //
 // $cehck = $settings->mass_update_user_field($massiv_field_value,$id_user_tboil);
 //
-// var_dump($cehck);
+
+
+// var_dump($asd);
 
 ?>

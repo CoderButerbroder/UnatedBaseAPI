@@ -1,7 +1,7 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
 
 $key = $_POST['login'];
@@ -88,6 +88,8 @@ $collection_time = $_POST['collection_time'];
 $request_hash = $_POST['request_hash'];
 $date_added = $_POST['date_added'];
 $type_request = $_POST['type_request'];
+
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';

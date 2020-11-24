@@ -12,6 +12,7 @@ if ($id_requests_on_referer && $id_solution_on_referer && isset($id_entity) && $
       $check_valid_token = $settings->validate_token($token,$resource);
                            $settings->recording_history($resource,'addNewTechRequestSolution',$check_valid_token);
 
+
       if (json_decode($check_valid_token)->response) {
               $check_id_referer = $settings->get_data_referer($resource);
               if (json_decode($check_id_referer)->response) {
@@ -25,7 +26,7 @@ if ($id_requests_on_referer && $id_solution_on_referer && isset($id_entity) && $
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для добавления ответа на технологический запрос в единую базу данных'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для добавления ответа на технологический запрос в единую базу данных', 'referer_data' => serialize($_POST)),JSON_UNESCAPED_UNICODE);
       exit;
 }
 
