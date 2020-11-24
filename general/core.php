@@ -1196,6 +1196,7 @@ class Settings {
           $statement->bindParam(':name_request', $name_request, PDO::PARAM_STR);
           $statement->bindParam(':description', $description, PDO::PARAM_STR);
           $statement->bindParam(':demand', $demand, PDO::PARAM_STR);
+          $statement->bindParam(':type_request', $type_request, PDO::PARAM_STR);
           $statement->bindParam(':collection_time', $collection_time, PDO::PARAM_STR);
           $statement->bindParam(':links_to_logos', $links_to_logos, PDO::PARAM_STR);
           $statement->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
