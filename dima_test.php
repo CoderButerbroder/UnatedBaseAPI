@@ -3,8 +3,8 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
-// require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-// $settings = new Settings;
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$settings = new Settings;
 
 // $massiv_field_value = array('email' => 'web@kt-segment.ru',
 //                             'inn' => '789987987'
@@ -14,10 +14,10 @@ header('Content-type:application/json;charset=utf-8');
 //
 // $id_user_tboil = '104120';
 //
-// $cehck = $settings->mass_update_user_field($massiv_field_value,$id_user_tboil);
+$cehck = $settings->update_all_platform_referer('106087');
 //
 
 
-// var_dump($asd);
+var_dump($cehck);
 
 ?>

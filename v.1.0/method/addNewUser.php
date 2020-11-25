@@ -14,6 +14,11 @@ if ($pass && $email && $name && $secondName && $lastName && $position && $phone 
       if (json_decode($check_valid_token)->response) {
               $response = $settings->register_user($email,$name,$secondName,$lastName,$position,$phone,$company,$city,$redirectUrl,$pass,$resource);
                           $settings->recording_history($resource,'addNewUser',$response);
+              if (json_decode($response)->response) {
+                  $check_id_referer = $settings->get_data_referer($resource);
+                  $check_add_account = $settings->add_user_accounts(json_decode($response)->user_id_in_ebd,json_decode($check_id_referer)->data->id);
+                                       $settings->recording_history($check_add_account,'Добавление аккаунта пользователя',$check_add_account);
+              }
               echo $response;
       } else {
               echo $check_valid_token;

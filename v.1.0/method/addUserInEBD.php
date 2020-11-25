@@ -12,8 +12,6 @@
 
 */
 
-
-
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
@@ -29,6 +27,11 @@ if ($data_user_tboil) {
       if (json_decode($check_valid_token)->response) {
               $response = $settings->auth_from_tboil($data_user_tboil,$resource);
                           $settings->recording_history($resource,'addUserInEBD',$response);
+              if (json_decode($response)->response) {
+                    $check_id_referer = $settings->get_data_referer($resource);
+                    $check_add_account = $settings->add_user_accounts(json_decode($response)->user_id_in_ebd,json_decode($check_id_referer)->data->id);
+                                         $settings->recording_history($check_add_account,'Добавление аккаунта пользователя',$check_add_account);
+              }
               echo $response;
       } else {
               echo $check_valid_token;
