@@ -25,7 +25,7 @@ if ($id_services_rating_on_referer && $id_service_on_referer && $id_comment && $
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для добавления рейтинга сервиса в единую базу данных'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для добавления рейтинга сервиса в единую базу данных', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 

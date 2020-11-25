@@ -20,7 +20,7 @@ if ($id_user_tboil && $inn && isset($msp) && isset($site) && isset($region) && i
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для регистрации юридического лица в единой базе данных'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для регистрации юридического лица в единой базе данных', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 

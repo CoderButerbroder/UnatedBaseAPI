@@ -19,7 +19,7 @@ if ($pass && $email && $name && $secondName && $lastName && $position && $phone 
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для регистрации на tboil'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для регистрации на tboil', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 

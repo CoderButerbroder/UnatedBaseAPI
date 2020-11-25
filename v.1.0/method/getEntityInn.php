@@ -23,7 +23,7 @@ if ($inn) {
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для выдачи данных по юридическому лицу по ИНН'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для выдачи данных по юридическому лицу по ИНН', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 

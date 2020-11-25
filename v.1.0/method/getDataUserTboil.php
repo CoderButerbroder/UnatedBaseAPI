@@ -24,7 +24,7 @@ if ($data_user_tboil) {
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для получения данных по пользователю Tboil'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для получения данных по пользователю Tboil', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 

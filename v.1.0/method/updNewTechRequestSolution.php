@@ -25,7 +25,7 @@ if ($id_requests_on_referer && $id_solution_on_referer && isset($id_entity) && $
               echo $check_valid_token;
       }
 } else {
-      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для обновления данных по ответу на технологический запрос в единой базе данных'),JSON_UNESCAPED_UNICODE);
+      echo json_encode(array('response' => false, 'description' => 'Не все обязательные поля были заполнены для обновления данных по ответу на технологический запрос в единой базе данных', 'data_referer' => $_POST),JSON_UNESCAPED_UNICODE);
       exit;
 }
 
