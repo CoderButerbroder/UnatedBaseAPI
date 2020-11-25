@@ -15,6 +15,9 @@ if ($massiv_field_value && $id_user_tboil) {
       if (json_decode($check_valid_token)->response) {
               $response = $settings->mass_update_user_field($massiv_field_value,$id_user_tboil);
                           $settings->recording_history($resource,'updUserDataFields',$response);
+              if (json_decode($response)->response) {
+                          $settings->update_all_platform_referer($id_user_tboil,0);
+              }
               echo $response;
       } else {
               echo $check_valid_token;

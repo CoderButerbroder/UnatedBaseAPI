@@ -1720,15 +1720,11 @@ class Settings {
     global $database;
 
     $check_user = json_decode($this->get_user_data_id_boil($id_tboil));
-
     $check_referer = $this->get_user_accounts_referer($check_user->data->id);
 
     foreach ($check_referer as $key => $value) {
-
           $data_referer = $this->get_data_referer($value->link_update_trigger);
-
           $data_user_api = $this->get_data_user_api(json_decode($data_referer)->data->id_user);
-
           $arr = (object) array('id_tboil' => $id_tboil, 'id_entity' => $id_entity);
           $plaintext = json_encode($arr, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
           $key = $data_user_api->hash;
@@ -1742,19 +1738,17 @@ class Settings {
 
           if( $curl = curl_init() ) {
                   $data_post = array( 'token' => $res_str );
-                  curl_setopt($curl, CURLOPT_URL, 'https://test.e-spb.tech/test_cript.php');
+                  curl_setopt($curl, CURLOPT_URL, $value->link_update_trigger);
                   curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
                   curl_setopt($curl, CURLOPT_POST, true);
                   curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+                  curl_setopt($curl, CURLOPT_USERAGENT, 'UNATED_BASE');
                   $check_return = curl_exec($curl);
                   curl_close($curl);
           }
-          // var_dump($data);
-          return $check_return;
-
     }
 
-
+    return true;
 
 
   }

@@ -15,6 +15,9 @@ if ($massiv_field_value && $id_entity) {
       if (json_decode($check_valid_token)->response) {
               $response = $settings->mass_update_entity_field($massiv_field_value,$id_entity);
                           $settings->recording_history($resource,'updEntityDataFields',$response);
+              if (json_decode($response)->response) {
+                          $settings->update_all_platform_referer(0,$id_entity);
+              }
               echo $response;
       } else {
               echo $check_valid_token;

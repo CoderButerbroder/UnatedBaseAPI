@@ -15,6 +15,9 @@ if ($id_user_tboil && $inn && isset($msp) && isset($site) && isset($region) && i
       if (json_decode($check_valid_token)->response) {
               $response = $settings->register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
                           $settings->recording_history($resource,'updNewCompany',$response);
+              if (json_decode($response)->response) {
+                          $settings->update_all_platform_referer($id_user_tboil,json_decode($response)->entity->id);
+              }
               echo $response;
       } else {
               echo $check_valid_token;

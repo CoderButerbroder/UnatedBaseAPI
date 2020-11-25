@@ -14,7 +14,7 @@ $settings = new Settings;
 //
 // $id_user_tboil = '104120';
 //
-$cehck = $settings->update_all_platform_referer('106087');
+$cehck = $settings->update_all_platform_referer('104120','47');
 //
 
 
