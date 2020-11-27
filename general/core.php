@@ -1753,6 +1753,29 @@ class Settings {
 
   }
 
+  // поиск данных юиридческого лица по ИНН компании
+  public function serch_and_record_fns_data($inn) {
+    global $database;
+
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn = :inn");
+        $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_OBJ);
+
+        if ($data) {
+            return json_encode(array('response' => true, 'data' => $data->data_fns, 'description' => 'Данные успешно загружены из ЕБД'),JSON_UNESCAPED_UNICODE);
+            exit;
+        } else {
+            $check_fns_data = $this->fns_base($inn);
+            if (json_decode($check_fns_data)->response) {
+                return json_encode(array('response' => true, 'data' => json_decode($check_fns_data)->data, 'description' => 'Данные успешно загружены из федеральной налоговой службы'),JSON_UNESCAPED_UNICODE);
+                exit;
+            } else {
+                return $check_fns_data;
+                exit;
+            }
+        }
+  }
 
 
   /* API ФУНКЦИИ - TBOIL  */
