@@ -273,7 +273,7 @@ class Settings {
           return json_encode(array('response' => true, 'data' => $user),JSON_UNESCAPED_UNICODE);
       }
       else {
-          return json_encode(array('response' => false, 'description' => 'Вы не имеете прав на данный ресурс', 'resource' => $resource, 'id_user' => $id_user),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => false, 'description' => 'Вы не имеете прав на данный ресурс', 'resource' => $resource),JSON_UNESCAPED_UNICODE);
       }
 
   }
@@ -466,7 +466,7 @@ class Settings {
             if (json_decode($data_exp)->response) {
                 $data_refer = $this->user_verification_referer(json_decode($data_token)->data[0]->user_id,$resource);
 
-                if (json_decode($data_exp)->response) {
+                if (json_decode($data_refer)->response) {
                     return json_encode(array('response' => true, 'description' => 'Токен валидный на данный ресурс'),JSON_UNESCAPED_UNICODE);
                 } else {
                     return $data_refer;
