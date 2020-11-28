@@ -1898,41 +1898,78 @@ class Settings {
 
             $valid_inn = $this->is_valid_inn($inn);
             $check_false_inn = $this->isJSON($valid_inn);
+            $date_pickup = date("Y-m-d H:i:s");
+            $token_fns = $this->get_global_settings('api_fns_key');
+
 
             if ($check_false_inn) {
                  return json_encode(array('response' => false, 'description' => 'ИНН не прошел проверку на корректность'),JSON_UNESCAPED_UNICODE);
              }
 
-             $token_fns = $this->get_global_settings('api_fns_key');
+             $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn = :inn");
+             $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+             $statement->execute();
+             $data = $statement->fetch(PDO::FETCH_OBJ);
 
-             $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$token_fns);
-             $fnc = json_decode($data_fnc);
+             if ($data) {
 
-             $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
-             $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+                 $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$token_fns);
+                 $fnc = json_decode($data_fnc);
 
-             if ($chek_inn == '') {
-                       if($chek_inn2 == '') {
-                            return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
-                            exit;
-                       }
-             }
+                 $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+                 $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
 
-             $date_pickup = date("Y-m-d H:i:s");
+                 if ($chek_inn == '') {
+                           if($chek_inn2 == '') {
+                                return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
+                                exit;
+                           }
+                 }
 
-             $add_fns_database = $database->prepare("UPDATE $this->MAIN_entity SET data_fns = :data_fns, date_pickup = :date_pickup  WHERE inn = :inn");
-             $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_INT);
-             $add_fns_database->bindParam(':data_fns', $data_fnc, PDO::PARAM_STR);
-             $add_fns_database->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
-             $check_add = $add_fns_database->execute();
-             $count = $add_fns_database->rowCount();
-             if (!$count) {
-                   return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
-                   exit;
-             } else {
-                   return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Данные о компании обновленны в базе данных'),JSON_UNESCAPED_UNICODE);
-                   exit;
-             }
+                 $add_fns_database = $database->prepare("UPDATE $this->MAIN_entity SET data_fns = :data_fns, date_pickup = :date_pickup  WHERE inn = :inn");
+                 $add_fns_database->bindParam(':inn', $inn, PDO::PARAM_INT);
+                 $add_fns_database->bindParam(':data_fns', $data_fnc, PDO::PARAM_STR);
+                 $add_fns_database->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+                 $check_add = $add_fns_database->execute();
+                 $count = $add_fns_database->rowCount();
+                 if (!$count) {
+                       return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка обновления данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                       exit;
+                 } else {
+                       return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Данные о компании обновленны в базе данных'),JSON_UNESCAPED_UNICODE);
+                       exit;
+                 }
+           } else {
+
+                 $data_fnc = file_get_contents("https://api-fns.ru/api/egr?req=".$inn."&key=".$token_fns);
+                 $fnc = json_decode($data_fnc);
+
+                 $chek_inn = $fnc->items[0]->ЮЛ->ИНН;
+                 $chek_inn2 = $fnc->items[0]->ИП->ИННФЛ;
+
+                 if ($chek_inn == '') {
+                           if($chek_inn2 == '') {
+                                return json_encode(array('response' => false, 'description' => 'ИНН не найден в базе ФНС'),JSON_UNESCAPED_UNICODE);
+                                exit;
+                           }
+                 }
+
+                 $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,date_pickup)
+                                                       VALUES (:inn,:data_fns,:date_pickup)");
+                 $request->bindParam(':inn', $inn, PDO::PARAM_INT);
+                 $request->bindParam(':data_fns', $data_fnc, PDO::PARAM_STR);
+                 $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+                 $check_request = $request->execute();
+                 $count_request = $request->rowCount();
+
+                 if ($count_request) {
+                      return json_encode(array('response' => true, 'data' => $fnc, 'description' => 'Данные о компании загружены в базу данных'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                 } else {
+                      return json_encode(array('response' => false, 'description' => 'Внутреняя ошибка записи данных из ФНС, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                 }
+           }
      }
 
   // Загрузка данных из ФНС
