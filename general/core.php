@@ -1763,7 +1763,7 @@ class Settings {
         $data = $statement->fetch(PDO::FETCH_OBJ);
 
         if ($data) {
-            return json_encode(array('response' => true, 'data' => $data->data_fns, 'description' => 'Данные успешно загружены из ЕБД'),JSON_UNESCAPED_UNICODE);
+            return json_encode(array('response' => true, 'data' => json_decode($data->data_fns), 'description' => 'Данные успешно загружены из ЕБД'),JSON_UNESCAPED_UNICODE);
             exit;
         } else {
             $check_fns_data = $this->fns_base($inn);
