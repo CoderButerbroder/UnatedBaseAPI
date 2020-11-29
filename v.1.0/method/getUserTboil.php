@@ -18,8 +18,11 @@ if ($id_user_tboil) {
       if (json_decode($check_valid_token)->response) {
               $response = $settings->get_all_data_user_id_tboil($id_user_tboil);
                           $settings->recording_history($resource,'getUserTboil',$response);
-     $check_add_account = $settings->add_user_accounts(json_decode($response)->user_id_in_ebd,json_decode($check_id_referer)->data->id);
-                          $settings->recording_history($check_add_account,'Добавление аккаунта пользователя addUserInEBD',$check_add_account);
+              if (json_decode($response)->response) {
+                      $check_id_referer = $settings->get_data_referer($resource);
+                      $check_add_account = $settings->add_user_accounts(json_decode($response)->user_id_in_ebd,json_decode($check_id_referer)->data->id);
+                                           $settings->recording_history($check_add_account,'Добавление аккаунта пользователя addUserInEBD',$check_add_account);
+              }
               echo $response;
       } else {
               echo $check_valid_token;
