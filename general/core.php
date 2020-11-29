@@ -1101,19 +1101,35 @@ class Settings {
                             exit;
                         } else {
 
-                              $array_entity = array('msp' => $msp,
-                              'site' => $site,
-                              'region' => $region,
-                              'staff' => $staff,
-                              'district' => $district,
-                              'street' => $street,
-                              'house' => $house,
-                              'type_inf' => $type_inf,
-                              'additionally' => $additionally,
-                              'export' => $export,
-                              'branch' => $branch);
+                              $array_entity = array();
 
-                              $array_entity = json_encode($array_entity);
+                              if (trim($msp)) { $array_entity['msp'] = $msp;}
+                              if (trim($site)) { $array_entity['site'] = $site; }
+                              if (trim($region)) { $array_entity['region'] = $region; }
+                              if (trim($staff)) { $array_entity['staff'] = $staff; }
+                              if (trim($district)) { $array_entity['district'] = $district; }
+                              if (trim($street)) { $array_entity['street'] = $street; }
+                              if (trim($house)) { $array_entity['house'] = $house; }
+                              if (trim($type_inf)) { $array_entity['type_inf'] = $type_inf; }
+                              if (trim($additionally)) { $array_entity['additionally'] = $additionally; }
+                              if (trim($export)) { $array_entity['export'] = $export; }
+                              if (trim($branch)) { $array_entity['branch'] = $branch; }
+
+                              // $array_entity = array(
+                              //                       'msp' => $msp,
+                              //                       'site' => $site,
+                              //                       'region' => $region,
+                              //                       'staff' => $staff,
+                              //                       'district' => $district,
+                              //                       'street' => $street,
+                              //                       'house' => $house,
+                              //                       'type_inf' => $type_inf,
+                              //                       'additionally' => $additionally,
+                              //                       'export' => $export,
+                              //                       'branch' => $branch
+                              //                     );
+
+                              $array_entity = json_encode($array_entity,JSON_UNESCAPED_UNICODE);
 
                               $check_update_entity = $this->mass_update_entity_field($array_entity,json_decode($check_company)->data->id);
                               $data_user_new = $this->get_all_data_user_id_tboil($id_user_tboil);
@@ -1658,19 +1674,33 @@ class Settings {
 
     $today = date("Y-m-d H:i:s");
 
-    $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_users_accounts (id_user,id_referer,date_record) VALUES (:id_user,:id_referer,:date_record)");
-    $add_user_accs->bindParam(':id_user', $id_user_in_ebd, PDO::PARAM_INT);
-    $add_user_accs->bindParam(':id_referer', $resource, PDO::PARAM_INT);
-    $add_user_accs->bindParam(':date_record', $today, PDO::PARAM_STR);
-    $check_new_user = $add_user_accs->execute();
-    $count = $database->lastInsertId();
+    $statement = $database->prepare("SELECT * FROM $this->MAIN_users_accounts WHERE id_user = :id_user AND id_referer = :id_referer");
+    $statement->bindParam(':id_user', $id_user_in_ebd, PDO::PARAM_INT);
+    $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+    $statement->execute();
+    $data = $statement->fetch(PDO::FETCH_OBJ);
 
-    if ($count) {
-          return json_encode(array('response' => true, 'description' => 'Аккаунт пользоватля успешно зарегистрирвоан в системе'),JSON_UNESCAPED_UNICODE);
-          exit;
-    } else {
-          return json_encode(array('response' => false, 'description' => 'Ошибка добавления аккаунта для обновления данных, обратитесь к администратору', 'data_referer' => 'id_user = '.$id_user_in_ebd.', id_referer='.$id_referer),JSON_UNESCAPED_UNICODE);
-          exit;
+    if (!$data) {
+
+        $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_users_accounts (id_user,id_referer,date_record) VALUES (:id_user,:id_referer,:date_record)");
+        $add_user_accs->bindParam(':id_user', $id_user_in_ebd, PDO::PARAM_INT);
+        $add_user_accs->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+        $add_user_accs->bindParam(':date_record', $today, PDO::PARAM_STR);
+        $check_new_user = $add_user_accs->execute();
+        $count = $database->lastInsertId();
+
+        if ($count) {
+              return json_encode(array('response' => true, 'description' => 'Аккаунт пользоватля успешно зарегистрирвоан в системе'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+        else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка добавления аккаунта для обновления данных, обратитесь к администратору', 'data_referer' => 'id_user = '.$id_user_in_ebd.', id_referer='.$id_referer),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+    }
+    else {
+      return json_encode(array('response' => true, 'description' => 'Аккаунт пользоватля успешно зарегистрирвоан в системе'),JSON_UNESCAPED_UNICODE);
+      exit;
     }
 
 
