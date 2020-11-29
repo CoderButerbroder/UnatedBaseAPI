@@ -772,7 +772,7 @@ class Settings {
             if (json_decode($data_user)->data->id_entity != 0) {
                 $data_entity = $this->get_data_entity(json_decode($data_user)->data->id_entity);
                 if (json_decode($data_entity)->response) {
-                    return json_encode(array('response' => true, 'user' => json_decode($data_user)->data, 'entity' => json_decode($data_entity)->data, 'description' => 'Данные о физическом и юридическом лице'),JSON_UNESCAPED_UNICODE);
+                    return json_encode(array('response' => true, 'user' => json_decode($data_user)->data, 'user_id_in_ebd' => json_decode($data_user)->data->id, 'entity' => json_decode($data_entity)->data, 'description' => 'Данные о физическом и юридическом лице'),JSON_UNESCAPED_UNICODE);
                 } else {
                     return $data_user;
                     exit;
