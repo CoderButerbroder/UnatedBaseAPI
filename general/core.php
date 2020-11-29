@@ -563,7 +563,7 @@ class Settings {
       $data = $statement->fetch(PDO::FETCH_OBJ);
 
       if ($data) {
-            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
+            return json_encode(array('response' => true, 'data' => $data, 'user_id_in_ebd' => $data->id, 'description' => 'Пользотваль найден'),JSON_UNESCAPED_UNICODE);
       } else {
             return json_encode(array('response' => false, 'description' => 'Пользотваль c данным id не найден'),JSON_UNESCAPED_UNICODE);
       }
@@ -1743,6 +1743,7 @@ class Settings {
                   curl_setopt($curl, CURLOPT_POST, true);
                   curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
                   curl_setopt($curl, CURLOPT_USERAGENT, 'UNATED_BASE');
+                  curl_setopt($curl, CURLOPT_TIMEOUT, 100);
                   $check_return = curl_exec($curl);
                   curl_close($curl);
           }
