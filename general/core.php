@@ -1743,7 +1743,7 @@ class Settings {
                   curl_setopt($curl, CURLOPT_POST, true);
                   curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
                   curl_setopt($curl, CURLOPT_USERAGENT, 'UNATED_BASE');
-                  curl_setopt($curl, CURLOPT_TIMEOUT, 100);
+                  curl_setopt($curl, CURLOPT_TIMEOUT, 1);
                   $check_return = curl_exec($curl);
                   curl_close($curl);
           }
