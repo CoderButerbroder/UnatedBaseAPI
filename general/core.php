@@ -1097,7 +1097,7 @@ class Settings {
 
               if ($data) {
                         if ($data->id_tboil != $id_user_tboil) {
-                            return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо привязано к другой учетной записи Tboil'),JSON_UNESCAPED_UNICODE);
+                            return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо привязано к другой учетной записи Tboil '.$data->id_tboil.'****'.$id_user_tboil),JSON_UNESCAPED_UNICODE);
                             exit;
                         } else {
 
