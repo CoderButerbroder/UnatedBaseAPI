@@ -13,19 +13,19 @@ $settings = new Settings;
     $token_tboil = $settings->get_global_settings('tboil_token');
     $hosting_name = $settings->get_global_settings('hosting_name');
 
-    // $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=81920");
-    //
-    // if (!json_decode($data_user_tboil)->success) {
-    //     $token_tboil = $settings->refresh_token_tboil();
-    //
-    //     if (!json_decode($token_tboil)->response) {
-    //         $settings->add_errors_migrate(0, 'tboil_token');
-    //
-    //         header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
-    //         exit;
-    //     }
-    //     $token_tboil = json_decode($token_tboil)->token;
-    // }
+    $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=81920");
+
+    if (!json_decode($data_user_tboil)->success) {
+        $token_tboil = $settings->refresh_token_tboil();
+
+        if (!json_decode($token_tboil)->response) {
+            $settings->add_errors_migrate(0, 'tboil_token');
+
+            header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
+            exit;
+        }
+        $token_tboil = json_decode($token_tboil)->token;
+    }
 
 
     // корректность дтокена и обновление для eдиной базы данных
@@ -70,6 +70,8 @@ $settings = new Settings;
     //       }
     // }
 
+
+
     $data_user_tboil = json_decode(file_get_contents("https://".$hosting_name."/admin/help/tboil_user_id.php"));
 
     $all_id_users_tboil = $data_user_tboil->data;
@@ -84,22 +86,22 @@ $settings = new Settings;
 
     $new_mass = array_diff($data_user_tboil->data, $mass_id_tboil);
 
-     // var_dump($new_mass);
+    // var_dump($new_mass);
     $keys = array_keys($new_mass);
     $firstKey = $keys[0];
+
 
     $reversed = array_reverse($new_mass);
     $lastKey = $keys[0];
 
-
-
     $count = 0;
-    for ($i=$firstKey; $i < $lastKey; $i++) {
+
+    foreach ($new_mass as $key => $value) {
 
               $curl = curl_init();
               $data_post = array( 'token' => $token,
                                   'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/',
-                                  'id_user_tboil' => $all_id_users_tboil[$i]);
+                                  'id_user_tboil' => $value);
               curl_setopt($curl, CURLOPT_URL, 'https://api.kt-segment.ru/v.1.0/method/getUserTboil.php');
               curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
               curl_setopt($curl, CURLOPT_POST, true);
@@ -109,7 +111,7 @@ $settings = new Settings;
 
               if (!json_decode($out3)->response) {
 
-                      $data_user_tboil_cicle = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=".$all_id_users_tboil[$i]);
+                      $data_user_tboil_cicle = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=".$value);
                       $curl = curl_init();
                       $data_post = array( 'token' => $token,
                                           'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/',
@@ -122,7 +124,7 @@ $settings = new Settings;
                       curl_close($curl);
 
                       if (!json_decode($out4)->response) {
-                            $settings->add_errors_migrate($all_id_users_tboil[$i], 'не удалось добавить пользователя');
+                            $settings->add_errors_migrate($value, 'не удалось добавить пользователя');
                             // echo 'не удалось добавить пользователя';
                       }
               }
