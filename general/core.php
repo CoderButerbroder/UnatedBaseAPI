@@ -1809,6 +1809,25 @@ class Settings {
         }
   }
 
+  // Получение текущего списка айдишников tboil для синхронизации данных
+  public function get_mass_id_tboil() {
+    global $database;
+
+    $statement = $database->prepare("SELECT * FROM $this->main_users");
+    $statement->bindParam(':id', $id_user, PDO::PARAM_INT);
+    $statement->execute();
+    $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+    $array_mass = array();
+    foreach ($data as $key) {
+          array_push($array_mass, $key->id_tboil);
+    }
+
+    return $array_mass;
+
+  }
+
+
 
   /* API ФУНКЦИИ - TBOIL  */
 
