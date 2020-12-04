@@ -76,6 +76,7 @@ class Settings {
 
   }
 
+
   // получение глобального парметра настройки
   public function get_global_settings($meta_key) {
       global $database;
@@ -1836,7 +1837,7 @@ class Settings {
         if ($token) {
             return json_encode(array('response' => true, 'description' => 'Обновление токена tboil прошло успешно', 'token' => $admin_token->data->token),JSON_UNESCAPED_UNICODE);
         } else {
-            return json_encode(array('response' => false, 'description' => 'Ошибка Обновления токена tboil', 'token' => $admin_token->data->token),JSON_UNESCAPED_UNICODE);
+            return json_encode(array('response' => false, 'description' => 'Ошибка Обновления токена tboil '.$admin_token->error ),JSON_UNESCAPED_UNICODE);
         }
 
 
