@@ -10,26 +10,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 
 $settings = new Settings;
 
-    $token_tboil = $settings->get_global_settings('tboil_token');
-    $hosting_name = $settings->get_global_settings('hosting_name');
-
-    $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=77368");
-
-    if (!json_decode($data_user_tboil)->success) {
-        $token_tboil = $settings->refresh_token_tboil();
-
-        if (!json_decode($token_tboil)->response) {
-            $settings->add_errors_migrate(0, 'tboil_token');
-
-            header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
-            exit;
-        }
-        $token_tboil = json_decode($token_tboil)->token;
-    }
 
 
 
-    $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=77368");
-
-    echo $data_user_tboil;
 ?>
