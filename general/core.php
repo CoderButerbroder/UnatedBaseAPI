@@ -2582,7 +2582,7 @@ class Settings {
         $today = date("Y-m-d H:i:s");
 
         $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
-        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_STR);
+        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
         $new_erorr->bindParam(':type', $type, PDO::PARAM_STR);
         $new_erorr->bindParam(':date_record', $today, PDO::PARAM_STR);
         $check_new_erorr = $new_erorr->execute();
