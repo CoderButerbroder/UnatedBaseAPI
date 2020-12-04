@@ -23,7 +23,7 @@ class Settings {
   private $MAIN_entity_tech_services_rating = 'MAIN_entity_tech_services_rating';
   private $MAIN_entity_tech_services_view = 'MAIN_entity_tech_services_view';
   private $MAIN_users_accounts = 'MAIN_users_accounts';
-
+  private $errors_migrate = 'errors_migrate';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -2546,10 +2546,51 @@ class Settings {
 
     }
 
+    public function telega_send($id, $message) {   //Задаём публичную функцию send для отправки сообщений
+        //Заполняем массив $data инфой, которую мы через api отправим до телеграмма
+        $data = array(
+            'chat_id'      => $id,
+            'text'     => $message,
+        );
+        //Получаем ответ через функцию отправки до апи, которую создадим ниже
+        $out = $this->telega_request('sendMessage', $data);
+        //И пусть функция вернёт ответ. Правда в данном примере мы это никак не будем использовать, пусть будет задаток на будущее
+        return $out;
+    }
+
+    public  function telega_request($method, $data = array()) {
+        $curl = curl_init(); //мутим курл-мурл в переменную. Для отправки предпочтительнее использовать курл, но можно и через file_get_contents если сервер не поддерживает
+        $token = $this->get_global_settings('telega_token');
+
+        curl_setopt($curl, CURLOPT_URL, 'https://api.telegram.org/bot' . $token .  '/' . $method);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST'); //Отправляем через POST
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data); //Сами данные отправляемые
+
+        $out = json_decode(curl_exec($curl), true); //Получаем результат выполнения, который сразу расшифровываем из JSON'a в массив для удобства
+
+        curl_close($curl); //Закрываем курл
+
+        return $out; //Отправляем ответ в виде массива
+    }
 
 
+    // Функция полячения данных пользователя из единой базы данных по id_tboil
+    public function add_errors_migrate($id_tboil, $type) {
+        global $database;
 
+        $today = date("Y-m-d H:i:s");
 
+        $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
+        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+        $new_erorr->bindParam(':type', $type, PDO::PARAM_STR);
+        $new_erorr->bindParam(':date_record', $today, PDO::PARAM_STR);
+        $check_new_erorr = $new_erorr->execute();
+        $check_id = $database->lastInsertId();
+
+        $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
+    }
 
 
 
@@ -3122,7 +3163,5 @@ class Settings {
 
 
 }
-
-
 
 ?>
