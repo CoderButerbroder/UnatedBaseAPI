@@ -23,7 +23,7 @@ class Settings {
   private $MAIN_entity_tech_services_rating = 'MAIN_entity_tech_services_rating';
   private $MAIN_entity_tech_services_view = 'MAIN_entity_tech_services_view';
   private $MAIN_users_accounts = 'MAIN_users_accounts';
-
+  private $errors_migrate = 'errors_migrate';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -2543,6 +2543,19 @@ class Settings {
 
         return $return;
 
+    }
+
+    // Функция полячения данных пользователя из единой базы данных по id_tboil
+    public function add_errors_migrate($id_tboil, $type) {
+        global $database;
+
+        $today = date("Y-m-d H:i:s");
+
+        $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
+        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_STR);
+        $new_erorr->bindParam(':type', $type, PDO::PARAM_STR);
+        $new_erorr->bindParam(':date_record', $today, PDO::PARAM_STR);
+        $check_new_erorr = $new_erorr->execute();
     }
 
 
