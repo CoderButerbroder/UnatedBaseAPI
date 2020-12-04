@@ -94,7 +94,7 @@ $settings = new Settings;
 
 
     $count = 0;
-    for ($i=$firstKey; $i < count($new_mass); $i++) {
+    for ($i=$firstKey; $i < $lastKey; $i++) {
 
               $curl = curl_init();
               $data_post = array( 'token' => $token,
