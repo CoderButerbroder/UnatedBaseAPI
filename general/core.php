@@ -2545,21 +2545,6 @@ class Settings {
 
     }
 
-    // Функция полячения данных пользователя из единой базы данных по id_tboil
-    public function add_errors_migrate($id_tboil, $type) {
-        global $database;
-
-        $today = date("Y-m-d H:i:s");
-
-        $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
-        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_STR);
-        $new_erorr->bindParam(':type', $type, PDO::PARAM_STR);
-        $new_erorr->bindParam(':date_record', $today, PDO::PARAM_STR);
-        $check_new_erorr = $new_erorr->execute();
-    }
-
-
-
     public function telega_send($id, $message) {   //Задаём публичную функцию send для отправки сообщений
         //Заполняем массив $data инфой, которую мы через api отправим до телеграмма
         $data = array(
@@ -2589,6 +2574,22 @@ class Settings {
         return $out; //Отправляем ответ в виде массива
     }
 
+
+    // Функция полячения данных пользователя из единой базы данных по id_tboil
+    public function add_errors_migrate($id_tboil, $type) {
+        global $database;
+
+        $today = date("Y-m-d H:i:s");
+
+        $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
+        $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_STR);
+        $new_erorr->bindParam(':type', $type, PDO::PARAM_STR);
+        $new_erorr->bindParam(':date_record', $today, PDO::PARAM_STR);
+        $check_new_erorr = $new_erorr->execute();
+        $check_id = $database->lastInsertId();
+
+        $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
+    }
 
 
 
