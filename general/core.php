@@ -1814,7 +1814,6 @@ class Settings {
     global $database;
 
     $statement = $database->prepare("SELECT * FROM $this->main_users");
-    $statement->bindParam(':id', $id_user, PDO::PARAM_INT);
     $statement->execute();
     $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
@@ -1827,6 +1826,36 @@ class Settings {
 
   }
 
+  // временное получние данных из lpmtech.ru
+  public function get_all_lpmtech_user() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM `TEMP_entity_lpmtech`");
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      return $data;
+
+  }
+
+  // Поиск физического лица по email
+  public function search_user_email($email) {
+    global $database;
+
+    $statement = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email");
+    $statement->bindParam(':email', $email, PDO::PARAM_STR);
+    $statement->execute();
+    $data = $statement->fetch(PDO::FETCH_OBJ);
+
+    if ($data) {
+        return json_encode(array('response' => true, 'data' => $data, 'description' => 'Пользователь найден'),JSON_UNESCAPED_UNICODE);
+        exit;
+    } else {
+        return json_encode(array('response' => false, 'description' => 'Пользователь c таким email не найден'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+  }
 
 
   /* API ФУНКЦИИ - TBOIL  */
