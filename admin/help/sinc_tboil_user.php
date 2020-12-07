@@ -103,7 +103,7 @@ $settings = new Settings;
 
               $curl = curl_init();
               $data_post = array( 'token' => $token,
-                                  'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/',
+                                  'referer' => 'https://'.$hosting_name.'/',
                                   'id_user_tboil' => $value);
               curl_setopt($curl, CURLOPT_URL, 'https://api.kt-segment.ru/v.1.0/method/getUserTboil.php');
               curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
