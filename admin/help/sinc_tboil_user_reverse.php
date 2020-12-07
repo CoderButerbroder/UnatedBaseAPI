@@ -2,7 +2,7 @@
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
-session_start();
+// session_start();
 include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core2.php');
 
 ignore_user_abort(true);
@@ -33,7 +33,7 @@ $settings = new Settings;
     $token = $settings->get_global_settings('unated_base_token');
 
     $data_post = array('token' => $token,
-                       'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
+                       'referer' => 'https://'.$hosting_name.'/'
                       );
     curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getValidToken');
     curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
@@ -50,7 +50,7 @@ $settings = new Settings;
           $pas = $settings->get_global_settings('unated_base_pass');
           $data_post = array('login' => $log,
                              'password' => $pas,
-                             'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
+                             'referer' => 'https://'.$hosting_name.'/'
                            );
           curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getMeToken');
           curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
@@ -100,7 +100,7 @@ $settings = new Settings;
 
               $curl = curl_init();
               $data_post = array( 'token' => $token,
-                                  'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/',
+                                  'referer' => 'https://'.$hosting_name.'/',
                                   'id_user_tboil' => $value);
               curl_setopt($curl, CURLOPT_URL, 'https://api.kt-segment.ru/v.1.0/method/getUserTboil.php');
               curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
@@ -114,7 +114,7 @@ $settings = new Settings;
                       $data_user_tboil_cicle = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=".$value);
                       $curl = curl_init();
                       $data_post = array( 'token' => $token,
-                                          'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/',
+                                          'referer' => 'https://'.$hosting_name.'/',
                                           'data_user_tboil' => $data_user_tboil_cicle);
                       curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/addUserInEBD.php');
                       curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
