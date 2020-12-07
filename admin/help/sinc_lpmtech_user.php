@@ -5,31 +5,76 @@
 session_start();
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 
-// ignore_user_abort(true);
-// set_time_limit(0);
+ignore_user_abort(true);
+set_time_limit(0);
 
 $settings = new Settings;
 
-    $token_tboil = $settings->get_global_settings('tboil_token');
-    $hosting_name = $settings->get_global_settings('hosting_name');
+$data_lpmtech_company = $settings->get_all_lpmtech_user();
 
-    $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=77368");
+// $check_download_fns = $settings->fns_base('7813621871');
+// if (json_decode($check_download_fns)->response) {
+//      echo 'ОК - 7813621871 <br>';
+// } else {
+//      echo 'NOT OK - 7813621871 <br>';
+// }
+//
+// exit;
 
-    if (!json_decode($data_user_tboil)->success) {
-        $token_tboil = $settings->refresh_token_tboil();
+// загрузка данных из фнс
+// foreach ($data_lpmtech_company as $key) {
+//         if ($key->inn) {
+//
+//              $check_download_fns = $settings->fns_base($key->inn);
+//              if (json_decode($check_download_fns)->response) {
+//                   echo 'ОК -'.$key->inn.'<br>';
+//              } else {
+//                   echo 'NOT OK -'.$key->inn.'<br>';
+//              }
+//
+//         }
+// }
 
-        if (!json_decode($token_tboil)->response) {
-            $settings->add_errors_migrate(0, 'tboil_token');
 
-            header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
-            exit;
+// привязка компаний по уже имеющимся id tboil и инн
+foreach ($data_lpmtech_company as $key) {
+
+          $msp = ' ';
+          if ($key->website) {$site = $key->website;} else {$site = ' ';}
+          $region = ' ';
+          $staff = ' ';
+          $district = ' ';
+          $street = ' ';
+          $house = ' ';
+          $type_inf = ' ';
+          $additionally = ' ';
+          $export = ' ';
+          $branch = ' ';
+
+        if ($key->inn) {
+              if ($key->id_tboil) {
+                  $check_privazka = $settings->register_entity($key->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
+                  $check_privazka = json_decode($check_privazka);
+                  if ($check_privazka->response) {
+                    echo 'Привязка компании '.$key->inn.' c пользоватлем '.$key->id_tboil.'  прошла успешно<br>';
+                  } else {
+                    echo $check_privazka->description.'<br>';
+                  }
+              } else {
+                  $check_user = $settings->search_user_email($key->user_email);
+                  $check_user = json_decode($check_user);
+                  if ($check_user->response) {
+                    $check_privazka = $settings->register_entity($check_user->data->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
+                    if ($check_privazka->response) {
+                      echo 'Привязка компании '.$key->inn.' c пользоватлем '.$check_user->data->id_tboil.'  прошла успешно<br>';
+                    } else {
+                      echo $check_privazka->description.'<br>';
+                    }
+                  }
+              }
         }
-        $token_tboil = json_decode($token_tboil)->token;
-    }
+}
 
 
 
-    $data_user_tboil = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=77368");
-
-    echo $data_user_tboil;
 ?>

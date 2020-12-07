@@ -29,46 +29,46 @@ $settings = new Settings;
 
 
     // корректность дтокена и обновление для eдиной базы данных
-    // $curl = curl_init();
+    $curl = curl_init();
     $token = $settings->get_global_settings('unated_base_token');
 
-    // $data_post = array('token' => $token,
-    //                    'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
-    //                   );
-    // curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getValidToken');
-    // curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-    // curl_setopt($curl, CURLOPT_POST, true);
-    // curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
-    // $out1 = curl_exec($curl);
-    // curl_close($curl);
-    //
-    // $out1 = stristr($out1, '{');
-    // $arr_value = json_decode($out1);
-    // if(!$arr_value->response) {
-    //       $curl = curl_init();
-    //       $log = $settings->get_global_settings('unated_base_login');
-    //       $pas = $settings->get_global_settings('unated_base_pass');
-    //       $data_post = array('login' => $log,
-    //                          'password' => $pas,
-    //                          'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
-    //                        );
-    //       curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getMeToken');
-    //       curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
-    //       curl_setopt($curl, CURLOPT_POST, true);
-    //       curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
-    //       $out2 = curl_exec($curl);
-    //       curl_close($curl);
-    //
-    //       $arr_value2 = json_decode($out2);
-    //       if(!$arr_value2->response) {
-    //           header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
-    //           exit;
-    //       }
-    //       else {
-    //           $settings->update_global_settings('unated_base_token', $arr_value2->token);
-    //           $token = $arr_value2->token;
-    //       }
-    // }
+    $data_post = array('token' => $token,
+                       'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
+                      );
+    curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getValidToken');
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+    $out1 = curl_exec($curl);
+    curl_close($curl);
+
+    $out1 = stristr($out1, '{');
+    $arr_value = json_decode($out1);
+    if(!$arr_value->response) {
+          $curl = curl_init();
+          $log = $settings->get_global_settings('unated_base_login');
+          $pas = $settings->get_global_settings('unated_base_pass');
+          $data_post = array('login' => $log,
+                             'password' => $pas,
+                             'referer' => 'https://'.$_SERVER['SERVER_NAME'].'/'
+                           );
+          curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getMeToken');
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+          curl_setopt($curl, CURLOPT_POST, true);
+          curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+          $out2 = curl_exec($curl);
+          curl_close($curl);
+
+          $arr_value2 = json_decode($out2);
+          if(!$arr_value2->response) {
+              header('Location: http://'.$hosting_name.'/admin/help/sinc_tboil_user.php');
+              exit;
+          }
+          else {
+              $settings->update_global_settings('unated_base_token', $arr_value2->token);
+              $token = $arr_value2->token;
+          }
+    }
 
 
 
@@ -78,6 +78,7 @@ $settings = new Settings;
 
     // var_dump(count($data_user_tboil->data));
     // echo '<br><br>';
+
     // получение массива id_tboil
     $mass_id_tboil = $settings->get_mass_id_tboil();
 
