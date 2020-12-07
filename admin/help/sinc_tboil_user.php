@@ -3,7 +3,7 @@
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 session_start();
-require_once(__DIR__.'/../../general/core2.php');
+include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core2.php');
 
 
 ignore_user_abort(true);
@@ -73,11 +73,12 @@ $settings = new Settings;
 
 
 
-    $data_user_tboil = json_decode(file_get_contents("https://".$hosting_name."/admin/help/tboil_user_id.php"));
+    $data_user_tboil = json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getUsers/?token=".$token_tboil));
 
     $all_id_users_tboil = $data_user_tboil->data;
 
     // var_dump(count($data_user_tboil->data));
+    // exit;
     // echo '<br><br>';
 
     // получение массива id_tboil
