@@ -1926,51 +1926,113 @@ class Settings {
   }
 
   // добавление посещения мероприятия пользователем tboil
-  public function add_user_visit_events($id_event_on_referer,$id_tboil,$satus,$resourse) {
+  public function add_user_visit_events($id_event_on_referer,$id_tboil,$status,$resourse) {
     global $database;
 
-        $statement = $database->prepare("SELECT * FROM $this->MAIN_users_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer");
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_users_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer AND id_tboil = :id_tboil");
         $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
+        $statement->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
         $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
         $statement->execute();
         $data = $statement->fetch(PDO::FETCH_OBJ);
         $date_update = date("Y-m-d H:i:s");
         if (!$data) {
 
-              $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_users_events (id_event_on_referer,type_event,name,description,organizer,status,start_datetime_event,end_datetime_event,date_update,id_referer) VALUES (:id_event_on_referer,:type_event,:name,:description,:organizer,:status,:start_datetime_event,:end_datetime_event,:date_update,:id_referer)");
-
-              $add_user_accs->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
-              $add_user_accs->bindParam(':type_event', $type_event, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':name', $name, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':description', $description, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':organizer', $organizer, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':status', $status, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':date_update', $date_update, PDO::PARAM_STR);
-              $add_user_accs->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+              $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_users_events (id_event_on_referer,id_tboil,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_tboil,:id_referer,:date_added,:status)");
+              $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
+              $statement->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+              $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+              $statement->bindParam(':date_added', $date_update, PDO::PARAM_STR);
+              $statement->bindParam(':status', $status, PDO::PARAM_STR);
               $check_new_user = $add_user_accs->execute();
               $count = $database->lastInsertId();
 
               if ($count) {
-                  return json_encode(array('response' => true, 'description' => 'Мероприятие успешно добавлено в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                  return json_encode(array('response' => true, 'description' => 'Посещение пользователем мероприятия успешно записано в единую базу данных'),JSON_UNESCAPED_UNICODE);
                   exit;
               }
               else {
-                  return json_encode(array('response' => false, 'description' => 'Ошибка добавления мероприятия в базу данных'),JSON_UNESCAPED_UNICODE);
+                  return json_encode(array('response' => false, 'description' => 'Ошибка добавления посещения пользователя мероприятия в единую базу данных'),JSON_UNESCAPED_UNICODE);
                   exit;
               }
+        }
+        else {
+            return json_encode(array('response' => true, 'description' => 'Посещение данным пользователем данного мероприятия было ранее записано в единую базу данных'),JSON_UNESCAPED_UNICODE);
+            exit;
         }
 
   }
 
   // добавление посещения мероприятия юридическим лицом
-  public function add_entity_visit_events($id_event_on_referer,$id_tboil,$satus,$resourse) {
+  public function add_entity_visit_events($id_event_on_referer,$id_entity,$status,$resourse) {
     global $database;
 
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer AND id_entity = :id_entity");
+        $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
+        $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_OBJ);
+        $date_update = date("Y-m-d H:i:s");
+        if (!$data) {
+
+              $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_entity_events (id_event_on_referer,id_entity,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_entity,:id_referer,:date_added,:status)");
+              $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
+              $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+              $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
+              $statement->bindParam(':date_added', $date_update, PDO::PARAM_STR);
+              $statement->bindParam(':status', $status, PDO::PARAM_STR);
+              $check_new_user = $add_user_accs->execute();
+              $count = $database->lastInsertId();
+
+              if ($count) {
+                  return json_encode(array('response' => true, 'description' => 'Посещение юридическим лицом мероприятия успешно записано в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                  exit;
+              }
+              else {
+                  return json_encode(array('response' => false, 'description' => 'Ошибка добавления посещения юридическим лицом мероприятия в единую базу данных'),JSON_UNESCAPED_UNICODE);
+                  exit;
+              }
+        }
+        else {
+            return json_encode(array('response' => true, 'description' => 'Посещение данным юридическим лицом данного мероприятия было ранее записано в единую базу данных'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
 
 
   }
+
+  // получение всех мероприятий из единой базы данных или по типу
+  public function get_all_events($type_event = 'all') {
+      global $database;
+    
+      if ($type_event == 'all') {
+            $statement = $database->prepare("SELECT * FROM $this->MAIN_events");
+            $statement->execute();
+            $data = $statement->fetchAll(PDO::FETCH_OBJ);
+      }
+      else {
+            $all = 'all';
+            $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE type_event = :type_event AND type_event = :type_eventall");
+            $statement->bindParam(':type_event', $type_event, PDO::PARAM_STR);
+            $statement->bindParam(':type_eventall', $all, PDO::PARAM_STR);
+            $statement->execute();
+            $data = $statement->fetchAll(PDO::FETCH_OBJ);
+      }
+
+      if ($data) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Мероприятия по вашему запросу найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Мероприятий в базе данных не найдено, по данному запросу'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+
+  }
+
+
 
   /* API ФУНКЦИИ - TBOIL  */
 

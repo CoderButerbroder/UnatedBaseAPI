@@ -90,6 +90,12 @@ $date_added = $_POST['date_added'];
 $type_request = $_POST['type_request'];
 
 
+$id_event_on_referer = $_POST['id_event_on_referer'];
+$type_event = $_POST['type_event'];
+$organizer = $_POST['organizer'];
+$start_datetime_event = $_POST['start_datetime_event'];
+$end_datetime_event = $_POST['end_datetime_event'];
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';
