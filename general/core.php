@@ -1,4 +1,3 @@
-Б,зрз
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/PHPMailer.php');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/SMTP.php');
@@ -28,6 +27,7 @@ class Settings {
   private $MAIN_events = 'MAIN_events';
   private $MAIN_users_events = 'MAIN_users_events';
   private $MAIN_entity_events = 'MAIN_entity_events';
+  private $IPCHAIN_entity = 'IPCHAIN_entity';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -2005,7 +2005,7 @@ class Settings {
   // получение всех мероприятий из единой базы данных или по типу
   public function get_all_events($type_event = 'all') {
       global $database;
-    
+
       if ($type_event == 'all') {
             $statement = $database->prepare("SELECT * FROM $this->MAIN_events");
             $statement->execute();
@@ -2031,6 +2031,156 @@ class Settings {
 
 
   }
+
+
+
+
+  // обновление данных по компаниям
+  // public function update_branch_company() {
+  //     global $database;
+  //
+  //     $statement = $database->prepare("SELECT *
+  //     FROM `TEMP_entity_lpmtech`
+  //     JOIN `TEMP_entity_lpmtech_otrasl` ON `TEMP_entity_lpmtech`.`user_email` = `TEMP_entity_lpmtech_otrasl`.`user_email`");
+  //     $statement->execute();
+  //     $data = $statement->fetchAll(PDO::FETCH_OBJ);
+  //
+  //
+  //     foreach ($data as $key => $value) {
+  //           $temp_arr_industries = [];
+  //           array_push($temp_arr_industries, (object) ["value" => $value->company_sector]);
+  //           $result_temp_arr_industries = json_encode($temp_arr_industries, JSON_UNESCAPED_UNICODE);
+  //           $statement = $database->prepare("UPDATE $this->MAIN_entity SET branch = :branch WHERE inn = :inn");
+  //           $statement->bindParam(':branch', $result_temp_arr_industries, PDO::PARAM_STR);
+  //           $statement->bindParam(':inn', $value->inn, PDO::PARAM_INT);
+  //           $check_add = $statement->execute();
+  //           $count = $statement->rowCount();
+  //     }
+  //
+  //     return true;
+  //
+  // }
+
+
+
+  /* API функции - ipchain */
+
+
+  // получить токен ipchain
+  public function ipchain_token() {
+    global $database;
+
+        $curl = curl_init();
+        $username = $this->get_global_settings('login_ipchain');
+        $password = $this->get_global_settings('password_ipchain');
+        $domen_ipchain = $this->get_global_settings('domen_ipchain');
+        $data_post = array('grant_type' => 'password',
+                           'username' => $username,
+                           'password' => $password
+                          );
+        curl_setopt($curl, CURLOPT_URL, 'https://'.$domen_ipchain.'/token');
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array("Content-Type: application/x-www-form-urlencoded"));
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+        $out1 = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($out1);
+        if ($response->access_token) {
+            $check_update = $this->update_global_settings('token_ipchain',$response->access_token);
+            $check_update2 = $this->update_global_settings('token_type_ipchain',$response->token_type);
+            return json_encode(array('response' => true, 'token' => $response->access_token, 'description' => 'Токен ipchain успешно обновлен в единой базе данных'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка обновления токена ipchain'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+  }
+
+  // Получение всех данных по компаниям из ipchain GetDigitalPlatformDataFast
+  public function ipchain_GetDigitalPlatformDataFast() {
+    global $database;
+        $token_type_ipchain = $this->get_global_settings('token_type_ipchain');
+        $token_ipchain = $this->get_global_settings('token_ipchain');
+        $domen_ipchain = $this->get_global_settings('domen_ipchain');
+        $options = [
+            'http' => [
+                'method' => 'GET',
+                'header' => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: '.lcfirst($token_type_ipchain).' '.$token_ipchain
+                ],
+                'content' => ''
+            ]
+         ];
+        $builder = stream_context_create($options);
+        $document = file_get_contents('https://'.$domen_ipchain.'/api/Company/GetDigitalPlatformDataFast', false, $builder);
+        $output = json_decode($document);
+
+        return $document;
+
+  }
+
+  // синхронизация данных с ipchain
+  public function sinc_data_entity_ipchain() {
+      global $database;
+
+      $mass_all_comany = $this->ipchain_GetDigitalPlatformDataFast();
+
+      $data_mass_for_cicle = json_decode($mass_all_comany);
+
+      foreach ($data_mass_for_cicle as $key => $value) {
+
+              $Name = isset($value->Company->Name) ? $value->Company->Name : $Name = ' ';
+              $FullName = isset($value->Company->FullName) ? $value->Company->FullName : $FullName = ' ';
+              $Ogrn = isset($value->Company->Ogrn) ? $value->Company->Ogrn : $Ogrn = 0;
+              $Inn = isset($value->Company->Inn) ? $value->Company->Inn : $Inn = 0;
+              $FoundationDate = isset($value->Company->FoundationDate) ? $value->Company->FoundationDate : $FoundationDate = ' ';
+              $LawAddress = isset($value->Company->LawAddress) ? $value->Company->LawAddress : $LawAddress = ' ';
+              $Industries = isset($value->Company->Industries) ? $value->Company->Industries : $Industries = ' ';
+              $Technologies = isset($value->Company->Technologies) ? $value->Company->Technologies : $Technologies = ' ';
+              $LeaderId = isset($value->Company->LeaderId) ? $value->Company->LeaderId : $LeaderId = 0;
+              $Website = isset($value->Company->Website) ? $value->Company->Website : $Website = ' ';
+              $Okved = isset($value->Company->Okved) ? $value->Company->Okved : $Okved = ' ';
+              $Okveds = isset($value->Company->Okveds) ? $value->Company->Okveds : $Okveds = ' ';
+              $Region = isset($value->Company->Region) ? $value->Company->Region : $Region = ' ';
+              $Email = isset($value->Company->Email) ? $value->Company->Email : $Email = ' ';
+              $Notes = isset($value->Company->Notes) ? $value->Company->Notes : $Notes = ' ';
+              $AnnualIndicators = isset($value->Company->AnnualIndicators) ? $value->Company->AnnualIndicators : $AnnualIndicators = ' ';
+
+              $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
+              $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+              $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
+              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
+              $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+              $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
+              $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
+              $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
+              $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
+              $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+              $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+              $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
+              $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
+              $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
+              $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+              $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+              $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+              $check_new_user = $statement->execute();
+              $count = $database->lastInsertId();
+
+              break;
+        }
+        return true;
+
+  }
+
+
+
+
+
+
 
 
 

@@ -14,10 +14,17 @@ $settings = new Settings;
 //
 // $id_user_tboil = '104120';
 //
-$cehck = $settings->update_all_platform_referer('104120','47');
+$cehck = $settings->ipchain_GetDigitalPlatformDataFast();
 //
+$cehck_mass = json_decode($cehck);
+
+$count = count($cehck_mass);
 
 
-var_dump($cehck);
+foreach ($cehck_mass as $key => $value) {
+      var_dump($value->StateSupport);
+}
+
+
 
 ?>
