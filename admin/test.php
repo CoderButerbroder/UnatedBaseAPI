@@ -1,18 +1,19 @@
 <?php
-
 /*
 СКРИПТ ОБНОВЛЕНИЯ ОТРОСЛЕЙ КОМПАНИЙ, СТАРЫЙХ НА НОВЫЕ С IPCHAINT+-
+*/
+
+// session_start();
+// require_once(__DIR__.'/../general/core.php');
+//
+//   global $database;
+//
+//   $statement = $database->prepare("SELECT * FROM `MAIN_entity` WHERE branch IS NOT NULL");
+//   $statement->execute();
+//   $data_select = $statement->fetchAll(PDO::FETCH_OBJ);
 
 
-session_start();
-require_once(__DIR__.'/../general/core.php');
-
-  global $database;
-
-  $statement = $database->prepare("SELECT * FROM `MAIN_entity` WHERE branch IS NOT NULL");
-  $statement->execute();
-  $data_select = $statement->fetchAll(PDO::FETCH_OBJ);
-
+/*
   $arr = [];
 
   array_push($arr, (object) [   "name" => 'Медицинская техника',

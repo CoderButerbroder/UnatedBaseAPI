@@ -13,7 +13,7 @@ if ($id_user_tboil && $inn && isset($msp) && isset($site) && isset($region) && i
                            $settings->recording_history($resource,'addNewCompany',$check_valid_token);
 
       if (json_decode($check_valid_token)->response) {
-              $response = $settings->register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch,$technology);
+              $response = $settings->register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,stripcslashes($branch),stripcslashes($technology));
                           $settings->recording_history($resource,'addNewCompany',$response);
               echo $response;
       } else {
