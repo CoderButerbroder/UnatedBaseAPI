@@ -11,6 +11,34 @@
 //   $statement = $database->prepare("SELECT * FROM `MAIN_entity` WHERE branch IS NOT NULL");
 //   $statement->execute();
 //   $data_select = $statement->fetchAll(PDO::FETCH_OBJ);
+//
+
+
+
+  // foreach ($data_select as $key => $value) {
+  //
+  //   if( $value->branch == '[{"value":null}]' || $value->branch == '' || $value->branch == NULL ) { continue; }
+  //
+  //   $new_value_str = '';
+  //   $new_value_arr = [];
+  //
+  //   $value_old_branch = json_decode($value->branch);
+  //
+  //   foreach ($value_old_branch as $key_br => $value_br) {
+  //     array_push($new_value_arr, (object) array('Code' => $value_br->code, 'Name' => $value_br->value) );
+  //   }
+  //
+  //   $new_value_str = json_encode($new_value_arr, JSON_UNESCAPED_UNICODE);
+  //   echo $new_value_str;
+  //   echo "</br>";
+  //   $upd_profile = $database->prepare("UPDATE `MAIN_entity` SET branch = :branch WHERE id = :id");
+  //   $upd_profile->bindParam(':branch', $new_value_str, PDO::PARAM_STR);
+  //   $upd_profile->bindParam(':id', $value->id, PDO::PARAM_INT);
+  //   $temp = $upd_profile->execute();
+  //   var_dump($temp);
+  //   echo "</br>";
+  //
+  // }
 
 
 /*
