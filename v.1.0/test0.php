@@ -18,9 +18,10 @@ var flag = true;
     let timerId = setTimeout(function tick() {
 
       if ($('#checkbox').is(':checked') && flag) {
+        console.log('<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_ipchain_entity.php');
         flag = false;
         $.ajax({
-        	url: 'https://<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_tboil_user.php',
+        	url: 'https://<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_ipchain_entity.php',
         	method: 'get',
           async : false,
           timeout: 0,

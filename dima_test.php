@@ -14,16 +14,13 @@ $settings = new Settings;
 //
 // $id_user_tboil = '104120';
 //
-$cehck = $settings->ipchain_GetDigitalPlatformDataFast();
+$cehck = $settings->get_data_for_ipchain();
 //
-$cehck_mass = json_decode($cehck);
+$cehck = json_decode($cehck);
+var_dump($cehck)
 
-$count = count($cehck_mass);
 
 
-foreach ($cehck_mass as $key => $value) {
-      var_dump($value->StateSupport);
-}
 
 
 

@@ -2136,54 +2136,131 @@ class Settings {
 
       foreach ($data_mass_for_cicle as $key => $value) {
 
+              $Ogrn = $value->Company->Ogrn;
+              $Inn = $value->Company->Inn;
+
               $Name = isset($value->Company->Name) ? $value->Company->Name : $Name = ' ';
               $FullName = isset($value->Company->FullName) ? $value->Company->FullName : $FullName = ' ';
-              $Ogrn = isset($value->Company->Ogrn) ? $value->Company->Ogrn : $Ogrn = 0;
-              $Inn = isset($value->Company->Inn) ? $value->Company->Inn : $Inn = 0;
               $FoundationDate = isset($value->Company->FoundationDate) ? $value->Company->FoundationDate : $FoundationDate = ' ';
               $LawAddress = isset($value->Company->LawAddress) ? $value->Company->LawAddress : $LawAddress = ' ';
-              $Industries = isset($value->Company->Industries) ? $value->Company->Industries : $Industries = ' ';
-              $Technologies = isset($value->Company->Technologies) ? $value->Company->Technologies : $Technologies = ' ';
+              $Industries = is_array($value->Company->Industries) ? json_encode($value->Company->Industries) : $Industries = ' ';
+              $Technologies = is_array($value->Company->Technologies) ? json_encode($value->Company->Technologies) : $Technologies = ' ';
               $LeaderId = isset($value->Company->LeaderId) ? $value->Company->LeaderId : $LeaderId = 0;
               $Website = isset($value->Company->Website) ? $value->Company->Website : $Website = ' ';
               $Okved = isset($value->Company->Okved) ? $value->Company->Okved : $Okved = ' ';
-              $Okveds = isset($value->Company->Okveds) ? $value->Company->Okveds : $Okveds = ' ';
-              $Region = isset($value->Company->Region) ? $value->Company->Region : $Region = ' ';
+              $Okveds = is_array($value->Company->Okveds) ? json_encode($value->Company->Okveds) : $Okveds = ' ';
+              $Region = is_array($value->Company->Region) ? json_encode($value->Company->Region) : $Region = ' ';
               $Email = isset($value->Company->Email) ? $value->Company->Email : $Email = ' ';
               $Notes = isset($value->Company->Notes) ? $value->Company->Notes : $Notes = ' ';
-              $AnnualIndicators = isset($value->Company->AnnualIndicators) ? $value->Company->AnnualIndicators : $AnnualIndicators = ' ';
+              $AnnualIndicators = isset($value->Company->AnnualIndicators) ? json_encode($value->Company->AnnualIndicators) : $AnnualIndicators = ' ';
 
-              $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
+              $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Name = :Name");
               $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
-              $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
-              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
-              $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
-              $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
-              $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
-              $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
-              $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
-              $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
-              $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
-              $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
-              $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
-              $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
-              $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
-              $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
-              $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
-              $check_new_user = $statement->execute();
-              $count = $database->lastInsertId();
+              $statement->execute();
+              $data = $statement->fetch(PDO::FETCH_OBJ);
 
-              break;
+              if (!$data) {
+
+                  $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
+                  $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                  $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
+                  $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
+                  $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+                  $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
+                  $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
+                  $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
+                  $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
+                  $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                  $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                  $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
+                  $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
+                  $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
+                  $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                  $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                  $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+                  $check_new_user = $statement->execute();
+                  $count = $database->lastInsertId();
+              }
+              else {}
         }
         return true;
 
   }
 
+  // реверс синхронизация данных с ipchain
+  public function reverse_sinc_data_entity_ipchain() {
+      global $database;
 
+      $mass_all_comany = $this->ipchain_GetDigitalPlatformDataFast();
 
+      $data_mass_for_cicle = json_decode($mass_all_comany);
 
+      foreach ($data_mass_for_cicle as $key => $value) {
 
+              $Ogrn = $value->Company->Ogrn;
+              $Inn = $value->Company->Inn;
 
+              $Name = isset($value->Company->Name) ? $value->Company->Name : $Name = ' ';
+              $FullName = isset($value->Company->FullName) ? $value->Company->FullName : $FullName = ' ';
+              $FoundationDate = isset($value->Company->FoundationDate) ? $value->Company->FoundationDate : $FoundationDate = ' ';
+              $LawAddress = isset($value->Company->LawAddress) ? $value->Company->LawAddress : $LawAddress = ' ';
+              $Industries = is_array($value->Company->Industries) ? json_encode($value->Company->Industries) : $Industries = ' ';
+              $Technologies = is_array($value->Company->Technologies) ? json_encode($value->Company->Technologies) : $Technologies = ' ';
+              $LeaderId = isset($value->Company->LeaderId) ? $value->Company->LeaderId : $LeaderId = 0;
+              $Website = isset($value->Company->Website) ? $value->Company->Website : $Website = ' ';
+              $Okved = isset($value->Company->Okved) ? $value->Company->Okved : $Okved = ' ';
+              $Okveds = is_array($value->Company->Okveds) ? json_encode($value->Company->Okveds) : $Okveds = ' ';
+              $Region = is_array($value->Company->Region) ? json_encode($value->Company->Region) : $Region = ' ';
+              $Email = isset($value->Company->Email) ? $value->Company->Email : $Email = ' ';
+              $Notes = isset($value->Company->Notes) ? $value->Company->Notes : $Notes = ' ';
+              $AnnualIndicators = isset($value->Company->AnnualIndicators) ? json_encode($value->Company->AnnualIndicators) : $AnnualIndicators = ' ';
+
+              $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Name = :Name");
+              $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+              $statement->execute();
+              $data = $statement->fetch(PDO::FETCH_OBJ);
+
+              if (!$data) {
+
+                  $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
+                  $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                  $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
+                  $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
+                  $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+                  $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
+                  $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
+                  $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
+                  $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
+                  $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                  $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                  $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
+                  $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
+                  $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
+                  $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                  $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                  $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+                  $check_new_user = $statement->execute();
+                  $count = $database->lastInsertId();
+              }
+              else {}
+        }
+        return true;
+
+  }
+
+  // добавление фондов в компанию из ipchain
+  //public function
+
+  // создание выгрузки в ipchain в csv
+  public function get_data_for_ipchain() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id_entity > 0 AND id_leader > 0");
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      return $data_users;
+  }
 
 
 
