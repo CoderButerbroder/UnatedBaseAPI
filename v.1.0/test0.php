@@ -18,10 +18,10 @@ var flag = true;
     let timerId = setTimeout(function tick() {
 
       if ($('#checkbox').is(':checked') && flag) {
-        console.log('<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_ipchain_entity.php');
+        console.log('<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_data_ipobject_ipchain.php');
         flag = false;
         $.ajax({
-        	url: 'https://<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_ipchain_entity.php',
+        	url: 'https://<?php echo $_SERVER["SERVER_NAME"];?>/admin/help/sinc_data_ipobject_ipchain.php',
         	method: 'get',
           async : false,
           timeout: 0,

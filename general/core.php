@@ -28,6 +28,9 @@ class Settings {
   private $MAIN_users_events = 'MAIN_users_events';
   private $MAIN_entity_events = 'MAIN_entity_events';
   private $IPCHAIN_entity = 'IPCHAIN_entity';
+  private $IPCHAIN_StateSupport = 'IPCHAIN_StateSupport';
+  private $IPCHAIN_Project = 'IPCHAIN_Project';
+  private $IPCHAIN_IpObjects = 'IPCHAIN_IpObjects';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -2037,35 +2040,6 @@ class Settings {
 
 
 
-
-  // обновление данных по компаниям
-  // public function update_branch_company() {
-  //     global $database;
-  //
-  //     $statement = $database->prepare("SELECT *
-  //     FROM `TEMP_entity_lpmtech`
-  //     JOIN `TEMP_entity_lpmtech_otrasl` ON `TEMP_entity_lpmtech`.`user_email` = `TEMP_entity_lpmtech_otrasl`.`user_email`");
-  //     $statement->execute();
-  //     $data = $statement->fetchAll(PDO::FETCH_OBJ);
-  //
-  //
-  //     foreach ($data as $key => $value) {
-  //           $temp_arr_industries = [];
-  //           array_push($temp_arr_industries, (object) ["value" => $value->company_sector]);
-  //           $result_temp_arr_industries = json_encode($temp_arr_industries, JSON_UNESCAPED_UNICODE);
-  //           $statement = $database->prepare("UPDATE $this->MAIN_entity SET branch = :branch WHERE inn = :inn");
-  //           $statement->bindParam(':branch', $result_temp_arr_industries, PDO::PARAM_STR);
-  //           $statement->bindParam(':inn', $value->inn, PDO::PARAM_INT);
-  //           $check_add = $statement->execute();
-  //           $count = $statement->rowCount();
-  //     }
-  //
-  //     return true;
-  //
-  // }
-
-
-
   /* API функции - ipchain */
 
 
@@ -2104,6 +2078,7 @@ class Settings {
   // Получение всех данных по компаниям из ipchain GetDigitalPlatformDataFast
   public function ipchain_GetDigitalPlatformDataFast() {
     global $database;
+        $this->ipchain_token();
         $token_type_ipchain = $this->get_global_settings('token_type_ipchain');
         $token_ipchain = $this->get_global_settings('token_ipchain');
         $domen_ipchain = $this->get_global_settings('domen_ipchain');
@@ -2130,6 +2105,8 @@ class Settings {
   public function sinc_data_entity_ipchain() {
       global $database;
 
+      $this->ipchain_token();
+
       $mass_all_comany = $this->ipchain_GetDigitalPlatformDataFast();
 
       $data_mass_for_cicle = json_decode($mass_all_comany);
@@ -2154,14 +2131,18 @@ class Settings {
               $Notes = isset($value->Company->Notes) ? $value->Company->Notes : $Notes = ' ';
               $AnnualIndicators = isset($value->Company->AnnualIndicators) ? json_encode($value->Company->AnnualIndicators) : $AnnualIndicators = ' ';
 
-              $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Name = :Name");
-              $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+              $Fund_Name = isset($value->Fund->Name) ? $value->Fund->Name : $Fund_Name = ' ';
+              $Fund_Ogrn = isset($value->Fund->Ogrn) ? $value->Fund->Ogrn : $Fund_Ogrn = 0;
+
+              $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Inn = :Inn AND Ogrn = :Ogrn");
+              $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
               $statement->execute();
               $data = $statement->fetch(PDO::FETCH_OBJ);
 
               if (!$data) {
 
-                  $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
+                  $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators,Fund_Name,Fund_Ogrn) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators,:Fund_Name,:Fund_Ogrn)");
                   $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
                   $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
                   $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
@@ -2178,8 +2159,11 @@ class Settings {
                   $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
                   $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
                   $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+                  $statement->bindParam(':Fund_Name', $Fund_Name, PDO::PARAM_STR);
+                  $statement->bindParam(':Fund_Ogrn', $Fund_Ogrn, PDO::PARAM_INT);
                   $check_new_user = $statement->execute();
                   $count = $database->lastInsertId();
+
               }
               else {}
         }
@@ -2191,6 +2175,8 @@ class Settings {
   public function reverse_sinc_data_entity_ipchain() {
       global $database;
 
+      $this->ipchain_token();
+
       $mass_all_comany = $this->ipchain_GetDigitalPlatformDataFast();
 
       $data_mass_for_cicle = json_decode($mass_all_comany);
@@ -2248,8 +2234,247 @@ class Settings {
 
   }
 
+  // получение всех компании которые были загружены ipchain
+  public function get_all_entity_ipchain() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity");
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      return $data;
+
+  }
+
   // добавление фондов в компанию из ipchain
-  //public function
+  public function sinc_data_support_ipchain() {
+      global $database;
+
+      $this->ipchain_token();
+      $mass_entity_ebd = $this->get_all_entity_ipchain();
+      $token_type_ipchain = $this->get_global_settings('token_type_ipchain');
+      $token_ipchain = $this->get_global_settings('token_ipchain');
+      $domen_ipchain = $this->get_global_settings('domen_ipchain');
+
+      $count = 0;
+
+      foreach ($mass_entity_ebd as $key => $value) {
+
+           $curl = curl_init();
+           $data_post = array('ogrn' => $value->Ogrn);
+           $headers = array(
+                 'Content-Type: application/json',
+                 'Accept: application/json',
+                 'Authorization: '.lcfirst($token_type_ipchain).' '.$token_ipchain
+           );
+           curl_setopt($curl, CURLOPT_URL, 'https://dfptest.sk.ru/api/Company/GetStateSupport?ogrn='.$value->Ogrn);
+           curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+           curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+           curl_setopt($curl, CURLOPT_POST, false);
+           // curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+           $out1 = curl_exec($curl);
+           curl_close($curl);
+
+           $out1 = json_decode($out1);
+
+           if (count($out1)) {
+
+                foreach ($out1 as $key => $value2) {
+
+                  $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE id_Support = :id_Support");
+                  $statement->bindParam(':id_Support', $value2->Id, PDO::PARAM_STR);
+                  $statement->execute();
+                  $data = $statement->fetch(PDO::FETCH_OBJ);
+
+                  if (!$data) {
+                      $id_Support = isset($value2->Id) ? $value2->Id : $id_Support = ' ';
+                      $typeId = isset($value2->TypeId) ? $value2->TypeId : $typeId = ' ';
+                      $date_support = isset($value2->Date) ? $value2->Date : $date_support = ' ';
+                      $Sum = isset($value2->Sum) ? $value2->Sum : $Sum = ' ';
+                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+
+                      $statement = $database->prepare("INSERT INTO $this->IPCHAIN_StateSupport (ipchain_id_entity,id_Support,typeId,date_support,Sum) VALUES (:ipchain_id_entity,:id_Support,:typeId,:date_support,:Sum)");
+                      $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
+                      $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
+                      $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
+                      $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
+                      $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
+                      $check_new_user = $statement->execute();
+                      $count = $database->lastInsertId();
+                  }
+
+                }
+
+           }
+
+      }
+
+  }
+
+  // добавление проектов в компанию из ipchain
+  public function sinc_data_project_ipchain() {
+      global $database;
+
+      $this->ipchain_token();
+      $mass_entity_ebd = $this->get_all_entity_ipchain();
+      $token_type_ipchain = $this->get_global_settings('token_type_ipchain');
+      $token_ipchain = $this->get_global_settings('token_ipchain');
+      $domen_ipchain = $this->get_global_settings('domen_ipchain');
+
+      $count = 0;
+
+      foreach ($mass_entity_ebd as $key => $value) {
+
+           $curl = curl_init();
+           $data_post = array('ogrn' => $value->Ogrn);
+           $headers = array(
+                 'Content-Type: application/json',
+                 'Accept: application/json',
+                 'Authorization: '.lcfirst($token_type_ipchain).' '.$token_ipchain
+           );
+           curl_setopt($curl, CURLOPT_URL, 'https://dfptest.sk.ru/api/Company/GetProjects?ogrn='.$value->Ogrn);
+           curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+           curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+           curl_setopt($curl, CURLOPT_POST, false);
+           // curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+           $out1 = curl_exec($curl);
+           curl_close($curl);
+
+           $out1 = json_decode($out1);
+
+           if (count($out1)) {
+
+                foreach ($out1 as $key => $value2) {
+
+                  $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_project = :ipchain_id_project");
+                  $statement->bindParam(':ipchain_id_project', $value2->Id, PDO::PARAM_STR);
+                  $statement->execute();
+                  $data = $statement->fetch(PDO::FETCH_OBJ);
+
+                  if (!$data) {
+
+                      $Name = isset($value2->Name) ? $value2->Name : $Name = ' ';
+                      $Description = isset($value2->Description) ? $value2->Description : $Description = ' ';
+                      $StartDate = isset($value2->StartDate) ? $value2->StartDate : $StartDate = '0000-00-00 00:00:00';
+                      $EndDate = isset($value2->EndDate) ? $value2->EndDate : $EndDate = '0000-00-00 00:00:00';
+                      $ipchain_id_project = isset($value2->Id) ? $value2->Id : $ipchain_id_project = ' ';
+                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+
+                      $statement = $database->prepare("INSERT INTO $this->IPCHAIN_Project (ipchain_id_entity,Name,Description,StartDate,EndDate,ipchain_id_project) VALUES (:ipchain_id_entity,:Name,:Description,:StartDate,:EndDate,:ipchain_id_project)");
+                      $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
+                      $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                      $statement->bindParam(':Description', $Description, PDO::PARAM_STR);
+                      $statement->bindParam(':StartDate', $StartDate, PDO::PARAM_STR);
+                      $statement->bindParam(':EndDate', $EndDate, PDO::PARAM_STR);
+                      $statement->bindParam(':ipchain_id_project', $ipchain_id_project, PDO::PARAM_STR);
+                      $check_new_user = $statement->execute();
+                      // $count = $database->lastInsertId();
+                  }
+
+                }
+
+           }
+
+      }
+
+  }
+
+  // добавление объектов в компанию из ipchain
+  public function sinc_data_ipobject_ipchain() {
+      global $database;
+
+      $this->ipchain_token();
+      $mass_entity_ebd = $this->get_all_entity_ipchain();
+      $token_type_ipchain = $this->get_global_settings('token_type_ipchain');
+      $token_ipchain = $this->get_global_settings('token_ipchain');
+      $domen_ipchain = $this->get_global_settings('domen_ipchain');
+
+      $count = 0;
+
+      foreach ($mass_entity_ebd as $key => $value) {
+
+           $curl = curl_init();
+           $data_post = array('ogrn' => $value->Ogrn);
+           $headers = array(
+                 'Content-Type: application/json',
+                 'Accept: application/json',
+                 'Authorization: '.lcfirst($token_type_ipchain).' '.$token_ipchain
+           );
+           curl_setopt($curl, CURLOPT_URL, 'https://dfptest.sk.ru/api/Company/GetIpObjects?ogrn='.$value->Ogrn);
+           curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+           curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+           curl_setopt($curl, CURLOPT_POST, false);
+           // curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+           $out1 = curl_exec($curl);
+           curl_close($curl);
+
+           $out1 = json_decode($out1);
+
+           if (count($out1)) {
+
+                foreach ($out1 as $key => $value2) {
+
+
+                  $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects WHERE Number_Objects = :Number_Objects");
+                  $statement->bindParam(':Number_Objects', $value2->Number, PDO::PARAM_STR);
+                  $statement->execute();
+                  $data = $statement->fetch(PDO::FETCH_OBJ);
+
+                  if (!$data) {
+
+                      $Type = isset($value2->Type) ? $value2->Type : ' ';
+                      $Country = isset($value2->Country) ? $value2->Country : ' ';
+                      $Name = isset($value2->Name) ? $value2->Name : ' ';
+                      $RegistrationDate = isset($value2->RegistrationDate) ? $value2->RegistrationDate : '0000-00-00 00:00:00';
+                      $Number_Objects = isset($value2->Number) ? $value2->Number : ' ';
+                      $Url = isset($value2->Url) ? $value2->Url : ' ';
+                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+
+                      $statement = $database->prepare("INSERT INTO $this->IPCHAIN_IpObjects (ipchain_id_entity,Type,Country,Name,RegistrationDate,Number_Objects,Url) VALUES (:ipchain_id_entity,:Type,:Country,:Name,:RegistrationDate,:Number_Objects,:Url)");
+                      $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
+                      $statement->bindParam(':Type', $Type, PDO::PARAM_STR);
+                      $statement->bindParam(':Country', $Country, PDO::PARAM_STR);
+                      $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                      $statement->bindParam(':RegistrationDate', $RegistrationDate, PDO::PARAM_STR);
+                      $statement->bindParam(':Number_Objects', $Number_Objects, PDO::PARAM_STR);
+                      $statement->bindParam(':Url', $Url, PDO::PARAM_STR);
+                      $check_new_user = $statement->execute();
+                      // $count = $database->lastInsertId();
+                  }
+
+                }
+
+           }
+
+      }
+
+  }
+
+  //
+  public function ipchain_get_data_entity($type,$number) {
+        global $database;
+
+        if ($type == 'inn') {
+              $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Inn = :Inn");
+              $statement->bindParam(':Inn', $number, PDO::PARAM_INT);
+        }
+        else {
+            $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Ogrn = :Ogrn");
+            $statement->bindParam(':Ogrn', $number, PDO::PARAM_INT);
+        }
+        $statement->execute();
+        $data = $statement->fetch(PDO::FETCH_OBJ);
+
+        if ($data) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные найдены в ipchain'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка данные не найдены в ipchain по данному юридическому лицу'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+  }
 
   // создание выгрузки в ipchain в csv
   public function get_data_for_ipchain() {

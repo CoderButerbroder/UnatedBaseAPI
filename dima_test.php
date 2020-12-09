@@ -14,9 +14,9 @@ $settings = new Settings;
 //
 // $id_user_tboil = '104120';
 //
-$cehck = $settings->get_data_for_ipchain();
+$cehck = $settings->sinc_data_fund_ipchain();
 //
-$cehck = json_decode($cehck);
+// $cehck = json_decode($cehck);
 var_dump($cehck)
 
 
