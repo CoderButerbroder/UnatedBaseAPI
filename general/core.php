@@ -1022,7 +1022,7 @@ class Settings {
           exit;
       }
 
-      $validFields = array('msp','site','region','staff','district','street','house','type_inf','additionally','export','branch');
+      $validFields = array('msp','site','region','staff','district','street','house','type_inf','additionally','export','branch','technology');
 
       foreach ($massiv_field_value as $key => $value) {
           if (!in_array($key, $validFields)) {
@@ -1049,8 +1049,8 @@ class Settings {
                       'type_inf' => PDO::PARAM_STR,
                       'additionally' => PDO::PARAM_STR,
                       'export' => PDO::PARAM_STR,
-                      'branch' => PDO::PARAM_STR
-                    );
+                      'branch' => PDO::PARAM_STR,
+                      'technology' => PDO::PARAM_STR );
 
       $sql_string = 'UPDATE '.$this->MAIN_entity.' SET ';
 
@@ -1087,7 +1087,7 @@ class Settings {
   }
 
   // Добавление компании и привязка ее к физическому лицу
-  public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch){
+  public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch,$technology){
       global $database;
 
       $check_company = $this->get_data_entity_inn($inn);
@@ -1118,6 +1118,7 @@ class Settings {
                               if (trim($additionally)) { $array_entity['additionally'] = $additionally; }
                               if (trim($export)) { $array_entity['export'] = $export; }
                               if (trim($branch)) { $array_entity['branch'] = $branch; }
+                              if (trim($technology)) { $array_entity['technology'] = $technology; }
 
                               // $array_entity = array(
                               //                       'msp' => $msp,
@@ -1163,7 +1164,8 @@ class Settings {
                                           'type_inf' => $type_inf,
                                           'additionally' => $additionally,
                                           'export' => $export,
-                                          'branch' => $branch);
+                                          'branch' => $branch,
+                                          'technology' => $technology);
 
                     $array_entity = json_encode($array_entity);
 
@@ -1185,8 +1187,8 @@ class Settings {
 
             $hash = md5($id_user_tboil.$inn.$msp.$site.$region.$staff.$district.$street.$house.$type_inf.$additionally.$date_pickup);
 
-            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branch,hash,date_pickup)
-                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:hash,:date_pickup)");
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branch,technology,hash,date_pickup)
+                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:technology,:hash,:date_pickup)");
             $request->bindParam(':inn', $inn, PDO::PARAM_INT);
             $request->bindParam(':data_fns', $default, PDO::PARAM_STR);
             $request->bindParam(':data_dadata', $default, PDO::PARAM_STR);
@@ -1201,6 +1203,7 @@ class Settings {
             $request->bindParam(':additionally', $additionally, PDO::PARAM_STR);
             $request->bindParam(':export', $export, PDO::PARAM_STR);
             $request->bindParam(':branch', $branch, PDO::PARAM_STR);
+            $request->bindParam(':technology', $technology, PDO::PARAM_STR);
             $request->bindParam(':hash', $hash, PDO::PARAM_STR);
             $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
             $check_request = $request->execute();
@@ -2005,7 +2008,7 @@ class Settings {
   // получение всех мероприятий из единой базы данных или по типу
   public function get_all_events($type_event = 'all') {
       global $database;
-    
+
       if ($type_event == 'all') {
             $statement = $database->prepare("SELECT * FROM $this->MAIN_events");
             $statement->execute();
