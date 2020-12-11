@@ -3288,7 +3288,63 @@ class Settings {
       }
     }
 
+    //получение всех ридов из ЕБД
+    public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
+      global $database;
 
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки ридов'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //получение всех проекты компаний в ipchain из ЕБД
+    public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //получение всех форм поддержки компании
+    public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка получения  форм поддержки компании'), JSON_UNESCAPED_UNICODE);
+      }
+    }
 
     //Функция
     public function entity_additionally($id_entity) {
