@@ -3273,78 +3273,121 @@ class Settings {
         $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
     }
 
-    // Функция полячения данных пользователя из единой базы данных по id_tboil
-    public function entity_additionally($id_entity) {
-        global $database;
+    public function IPCHAIN_entity_inner_join($inn) {
+      global $database;
 
+      $data_с = $database->prepare("SELECT * FROM IPCHAIN_StateSupport INNER JOIN IPCHAIN_entity WHERE IPCHAIN_StateSupport.ipchain_id_entity = IPCHAIN_entity.id AND inn =:inn");
+      $data_с->bindParam(':inn', $inn, PDO::PARAM_STR);
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
 
-        //
-        $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
-        $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $check_data_с->execute();
-        $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
-
-        $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
-        $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $check_data_с->execute();
-        $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
-
-        $fns_data_company = $this->fns_base($check_data_result_с->inn);
-
-
-        $category = (!empty($category)) ? $category : ' ';
-        $proceeds = (isset($fns_data_company->data->items->ЮЛ)) ? $fns_data_company->data->items->ОткрСведения->СумДоход : 0;
-        $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
-        $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
-        $count_staff = (isset($fns_data_company->data->items->ЮЛ)) ? $fns_data_company->data->items->ОткрСведения->КолРаб : 1;
-        $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
-        $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
-        $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
-        $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
-        $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
-        $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
-        $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
-        $land = (!empty($land)) ? $land : ' ';
-        $land_area = (!empty($land_area)) ? $land_area : ' ';
-        $room_area = (!empty($room_area)) ? $room_area : ' ';
-
-
-
-        // if(is_Object($check_data_result)) {
-        //   //нашли прошлую запись, обновляем ее
-        // } else {
-        //   //втсавляем новую запись
-        // }
-
-
-        // id_entity
-        // category
-        // proceeds
-        // proceeds_import
-        // proceeds_export
-        // count_staff
-        // volume_fund
-        // volume_tax_customs
-        // volume_investments
-        // volume_credits
-        // count_patent
-        // pay_research
-        // count_export_contracts
-        // land
-        // land_area
-        // room_area
-
-
-
-        // $today = date("Y-m-d H:i:s");
-        //
-        // $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
-        // $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-        // $check_new_erorr = $new_erorr->execute();
-        // $check_id = $database->lastInsertId();
-
-        return 'wtf';
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированны'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки данных'), JSON_UNESCAPED_UNICODE);
+      }
     }
+
+
+
+    // Функция полячения данных пользователя из единой базы данных по id_tboil
+    // public function entity_additionally($id_entity) {
+    //     global $database;
+    //
+    //
+    //     //
+    //     $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
+    //     $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+    //     $check_data_с->execute();
+    //     $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
+    //
+    //     $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
+    //     $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+    //     $check_data_с->execute();
+    //     $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
+    //
+    //     $fns_data_company = $this->fns_base($check_data_result_с->inn);
+    //
+    //
+    //     $category = (!empty($category)) ? $category : ' ';
+    //     $proceeds = (isset($proceeds)) ? $proceeds : ' ';
+    //     $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
+    //     $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
+    //     $count_staff = (isset($count_staff)) ? $count_staff : ' ';
+    //     $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
+    //     $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
+    //     $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
+    //     $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
+    //     $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
+    //     $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
+    //     $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
+    //     $land = (!empty($land)) ? $land : ' ';
+    //     $land_area = (!empty($land_area)) ? $land_area : ' ';
+    //     $room_area = (!empty($room_area)) ? $room_area : ' ';
+    //
+    //
+    //
+    //     if(is_Object($check_data_result)) {
+    //       //нашли прошлую запись, обновляем ее
+    //
+    //       $upd_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
+    //         proceeds_export = :proceeds_export, count_staff = :count_staff, volume_fund = :volume_fund, volume_tax_customs = :volume_tax_customs,
+    //         volume_investments = :volume_investments, volume_credits = :volume_credits, count_patent = :count_patent, pay_research = :pay_research,
+    //         count_export_contracts = :count_export_contracts, land = :land, land_area = :land_area, room_area = :room_area  WHERE id_entity = :id_entity,");
+    //       $_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+    //       $_data->bindParam(':category', $category, PDO::PARAM_STR);
+    //       $_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
+    //       $_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
+    //       $_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
+    //       $_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
+    //       $_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
+    //       $_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
+    //       $_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
+    //       $_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
+    //       $_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
+    //       $_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
+    //       $_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
+    //       $_data->bindParam(':land', $land, PDO::PARAM_STR);
+    //       $_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
+    //       $_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
+    //
+    //       $temp = $_data->execute();
+    //       $count = $_data->rowCount();
+    //
+    //
+    //     } else {
+    //       //втсавляем новую запись
+    //     }
+    //
+    //
+    //     // id_entity
+    //     // category
+    //     // proceeds
+    //     // proceeds_import
+    //     // proceeds_export
+    //     // count_staff
+    //     // volume_fund
+    //     // volume_tax_customs
+    //     // volume_investments
+    //     // volume_credits
+    //     // count_patent
+    //     // pay_research
+    //     // count_export_contracts
+    //     // land
+    //     // land_area
+    //     // room_area
+    //
+    //
+    //
+    //     // $today = date("Y-m-d H:i:s");
+    //     //
+    //     // $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
+    //     // $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+    //     // $check_new_erorr = $new_erorr->execute();
+    //     // $check_id = $database->lastInsertId();
+    //
+    //     return 'wtf';
+    // }
 
 
 
