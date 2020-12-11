@@ -16,6 +16,7 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
   private $MAIN_entity = 'MAIN_entity';
+  private $MAIN_entity_additionally = 'MAIN_entity_additionally';
   private $MAIN_entity_tech_requests = 'MAIN_entity_tech_requests';
   private $MAIN_entity_tech_requests_solutions = 'MAIN_entity_tech_requests_solutions';
   private $MAIN_entity_tech_services = 'MAIN_entity_tech_services';
@@ -2487,7 +2488,7 @@ class Settings {
       return $data_users;
   }
 
-  // добавление данных п оматчмэйкингу 
+  // добавление данных п оматчмэйкингу
 
 
   /* API ФУНКЦИИ - TBOIL  */
@@ -3271,6 +3272,81 @@ class Settings {
 
         $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
     }
+
+    // Функция полячения данных пользователя из единой базы данных по id_tboil
+    public function entity_additionally($id_entity) {
+        global $database;
+
+
+        //
+        $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
+        $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
+
+        $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
+        $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
+
+        $fns_data_company = $this->fns_base($check_data_result_с->inn);
+
+
+        $category = (!empty($category)) ? $category : ' ';
+        $proceeds = (isset($fns_data_company->data->items->ЮЛ)) ? $fns_data_company->data->items->ОткрСведения->СумДоход : 0;
+        $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
+        $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
+        $count_staff = (isset($fns_data_company->data->items->ЮЛ)) ? $fns_data_company->data->items->ОткрСведения->КолРаб : 1;
+        $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
+        $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
+        $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
+        $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
+        $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
+        $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
+        $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
+        $land = (!empty($land)) ? $land : ' ';
+        $land_area = (!empty($land_area)) ? $land_area : ' ';
+        $room_area = (!empty($room_area)) ? $room_area : ' ';
+
+
+
+        // if(is_Object($check_data_result)) {
+        //   //нашли прошлую запись, обновляем ее
+        // } else {
+        //   //втсавляем новую запись
+        // }
+
+
+        // id_entity
+        // category
+        // proceeds
+        // proceeds_import
+        // proceeds_export
+        // count_staff
+        // volume_fund
+        // volume_tax_customs
+        // volume_investments
+        // volume_credits
+        // count_patent
+        // pay_research
+        // count_export_contracts
+        // land
+        // land_area
+        // room_area
+
+
+
+        // $today = date("Y-m-d H:i:s");
+        //
+        // $new_erorr = $database->prepare("INSERT INTO $this->errors_migrate (id_tboil,type,date_record) VALUES (:id_tboil,:type,:date_record)");
+        // $new_erorr->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+        // $check_new_erorr = $new_erorr->execute();
+        // $check_id = $database->lastInsertId();
+
+        return 'wtf';
+    }
+
+
 
 
 
