@@ -3577,6 +3577,69 @@ class Settings {
 
     }
 
+    //получение данных по тикиту
+    //type_result = full - все / message - только  переписка по тикету / conclusion - с решением
+    //type_search поиск по id tiket = true
+    //или по user_tboil = false создавшего тикет для получения всех его тикетов и истории переписки
+    public function get_data_support_ticket($value_search, $type_result = 'message', $type_search = true) {
+      if(!isset($value_search)){
+        return json_encode(array('response' => false, 'description' => 'Не указаны все обходимые данные'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $arr_result = (object) array();
+
+      if($type_search){
+        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id = :id");
+        $ticket_data->bindParam(':id', $value_search, PDO::PARAM_INT);
+      } else {
+        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil");
+        $ticket_data->bindParam(':id_tboil', $value_search, PDO::PARAM_INT);
+      }
+      $ticket_data->execute();
+      $result_data_ticket = $ticket_data->fetchAll(PDO::FETCH_OBJ);
+
+      if (!array_shift($result_data_ticket)) {
+        if($type_search){
+          return json_encode(array('response' => false, 'description' => 'Тикет с указаным id не найден'), JSON_UNESCAPED_UNICODE);
+        } else {
+          return json_encode(array('response' => false, 'description' => 'У Пользователя не было тикетов'), JSON_UNESCAPED_UNICODE);
+        }
+      }
+
+      foreach ($result_data_ticket as $key_tiket => $value_tiket) {
+        $message_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket");
+        $message_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
+        $message_data->execute();
+        $result_data_message = $message_data->fetchAll(PDO::FETCH_OBJ);
+
+        if(!array_shift($result_data_message)){
+          $arr_result->$key_tiket->messages = 'Ошибка получения переписки в тиките';
+        } else {
+          $arr_result->$key_tiket->messages = $result_data_message;
+        }
+
+        if ($type_result == 'full') {
+          $arr_result->$key_tiket->ticket = $value_tiket;
+        }
+        if ($type_result == 'conclusion') {
+          $conclusion_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_conclusion WHERE id_support_ticket = :id_support_ticket");
+          $conclusion_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
+          $conclusion_data->execute();
+          $result_data_conclusion = $conclusion_data->fetchAll(PDO::FETCH_OBJ);
+
+          if(!array_shift($result_data_conclusion)){
+            $arr_result->$key_tiket->conclusion = 'Ошибка получения решения в тиките';
+          } else {
+            $arr_result->$key_tiket->conclusion = $result_data_conclusion;
+          }
+        }
+      }
+
+      return json_encode(array('response' => true, 'data' => $arr_result,'description' => 'Получение данных о тиките/ах'), JSON_UNESCAPED_UNICODE);
+    }
+
+
+
     public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
 
       if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
