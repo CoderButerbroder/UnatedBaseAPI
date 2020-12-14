@@ -38,43 +38,43 @@ $data_lpmtech_company = $settings->get_all_lpmtech_user();
 
 
 // привязка компаний по уже имеющимся id tboil и инн
-foreach ($data_lpmtech_company as $key) {
-
-          $msp = ' ';
-          if ($key->website) {$site = $key->website;} else {$site = ' ';}
-          $region = ' ';
-          $staff = ' ';
-          $district = ' ';
-          $street = ' ';
-          $house = ' ';
-          $type_inf = ' ';
-          $additionally = ' ';
-          $export = ' ';
-          $branch = ' ';
-
-        if ($key->inn) {
-              if ($key->id_tboil) {
-                  $check_privazka = $settings->register_entity($key->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
-                  $check_privazka = json_decode($check_privazka);
-                  if ($check_privazka->response) {
-                    echo 'Привязка компании '.$key->inn.' c пользоватлем '.$key->id_tboil.'  прошла успешно<br>';
-                  } else {
-                    echo $check_privazka->description.'<br>';
-                  }
-              } else {
-                  $check_user = $settings->search_user_email($key->user_email);
-                  $check_user = json_decode($check_user);
-                  if ($check_user->response) {
-                    $check_privazka = $settings->register_entity($check_user->data->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
-                    if ($check_privazka->response) {
-                      echo 'Привязка компании '.$key->inn.' c пользоватлем '.$check_user->data->id_tboil.'  прошла успешно<br>';
-                    } else {
-                      echo $check_privazka->description.'<br>';
-                    }
-                  }
-              }
-        }
-}
+// foreach ($data_lpmtech_company as $key) {
+//
+//           $msp = ' ';
+//           if ($key->website) {$site = $key->website;} else {$site = ' ';}
+//           $region = ' ';
+//           $staff = ' ';
+//           $district = ' ';
+//           $street = ' ';
+//           $house = ' ';
+//           $type_inf = ' ';
+//           $additionally = ' ';
+//           $export = ' ';
+//           $branch = ' ';
+//
+//         if ($key->inn) {
+//               if ($key->id_tboil) {
+//                   $check_privazka = $settings->register_entity($key->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
+//                   $check_privazka = json_decode($check_privazka);
+//                   if ($check_privazka->response) {
+//                     echo 'Привязка компании '.$key->inn.' c пользоватлем '.$key->id_tboil.'  прошла успешно<br>';
+//                   } else {
+//                     echo $check_privazka->description.'<br>';
+//                   }
+//               } else {
+//                   $check_user = $settings->search_user_email($key->user_email);
+//                   $check_user = json_decode($check_user);
+//                   if ($check_user->response) {
+//                     $check_privazka = $settings->register_entity($check_user->data->id_tboil,$key->inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch);
+//                     if ($check_privazka->response) {
+//                       echo 'Привязка компании '.$key->inn.' c пользоватлем '.$check_user->data->id_tboil.'  прошла успешно<br>';
+//                     } else {
+//                       echo $check_privazka->description.'<br>';
+//                     }
+//                   }
+//               }
+//         }
+// }
 
 
 
