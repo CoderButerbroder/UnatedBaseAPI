@@ -101,6 +101,9 @@ $end_datetime_event = $_POST['end_datetime_event'];
 $type = $_POST['type'];
 $number = $_POST['number'];
 
+$place = $_POST['place'];
+$interest = $_POST['interest'];
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';

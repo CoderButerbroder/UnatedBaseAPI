@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if ($id_event_on_referer && isset($type_event) && isset($name) && isset($description) && isset($organizer) && isset($status) && isset($start_datetime_event) && isset($end_datetime_event)) {
+if ($id_event_on_referer && isset($place) && isset($interest) && isset($type_event) && isset($name) && isset($description) && isset($organizer) && isset($status) && isset($start_datetime_event) && isset($end_datetime_event)) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -15,7 +15,7 @@ if ($id_event_on_referer && isset($type_event) && isset($name) && isset($descrip
       if (json_decode($check_valid_token)->response) {
           $check_id_referer = $settings->get_data_referer($resource);
           if (json_decode($check_id_referer)->response) {
-              $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,json_decode($check_id_referer)->data->id);
+              $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,json_decode($check_id_referer)->data->id);
                           $settings->recording_history($resource,'addNewEvent',$response);
                 echo $response;
           } else {
