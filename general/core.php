@@ -26,8 +26,8 @@ class Settings {
   private $MAIN_users_accounts = 'MAIN_users_accounts';
   private $errors_migrate = 'errors_migrate';
   private $MAIN_events = 'MAIN_events';
-  private $MAIN_users_events = 'MAIN_users_events';
-  private $MAIN_entity_events = 'MAIN_entity_events';
+  private $MAIN_users_events = 'MAIN_events_users';
+  private $MAIN_entity_events = 'MAIN_events_entity';
   private $IPCHAIN_entity = 'IPCHAIN_entity';
   private $IPCHAIN_StateSupport = 'IPCHAIN_StateSupport';
   private $IPCHAIN_Project = 'IPCHAIN_Project';
@@ -1871,7 +1871,7 @@ class Settings {
   }
 
   // добавление мероприятия в единую базу данных
-  public function add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,$resourse) {
+  public function add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,$resource) {
       global $database;
 
       $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer");
@@ -1882,12 +1882,12 @@ class Settings {
       $date_update = date("Y-m-d H:i:s");
       if (!$data) {
 
-            $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_events (id_event_on_referer,type_event,name,description,id_tboil_organizer,status,start_datetime_event,end_datetime_event,place,interest,date_update,id_referer) VALUES (:id_event_on_referer,:type_event,:name,:description,:id_tboil_organizer,:status,:start_datetime_event,:end_datetime_event,:date_update,:place,:interest:id_referer)");
+            $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_events (id_event_on_referer,type_event,name,description,id_tboil_organizer,status,start_datetime_event,end_datetime_event,place,interest,date_update,id_referer) VALUES (:id_event_on_referer,:type_event,:name,:description,:id_tboil_organizer,:status,:start_datetime_event,:end_datetime_event,:place,:interest,:date_update,:id_referer)");
             $add_user_accs->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
             $add_user_accs->bindParam(':type_event', $type_event, PDO::PARAM_STR);
             $add_user_accs->bindParam(':name', $name, PDO::PARAM_STR);
             $add_user_accs->bindParam(':description', $description, PDO::PARAM_STR);
-            $add_user_accs->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_STR);
+            $add_user_accs->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_INT);
             $add_user_accs->bindParam(':status', $status, PDO::PARAM_STR);
             $add_user_accs->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
             $add_user_accs->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
@@ -1914,7 +1914,7 @@ class Settings {
           $statement->bindParam(':type_event', $type_event, PDO::PARAM_STR);
           $statement->bindParam(':name', $name, PDO::PARAM_STR);
           $statement->bindParam(':description', $description, PDO::PARAM_STR);
-          $statement->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_STR);
+          $statement->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_INT);
           $statement->bindParam(':status', $status, PDO::PARAM_STR);
           $statement->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
           $statement->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
@@ -1939,7 +1939,7 @@ class Settings {
   }
 
   // добавление посещения мероприятия пользователем tboil
-  public function add_user_visit_events($id_event_on_referer,$id_tboil,$status,$resourse) {
+  public function add_user_visit_events($id_event_on_referer,$id_tboil,$status,$resource) {
     global $database;
 
         $statement = $database->prepare("SELECT * FROM $this->MAIN_users_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer AND id_tboil = :id_tboil");
@@ -1951,13 +1951,13 @@ class Settings {
         $date_update = date("Y-m-d H:i:s");
         if (!$data) {
 
-              $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_users_events (id_event_on_referer,id_tboil,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_tboil,:id_referer,:date_added,:status)");
+              $statement = $database->prepare("INSERT INTO $this->MAIN_users_events (id_event_on_referer,id_tboil,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_tboil,:id_referer,:date_added,:status)");
               $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
               $statement->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
               $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
               $statement->bindParam(':date_added', $date_update, PDO::PARAM_STR);
               $statement->bindParam(':status', $status, PDO::PARAM_STR);
-              $check_new_user = $add_user_accs->execute();
+              $check_new_user = $statement->execute();
               $count = $database->lastInsertId();
 
               if ($count) {
@@ -1977,7 +1977,7 @@ class Settings {
   }
 
   // добавление посещения мероприятия юридическим лицом
-  public function add_entity_visit_events($id_event_on_referer,$id_entity,$status,$resourse) {
+  public function add_entity_visit_events($id_event_on_referer,$id_entity,$status,$resource) {
     global $database;
 
         $statement = $database->prepare("SELECT * FROM $this->MAIN_entity_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer AND id_entity = :id_entity");
@@ -1989,13 +1989,13 @@ class Settings {
         $date_update = date("Y-m-d H:i:s");
         if (!$data) {
 
-              $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_entity_events (id_event_on_referer,id_entity,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_entity,:id_referer,:date_added,:status)");
+              $statement = $database->prepare("INSERT INTO $this->MAIN_entity_events (id_event_on_referer,id_entity,id_referer,date_added,status) VALUES (:id_event_on_referer,:id_entity,:id_referer,:date_added,:status)");
               $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
               $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
               $statement->bindParam(':id_referer', $resource, PDO::PARAM_INT);
               $statement->bindParam(':date_added', $date_update, PDO::PARAM_STR);
               $statement->bindParam(':status', $status, PDO::PARAM_STR);
-              $check_new_user = $add_user_accs->execute();
+              $check_new_user = $statement->execute();
               $count = $database->lastInsertId();
 
               if ($count) {
