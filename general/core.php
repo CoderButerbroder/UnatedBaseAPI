@@ -1,8 +1,8 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/PHPMailer.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/SMTP.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/smtp/Exception.php');
-require_once($_SERVER['DOCUMENT_ROOT'].'/general/DATAroot.php');
+require_once(__DIR__.'/plugins/smtp/PHPMailer.php');
+require_once(__DIR__.'/plugins/smtp/SMTP.php');
+require_once(__DIR__.'/plugins/smtp/Exception.php');
+require_once(__DIR__.'/DATAroot.php');
 // require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/dadata/DadataClient.php');
 
 class Settings {
@@ -2044,7 +2044,9 @@ class Settings {
 
 
 
+
   /* API функции - ipchain */
+
 
 
   // получить токен ipchain
@@ -2145,31 +2147,62 @@ class Settings {
               $data = $statement->fetch(PDO::FETCH_OBJ);
 
               if (!$data) {
+                    // добавление недостающей компании
+                    $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators,Fund_Name,Fund_Ogrn) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators,:Fund_Name,:Fund_Ogrn)");
+                    $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                    $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
+                    $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
+                    $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+                    $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
+                    $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
+                    $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
+                    $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                    $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                    $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
+                    $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
+                    $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
+                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                    $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                    $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+                    $statement->bindParam(':Fund_Name', $Fund_Name, PDO::PARAM_STR);
+                    $statement->bindParam(':Fund_Ogrn', $Fund_Ogrn, PDO::PARAM_INT);
+                    $check_new_user = $statement->execute();
+                    $count = $database->lastInsertId();
 
-                  $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators,Fund_Name,Fund_Ogrn) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators,:Fund_Name,:Fund_Ogrn)");
-                  $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
-                  $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
-                  $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
-                  $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
-                  $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
-                  $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
-                  $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
-                  $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
-                  $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
-                  $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
-                  $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
-                  $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
-                  $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
-                  $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
-                  $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
-                  $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
-                  $statement->bindParam(':Fund_Name', $Fund_Name, PDO::PARAM_STR);
-                  $statement->bindParam(':Fund_Ogrn', $Fund_Ogrn, PDO::PARAM_INT);
-                  $check_new_user = $statement->execute();
-                  $count = $database->lastInsertId();
+                    if (!$count && !$check_new_user) {
+                        $message = '[CRON] - Компания из ipchain '.$Name.' (ОГРН:'.$Ogrn.') не была добавлена';
+                        $id_chat_error = $this->get_global_settings('telega_chat_error');
+                        $this->telega_send($id_chat_error, $message);
+                    }
 
               }
-              else {}
+              else {
+
+                    // обновление компании в нашей базе данных
+                    $statement = $database->prepare("UPDATE $this->IPCHAIN_entity SET LawAddress = :LawAddress, Industries = :Industries, Technologies = :Technologies, LeaderId = :LeaderId, Website = :Website, Okved = :Okved, Okveds = :Okveds, Region = :Region, Email = :Email, Notes = :Notes, AnnualIndicators = :AnnualIndicators WHERE id = :id");
+                    $statement->bindParam(':id', $data->id, PDO::PARAM_INT);
+                    $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
+                    $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
+                    $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                    $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                    $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
+                    $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
+                    $statement->bindParam(':Region', $Region, PDO::PARAM_STR);
+                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                    $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                    $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
+                    $check_new_user = $statement->execute();
+                    $count = $database->rowCount();
+
+                    if (!$count && !$check_new_user) {
+                        $message = '[CRON] - Компания из ipchain (id:'.$data->id.') '.$data->Name.' не была обновлена';
+                        $id_chat_error = $this->get_global_settings('telega_chat_error');
+                        $this->telega_send($id_chat_error, $message);
+                    }
+
+              }
         }
         return true;
 
@@ -2290,21 +2323,47 @@ class Settings {
                   $statement->execute();
                   $data = $statement->fetch(PDO::FETCH_OBJ);
 
-                  if (!$data) {
-                      $id_Support = isset($value2->Id) ? $value2->Id : $id_Support = ' ';
-                      $typeId = isset($value2->TypeId) ? $value2->TypeId : $typeId = ' ';
-                      $date_support = isset($value2->Date) ? $value2->Date : $date_support = ' ';
-                      $Sum = isset($value2->Sum) ? $value2->Sum : $Sum = ' ';
-                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+                  $id_Support = isset($value2->Id) ? $value2->Id : $id_Support = ' ';
+                  $typeId = isset($value2->TypeId) ? $value2->TypeId : $typeId = ' ';
+                  $date_support = isset($value2->Date) ? $value2->Date : $date_support = ' ';
+                  $Sum = isset($value2->Sum) ? $value2->Sum : $Sum = ' ';
+                  $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
 
-                      $statement = $database->prepare("INSERT INTO $this->IPCHAIN_StateSupport (ipchain_id_entity,id_Support,typeId,date_support,Sum) VALUES (:ipchain_id_entity,:id_Support,:typeId,:date_support,:Sum)");
-                      $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
-                      $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
-                      $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
-                      $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
-                      $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
-                      $check_new_user = $statement->execute();
-                      $count = $database->lastInsertId();
+                  if (!$data) {
+                        // добавление поддержки из ipchain
+                        $statement = $database->prepare("INSERT INTO $this->IPCHAIN_StateSupport (ipchain_id_entity,id_Support,typeId,date_support,Sum) VALUES (:ipchain_id_entity,:id_Support,:typeId,:date_support,:Sum)");
+                        $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
+                        $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
+                        $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
+                        $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
+                        $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
+                        $check_new_user = $statement->execute();
+                        $count = $database->lastInsertId();
+
+                        if (!$count && !$check_new_user) {
+                            $message = '[CRON] - Поддержка из ipchain '.$data->Name.' у компании id '.$id_entity.' не был добавлен в базу данных';
+                            $id_chat_error = $this->get_global_settings('telega_chat_error');
+                            $this->telega_send($id_chat_error, $message);
+                        }
+
+                  }
+                  else  {
+                        // обновление поддержки из ipchain
+                        $statement = $database->prepare("UPDATE $this->IPCHAIN_StateSupport id_Support = :id_Support, typeId = :typeId, date_support = :date_support, Sum = :Sum WHERE id = :id");
+                        $statement->bindParam(':id', $data->id, PDO::PARAM_INT);
+                        $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
+                        $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
+                        $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
+                        $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
+                        $check_new_user = $statement->execute();
+                        $count = $database->rowCount();
+
+                        if (!$count && !$check_new_user) {
+                            $message = '[CRON] - Поддержка из ipchain (id:'.$data->id.') '.$data->Name.' не был обновлена';
+                            $id_chat_error = $this->get_global_settings('telega_chat_error');
+                            $this->telega_send($id_chat_error, $message);
+                        }
+
                   }
 
                 }
@@ -2355,14 +2414,14 @@ class Settings {
                   $statement->execute();
                   $data = $statement->fetch(PDO::FETCH_OBJ);
 
-                  if (!$data) {
+                  $Name = isset($value2->Name) ? $value2->Name : $Name = ' ';
+                  $Description = isset($value2->Description) ? $value2->Description : $Description = ' ';
+                  $StartDate = isset($value2->StartDate) ? $value2->StartDate : $StartDate = '0000-00-00 00:00:00';
+                  $EndDate = isset($value2->EndDate) ? $value2->EndDate : $EndDate = '0000-00-00 00:00:00';
+                  $ipchain_id_project = isset($value2->Id) ? $value2->Id : $ipchain_id_project = ' ';
+                  $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
 
-                      $Name = isset($value2->Name) ? $value2->Name : $Name = ' ';
-                      $Description = isset($value2->Description) ? $value2->Description : $Description = ' ';
-                      $StartDate = isset($value2->StartDate) ? $value2->StartDate : $StartDate = '0000-00-00 00:00:00';
-                      $EndDate = isset($value2->EndDate) ? $value2->EndDate : $EndDate = '0000-00-00 00:00:00';
-                      $ipchain_id_project = isset($value2->Id) ? $value2->Id : $ipchain_id_project = ' ';
-                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+                  if (!$data) {
 
                       $statement = $database->prepare("INSERT INTO $this->IPCHAIN_Project (ipchain_id_entity,Name,Description,StartDate,EndDate,ipchain_id_project) VALUES (:ipchain_id_entity,:Name,:Description,:StartDate,:EndDate,:ipchain_id_project)");
                       $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
@@ -2372,7 +2431,33 @@ class Settings {
                       $statement->bindParam(':EndDate', $EndDate, PDO::PARAM_STR);
                       $statement->bindParam(':ipchain_id_project', $ipchain_id_project, PDO::PARAM_STR);
                       $check_new_user = $statement->execute();
-                      // $count = $database->lastInsertId();
+                      $count = $database->lastInsertId();
+
+                      if (!$count && !$check_new_user) {
+                          $message = '[CRON]  - Проект из ipchain '.$data->Name.' у компании id '.$id_entity.' не был добавлен в базу данных';
+                          $id_chat_error = $this->get_global_settings('telega_chat_error');
+                          $this->telega_send($id_chat_error, $message);
+                      }
+
+                  }
+                  else {
+                      // обновление проектов из ipchain
+                      $statement = $database->prepare("UPDATE $this->IPCHAIN_Project SET Name = :Name, Description = :Description, StartDate = :StartDate, EndDate = :EndDate, ipchain_id_project = :ipchain_id_project WHERE id = :id");
+                      $statement->bindParam(':id', $data->id, PDO::PARAM_INT);
+                      $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                      $statement->bindParam(':Description', $Description, PDO::PARAM_STR);
+                      $statement->bindParam(':StartDate', $StartDate, PDO::PARAM_STR);
+                      $statement->bindParam(':EndDate', $EndDate, PDO::PARAM_STR);
+                      $statement->bindParam(':ipchain_id_project', $ipchain_id_project, PDO::PARAM_STR);
+                      $check_new_user = $statement->execute();
+                      $count = $database->rowCount();
+
+                      if (!$count && !$check_new_user) {
+                          $message = '[CRON] - Проект из ipchain (id: '.$data->id.') '.$data->Name.' не был обновлен';
+                          $id_chat_error = $this->get_global_settings('telega_chat_error');
+                          $this->telega_send($id_chat_error, $message);
+                      }
+
                   }
 
                 }
@@ -2412,9 +2497,11 @@ class Settings {
            $out1 = curl_exec($curl);
            curl_close($curl);
 
+
            $out1 = json_decode($out1);
 
            if (count($out1)) {
+
 
                 foreach ($out1 as $key => $value2) {
 
@@ -2424,15 +2511,15 @@ class Settings {
                   $statement->execute();
                   $data = $statement->fetch(PDO::FETCH_OBJ);
 
-                  if (!$data) {
+                  $Type = isset($value2->Type) ? $value2->Type : ' ';
+                  $Country = isset($value2->Country) ? $value2->Country : ' ';
+                  $Name = isset($value2->Name) ? $value2->Name : ' ';
+                  $RegistrationDate = isset($value2->RegistrationDate) ? $value2->RegistrationDate : '0000-00-00 00:00:00';
+                  $Number_Objects = isset($value2->Number) ? $value2->Number : ' ';
+                  $Url = isset($value2->Url) ? $value2->Url : ' ';
+                  $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
 
-                      $Type = is_array($value2->Type) ? json_encode($value2->Type,JSON_UNESCAPED_UNICODE) : ' ';
-                      $Country = is_array($value2->Country) ? json_encode($value2->Country,JSON_UNESCAPED_UNICODE) : ' ';
-                      $Name = is_array($value2->Name) ? json_encode($value2->Name,JSON_UNESCAPED_UNICODE) : ' ';
-                      $RegistrationDate = isset($value2->RegistrationDate) ? $value2->RegistrationDate : '0000-00-00 00:00:00';
-                      $Number_Objects = isset($value2->Number) ? $value2->Number : ' ';
-                      $Url = isset($value2->Url) ? $value2->Url : ' ';
-                      $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
+                  if (!$data) {
 
                       $statement = $database->prepare("INSERT INTO $this->IPCHAIN_IpObjects (ipchain_id_entity,Type,Country,Name,RegistrationDate,Number_Objects,Url) VALUES (:ipchain_id_entity,:Type,:Country,:Name,:RegistrationDate,:Number_Objects,:Url)");
                       $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
@@ -2443,7 +2530,33 @@ class Settings {
                       $statement->bindParam(':Number_Objects', $Number_Objects, PDO::PARAM_STR);
                       $statement->bindParam(':Url', $Url, PDO::PARAM_STR);
                       $check_new_user = $statement->execute();
-                      // $count = $database->lastInsertId();
+                      $count = $database->lastInsertId();
+
+                      if (!$count && !$check_new_user) {
+                          $message = '[CRON] - Патент из ipchain '.$data->Name.' у компании id '.$id_entity.' не был добавлен';
+                          $id_chat_error = $this->get_global_settings('telega_chat_error');
+                          $this->telega_send($id_chat_error, $message);
+                      }
+                  }
+                  else {
+
+                      $statement = $database->prepare("UPDATE $this->IPCHAIN_IpObjects SET Type = :Type, Country = :Country, Name = :Name, RegistrationDate = :RegistrationDate, Number_Objects = :Number_Objects, Url = :Url WHERE id = :id");
+                      $statement->bindParam(':id', $data->id, PDO::PARAM_INT);
+                      $statement->bindParam(':Type', $Type, PDO::PARAM_STR);
+                      $statement->bindParam(':Country', $Country, PDO::PARAM_STR);
+                      $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
+                      $statement->bindParam(':RegistrationDate', $RegistrationDate, PDO::PARAM_STR);
+                      $statement->bindParam(':Number_Objects', $Number_Objects, PDO::PARAM_STR);
+                      $statement->bindParam(':Url', $Url, PDO::PARAM_STR);
+                      $check_new_user = $statement->execute();
+                      $count = $database->rowCount();
+
+                      if (!$count && !$check_new_user) {
+                          $message = '[CRON] - Патент из ipchain (id:'.$data->id.') '.$data->Name.' не был обновлен';
+                          $id_chat_error = $this->get_global_settings('telega_chat_error');
+                          $this->telega_send($id_chat_error, $message);
+                      }
+
                   }
 
                 }
@@ -3228,9 +3341,17 @@ class Settings {
 
         return $return;
 
-    }
+  }
 
-    public function telega_send($id, $message) {   //Задаём публичную функцию send для отправки сообщений
+
+
+
+  /* Методы для работы с телеграмм чатами */
+
+
+
+  // отправка сообщений в чат телеграм
+  public function telega_send($id, $message) {   //Задаём публичную функцию send для отправки сообщений
         //Заполняем массив $data инфой, которую мы через api отправим до телеграмма
         $data = array(
             'chat_id'      => $id,
@@ -3240,9 +3361,10 @@ class Settings {
         $out = $this->telega_request('sendMessage', $data);
         //И пусть функция вернёт ответ. Правда в данном примере мы это никак не будем использовать, пусть будет задаток на будущее
         return $out;
-    }
+  }
 
-    public  function telega_request($method, $data = array()) {
+  // метод для отправки в телегу
+  public  function telega_request($method, $data = array()) {
         $curl = curl_init(); //мутим курл-мурл в переменную. Для отправки предпочтительнее использовать курл, но можно и через file_get_contents если сервер не поддерживает
         $token = $this->get_global_settings('telega_token');
 
@@ -3259,9 +3381,8 @@ class Settings {
         return $out; //Отправляем ответ в виде массива
     }
 
-
-    // Функция полячения данных пользователя из единой базы данных по id_tboil
-    public function add_errors_migrate($id_tboil, $type) {
+  // Функция полячения данных пользователя из единой базы данных по id_tboil
+  public function add_errors_migrate($id_tboil, $type) {
         global $database;
 
         $today = date("Y-m-d H:i:s");
@@ -3273,10 +3394,11 @@ class Settings {
         $check_new_erorr = $new_erorr->execute();
         $check_id = $database->lastInsertId();
 
-        $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
-    }
+        $this->telega_send($this->get_global_settings('telega_chat_error'), '[CRON] '.$type.' '.$id_tboil);
+  }
 
-    public function IPCHAIN_entity_inner_join($inn) {
+  // соединие таблицы поддержки из ipchain и компании из ipchain
+  public function IPCHAIN_entity_inner_join($inn) {
       global $database;
 
       $data_с = $database->prepare("SELECT * FROM IPCHAIN_StateSupport INNER JOIN IPCHAIN_entity WHERE IPCHAIN_StateSupport.ipchain_id_entity = IPCHAIN_entity.id AND inn =:inn");
@@ -3291,8 +3413,8 @@ class Settings {
       }
     }
 
-    //получение всех ридов из ЕБД
-    public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
+  //получение всех ридов из ЕБД
+  public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
       global $database;
 
       if($type){
@@ -3311,8 +3433,8 @@ class Settings {
       }
     }
 
-    //получение всех проекты компаний в ipchain из ЕБД
-    public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
+  //получение всех проекты компаний в ipchain из ЕБД
+  public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
       global $database;
       if($type){
         $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_entity =:ipchain_id_entity");
@@ -3330,8 +3452,8 @@ class Settings {
       }
     }
 
-    //получение всех форм поддержки компании
-    public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
+  //получение всех форм поддержки компании
+  public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
       global $database;
       if($type){
         $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE ipchain_id_entity =:ipchain_id_entity");
@@ -3349,8 +3471,8 @@ class Settings {
       }
     }
 
-    //Функция
-    public function entity_additionally($id_entity) {
+  //Функция
+  public function entity_additionally($id_entity) {
         global $database;
 
 

@@ -4,7 +4,7 @@ error_reporting(0);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // session_start();
-include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core2.php');
+include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core.php');
 
 ignore_user_abort(true);
 set_time_limit(0);
@@ -78,7 +78,9 @@ $settings = new Settings;
     $all_id_users_tboil = $data_user_tboil->data;
 
     // var_dump(count($data_user_tboil->data));
+    // exit;
     // echo '<br><br>';
+
     // получение массива id_tboil
     $mass_id_tboil = $settings->get_mass_id_tboil();
 
@@ -97,7 +99,7 @@ $settings = new Settings;
 
     $count = 0;
 
-    foreach ($reversed as $key => $value) {
+    foreach ($new_mass as $key => $value) {
 
               $curl = curl_init();
               $data_post = array( 'token' => $token,
