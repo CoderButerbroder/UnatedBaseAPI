@@ -3588,6 +3588,7 @@ class Settings {
       if(!isset($value_search)){
         return json_encode(array('response' => false, 'description' => 'Не указаны все обходимые данные'), JSON_UNESCAPED_UNICODE);
       }
+      global $database;
 
       $arr_result = (object) array();
 
@@ -3601,7 +3602,7 @@ class Settings {
       $ticket_data->execute();
       $result_data_ticket = $ticket_data->fetchAll(PDO::FETCH_OBJ);
 
-      if (!array_shift($result_data_ticket)) {
+      if (empty($result_data_ticket)) {
         if($type_search){
           return json_encode(array('response' => false, 'description' => 'Тикет с указаным id не найден'), JSON_UNESCAPED_UNICODE);
         } else {
@@ -3610,12 +3611,13 @@ class Settings {
       }
 
       foreach ($result_data_ticket as $key_tiket => $value_tiket) {
+        $result_data_message = [];
         $message_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket");
         $message_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
         $message_data->execute();
         $result_data_message = $message_data->fetchAll(PDO::FETCH_OBJ);
 
-        if(!array_shift($result_data_message)){
+        if(empty($result_data_message)){
           $arr_result->$key_tiket->messages = 'Ошибка получения переписки в тиките';
         } else {
           $arr_result->$key_tiket->messages = $result_data_message;
@@ -3624,13 +3626,14 @@ class Settings {
         if ($type_result == 'full') {
           $arr_result->$key_tiket->ticket = $value_tiket;
         }
-        if ($type_result == 'conclusion') {
+        if ($type_result == 'conclusion' || $type_result == 'full') {
+          $result_data_conclusion = [];
           $conclusion_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_conclusion WHERE id_support_ticket = :id_support_ticket");
           $conclusion_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
           $conclusion_data->execute();
           $result_data_conclusion = $conclusion_data->fetchAll(PDO::FETCH_OBJ);
 
-          if(!array_shift($result_data_conclusion)){
+          if(empty($result_data_conclusion)){
             $arr_result->$key_tiket->conclusion = 'Ошибка получения решения в тиките';
           } else {
             $arr_result->$key_tiket->conclusion = $result_data_conclusion;
