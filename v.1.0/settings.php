@@ -104,6 +104,10 @@ $number = $_POST['number'];
 $place = $_POST['place'];
 $interest = $_POST['interest'];
 
+$ticket_type_result = $_POST['ticket_type_result'];
+$ticket_type_search = $_POST['ticket_type_search'];
+$ticket_search = $_POST['ticket_search'];
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';
