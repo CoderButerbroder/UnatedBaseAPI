@@ -2422,9 +2422,9 @@ class Settings {
 
                   if (!$data) {
 
-                      $Type = isset($value2->Type) ? $value2->Type : ' ';
-                      $Country = isset($value2->Country) ? $value2->Country : ' ';
-                      $Name = isset($value2->Name) ? $value2->Name : ' ';
+                      $Type = is_array($value2->Type) ? json_encode($value2->Type,JSON_UNESCAPED_UNICODE) : ' ';
+                      $Country = is_array($value2->Country) ? json_encode($value2->Country,JSON_UNESCAPED_UNICODE) : ' ';
+                      $Name = is_array($value2->Name) ? json_encode($value2->Name,JSON_UNESCAPED_UNICODE) : ' ';
                       $RegistrationDate = isset($value2->RegistrationDate) ? $value2->RegistrationDate : '0000-00-00 00:00:00';
                       $Number_Objects = isset($value2->Number) ? $value2->Number : ' ';
                       $Url = isset($value2->Url) ? $value2->Url : ' ';
@@ -2450,7 +2450,7 @@ class Settings {
 
   }
 
-  //
+  // получение данных по компании из ipchain
   public function ipchain_get_data_entity($type,$number) {
         global $database;
 
@@ -2487,7 +2487,7 @@ class Settings {
       return $data_users;
   }
 
-  // добавление данных п оматчмэйкингу 
+  // добавление данных п оматчмэйкингу
 
 
   /* API ФУНКЦИИ - TBOIL  */
