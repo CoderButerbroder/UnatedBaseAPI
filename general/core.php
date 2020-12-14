@@ -32,6 +32,9 @@ class Settings {
   private $IPCHAIN_StateSupport = 'IPCHAIN_StateSupport';
   private $IPCHAIN_Project = 'IPCHAIN_Project';
   private $IPCHAIN_IpObjects = 'IPCHAIN_IpObjects';
+  private $MAIN_support_ticket = 'MAIN_support_ticket';
+  private $MAIN_support_ticket_messages = 'MAIN_support_ticket_messages';
+  private $MAIN_support_ticket_conclusion = 'MAIN_support_ticket_conclusion';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -3384,34 +3387,34 @@ class Settings {
         if(is_Object($check_data_result)) {
           //нашли прошлую запись, обновляем ее
 
-          $_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
+          $d_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
             proceeds_export = :proceeds_export, count_staff = :count_staff, volume_fund = :volume_fund, volume_tax_customs = :volume_tax_customs,
             volume_investments = :volume_investments, volume_credits = :volume_credits, count_patent = :count_patent, pay_research = :pay_research,
             count_export_contracts = :count_export_contracts, land = :land, land_area = :land_area, room_area = :room_area  WHERE id_entity = :id_entity,");
         } else {
-          $_data = $database->prepare("INSERT INTO $this->errors_migrate (id_entity, category, proceeds, proceeds_import, proceeds_export, count_staff, volume_fund, volume_tax_customs, volume_investments, volume_credits, count_patent, pay_research, count_export_contracts, land, land_area, room_area)
+          $d_data = $database->prepare("INSERT INTO $this->errors_migrate (id_entity, category, proceeds, proceeds_import, proceeds_export, count_staff, volume_fund, volume_tax_customs, volume_investments, volume_credits, count_patent, pay_research, count_export_contracts, land, land_area, room_area)
           VALUES (:id_entity, :category, :proceeds, :proceeds_import, :proceeds_export, :count_staff, :volume_fund, :volume_tax_customs, :volume_investments, :volume_credits, :count_patent, :pay_research, :count_export_contracts, :land, :land_area, :room_area)");
         }
 
-        $_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $_data->bindParam(':category', $category, PDO::PARAM_STR);
-        $_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
-        $_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
-        $_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
-        $_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
-        $_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
-        $_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
-        $_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
-        $_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
-        $_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
-        $_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
-        $_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
-        $_data->bindParam(':land', $land, PDO::PARAM_STR);
-        $_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
-        $_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
+        $d_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $d_data->bindParam(':category', $category, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
+        $d_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
+        $d_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
+        $d_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
+        $d_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
+        $d_data->bindParam(':land', $land, PDO::PARAM_STR);
+        $d_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
+        $d_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
 
-        $temp = $_data->execute();
-        $count = $_data->rowCount();
+        $temp = $d_data->execute();
+        $count = $d_data->rowCount();
 
         if($count > 0){
           return json_encode(array('response' => true, 'description' => 'Данные добавлены/обновлены'), JSON_UNESCAPED_UNICODE);
@@ -3422,6 +3425,91 @@ class Settings {
     }
 
 
+    public function add_new_support_ticket($id_tboil, $name, $description, $status, $id_referer) {
+
+      if(!isset($id_tboil) && !isset($name) && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+      $hash_tiket_support = md5($id_tboil.$name.$id_referer.$date_added);
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket (id_tboil, name, description, date_added, status, links_add_files, id_referer, hash_tiket_support)
+                                    VALUES (:id_tboil, :name, :description, :date_added, :status, :links_add_files, :id_referer, :hash_tiket_support)");
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $d_data->bindParam(':hash_tiket_support', $hash_tiket_support, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      $id_new_ticket = $database->lastInsertId();
+      if($id_new_ticket === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой заявки'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'заявка успешно добавлена', 'data' => (object) array('id' => $id_new_ticket, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+    public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+
+      if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil, message, links_add_files, date_added, id_referer, type_user)
+                                    VALUES (:id_support_ticket, :id_tboil, :message, :links_add_files, :date_added, :id_referer, :type_user)");
+      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $d_data->bindParam(':type_user', $type_user, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      $id_new_messages = $database->lastInsertId();
+      if($id_new_messages === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления нового сообщения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+    public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
+
+      if(!issset($id_support_ticket) && !issset($id_tboil) && !issset($description) && !issset($action) ) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_conclusion (id_support_ticket, id_tboil, description, action, links_add_files, date_added)
+                                    VALUES (:id_support_ticket, :id_tboil, :description, :action, :links_add_files, :date_added)");
+      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+
+      $temp = $d_data->execute();
+      $id_new_conclusion = $database->lastInsertId();
+      if($id_new_conclusion === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой записи'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Решение успешно добавлено', 'data' => (object) array('id' => $id_new_conclusion, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
 
 
 
