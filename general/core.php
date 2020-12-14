@@ -16,6 +16,7 @@ class Settings {
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
   private $MAIN_entity = 'MAIN_entity';
+  private $MAIN_entity_additionally = 'MAIN_entity_additionally';
   private $MAIN_entity_tech_requests = 'MAIN_entity_tech_requests';
   private $MAIN_entity_tech_requests_solutions = 'MAIN_entity_tech_requests_solutions';
   private $MAIN_entity_tech_services = 'MAIN_entity_tech_services';
@@ -3271,6 +3272,156 @@ class Settings {
 
         $this->telega_send($this->get_global_settings('telega_chat_error'), $type.' '.$id_tboil);
     }
+
+    public function IPCHAIN_entity_inner_join($inn) {
+      global $database;
+
+      $data_с = $database->prepare("SELECT * FROM IPCHAIN_StateSupport INNER JOIN IPCHAIN_entity WHERE IPCHAIN_StateSupport.ipchain_id_entity = IPCHAIN_entity.id AND inn =:inn");
+      $data_с->bindParam(':inn', $inn, PDO::PARAM_STR);
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки данных'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //получение всех ридов из ЕБД
+    public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
+      global $database;
+
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки ридов'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //получение всех проекты компаний в ipchain из ЕБД
+    public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //получение всех форм поддержки компании
+    public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка получения  форм поддержки компании'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+    //Функция
+    public function entity_additionally($id_entity) {
+        global $database;
+
+
+        //
+        $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
+        $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
+
+        $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
+        $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
+
+        $fns_data_company = $this->fns_base($check_data_result_с->inn);
+
+
+        $category = (!empty($category)) ? $category : ' ';
+        $proceeds = (isset($proceeds)) ? $proceeds : ' ';
+        $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
+        $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
+        $count_staff = (isset($count_staff)) ? $count_staff : ' ';
+        $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
+        $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
+        $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
+        $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
+        $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
+        $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
+        $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
+        $land = (!empty($land)) ? $land : ' ';
+        $land_area = (!empty($land_area)) ? $land_area : ' ';
+        $room_area = (!empty($room_area)) ? $room_area : ' ';
+
+        if(is_Object($check_data_result)) {
+          //нашли прошлую запись, обновляем ее
+
+          $_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
+            proceeds_export = :proceeds_export, count_staff = :count_staff, volume_fund = :volume_fund, volume_tax_customs = :volume_tax_customs,
+            volume_investments = :volume_investments, volume_credits = :volume_credits, count_patent = :count_patent, pay_research = :pay_research,
+            count_export_contracts = :count_export_contracts, land = :land, land_area = :land_area, room_area = :room_area  WHERE id_entity = :id_entity,");
+        } else {
+          $_data = $database->prepare("INSERT INTO $this->errors_migrate (id_entity, category, proceeds, proceeds_import, proceeds_export, count_staff, volume_fund, volume_tax_customs, volume_investments, volume_credits, count_patent, pay_research, count_export_contracts, land, land_area, room_area)
+          VALUES (:id_entity, :category, :proceeds, :proceeds_import, :proceeds_export, :count_staff, :volume_fund, :volume_tax_customs, :volume_investments, :volume_credits, :count_patent, :pay_research, :count_export_contracts, :land, :land_area, :room_area)");
+        }
+
+        $_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $_data->bindParam(':category', $category, PDO::PARAM_STR);
+        $_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
+        $_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
+        $_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
+        $_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
+        $_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
+        $_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
+        $_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
+        $_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
+        $_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
+        $_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
+        $_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
+        $_data->bindParam(':land', $land, PDO::PARAM_STR);
+        $_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
+        $_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
+
+        $temp = $_data->execute();
+        $count = $_data->rowCount();
+
+        if($count > 0){
+          return json_encode(array('response' => true, 'description' => 'Данные добавлены/обновлены'), JSON_UNESCAPED_UNICODE);
+        } else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка добавление/обновления данных'), JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+
 
 
 
