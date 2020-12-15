@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($id_ticket_msg) && isset($message) && isset($links_add_files))  {
+if ($id_ticket_msg && $message && $links_add_files != '')  {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -17,7 +17,7 @@ if (isset($id_ticket_msg) && isset($message) && isset($links_add_files))  {
           $data_refer = json_decode($check_id_referer);
           if ($data_refer->response) {
               $response_ticket = $settings->upd_support_messages($id_ticket_msg, $message, $links_add_files);
-                          $settings->recording_history($resource,'updTicketMessage',$response);
+                          $settings->recording_history($resource,'updTicketMessage',$response_ticket);
               echo $response_ticket;
           } else {
                 echo $check_id_referer;

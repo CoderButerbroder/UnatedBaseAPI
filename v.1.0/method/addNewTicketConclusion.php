@@ -1,13 +1,15 @@
 <?
 // Добавление нового решения тикета
-
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($id_ticket) && isset($id_user_tboil) && isset($description) &&  isset($action) &&  isset($links_add_files) ) {
+if ($id_ticket && $id_user_tboil && $description &&  $action &&  $links_add_files) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -18,8 +20,8 @@ if (isset($id_ticket) && isset($id_user_tboil) && isset($description) &&  isset(
           $data_refer = json_decode($check_id_referer);
           if ($data_refer->response) {
                 $response_ticket_conclusion = $settings->add_new_support_conclusion($id_ticket, $id_user_tboil, $description, $action, $links_add_files);
-                            $settings->recording_history($resource,'addNewTicketConclusion',$response);
-                $response_ticket_conclusion;
+                            $settings->recording_history($resource,'addNewTicketConclusion',$response_ticket_conclusion);
+                echo $response_ticket_conclusion;
           } else {
                 echo $check_id_referer;
           }

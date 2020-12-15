@@ -6,7 +6,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($id_ticket) &&  isset($id_user_tboil) &&  isset($message) && isset($links_add_files) && isset($links_add_files) && isset($type_user))  {
+if ($id_ticket &&  $id_user_tboil &&  $message && $links_add_files && $type_user)  {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -18,7 +18,7 @@ if (isset($id_ticket) &&  isset($id_user_tboil) &&  isset($message) && isset($li
           if ($data_refer->response) {
             $status = 'open';
               $response_ticket = $settings->add_new_support_messages($id_ticket, $id_user_tboil, $message, $links_add_files, $data_refer->data->id, $type_user);
-                          $settings->recording_history($resource,'addNewTicketMessage',$response);
+                          $settings->recording_history($resource,'addNewTicketMessage',$response_ticket);
               echo $response_ticket;
           } else {
                 echo $check_id_referer;

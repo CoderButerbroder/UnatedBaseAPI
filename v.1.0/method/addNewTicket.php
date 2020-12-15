@@ -1,14 +1,14 @@
 <?
 // Добавление нового тикета
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($id_user_tboil) &&  isset($name) &&  isset($description) &&  isset($message) &&  isset($links_add_files) &&  isset($type_user) ) {
+if ($id_user_tboil &&  $name &&  $description &&  $message &&  $type_user ) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -18,12 +18,12 @@ if (isset($id_user_tboil) &&  isset($name) &&  isset($description) &&  isset($me
           $check_id_referer = $settings->get_data_referer($resource);
           $data_refer = json_decode($check_id_referer);
           if ($data_refer->response) {
-              $response_ticket = $settings->add_new_support_ticket($id_user_tboil, $name, $description, 'open', $data_refer->data->id);
-                         $settings->recording_history($resource,'addNewTicket',$response);
+              $response_ticket = $settings->add_new_support_ticket($id_user_tboil, $name, $description, $links_add_files, 'open', $data_refer->data->id);
+                         $settings->recording_history($resource,'addNewTicket',$response_ticket);
               $data_response_ticket = json_decode($response_ticket);
               if($data_response_ticket->response){
                $response_ticket_message = $settings->add_new_support_messages($data_response_ticket->data->id, $id_user_tboil, $message, $links_add_files, $data_refer->data->id, $type_user);
-                           $settings->recording_history($resource,'addNewTicketMessage',$response);
+                           $settings->recording_history($resource,'addNewTicketMessage',$response_ticket_message);
                if(json_decode($response_ticket_message)->response && json_decode($response_ticket)->response){
                  echo json_encode(array('response' => true, 'description' => 'Тикет успешно открыт', 'data_ticket' => $response_ticket, 'data_message' => $response_ticket_message),JSON_UNESCAPED_UNICODE);
                } else {
