@@ -6,6 +6,9 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
+$data = $settings->get_data_for_ipchain();
+
+var_dump($data);
 // $token_tboil = $settings->get_global_settings('tboil_token');
 // $tboil_site = 'https://tboil.spb.ru';
 // // $token_tboil1 = $settings->refresh_token_tboil();

@@ -2604,7 +2604,83 @@ class Settings {
       $statement->execute();
       $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
 
-      return $data_users;
+      foreach ($data_users as $key => $value) {
+            $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id");
+            $statement->bindParam(':id', $value->id_entity, PDO::PARAM_INT);
+            $statement->execute();
+            $data_entity = $statement->fetchAll(PDO::FETCH_OBJ);
+
+
+            foreach ($data_entity as $key2 => $value2) {
+
+              $data_fns = json_decode($value2->data_fns);
+
+              $Ogrn = isset($data_fns->items[0]->ЮЛ->ОГРН) ? $data_fns->items[0]->ЮЛ->ОГРН : $data_fns->items[0]->ИП->ОГРНИП;
+
+                  if (isset($value2->technology)) {
+                      $TechnologyType = array();
+                      $mass = json_decode($value2->technology);
+                        for ($i=0; $i < count($mass); $i++) {
+                              $TechnologyType[$i] = $mass[$i]->Code;
+                        }
+                      $TechnologyType = implode(";", $TechnologyType);
+                  }
+                  else {$TechnologyType = '';}
+
+                  if (isset($value2->branch)) {
+                      $Industry = array();
+                      $mass = json_decode($value2->branch);
+                        for ($i=0; $i < count($mass); $i++) {
+                              $Industry[$i] = $mass[$i]->Code;
+                        }
+                      $Industry = implode(";", $Industry);
+                  }
+                  else {$Industry = '';}
+
+                  $Website = isset($value2->site) ? $value2->site : '';
+                  $LeaderId = isset($value->id_leader) ? $value->id_leader : '';
+                  $Email = isset($value->email) ? $value->email : '';
+                  $ExportSales = 0;
+                  $Notes = '';
+
+              $statement = $database->prepare("SELECT * FROM `TEMP_entity_for_ipchain` WHERE Ogrn = :Ogrn");
+              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
+              $statement->execute();
+              $data_otvet = $statement->fetch(PDO::FETCH_OBJ);
+
+              if (!$data_otvet) {
+                    // // добавление поддержки из ipchain
+                    $statement = $database->prepare("INSERT INTO `TEMP_entity_for_ipchain` (Ogrn,TechnologyType,Industry,Website,LeaderId,Email,ExportSales,Notes) VALUES (:Ogrn,:TechnologyType,:Industry,:Website,:LeaderId,:Email,:ExportSales,:Notes)");
+                    $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
+                    $statement->bindParam(':TechnologyType', $TechnologyType, PDO::PARAM_STR);
+                    $statement->bindParam(':Industry', $Industry, PDO::PARAM_STR);
+                    $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
+                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                    $statement->bindParam(':ExportSales', $ExportSales, PDO::PARAM_STR);
+                    $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                    $check_new_user = $statement->execute();
+                    $count = $database->lastInsertId();
+              }
+              else {
+                    $statement = $database->prepare("UPDATE `TEMP_entity_for_ipchain` SET TechnologyType = :TechnologyType, Industry = :Industry, Website = :Website, LeaderId = :LeaderId, Email = :Email, ExportSales = :ExportSales, Notes = :Notes WHERE Ogrn = :Ogrn");
+                    $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
+                    $statement->bindParam(':TechnologyType', $TechnologyType, PDO::PARAM_STR);
+                    $statement->bindParam(':Industry', $Industry, PDO::PARAM_STR);
+                    $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
+                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
+                    $statement->bindParam(':ExportSales', $ExportSales, PDO::PARAM_STR);
+                    $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
+                    $check_new_user = $statement->execute();
+                    $count = $database->rowCount();
+              }
+
+            }
+
+      }
+
+      return true;
   }
 
   // добавление данных п оматчмэйкингу
