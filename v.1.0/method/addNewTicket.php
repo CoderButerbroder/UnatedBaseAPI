@@ -25,11 +25,7 @@ if (isset($id_tboil) &&  isset($name) &&  isset($description) &&  isset($message
               if(json_decode($response_ticket)->response){
                 $response_ticket_message = $settings->add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $data_refer->data->id, $type_user);
                             $settings->recording_history($resource,'addNewTicketMessage',$response);
-                if(json_decode($response_ticket_message)->response && json_decode($response_ticket)->response){
-                  echo json_encode(array('response' => true, 'description' => 'Тикет успешно открыт', 'data' => $response_ticket),JSON_UNESCAPED_UNICODE);
-                } else {
-                  echo $response_ticket;
-                }
+                $response_ticket;
               }
           } else {
                 echo $check_id_referer;
