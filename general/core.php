@@ -3478,7 +3478,6 @@ class Settings {
   public function entity_additionally($id_entity) {
         global $database;
 
-
         //
         $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
         $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
@@ -3550,9 +3549,9 @@ class Settings {
     }
 
 
-    public function add_new_support_ticket($id_tboil, $name, $description, $status, $id_referer) {
-
-      if(!isset($id_tboil) && !isset($name) && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
+    public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
+      global $database;
+      if(!isset($id_tboil) && !isset($name)  && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
       }
 
@@ -3579,6 +3578,30 @@ class Settings {
       }
 
     }
+
+    public function upd_support_ticket($id_ticket, $name, $description, $status) {
+      global $database;
+
+      if(!isset($id_ticket) && !isset($name) && !isset($description) && !isset($status)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
+      $d_data->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка обновления тикета'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Тикет успешно обновлен'), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+
+
 
     //получение данных по тикиту
     //type_result = full - все / message - только  переписка по тикету / conclusion - с решением
@@ -3647,6 +3670,7 @@ class Settings {
 
 
     public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+      global $database;
 
       if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3669,18 +3693,41 @@ class Settings {
       if($id_new_messages === false){
         return json_encode(array('response' => false, 'description' => 'Ошибка добавления нового сообщения'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+    public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
+      global $database;
+
+      if(empty($id_support_ticket_msg) && empty($message)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_messages SET message =:message, links_add_files =:links_add_files WHERE id =:id");
+      $d_data->bindParam(':id', $id_support_ticket_msg, PDO::PARAM_INT);
+      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования сообщения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Сообщение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
       }
 
     }
 
     public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
+      global $database;
 
-      if(!issset($id_support_ticket) && !issset($id_tboil) && !issset($description) && !issset($action) ) {
+      if(empty($id_support_ticket) && empty($id_tboil) && empty($description) && empty($action) ) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
       }
-
-      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
       $date_added = date("Y-m-d H:i:s");
 
       $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_conclusion (id_support_ticket, id_tboil, description, action, links_add_files, date_added)
@@ -3697,7 +3744,31 @@ class Settings {
       if($id_new_conclusion === false){
         return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой записи'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => true, 'description' => 'Решение успешно добавлено', 'data' => (object) array('id' => $id_new_conclusion, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'description' => 'Решение успешно добавлено', 'data' => (object) array('id' => $id_new_conclusion)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+    public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
+      global $database;
+
+      if(empty($id_ticket_conclusion) && empty($description) && empty($action) ) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files != '') ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_conclusion SET description =:description, action =:action, links_add_files =:links_add_files WHERE id =:id");
+      $d_data->bindParam(':id', $id_ticket_conclusion, PDO::PARAM_INT);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования решения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Решение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
       }
 
     }
