@@ -108,6 +108,16 @@ $ticket_type_result = $_POST['ticket_type_result'];
 $ticket_type_search = $_POST['ticket_type_search'];
 $ticket_search = $_POST['ticket_search'];
 
+$id_ticket = $_POST["id_ticket"];
+$id_ticket_msg = $_POST["id_ticket_msg"];
+$id_ticket_conclusion = $_POST["id_ticket_conclusion"];
+$id_support_ticket = $_POST["id_support_ticket"];
+$message = $_POST["message"];
+$action = $_POST["action"];
+$type_user = $_POST["type_user"];
+
+
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';
