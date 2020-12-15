@@ -3478,7 +3478,6 @@ class Settings {
   public function entity_additionally($id_entity) {
         global $database;
 
-
         //
         $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
         $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
@@ -3551,7 +3550,7 @@ class Settings {
 
 
     public function add_new_support_ticket($id_tboil, $name, $description, $status, $id_referer) {
-
+      global $database;
       if(!isset($id_tboil) && !isset($name) && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
       }
@@ -3581,6 +3580,7 @@ class Settings {
     }
 
     public function upd_support_ticket($id_ticket, $name, $description, $status) {
+      global $database;
 
       if(!isset($id_ticket) && !isset($name) && !isset($description) && !isset($status)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3670,6 +3670,7 @@ class Settings {
 
 
     public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+      global $database;
 
       if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3698,6 +3699,7 @@ class Settings {
     }
 
     public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
+      global $database;
 
       if(!isset($id_support_ticket_msg) && !isset($message)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3719,6 +3721,7 @@ class Settings {
     }
 
     public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
+      global $database;
 
       if(!issset($id_support_ticket) && !issset($id_tboil) && !issset($description) && !issset($action) ) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3747,7 +3750,8 @@ class Settings {
     }
 
     public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
-
+      global $database;
+      
       if(!issset($id_ticket_conclusion) && !issset($description) && !issset($action) ) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
       }
