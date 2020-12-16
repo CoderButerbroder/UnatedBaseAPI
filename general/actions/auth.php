@@ -1,10 +1,17 @@
 <?php
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+
 header('Content-type:application/json;charset=utf-8');
 if(isset($_POST['g-recaptcha-response'])){$captcha = $_POST['g-recaptcha-response'];}
 if(!$captcha){
     echo json_encode(array('response' => false, 'description' => 'Капча не обнаружена'),JSON_UNESCAPED_UNICODE);
     exit;
 }
+// echo json_encode(array('response' => true, 'description' => 'Пользователь авторизован'),JSON_UNESCAPED_UNICODE);
+// exit;
+
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 $ip = $settings->get_ip();

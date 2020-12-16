@@ -1,3 +1,10 @@
+<?php
+session_start();
+if ($_SESSION["key_user"]) {
+  header('Location: /panel');
+  exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +13,7 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="description" content="FULLDATA ЛЕНПОЛИГРАФМАШ">
   <meta name="author" content="ЛЕНПОЛИГРАФМАШ">
-	<title>FULLDATA ЛЕНПОЛИГРАФМАШ - авторизация</title>
+	<title>Авторизация - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
 	<!-- core:css -->
 	<link rel="stylesheet" href="/assets/vendors/core/core.css">
 	<!-- endinject -->
@@ -20,13 +27,12 @@
 	<link rel="stylesheet" href="/assets/css/demo_1/style.css">
   <!-- End layout styles -->
   <script src="/assets/js/jquery-3.5.1.min.js"></script>
-  <link rel="shortcut icon" href="/assets/images/favicon.png" />
+  <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css">
-  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
   <script src="//ulogin.ru/js/ulogin.js"></script>
-  <script src="/assets/js/auth.js" ></script>
-  <script src="js/sweetalert2.all.js"></script>
-  <link rel="stylesheet" href="css/sweetalert2.css">
+  <script src="/assets/js/sweetalert2.all.js"></script>
+  <link rel="stylesheet" href="/assets/css/sweetalert2.css">
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer></script>
 </head>
 <body>
   <!-- Loader -->
@@ -53,24 +59,18 @@
                     <h5 class="text-muted font-weight-normal mb-4">Добро пожаловать! Пожалуйста авторизуйтесь.</h5>
                     <form class="forms-sample" id="form_auth" action="/general/actions/auth">
                       <div class="form-group">
-                        <label for="exampleInputEmail1">Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                        <label for="exampleInputEmail1">Email или телефон</label>
+                        <input type="text" name="login" class="form-control" id="exampleInputEmail1" placeholder="Email или телефон">
                       </div>
                       <div class="form-group">
                         <label for="exampleInputPassword1">Пароль</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Пароль">
+                        <input type="password" name="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Пароль">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                       </div>
                       <a href="#" onclick="$('#recovery').modal('show');" class="d-block mt-3 text-muted">Забыли пароль?</a>
                       <div id="capcha_auth"></div>
-                      <!-- <div class="form-check form-check-flat form-check-primary">
-                        <label class="form-check-label">
-                          <input type="checkbox" class="form-check-input">
-                          Remember me
-                        </label>
-                      </div> -->
                       <div class="mt-3">
-                        <a href="/dashboard-one.html" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Вход</a>
+                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Вход</button>
                         <div class="mt-3" id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,google;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                       </div>
                     </form>
@@ -85,6 +85,39 @@
 		</div>
 	</div>
 
+
+  <div class="modal fade" id="recovery" class="modal_backdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
+          <img src="/assets/images/custom/favicon2.png" height="20"style="margin: 10px 10px;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin: 5px 2px;">
+            <i style="width: 35px; height: 35px;" class="fas fa-times text-secondary"></i>
+          </button>
+        </div>
+        <div class="modal-body" style="top: -15px;">
+            <div class="row justify-content-center">
+                <div class="col-md-9 col-sm-12" >
+                  <center>
+                    <img src="/img/paper-plane.png" alt="" width="42">
+                    <h4>Восстановление пароля</h4>
+                  </center>
+                  <form id="form_rec" action="general/actions/recovery_pass?action=recovery">
+                    <div class="form-group" style="margin-top: 4%;">
+                      <input style="border-radius: 5px;" type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
+                    </div>
+                    <div id="capcha_rec"></div>
+                    <button type="submit" class="btn btn-block btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
+                  </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
   <script type="text/javascript">
     $(document).ready(function() {
       $('.loader').fadeOut(200);
@@ -93,6 +126,7 @@
   </script>
 
 	<!-- core:js -->
+  <script src="/assets/js/auth.js" ></script>
 	<script src="/assets/vendors/core/core.js"></script>
 	<!-- endinject -->
   <!-- plugin js for this page -->
