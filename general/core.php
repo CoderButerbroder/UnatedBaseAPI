@@ -2200,7 +2200,7 @@ class Settings {
                     $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
                     $statement->bindParam(':AnnualIndicators', $AnnualIndicators, PDO::PARAM_STR);
                     $check_new_user = $statement->execute();
-                    $count = $database->rowCount();
+                    $count = $statement->rowCount();
 
                     if (!$count && !$check_new_user) {
                         $message = '[CRON] - Компания из ipchain (id:'.$data->id.') '.$data->Name.' не была обновлена';
@@ -2329,20 +2329,20 @@ class Settings {
                   $statement->execute();
                   $data = $statement->fetch(PDO::FETCH_OBJ);
 
-                  $id_Support = isset($value2->Id) ? $value2->Id : $id_Support = ' ';
+                  $id_Support = isset($value2->Id) ? trim($value2->Id) : $id_Support = ' ';
                   $typeId = isset($value2->TypeId) ? $value2->TypeId : $typeId = ' ';
-                  $date_support = isset($value2->Date) ? $value2->Date : $date_support = ' ';
+                  $date_support = isset($value2->Date) ? substr($value2->Date, 0, 10) : $date_support = '0000-00-00 00:00:00';
                   $Sum = isset($value2->Sum) ? $value2->Sum : $Sum = ' ';
                   $id_entity = isset($value->id) ? $value->id : $id_entity = 0;
 
                   if (!$data) {
                         // добавление поддержки из ipchain
                         $statement = $database->prepare("INSERT INTO $this->IPCHAIN_StateSupport (ipchain_id_entity,id_Support,typeId,date_support,Sum) VALUES (:ipchain_id_entity,:id_Support,:typeId,:date_support,:Sum)");
-                        $statement->bindParam(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
-                        $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
-                        $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
-                        $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
-                        $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
+                        $statement->bindValue(':ipchain_id_entity', $id_entity, PDO::PARAM_INT);
+                        $statement->bindValue(':id_Support', $id_Support, PDO::PARAM_STR);
+                        $statement->bindValue(':typeId', $typeId, PDO::PARAM_STR);
+                        $statement->bindValue(':date_support', $date_support, PDO::PARAM_STR);
+                        $statement->bindValue(':Sum', $Sum, PDO::PARAM_STR);
                         $check_new_user = $statement->execute();
                         $count = $database->lastInsertId();
 
@@ -2356,13 +2356,13 @@ class Settings {
                   else  {
                         // обновление поддержки из ipchain
                         $statement = $database->prepare("UPDATE $this->IPCHAIN_StateSupport id_Support = :id_Support, typeId = :typeId, date_support = :date_support, Sum = :Sum WHERE id = :id");
-                        $statement->bindParam(':id', $data->id, PDO::PARAM_INT);
-                        $statement->bindParam(':id_Support', $id_Support, PDO::PARAM_STR);
-                        $statement->bindParam(':typeId', $typeId, PDO::PARAM_STR);
-                        $statement->bindParam(':date_support', $date_support, PDO::PARAM_STR);
-                        $statement->bindParam(':Sum', $Sum, PDO::PARAM_STR);
+                        $statement->bindValue(':id', $data->id, PDO::PARAM_INT);
+                        $statement->bindValue(':id_Support', $id_Support, PDO::PARAM_STR);
+                        $statement->bindValue(':typeId', $typeId, PDO::PARAM_STR);
+                        $statement->bindValue(':date_support', $date_support, PDO::PARAM_STR);
+                        $statement->bindValue(':Sum', $Sum, PDO::PARAM_STR);
                         $check_new_user = $statement->execute();
-                        $count = $database->rowCount();
+                        $count = $statement->rowCount();
 
                         if (!$count && !$check_new_user) {
                             $message = '[CRON] - Поддержка из ipchain (id:'.$data->id.') '.$data->Name.' не был обновлена';
@@ -2456,7 +2456,7 @@ class Settings {
                       $statement->bindParam(':EndDate', $EndDate, PDO::PARAM_STR);
                       $statement->bindParam(':ipchain_id_project', $ipchain_id_project, PDO::PARAM_STR);
                       $check_new_user = $statement->execute();
-                      $count = $database->rowCount();
+                      $count = $statement->rowCount();
 
                       if (!$count && !$check_new_user) {
                           $message = '[CRON] - Проект из ipchain (id: '.$data->id.') '.$data->Name.' не был обновлен';
@@ -2555,7 +2555,7 @@ class Settings {
                       $statement->bindParam(':Number_Objects', $Number_Objects, PDO::PARAM_STR);
                       $statement->bindParam(':Url', $Url, PDO::PARAM_STR);
                       $check_new_user = $statement->execute();
-                      $count = $database->rowCount();
+                      $count = $statement->rowCount();
 
                       if (!$count && !$check_new_user) {
                           $message = '[CRON] - Патент из ipchain (id:'.$data->id.') '.$data->Name.' не был обновлен';
@@ -2642,7 +2642,6 @@ class Settings {
 
                   $Website = isset($value2->site) ? $value2->site : '';
                   $LeaderId = isset($value->id_leader) ? $value->id_leader : '';
-                  $Email = isset($value->email) ? $value->email : '';
                   $ExportSales = 0;
                   $Notes = '';
 
@@ -2653,26 +2652,24 @@ class Settings {
 
               if (!$data_otvet) {
                     // // добавление поддержки из ipchain
-                    $statement = $database->prepare("INSERT INTO `TEMP_entity_for_ipchain` (Ogrn,TechnologyType,Industry,Website,LeaderId,Email,ExportSales,Notes) VALUES (:Ogrn,:TechnologyType,:Industry,:Website,:LeaderId,:Email,:ExportSales,:Notes)");
+                    $statement = $database->prepare("INSERT INTO `TEMP_entity_for_ipchain` (Ogrn,TechnologyType,Industry,Website,LeaderId,ExportSales,Notes) VALUES (:Ogrn,:TechnologyType,:Industry,:Website,:LeaderId,:ExportSales,:Notes)");
                     $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
                     $statement->bindParam(':TechnologyType', $TechnologyType, PDO::PARAM_STR);
                     $statement->bindParam(':Industry', $Industry, PDO::PARAM_STR);
                     $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
                     $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
-                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
                     $statement->bindParam(':ExportSales', $ExportSales, PDO::PARAM_STR);
                     $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
                     $check_new_user = $statement->execute();
                     $count = $database->lastInsertId();
               }
               else {
-                    $statement = $database->prepare("UPDATE `TEMP_entity_for_ipchain` SET TechnologyType = :TechnologyType, Industry = :Industry, Website = :Website, LeaderId = :LeaderId, Email = :Email, ExportSales = :ExportSales, Notes = :Notes WHERE Ogrn = :Ogrn");
+                    $statement = $database->prepare("UPDATE `TEMP_entity_for_ipchain` SET TechnologyType = :TechnologyType, Industry = :Industry, Website = :Website, LeaderId = :LeaderId, ExportSales = :ExportSales, Notes = :Notes WHERE Ogrn = :Ogrn");
                     $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
                     $statement->bindParam(':TechnologyType', $TechnologyType, PDO::PARAM_STR);
                     $statement->bindParam(':Industry', $Industry, PDO::PARAM_STR);
                     $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
                     $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
-                    $statement->bindParam(':Email', $Email, PDO::PARAM_STR);
                     $statement->bindParam(':ExportSales', $ExportSales, PDO::PARAM_STR);
                     $statement->bindParam(':Notes', $Notes, PDO::PARAM_STR);
                     $check_new_user = $statement->execute();
