@@ -4,8 +4,6 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 
-<div class="page-content">
-
   <div class="profile-page tx-13">
     <div class="row">
       <div class="col-12 grid-margin">
@@ -335,6 +333,5 @@
     </div>
   </div>
 
-</div>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
