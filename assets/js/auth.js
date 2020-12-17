@@ -7,21 +7,21 @@ var onloadCallback = function() {
                'callback': 'submit_auth',
                'size':'invisible'
            });
-           capcha2 = grecaptcha.render('capcha_reg', {
-               'sitekey' : sitekey,
-               'callback': 'submit_reg',
-               'size':'invisible'
-           });
+           // capcha2 = grecaptcha.render('capcha_reg', {
+           //     'sitekey' : sitekey,
+           //     'callback': 'submit_reg',
+           //     'size':'invisible'
+           // });
            capcha3 = grecaptcha.render('capcha_rec', {
                'sitekey' : sitekey,
                'callback': 'submit_rec',
                'size':'invisible'
            });
-           capcha4 = grecaptcha.render('capcha_rec_p', {
-               'sitekey' : sitekey,
-               'callback': 'submit_rec_p',
-               'size':'invisible'
-           });
+           // capcha4 = grecaptcha.render('capcha_rec_p', {
+           //     'sitekey' : sitekey,
+           //     'callback': 'submit_rec_p',
+           //     'size':'invisible'
+           // });
        };
 
 $(document).ready(function() {
@@ -38,9 +38,9 @@ $(document).ready(function() {
   // });
 
   $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
-  $('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
+  //$('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
   $('#form_rec').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha3); });
-  $('#form_rec_p').submit(function (event)  {   event.preventDefault();   grecaptcha.execute(capcha4); });
+  //$('#form_rec_p').submit(function (event)  {   event.preventDefault();   grecaptcha.execute(capcha4); });
 
 });
 
