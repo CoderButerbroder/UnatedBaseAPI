@@ -339,98 +339,49 @@
   </div>
 
 
-  <style media="screen">
-    .div_content_file {
-      width: 100%;
-      height: 200px;
-      position: relative;
-      border: 2px dashed #c0beff;
-      border-radius: 5px;
-      transition: border 400ms ease;
+  <!-- <style media="screen">
+    .cropper-container{
+      height: auto!important;
+      width: auto!important;
     }
-    .content_file {
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      margin-right: -50%;
-      transform: translate(-50%, -50%);
-
-    }
-    .content_file input[type=file] {
-      outline: 0;
-      opacity: 0;
-      pointer-events: none;
-      user-select: none;
-    }
-    .content_file .label span{
-      display: block;
-      font-size: 32px;
-      color:gray;
-    }
-
-    .div_content_file:hover{
-    border: 2px solid #c0beff;
-    }
-
     .cropper-crop-box, .cropper-view-box {
-    border-radius: 50%;
+      border-radius: 50%;
     }
-
-    .cropper-view-box {
-    box-shadow: 0 0 0 1px #39f;
-    outline: 0;
-    }
-
-
-  </style>
+    /* .cropper-view-box {
+      box-shadow: 0 0 0 1px #39f;
+      outline: 0;
+    } */
+  </style> -->
 
   <div id="mod-success" tabindex="-1" role="dialog" style="" class="modal fade">
     <div class="modal-dialog ">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" data-dismiss="modal" aria-hidden="true" class="close"><span class="mdi mdi-close"></span></button>
+          <div class="form-group form-group col-md-12">
+            <input type="file" name="img[]" class="file-upload-default" id="cropperImageUpload">
+            <div class="input-group col-md-12">
+              <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
+              <span class="input-group-append">
+                <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+              </span>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="text-center">
-            <div class="form-group" style="text-align: left;">
-              <label for=""></label>
-              <div id="div_select_preview" class="row" onclick="" style="position: relative; height: 200px; min-width:100%; /*margin-top:20px; padding-top:20px;*/">
-                <div  id="action_div_file_preview" class="col-md-12 my-auto animate__animated" style="position:absolute; padding-top:65px;">
-                  <div class="row" >
-                    <div  class="col-md-12 text-center animate__animated" style="margin-top:-70px;">
-                      <form id="form_preview" >
-                        <div class="div_content_file text-center">
-                          <div class="content_file">
-                            <label class="label">
-                              <span class="icon mdi mdi-file-plus"></span>
-                            </br>
-                              <span class="title">Добавить файл</span><br>
-                              <input type="file" id="file_preview" accept=".jpg, .jpeg, .png">
-                            </label>
-                          </div>
-                        </div>
-                      </form>
-                    </div>
-                    <div class="col-md-12" >
-                      <button type="button" class="btn gen_button btn-block" name="" style="display: none; margin-top:30px;" name="img_min" id="download_btn_preview">Загрузить</button>
-                    </div>
-                  </div>
-                </div>
 
-                <div id="action_div_file_preview_crop" class="col-md-12 animate__animated" style=" position:absolute; display:none;">
-                  <div class="row">
-                  <div class="col-md-1" style=" padding-right:0;">
-                    <button type="button" class="btn btn-default btn-block" style="height:100%;" onclick="return_select_file();"><span class="icon mdi mdi-chevron-left"></span></button>
-                  </div>
-                  <div class="col-md-11" id="div_preview" style="display:block; max-width:90%; max-height:400px; padding:0; margin-left: 0;" >
-                    <img id ="image_preview">
-                  </div>
-                </div>
-              </div>
-              </div>
+        <div class="modal-body">
+            <div class="" id="div_preview" style=" width:100%;" >
+              <style media="screen">
+                .cropper-view-box {
+                  border-radius: 50%;
+                }
+                .cropper-view-box {
+                  box-shadow: 0 0 0 1px #39f;
+                  outline: 0;
+                }
+              </style>
+              <img id="image_preview"  >
             </div>
 
-          </div>
         </div>
         <div class="modal-footer"><button class="btn btn-space btn-success btn-block" id="btn_update_send">Загузить</button></div>
       </div>
@@ -439,130 +390,102 @@
 
 
   <script type="text/javascript">
-    const image = document.getElementById('image_preview');
 
-    const cropper = new Cropper(image, {
-      aspectRatio: 1 / 1,
-      viewMode:2,
-    });
-
+  var croppingImage = document.querySelector('#image_preview'),
+  dwn = document.querySelector('#btn_update_send'),
+  upload = document.querySelector('#cropperImageUpload'),
+  cropper = '';
 
     $(document).ready(function() {
-      $('#file_preview').on('change', function(){
 
-        if(!$('#file_preview').val()){
-          return false;
-        }
-        user_file = (($('#file_preview').val().split('\\'))[2]);
-        arr_user_file = user_file.split('.');
-        len_arr = arr_user_file.length;
-        ext = arr_user_file[len_arr-1].toUpperCase();
-        arr_accept_ext = ['JPG','JPEG','JFIF','PNG','TIF','TIFF','GIF','BMP','WEBM'];
-
-        if(arr_accept_ext.indexOf(ext) == -1){
-          alerts('warning', 'Ошибка', 'Для выбора миниатюры сервиса выбирите файл JPG,JPEG,JFIF,PNG,TIF,TIFF,GIF,BMP,WEBM');
-          return false;
-        }
-
-        altitude_change('div_select_preview', 400);
-        altitude_change('bos_div', ($('#bos_div').height()+200));
-        $('#action_div_file_preview').addClass('animate__fadeOutLeft');
-        $('#action_div_file_preview_crop').addClass('animate__fadeInRight');
-        $('#action_div_file_preview').removeClass('animate__fadeInLeft');
-        $('#action_div_file_preview_crop').removeClass('animate__fadeOutRight');
-        $('#action_div_file_preview_crop').show();
-        cropper.reset();
-        cropper.replace(URL.createObjectURL(event.target.files[0]));
-        $($('#div_preview').prev()).css('height', 400);
+      $('.file-upload-browse').on('click', function(e) {
+        var file = $(this).parent().parent().parent().find('.file-upload-default');
+        file.trigger('click');
       });
 
-    });
+      croppingImage.src = 'https://<?php echo $_SERVER["SERVER_NAME"];?>/assets/images/placeholder.jpg';
+      croppingImage.onload = function (e) {
+          cropper = new Cropper(croppingImage);
+      };
+      // cropper = new Cropper(croppingImage, {
+      //   aspectRatio: 1 / 1,
+      //   viewMode:1,
+      // });
 
+      // console.log(cropper);
+      // cropper.containerData['height'] = '100%';
+      // console.log(cropper);
 
-    function return_select_file(){
-      //altitude_change($('#div_form_1').height());
-      $('#file_preview')[0].value = '';
-      altitude_change('div_select_preview', 200);
-      altitude_change('bos_div', ($('#bos_div').height()-200));
-      $('#action_div_file_preview').addClass('animate__fadeInLeft');
-      $('#action_div_file_preview_crop').addClass('animate__fadeOutRight');
-      $('#action_div_file_preview').removeClass('animate__fadeOutLeft');
-      $('#action_div_file_preview_crop').removeClass('animate__fadeInRight');
-      $('#action_div_file_preview_crop').show();
-    };
+//       containerData:
+// height: 100
+// width: 200
+      //
+      // $('.cropper-container').css('height', '100%');
+      // $('.cropper-container').css('width', '100%');
 
-    function altitude_change(id_name, height_result){
-      var initial_value = $('#'+id_name).height();
-
-       if (height_result > initial_value) {
-         let timerId = setTimeout(function tick() {
-            //alert('tick');
-            if (initial_value < height_result) {
-              initial_value+=5;
-              $('#'+id_name).height(initial_value);
+      // on change show image with crop options
+      upload.addEventListener('change', function (e) {
+        $(this).parent().find('.form-control').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+        if (e.target.files.length) {
+          cropper.destroy();
+          // start file reader
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            if(e.target.result){
+              croppingImage.src = e.target.result;
+              cropper = new Cropper(croppingImage);
             }
-            if(initial_value >= height_result) {
-              clearTimeout(timerId);
-            }
-            timerId = setTimeout(tick, 10);
-          }, 50);
-       } else {
-         let timerId = setTimeout(function tick() {
-            //alert('tick');
-            if (initial_value > height_result) {
-              initial_value-=5;
-              $('#'+id_name).height(initial_value);
-            }
-            if(initial_value >= height_result) {
-              clearTimeout(timerId);
-            }
-            timerId = setTimeout(tick, 10);
-          }, 50);
-       }
-    };
-
-    $('#btn_update_send').on('click', function(){
-
-    canvas_img = cropper.getCroppedCanvas({ width: 600,
-                              height: 600,
-                              maxWidth: 2096,
-                              maxHeight: 2096,
-                              fillColor: '#fff' });
-    if(!canvas_img){
-        alerts('warning','','Необходимо добавить изображение');
-
-        return false;
-      }
-    var temp_img = canvas_img.toDataURL("image/png");
-    img_min = '';
-    $.ajax({
-      type: 'POST',
-      async : false,
-      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/profile/update_avatar.php',
-      data: "action=send_preview&file_name="+($('#file_preview').val().split('\\'))[2].split('.')[0]+"&data_img="+btoa(temp_img),
-      success: function(result) {
-        if (result == '') {
-          alerts('error', '', 'Ошибка загрузки фотграфии на сервер');
-
-          return false;
-        } else {
-          arr_result = JSON.parse(result);
-          if (arr_result["response"]) {
-              window.location.href = "https://<? echo $_SERVER['SERVER_NAME']?>/panel/profile/";
-          } else {
-            alerts('error', 'Ошибка', arr_result["description"]);
-          }
-
+          };
+          reader.readAsDataURL(e.target.files[0]);
         }
-      },
-      error: function(jqXHR, textStatus) {
-        alerts('error', '', 'Ошибка подключения');
+      });
 
-        return false;
-      }
+
+
     });
 
-  });
+
+
+    // $('#btn_update_send').on('click', function(){
+    //
+    // canvas_img = cropper.getCroppedCanvas({ width: 600,
+    //                           height: 600,
+    //                           maxWidth: 2096,
+    //                           maxHeight: 2096,
+    //                           fillColor: '#fff' });
+    // if(!canvas_img){
+    //     alerts('warning','','Необходимо добавить изображение');
+    //
+    //     return false;
+    //   }
+    // var temp_img = canvas_img.toDataURL("image/png");
+    // img_min = '';
+    // $.ajax({
+    //   type: 'POST',
+    //   async : false,
+    //   url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/profile/update_avatar.php',
+    //   data: "action=send_preview&file_name="+($('#file_preview').val().split('\\'))[2].split('.')[0]+"&data_img="+btoa(temp_img),
+    //   success: function(result) {
+    //     if (result == '') {
+    //       alerts('error', '', 'Ошибка загрузки фотграфии на сервер');
+    //
+    //       return false;
+    //     } else {
+    //       arr_result = JSON.parse(result);
+    //       if (arr_result["response"]) {
+    //           window.location.href = "https://<? echo $_SERVER['SERVER_NAME']?>/panel/profile/";
+    //       } else {
+    //         alerts('error', 'Ошибка', arr_result["description"]);
+    //       }
+    //
+    //     }
+    //   },
+    //   error: function(jqXHR, textStatus) {
+    //     alerts('error', '', 'Ошибка подключения');
+    //
+    //     return false;
+    //   }
+    // });
 
   </script>
 
