@@ -20,6 +20,7 @@ else {
 <!-- plugin css for this page -->
 <!-- end plugin css for this page -->
 <!-- inject:css -->
+<link rel="stylesheet" href="/assets/vendors/select2/select2.min.css">
 <link rel="stylesheet" href="/assets/fonts/feather-font/css/iconfont.css">
 <link rel="stylesheet" href="/assets/vendors/flag-icon-css/css/flag-icon.min.css">
 <!-- endinject -->
@@ -29,7 +30,7 @@ else {
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
 <link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
-<link rel="stylesheet" href="/assets/vendors/select2/select2.min.css">
+
 </head>
 <body>
 <div class="main-wrapper">

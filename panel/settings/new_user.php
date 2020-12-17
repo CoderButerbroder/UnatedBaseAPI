@@ -53,9 +53,9 @@
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Роль пользователя</label>
+                                <label for="select_input" class="col-sm-3 col-form-label">Роль пользователя</label>
                                 <div class="col-sm-9">
-                                  <select class="select2-single w-100">
+                                  <select class="js-example-basic-single" id="select_input">
                   										<option value="TX">Texas</option>
                   										<option value="WY">Wyoming</option>
                   										<option value="NY">New York</option>
@@ -64,6 +64,7 @@
                   										<option value="HW">Hawaii</option>
                   									</select>
                                 </div>
+
                               </div>
                               <div class="form-check form-check-flat form-check-primary mt-0" style="cursor: pointer;">
                                 <label class="form-check-label">
