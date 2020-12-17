@@ -14,6 +14,8 @@
 <!-- endinject -->
 <script src="/assets/vendors/jquery-steps/jquery.steps.min.js"></script>
 <script src="/assets/js/wizard.js"></script>
+<script src="/assets/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
 <!-- plugin js for this page -->
 <!-- end plugin js for this page -->
 <!-- inject:js -->

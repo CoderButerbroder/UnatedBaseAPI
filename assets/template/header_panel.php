@@ -27,6 +27,7 @@ else {
 <!-- End layout styles -->
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
+<link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
 </head>
 <body>
 <div class="main-wrapper">
