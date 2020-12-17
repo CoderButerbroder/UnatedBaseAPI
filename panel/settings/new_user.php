@@ -16,53 +16,54 @@
                   <div class="card">
                       <div class="card-body">
 
-                        <div class="row">
-                                 <div class="col-md-12 grid-margin stretch-card">
-                                   <div class="card">
-                                     <div class="card-body">
-                                       <h4 class="card-title">Horizontal wizard</h4>
-                                       <p class="card-description">Read the <a href="http://www.jquery-steps.com/" target="_blank"> Official jQuery Steps Documentation </a>for a full list of instructions and other options.</p>
-                                       <div id="wizard">
-                                         <h2>First Step</h2>
-                                         <section>
-                                           <h4>Heading</h4>
-                                           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer ut nulla nunc. Maecenas arcu sem, hendrerit a tempor quis,
-                                               sagittis accumsan tellus. In hac habitasse platea dictumst. Donec a semper dui. Nunc eget quam libero. Nam at felis metus.
-                                               Nam tellus dolor, tristique ac tempus nec, iaculis quis nisi.</p>
-                                         </section>
-
-                                         <h2>Second Step</h2>
-                                         <section>
-                                           <h4>Heading</h4>
-                                           <p>Donec mi sapien, hendrerit nec egestas a, rutrum vitae dolor. Nullam venenatis diam ac ligula elementum pellentesque.
-                                               In lobortis sollicitudin felis non eleifend. Morbi tristique tellus est, sed tempor elit. Morbi varius, nulla quis condimentum
-                                               dictum, nisi elit condimentum magna, nec venenatis urna quam in nisi. Integer hendrerit sapien a diam adipiscing consectetur.
-                                               In euismod augue ullamcorper leo dignissim quis elementum arcu porta. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                               Vestibulum leo velit, blandit ac tempor nec, ultrices id diam. Donec metus lacus, rhoncus sagittis iaculis nec, malesuada a diam.
-                                               Donec non pulvinar urna. Aliquam id velit lacus.</p>
-                                         </section>
-
-                                         <h2>Third Step</h2>
-                                         <section>
-                                           <h4>Heading</h4>
-                                           <p>Morbi ornare tellus at elit ultrices id dignissim lorem elementum. Sed eget nisl at justo condimentum dapibus. Fusce eros justo,
-                                               pellentesque non euismod ac, rutrum sed quam. Ut non mi tortor. Vestibulum eleifend varius ullamcorper. Aliquam erat volutpat.
-                                               Donec diam massa, porta vel dictum sit amet, iaculis ac massa. Sed elementum dui commodo lectus sollicitudin in auctor mauris
-                                               venenatis.</p>
-                                         </section>
-
-                                         <h2>Forth Step</h2>
-                                         <section>
-                                           <h4>Heading</h4>
-                                           <p>Quisque at sem turpis, id sagittis diam. Suspendisse malesuada eros posuere mauris vehicula vulputate. Aliquam sed sem tortor.
-                                               Quisque sed felis ut mauris feugiat iaculis nec ac lectus. Sed consequat vestibulum purus, imperdiet varius est pellentesque vitae.
-                                               Suspendisse consequat cursus eros, vitae tempus enim euismod non. Nullam ut commodo tortor.</p>
-                                         </section>
-                                       </div>
-                                     </div>
-                                   </div>
-                                 </div>
-                               </div>
+                        <div class="container">
+                          <form class="forms-sample">
+                              <div class="form-group row">
+                                <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Email</label>
+                                <div class="col-sm-9">
+                                  <input type="email" class="form-control" id="exampleInputUsername2" placeholder="Email">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Фамилия</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" id="exampleInputEmail2" autocomplete="off" placeholder="Фамилия">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Имя</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" id="exampleInputMobile" placeholder="Имя">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Отчетсво</label>
+                                <div class="col-sm-9">
+                                  <input type="text" class="form-control" id="exampleInputMobile" placeholder="Отчетсво">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Телефон</label>
+                                <div class="col-sm-9">
+                                  <input type="number" class="form-control" id="exampleInputMobile" placeholder="Телефон">
+                                </div>
+                              </div>
+                              <div class="form-group row">
+                                <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Password</label>
+                                <div class="col-sm-9">
+                                  <input type="password" class="form-control" id="exampleInputPassword2" autocomplete="off" placeholder="Password">
+                                </div>
+                              </div>
+                              <div class="form-check form-check-flat form-check-primary mt-0">
+                                <label class="form-check-label">
+                                  <input type="checkbox" class="form-check-input">
+                                  Remember me
+                                </label>
+                              </div>
+                              <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                              <button class="btn btn-light">Cancel</button>
+                            </form>
+                          </div>
 
 
                       </div>
