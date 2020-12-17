@@ -4458,26 +4458,26 @@ class Settings {
 
   // получение данных роли по id
   public function get_role_data($id){
-    global $database;
+      global $database;
 
-    $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
-    $statement->bindParam(':id', $id, PDO::PARAM_INT);
-    $statement->execute();
-    $role = $statement->fetch(PDO::FETCH_OBJ);
+      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
+      $statement->bindParam(':id', $id, PDO::PARAM_INT);
+      $statement->execute();
+      $role = $statement->fetch(PDO::FETCH_OBJ);
 
-    if ($role) {
-        return json_encode(array('response' => true, 'data' = $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
-        exit;
-    }
-    else {
-        return json_encode(array('response' => false, 'description' => 'Роль c таким id ненайдена'),JSON_UNESCAPED_UNICODE);
-        exit;
-    }
+      if ($role) {
+          return json_encode(array('response' => true, 'data' = $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Роль c таким id ненайдена'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
 
   }
 
   // добавление новой роли
-  public function add_role_in_sistem($alias,$rules) {
+  public function add_role_in_sistem($alias) {
       global $database;
 
       $name = $this->translit_sef($alias);
@@ -4489,28 +4489,24 @@ class Settings {
       $all_roles = $statement->fetch(PDO::FETCH_OBJ);
 
       if (!$all_roles) {
+            $root = 1;
+            $statement = $database->prepare("INSERT INTO $this->API_USERS_ROLE (name,alias,rules,root) VALUES (:name,:alias,:rules,:root)");
+            $statement->bindParam(':name', $name, PDO::PARAM_STR);
+            $statement->bindParam(':alias', $alias, PDO::PARAM_STR);
+            $statement->bindParam(':rules', $rules, PDO::PARAM_STR);
+            $statement->bindParam(':root', $root, PDO::PARAM_INT);
+            $statement->execute();
+            $id_new_role = $database->lastInsertId();
 
-        $root = 1;
-
-        $statement = $database->prepare("INSERT INTO $this->API_USERS_ROLE (name,alias,rules,root) VALUES (:name,:alias,:rules,:root)");
-        $statement->bindParam(':name', $name, PDO::PARAM_STR);
-        $statement->bindParam(':alias', $alias, PDO::PARAM_STR);
-        $statement->bindParam(':rules', $rules, PDO::PARAM_STR);
-        $statement->bindParam(':root', $root, PDO::PARAM_INT);
-        $statement->execute();
-        $id_new_role = $database->lastInsertId();
-
-        if ($id_new_role) {
-            $data_last_role = json_decode($this->get_role_data($id_new_role))->data;
-            return json_encode(array('response' => true, 'data' = $data_last_role, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        else {
-            return json_encode(array('response' => false, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-
-
+            if ($id_new_role) {
+                $data_last_role = json_decode($this->get_role_data($id_new_role))->data;
+                return json_encode(array('response' => true, 'data' = $data_last_role, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            else {
+                return json_encode(array('response' => false, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                exit;
+            }
       }
       else {
           return json_encode(array('response' => false, 'description' => 'Роль стаким назвнием уже существутет, пожалуйста измените название роли'),JSON_UNESCAPED_UNICODE);
