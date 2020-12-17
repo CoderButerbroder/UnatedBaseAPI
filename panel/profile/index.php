@@ -15,18 +15,18 @@
             </figure>
             <div class="cover-body d-flex justify-content-between align-items-center">
               <div>
-                <img class="profile-pic" src="https://via.placeholder.com/100x100" alt="profile">
-                <span class="profile-name">Amiah Burton</span>
+                <img class="profile-pic" src="<?php echo ($data_user->data->photo) ? 'https://'.$_SERVER["SERVER-NAME"].$data_user->data->photo : 'https://via.placeholder.com/100x100'; ?>" alt="profile">
+                <span class="profile-name"><?php echo $data_user->data->name.' '.$data_user->data->lastname; ?></span>
               </div>
               <div class="d-none d-md-block">
                 <button class="btn btn-primary btn-icon-text btn-edit-profile">
-                  <i data-feather="edit" class="btn-icon-prepend"></i> Edit profile
+                  <i data-feather="edit" class="btn-icon-prepend"></i> Редактировать
                 </button>
               </div>
             </div>
           </div>
           <div class="header-links">
-            <ul class="links d-flex align-items-center mt-3 mt-md-0">
+            <!-- <ul class="links d-flex align-items-center mt-3 mt-md-0">
               <li class="header-link-item d-flex align-items-center active">
                 <i class="mr-1 icon-md" data-feather="columns"></i>
                 <a class="pt-1px d-none d-md-block" href="#">Timeline</a>
@@ -47,7 +47,7 @@
                 <i class="mr-1 icon-md" data-feather="video"></i>
                 <a class="pt-1px d-none d-md-block" href="#">Videos</a>
               </li>
-            </ul>
+            </ul> -->
           </div>
         </div>
       </div>
@@ -70,33 +70,38 @@
                 </div>
               </div>
             </div>
-            <p>Hi! I'm Amiah the Senior UI Designer at NobleUI. We hope you enjoy the design and quality of Social.</p>
             <div class="mt-3">
-              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Joined:</label>
-              <p class="text-muted">November 15, 2015</p>
-            </div>
-            <div class="mt-3">
-              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Lives:</label>
-              <p class="text-muted">New York, USA</p>
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Роль:</label>
+              <?php
+                    $data_role = json_decode($settings->get_role_data($data_user->data->role));
+                    if($data_role->response) {
+                      echo '<p class="text-muted">'.$data_role->data->alias.'</p>';
+                    } else {
+                      echo '<p class="text-muted">Ошибка</p>';
+                    }
+              ?>
             </div>
             <div class="mt-3">
               <label class="tx-11 font-weight-bold mb-0 text-uppercase">Email:</label>
-              <p class="text-muted">me@nobleui.com</p>
+              <p class="text-muted"><?php echo $data_user->data->email;?></p>
             </div>
             <div class="mt-3">
-              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Website:</label>
-              <p class="text-muted">www.nobleui.com</p>
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Phone:</label>
+              <p class="text-muted"><?php echo ($data_user->data->phone) ? $data_user->data->phone : '-'; ?></p>
             </div>
-            <div class="mt-3 d-flex social-links">
-              <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon github">
-                <i data-feather="github" data-toggle="tooltip" title="github.com/nobleui"></i>
-              </a>
-              <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon twitter">
-                <i data-feather="twitter" data-toggle="tooltip" title="twitter.com/nobleui"></i>
-              </a>
-              <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon instagram">
-                <i data-feather="instagram" data-toggle="tooltip" title="instagram.com/nobleui"></i>
-              </a>
+            <div class="mt-3">
+              <label class="tx-11 font-weight-bold mb-0 text-uppercase">Соц. Сети:</label>
+                <div class="mt-3 d-flex social-links">
+                  <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon github">
+                    <i data-feather="github" data-toggle="tooltip" title="github.com/nobleui"></i>
+                  </a>
+                  <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon twitter">
+                    <i data-feather="twitter" data-toggle="tooltip" title="twitter.com/nobleui"></i>
+                  </a>
+                  <a href="javascript:;" class="btn d-flex align-items-center justify-content-center border mr-2 btn-icon instagram">
+                    <i data-feather="instagram" data-toggle="tooltip" title="instagram.com/nobleui"></i>
+                  </a>
+                </div>
             </div>
           </div>
         </div>
