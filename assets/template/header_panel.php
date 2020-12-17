@@ -15,6 +15,7 @@ else {
 ?>
 <!-- core:css -->
 <link rel="stylesheet" href="/assets/vendors/core/core.css">
+<script src="/assets/js/jquery-3.5.1.min.js"></script>
 <!-- endinject -->
 <!-- plugin css for this page -->
 <!-- end plugin css for this page -->
@@ -27,6 +28,7 @@ else {
 <!-- End layout styles -->
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
+<link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
 </head>
 <body>
 <div class="main-wrapper">
