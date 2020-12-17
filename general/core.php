@@ -4381,6 +4381,7 @@ class Settings {
 
   }
 
+
   // функция активации аккаунта
   public function email_activation($hash) {
       global $database;
@@ -4428,6 +4429,20 @@ class Settings {
             return json_encode(array('response' => false, 'description' => 'Ошибка, капча не была пройдена'),JSON_UNESCAPED_UNICODE);
       }
 
+  }
+
+  public function get_all_api_users($bool_result = false) {
+    global $database;
+
+    if ($bool_result){
+    $get_users_data = $database->prepare("SELECT AU.`lastname`, AU.`name`, AU.`lastname`, AUR.`alias` FROM `API_USERS` AS AU, `API_USERS_ROLE` AS AUR WHERE AU.`role` = AUR.`id` AND NOT AU.`role` = 1");
+    } else {
+      $get_users_data = $database->prepare("SELECT * FROM $this->users AS AU WHERE NOT AU.role = 1");
+    }
+    $get_users_data->execute();
+    $users_data = $get_users_data->fetchAll(PDO::FETCH_OBJ);
+
+    return $users_data;
   }
 
 
