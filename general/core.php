@@ -3920,21 +3920,31 @@ class Settings {
 
       $check_activiti = $this->update_activity($hash_or_id);
 
-      if (is_numeric($hash_or_id)) {
-          $check_user_data = $database->prepare("SELECT * FROM $this->main_users WHERE id = :id");
-          $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
-      } else {
-          $check_user_data = $database->prepare("SELECT * FROM $this->main_users WHERE hash = :hash");
-          $check_user_data->bindParam(':hash', $hash_or_id, PDO::PARAM_STR);
-      }
-      $check_user_data->execute();
-      $user = $check_user_data->fetch(PDO::FETCH_OBJ);
+      if (json_decode($check_activiti)->response) {
 
-      if ($user) {
-           return json_encode(array('response' => true, 'data' => $user),JSON_UNESCAPED_UNICODE);
+          if (is_numeric($hash_or_id)) {
+              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE id = :id");
+              $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
+          } else {
+              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE hash = :hash");
+              $check_user_data->bindParam(':hash', $hash_or_id, PDO::PARAM_STR);
+          }
+          $check_user_data->execute();
+          $user = $check_user_data->fetch(PDO::FETCH_OBJ);
+
+          if ($user) {
+               return json_encode(array('response' => true, 'data' => $user),JSON_UNESCAPED_UNICODE);
+               exit;
+          }
+          else {
+               return json_encode(array('response' => false, 'description' => 'Нет данных по пользователю с данным ключем'),JSON_UNESCAPED_UNICODE);
+               exit;
+          }
+
       }
       else {
-           return json_encode(array('response' => false, 'description' => 'Нет данных по пользователю с данным ключем'),JSON_UNESCAPED_UNICODE);
+        return $check_activiti;
+        exit;
       }
 
   }
@@ -4125,7 +4135,7 @@ class Settings {
 
               $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
               $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
-              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/?link='.$user->recovery_link.'</a>';
+              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/recovery?link='.$user->recovery_link.'</a>';
               $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
 
               $tema = 'Восстановление пароля LPM connect';
@@ -4149,7 +4159,8 @@ class Settings {
                 return json_encode(array('response' => false, 'description' => 'Ссылка для восстановления пароля недействительна'),JSON_UNESCAPED_UNICODE);
           }
 
-          $hash_password = password_hash($password);
+
+          $hash_password = password_hash($password, PASSWORD_DEFAULT);
           $today = date("Y-m-d H:i:s");
           $hash_new_link = md5($hash_password.$password.$today.$recovery_link);
 
@@ -4216,11 +4227,11 @@ class Settings {
 
       $today = date("Y-m-d H:i:s");
 
-      if (is_numeric($hash_or_id)) {
-        $upd_activity_user = $database->prepare("UPDATE $this->main_users SET last_activity = :last_activity WHERE id = :id");
+      if (is_int($hash_user_or_id)) {
+        $upd_activity_user = $database->prepare("UPDATE $this->users SET last_activity = :last_activity WHERE id = :id");
         $upd_activity_user->bindParam(':id', $hash_user_or_id, PDO::PARAM_INT);
       } else {
-        $upd_activity_user = $database->prepare("UPDATE $this->main_users SET last_activity = :last_activity WHERE hash = :hash");
+        $upd_activity_user = $database->prepare("UPDATE $this->users SET last_activity = :last_activity WHERE hash = :hash");
         $upd_activity_user->bindParam(':hash', $hash_user_or_id, PDO::PARAM_STR);
       }
       $upd_activity_user->bindParam(':last_activity', $today, PDO::PARAM_STR);

@@ -2,8 +2,15 @@
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 if (!$_SESSION["key_user"]) {
-  header('Location: /');
-  exit;
+    header('Location: /');
+    exit;
+}
+else {
+    $data_user = json_decode($settings->get_cur_user($_SESSION["key_user"]));
+    if (!$data_user->response) {
+        header('Location: http://'.$_SERVER['SERVER_NAME'].'/general/actions/logout');
+        exit;
+    }
 }
 ?>
 <!-- core:css -->
@@ -153,13 +160,13 @@ if (!$_SESSION["key_user"]) {
           <div class="collapse" id="general-pages">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="#" class="nav-link">Все пользователи</a>
+                <a href="/panel/settings/users" class="nav-link">Все пользователи</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Добавить пользователя</a>
+                <a href="/panel/settings/new_user" class="nav-link">Добавить пользователя</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Права и роли</a>
+                <a href="/panel/settings/roles" class="nav-link">Права и роли</a>
               </li>
             </ul>
           </div>
@@ -204,7 +211,7 @@ if (!$_SESSION["key_user"]) {
       </ul>
     </div>
   </nav>
-  <nav class="settings-sidebar">
+  <!-- <nav class="settings-sidebar">
     <div class="sidebar-body">
       <a href="#" class="settings-sidebar-toggler">
         <i data-feather="settings"></i>
@@ -235,7 +242,7 @@ if (!$_SESSION["key_user"]) {
         </a>
       </div>
     </div>
-  </nav>
+  </nav> -->
   <!-- partial -->
 
   <div class="page-wrapper">
@@ -268,8 +275,8 @@ if (!$_SESSION["key_user"]) {
                   <img src="https://via.placeholder.com/80x80" alt="">
                 </div>
                 <div class="info text-center">
-                  <p class="name font-weight-bold mb-0">Имя Фамилия</p>
-                  <p class="email text-muted mb-3">amiahburton@gmail.com</p>
+                  <p class="name font-weight-bold mb-0"><?php echo $data_user->data->name.' '.$data_user->data->lastname; ?></p>
+                  <p class="email text-muted mb-3"><?php echo $data_user->data->email;?></p>
                 </div>
               </div>
               <div class="dropdown-body">
