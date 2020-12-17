@@ -4552,7 +4552,7 @@ class Settings {
   }
 
   // добавление новой роли
-  public function add_role_in_sistem($alias) {
+  public function add_role_in_sistem($alias,$copy_role = false) {
       global $database;
 
       $name = $this->translit_sef($alias);
@@ -4564,6 +4564,18 @@ class Settings {
       $all_roles = $statement->fetch(PDO::FETCH_OBJ);
 
       if (!$all_roles) {
+
+            if ($copy_role) {
+                $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
+                $statement->bindParam(':copy_role', $copy_role, PDO::PARAM_INT);
+                $statement->execute();
+                $rules_copy = $statement->fetch(PDO::FETCH_OBJ);
+                $rules = $rules_copy->rules;
+            }
+            else {
+
+            }
+
             $root = 1;
             $statement = $database->prepare("INSERT INTO $this->API_USERS_ROLE (name,alias,rules,root) VALUES (:name,:alias,:rules,:root)");
             $statement->bindParam(':name', $name, PDO::PARAM_STR);

@@ -25236,3 +25236,7 @@ div.tagsinput {
   margin-top: -25px;
   right: 50px;
 }
+
+.select2 {
+  width: 100%!important;
+}
