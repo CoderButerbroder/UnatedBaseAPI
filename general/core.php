@@ -12,6 +12,8 @@ class Settings {
   private $tokens = 'API_TOKENS';
   private $api_referer = 'API_REFERER';
   private $history = 'API_HISTORY';
+  private $API_USERS_SOCIAL = 'API_USERS_SOCIAL';
+  private $API_UPLOAD_FILES = 'API_UPLOAD_FILES';
   private $user_referer = 'TIME_user_referer';
   private $main_users = 'MAIN_users';
   private $main_users_social = 'MAIN_users_social';
@@ -970,6 +972,79 @@ class Settings {
       }
 
   }
+
+
+  // Массовое обноление данных пользователя в единой базе данных
+  public function mass_update_user_api_field($massiv_field_value2) {
+      global $database;
+
+      $massiv_field_value = json_decode($massiv_field_value2,true);
+
+
+      if (!is_array($massiv_field_value)) {
+          return json_encode(array('response' => false, 'description' => 'Значение не является массивом "ключ" => "значение"'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $validFields = array('email', 'phone', 'name', 'lastname', 'second_name', 'photo', 'role', 'status' );
+
+      foreach ($massiv_field_value as $key => $value) {
+          if (!in_array($key, $validFields)) {
+              return json_encode(array('response' => false, 'description' => 'Поля '.$key.' нет в bd api'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+      }
+
+      $check_user = json_decode($this->get_cur_user($_SESSION["key_user"]));
+
+      if (!json_decode($check_user)->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $field_type = array('email' => PDO::PARAM_STR,
+                          'phone' => PDO::PARAM_STR,
+                          'name' => PDO::PARAM_STR,
+                          'lastname' => PDO::PARAM_STR,
+                          'second_name' => PDO::PARAM_STR,
+                          'photo' => PDO::PARAM_STR,
+                          'role' => PDO::PARAM_STR,
+                          'status' => PDO::PARAM_STR);
+
+      $sql_string = 'UPDATE '.$this->users.' SET ';
+
+      $count_zap = 0;
+      foreach ($massiv_field_value as $key => $value) {
+          if ($count_zap == 0) {
+            $sql_string .= $key.' = :'.$key;
+          } else {
+            $sql_string .= ', '.$key.' = :'.$key;
+          }
+          $count_zap++;
+      }
+
+      $sql_string .= ' WHERE id = :id';
+
+      $statement = $database->prepare($sql_string);
+
+      foreach($massiv_field_value as $key => $value) {
+                $statement->bindValue(':'.$key, $value, $field_type[$key]);
+      }
+
+      $statement->bindParam(':id', $id_user->data->id, PDO::PARAM_INT);
+      $statement->execute();
+      $count = $statement->rowCount();
+
+      if($count > 0) {
+            return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+            exit;
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка обновления полей в единой базе данных.'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
 
   // //Обновление данных юридических лиц в единой базе данных
   public function update_entity_field($field,$value_field,$id_entity) {
@@ -4536,25 +4611,58 @@ class Settings {
       	return $value;
    }
 
-  // получение пользователей по роли
-  public function get_data_role_user($id_role) {
-      global $database;
+   // Добаление файлов к проекту
+   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
+       global $database;
 
-      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE role = :role");
-      $statement->bindParam(':role', $id_role, PDO::PARAM_INT);
-      $statement->execute();
-      $all_users = $statement->fetchAll(PDO::FETCH_OBJ);
+       $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
+       $upload_date = date("Y-m-d H:i:s");
+       $id_user = $_SESSION["cur_user_id"];
+       $status = 0;
 
-      if ($all_users) {
-          return json_encode(array('response' => true, 'data' => $all_users, 'description' => 'Пользователи с такой ролью успешно найдены'),JSON_UNESCAPED_UNICODE);
-          exit;
-      }
-      else {
-          return json_encode(array('response' => false, 'description' => 'Пользоатели с такой ролью не найдены'),JSON_UNESCAPED_UNICODE);
-          exit;
-      }
 
-  }
+       $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
+
+       $add_file_project->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+       $add_file_project->bindParam(':type_father', $type_father, PDO::PARAM_STR);
+       $add_file_project->bindParam(':id_father', $id_father, PDO::PARAM_INT);
+       $add_file_project->bindParam(':name', $name, PDO::PARAM_STR);
+       $add_file_project->bindParam(':link', $path_file, PDO::PARAM_STR);
+       $add_file_project->bindParam(':upload_date', $upload_date, PDO::PARAM_STR);
+       $add_file_project->bindParam(':hash', $hash, PDO::PARAM_STR);
+       $add_file_project->bindParam(':status', $status, PDO::PARAM_STR);
+       $add_file_project->bindParam(':ext', $ext, PDO::PARAM_STR);
+       $add_file_project->bindParam(':size', $size, PDO::PARAM_INT);
+
+       $checkadd = $add_file_project->execute();
+
+       if ($checkadd) {
+           return true;
+       }
+       else {
+           return false;
+       }
+   }
+
+   // получение пользователей по роли
+   public function get_data_role_user($id_role) {
+       global $database;
+
+       $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE role = :role");
+       $statement->bindParam(':role', $id_role, PDO::PARAM_INT);
+       $statement->execute();
+       $all_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+       if ($all_users) {
+           return json_encode(array('response' => true, 'data' => $all_users, 'description' => 'Пользователи с такой ролью успешно найдены'),JSON_UNESCAPED_UNICODE);
+           exit;
+       }
+       else {
+           return json_encode(array('response' => false, 'description' => 'Пользоатели с такой ролью не найдены'),JSON_UNESCAPED_UNICODE);
+           exit;
+       }
+
+   }
 
 }
 
