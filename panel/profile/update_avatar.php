@@ -4,7 +4,7 @@
 // ini_set('display_startup_errors', 1);
 
   require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-  $settings = new Ssettings;
+  $settings = new Settings;
 
   $folder_upload = "/upload/".$_SESSION['cur_user_hash']."/";
   $target_path = $_SERVER['DOCUMENT_ROOT'].$folder_upload;
@@ -29,10 +29,10 @@
              file_put_contents($path_img, $data_image);
              $size = sprintf("%u",filesize($path_img));
              $size_final = round($size/1024);
-             $check_bool_upload =  $upload->upload_file('user',$_SESSION['cur_user_id'],$name.'.png',$folder_upload.$time.'_'.$name.'.png','png',$size_final);
+             $check_bool_upload =  $settings->upload_file('user',$_SESSION['cur_user_id'],$name.'.png',$folder_upload.$time.'_'.$name.'.png','png',$size_final);
              //
              if ($check_bool_upload) {
-                 $check_update_user = $user->update_data_user($_SESSION['cur_user_id'],'photo',$folder_upload.$time.'_'.$name.'.png');
+                 $check_update_user = $settings->update_data_user($_SESSION['cur_user_id'],'photo',$folder_upload.$time.'_'.$name.'.png');
                  if($check_update_user){
                    echo 'true';
                  } else {

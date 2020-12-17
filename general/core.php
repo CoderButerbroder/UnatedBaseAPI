@@ -973,6 +973,79 @@ class Settings {
 
   }
 
+
+  // Массовое обноление данных пользователя в единой базе данных
+  public function mass_update_user_api_field($massiv_field_value2) {
+      global $database;
+
+      $massiv_field_value = json_decode($massiv_field_value2,true);
+
+
+      if (!is_array($massiv_field_value)) {
+          return json_encode(array('response' => false, 'description' => 'Значение не является массивом "ключ" => "значение"'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $validFields = array('email', 'phone', 'name', 'lastname', 'second_name', 'photo', 'role', 'status' );
+
+      foreach ($massiv_field_value as $key => $value) {
+          if (!in_array($key, $validFields)) {
+              return json_encode(array('response' => false, 'description' => 'Поля '.$key.' нет в bd api'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+      }
+
+      $check_user = json_decode($this->get_cur_user($_SESSION["key_user"]));
+
+      if (!json_decode($check_user)->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $field_type = array('email' => PDO::PARAM_STR,
+                          'phone' => PDO::PARAM_STR,
+                          'name' => PDO::PARAM_STR,
+                          'lastname' => PDO::PARAM_STR,
+                          'second_name' => PDO::PARAM_STR,
+                          'photo' => PDO::PARAM_STR,
+                          'role' => PDO::PARAM_STR,
+                          'status' => PDO::PARAM_STR);
+
+      $sql_string = 'UPDATE '.$this->users.' SET ';
+
+      $count_zap = 0;
+      foreach ($massiv_field_value as $key => $value) {
+          if ($count_zap == 0) {
+            $sql_string .= $key.' = :'.$key;
+          } else {
+            $sql_string .= ', '.$key.' = :'.$key;
+          }
+          $count_zap++;
+      }
+
+      $sql_string .= ' WHERE id = :id';
+
+      $statement = $database->prepare($sql_string);
+
+      foreach($massiv_field_value as $key => $value) {
+                $statement->bindValue(':'.$key, $value, $field_type[$key]);
+      }
+
+      $statement->bindParam(':id', $id_user->data->id, PDO::PARAM_INT);
+      $statement->execute();
+      $count = $statement->rowCount();
+
+      if($count > 0) {
+            return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+            exit;
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка обновления полей в единой базе данных.'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
+
   // //Обновление данных юридических лиц в единой базе данных
   public function update_entity_field($field,$value_field,$id_entity) {
     global $database;
