@@ -174,6 +174,9 @@ else {
               <li class="nav-item">
                 <a href="/panel/settings/roles" class="nav-link">Роли и права</a>
               </li>
+              <li class="nav-item">
+                <a href="/panel/settings/new_role" class="nav-link">Добавление роли</a>
+              </li>
             </ul>
           </div>
         </li>

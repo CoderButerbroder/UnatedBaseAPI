@@ -4609,10 +4609,10 @@ class Settings {
       	$value = trim($value, '-');
 
       	return $value;
-   }
+  }
 
    // Добаление файлов к проекту
-   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
+  public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
        global $database;
 
        $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
@@ -4644,11 +4644,11 @@ class Settings {
        }
    }
 
-   // получение пользователей по роли
-   public function get_data_role_user($id_role) {
+  // получение пользователей по роли
+  public function get_data_role_user($id_role) {
        global $database;
 
-       $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE role = :role");
+       $statement = $database->prepare("SELECT * FROM $this->users WHERE role = :role");
        $statement->bindParam(':role', $id_role, PDO::PARAM_INT);
        $statement->execute();
        $all_users = $statement->fetchAll(PDO::FETCH_OBJ);

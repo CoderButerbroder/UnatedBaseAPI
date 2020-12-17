@@ -59,7 +59,8 @@ $data_all_roles = json_decode($data_all_roles_json);
                               <div class="form-group row">
                                 <label for="select_input" class="col-sm-3 col-form-label">Роль пользователя</label>
                                 <div class="col-sm-9">
-                                  <select class="js-example-basic-single" id="select_input">
+                                  <select class="js-example-basic-single" name="role" id="select_input">
+                                      <option default disabled selected value="">Не выбрана</option>
                                       <?php foreach ($data_all_roles->data as $key => $value) { ?>
                                           <option value="<?php echo $value->id;?>"><?php echo $value->alias;?></option>
                                       <?}?>
@@ -69,7 +70,7 @@ $data_all_roles = json_decode($data_all_roles_json);
                               </div>
                               <div class="form-check form-check-flat form-check-primary mt-0" style="cursor: pointer;">
                                 <label class="form-check-label">
-                                  <input type="checkbox" name="send_email" class="form-check-input">
+                                  <input type="checkbox" name="send_email" checked class="form-check-input">
                                   Выслать данные на указанный email
                                 </label>
                               </div>
