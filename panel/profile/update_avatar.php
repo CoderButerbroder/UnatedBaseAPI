@@ -32,14 +32,14 @@
              $check_bool_upload =  $settings->upload_file('user',$_SESSION['cur_user_id'],$name.'.png',$folder_upload.$time.'_'.$name.'.png','png',$size_final);
              //
              if ($check_bool_upload) {
-                 $check_update_user = $settings->update_data_user($_SESSION['cur_user_id'],'photo',$folder_upload.$time.'_'.$name.'.png');
+                 $check_update_user = $settings->mass_update_user_api_field(array('photo' => $folder_upload.$time.'_'.$name.'.png'));
                  if($check_update_user){
-                   echo 'true';
+                   echo json_encode(array('response' => true, 'desciption' => 'Файл успешно загружен'), JSON_UNESCAPED_UNICODE );
                  } else {
-                   echo 'error';
+                   echo json_encode(array('response' => false, 'desciption' => 'Ошибка обновления данных') ,JSON_UNESCAPED_UNICODE );
                  }
              } else {
-                 echo 'error';
+               echo json_encode(array('response' => false, 'desciption' => 'Ошибка загрузки файла'), JSON_UNESCAPED_UNICODE );
              }
              exit;
   }

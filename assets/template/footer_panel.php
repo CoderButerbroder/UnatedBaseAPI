@@ -16,7 +16,7 @@
 <script src="/assets/js/wizard.js"></script>
 <script src="/assets/vendors/datatables.net/jquery.dataTables.js"></script>
 <script src="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
-
+<script src="/assets/vendors/cropperjs/cropper.min.js"></script>
 <script src="/assets/vendors/jquery-validation/jquery.validate.min.js"></script>
 <script src="/assets/vendors/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
 <script src="/assets/vendors/inputmask/jquery.inputmask.min.js"></script>
