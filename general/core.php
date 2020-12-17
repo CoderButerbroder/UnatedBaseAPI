@@ -35,6 +35,7 @@ class Settings {
   private $MAIN_support_ticket = 'MAIN_support_ticket';
   private $MAIN_support_ticket_messages = 'MAIN_support_ticket_messages';
   private $MAIN_support_ticket_conclusion = 'MAIN_support_ticket_conclusion';
+  private $API_USERS_ROLE = 'API_USERS_ROLE';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -4373,7 +4374,6 @@ class Settings {
 
   }
 
-
   // функция активации аккаунта
   public function email_activation($hash) {
       global $database;
@@ -4411,34 +4411,134 @@ class Settings {
   // Функция прохождения капчи
   public function validate_recaptcha($captcha) {
 
-      $secretKey = $this->get_global_settings('google_recaptacha_secret');
-      $url = 'https://www.google.com/recaptcha/api/siteverify?secret='.urlencode($secretKey).'&response='.urlencode($captcha);
-      $response = file_get_contents($url);
-      $responseKeys = json_decode($response,true);
-      if($responseKeys["success"]) {
-            return json_encode(array('response' => true, 'description' => 'Капча успешно пройдена'),JSON_UNESCAPED_UNICODE);
+        $secretKey = $this->get_global_settings('google_recaptacha_secret');
+        $url = 'https://www.google.com/recaptcha/api/siteverify?secret='.urlencode($secretKey).'&response='.urlencode($captcha);
+        $response = file_get_contents($url);
+        $responseKeys = json_decode($response,true);
+        if($responseKeys["success"]) {
+              return json_encode(array('response' => true, 'description' => 'Капча успешно пройдена'),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка, капча не была пройдена'),JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+    public function get_all_api_users($bool_result = false) {
+      global $database;
+
+      if ($bool_result){
+      $get_users_data = $database->prepare("SELECT AU.`lastname`, AU.`name`, AU.`lastname`, AUR.`alias` FROM `API_USERS` AS AU, `API_USERS_ROLE` AS AUR WHERE AU.`role` = AUR.`id` AND NOT AU.`role` = 1");
       } else {
-            return json_encode(array('response' => false, 'description' => 'Ошибка, капча не была пройдена'),JSON_UNESCAPED_UNICODE);
+        $get_users_data = $database->prepare("SELECT * FROM $this->users AS AU WHERE NOT AU.role = 1");
+      }
+      $get_users_data->execute();
+      $users_data = $get_users_data->fetchAll(PDO::FETCH_OBJ);
+
+      return $users_data;
+  }
+
+  // получение всех ролей системы
+  public function get_all_roles_sistem() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE root > 0");
+      $statement->execute();
+      $all_roles = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($all_roles) {
+          return json_encode(array('response' => true, 'data' => $all_roles, 'description' => 'Данные о ролях успешно получены'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка роли не обнаружены'),JSON_UNESCAPED_UNICODE);
+          exit;
       }
 
   }
 
-  public function get_all_api_users($bool_result = false) {
+  // получение данных роли по id
+  public function get_role_data($id){
     global $database;
 
-    if ($bool_result){
-    $get_users_data = $database->prepare("SELECT AU.`lastname`, AU.`name`, AU.`lastname`, AUR.`alias` FROM `API_USERS` AS AU, `API_USERS_ROLE` AS AUR WHERE AU.`role` = AUR.`id` AND NOT AU.`role` = 1");
-    } else {
-      $get_users_data = $database->prepare("SELECT * FROM $this->users AS AU WHERE NOT AU.role = 1");
-    }
-    $get_users_data->execute();
-    $users_data = $get_users_data->fetchAll(PDO::FETCH_OBJ);
+    $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
+    $statement->bindParam(':id', $id, PDO::PARAM_INT);
+    $statement->execute();
+    $role = $statement->fetch(PDO::FETCH_OBJ);
 
-    return $users_data;
+    if ($role) {
+        return json_encode(array('response' => true, 'data' = $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    else {
+        return json_encode(array('response' => false, 'description' => 'Роль c таким id ненайдена'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
   }
 
+  // добавление новой роли
+  public function add_role_in_sistem($alias,$rules) {
+      global $database;
+
+      $name = $this->translit_sef($alias);
+
+      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE alias = :alias OR name = :name");
+      $statement->bindParam(':name', $name, PDO::PARAM_STR);
+      $statement->bindParam(':alias', $alias, PDO::PARAM_STR);
+      $statement->execute();
+      $all_roles = $statement->fetch(PDO::FETCH_OBJ);
+
+      if (!$all_roles) {
+
+        $root = 1;
+
+        $statement = $database->prepare("INSERT INTO $this->API_USERS_ROLE (name,alias,rules,root) VALUES (:name,:alias,:rules,:root)");
+        $statement->bindParam(':name', $name, PDO::PARAM_STR);
+        $statement->bindParam(':alias', $alias, PDO::PARAM_STR);
+        $statement->bindParam(':rules', $rules, PDO::PARAM_STR);
+        $statement->bindParam(':root', $root, PDO::PARAM_INT);
+        $statement->execute();
+        $id_new_role = $database->lastInsertId();
+
+        if ($id_new_role) {
+            $data_last_role = json_decode($this->get_role_data($id_new_role))->data;
+            return json_encode(array('response' => true, 'data' = $data_last_role, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+            return json_encode(array('response' => false, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
 
 
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Роль стаким назвнием уже существутет, пожалуйста измените название роли'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+  }
+
+  // транслит
+  public function translit_sef($value){
+      	$converter = array(
+      		'а' => 'a',    'б' => 'b',    'в' => 'v',    'г' => 'g',    'д' => 'd',
+      		'е' => 'e',    'ё' => 'e',    'ж' => 'zh',   'з' => 'z',    'и' => 'i',
+      		'й' => 'y',    'к' => 'k',    'л' => 'l',    'м' => 'm',    'н' => 'n',
+      		'о' => 'o',    'п' => 'p',    'р' => 'r',    'с' => 's',    'т' => 't',
+      		'у' => 'u',    'ф' => 'f',    'х' => 'h',    'ц' => 'c',    'ч' => 'ch',
+      		'ш' => 'sh',   'щ' => 'sch',  'ь' => '',     'ы' => 'y',    'ъ' => '',
+      		'э' => 'e',    'ю' => 'yu',   'я' => 'ya',   ' ' => '_',
+      	);
+
+      	$value = mb_strtolower($value);
+      	$value = strtr($value, $converter);
+      	$value = mb_ereg_replace('[^-0-9a-z]', '-', $value);
+      	$value = mb_ereg_replace('[-]+', '-', $value);
+      	$value = trim($value, '-');
+
+      	return $value;
+   }
 
 }
 
