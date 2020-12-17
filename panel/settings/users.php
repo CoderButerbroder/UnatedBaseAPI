@@ -74,9 +74,6 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('.table').DataTable({
-          "aLengthMenu": [
-            [1, 50, 49],
-          ],
           "language": {
             "url": "/assets/vendors/datatables.net/Russian.json"
           }
