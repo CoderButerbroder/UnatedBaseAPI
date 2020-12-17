@@ -23,15 +23,11 @@
                 </a>
               </div>
             </div>
+              <div class="mt-4">
               <?php
               $users_data = $settings->get_all_api_users(true);
               if($users_data) {
               ?>
-              <div class="row">
-                <div class="col-md-12 grid-margin stretch-card">
-                  <div class="card">
-                    <div class="card-body">
-                      <h6 class="card-title">Data Table</h6>
                       <div class="table-responsive">
                         <table id="dataTableExample" class="table">
                           <thead>
@@ -59,12 +55,10 @@
                           </tbody>
                         </table>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               <?php } ?>
 
+              </div>
 
           </div>
         </div>

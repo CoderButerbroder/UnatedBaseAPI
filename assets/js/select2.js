@@ -7,4 +7,8 @@ $(function() {
   if ($(".js-example-basic-multiple").length) {
     $(".js-example-basic-multiple").select2();
   }
+  if ($(".select2-single").length) {
+    $(".select2-single").select2();
+  }
+
 });

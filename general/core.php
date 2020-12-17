@@ -3920,8 +3920,6 @@ class Settings {
 
       $check_activiti = $this->update_activity($hash_or_id);
 
-      if (json_decode($check_activiti)->response) {
-
           if (is_numeric($hash_or_id)) {
               $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE id = :id");
               $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
@@ -3940,12 +3938,6 @@ class Settings {
                return json_encode(array('response' => false, 'description' => 'Нет данных по пользователю с данным ключем'),JSON_UNESCAPED_UNICODE);
                exit;
           }
-
-      }
-      else {
-        return $check_activiti;
-        exit;
-      }
 
   }
 

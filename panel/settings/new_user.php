@@ -15,53 +15,67 @@
     <div class="col-md-12 stretch-card">
                   <div class="card">
                       <div class="card-body">
-
+                        <div class="row">
+                          <div class="col-md-12 text-center">
+                            <h5></h5>
+                          </div>
+                        </div>
                         <div class="container">
                           <form class="forms-sample">
                               <div class="form-group row">
-                                <label for="exampleInputUsername2" class="col-sm-3 col-form-label">Email</label>
+                                <label for="email" class="col-sm-3 col-form-label">Email</label>
                                 <div class="col-sm-9">
-                                  <input type="email" class="form-control" id="exampleInputUsername2" placeholder="Email">
+                                  <input type="email" name="email" class="form-control" id="email" placeholder="Email">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputEmail2" class="col-sm-3 col-form-label">Фамилия</label>
+                                <label for="lastname" class="col-sm-3 col-form-label">Фамилия</label>
                                 <div class="col-sm-9">
-                                  <input type="text" class="form-control" id="exampleInputEmail2" autocomplete="off" placeholder="Фамилия">
+                                  <input type="text" name="lastname" class="form-control" id="lastname" autocomplete="off" placeholder="Фамилия">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Имя</label>
+                                <label for="name" class="col-sm-3 col-form-label">Имя</label>
                                 <div class="col-sm-9">
-                                  <input type="text" class="form-control" id="exampleInputMobile" placeholder="Имя">
+                                  <input type="text" name="name" class="form-control" id="name" placeholder="Имя">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Отчетсво</label>
+                                <label for="secondname" class="col-sm-3 col-form-label">Отчеcтво</label>
                                 <div class="col-sm-9">
-                                  <input type="text" class="form-control" id="exampleInputMobile" placeholder="Отчетсво">
+                                  <input type="text" name="second_name" class="form-control" id="secondname" placeholder="Отчетсво">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Телефон</label>
+                                <label for="phone" class="col-sm-3 col-form-label">Телефон</label>
                                 <div class="col-sm-9">
-                                  <input type="number" class="form-control" id="exampleInputMobile" placeholder="Телефон">
+                                  <input class="form-control" name="phone" id="secondname" data-inputmask-alias="+9(999)999-99-99">
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="exampleInputPassword2" class="col-sm-3 col-form-label">Password</label>
+                                <label for="exampleInputMobile" class="col-sm-3 col-form-label">Роль пользователя</label>
                                 <div class="col-sm-9">
-                                  <input type="password" class="form-control" id="exampleInputPassword2" autocomplete="off" placeholder="Password">
+                                  <select class="select2-single w-100">
+                  										<option value="TX">Texas</option>
+                  										<option value="WY">Wyoming</option>
+                  										<option value="NY">New York</option>
+                  										<option value="FL">Florida</option>
+                  										<option value="KN">Kansas</option>
+                  										<option value="HW">Hawaii</option>
+                  									</select>
                                 </div>
                               </div>
-                              <div class="form-check form-check-flat form-check-primary mt-0">
+                              <div class="form-check form-check-flat form-check-primary mt-0" style="cursor: pointer;">
                                 <label class="form-check-label">
-                                  <input type="checkbox" class="form-check-input">
-                                  Remember me
+                                  <input type="checkbox" name="send_email" class="form-check-input">
+                                  Выслать данные на указанный email
                                 </label>
                               </div>
-                              <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                              <button class="btn btn-light">Cancel</button>
+                              <div class="container-fluid text-center">
+                                <button type="submit" class="btn btn-primary mr-2">Зарегистрировать</button>
+                                <button type="reset" class="btn btn-light">Сброс</button>
+                              </div>
+
                             </form>
                           </div>
 
@@ -70,8 +84,6 @@
                   </div>
     </div>
 </div>
-
-
 
 
 

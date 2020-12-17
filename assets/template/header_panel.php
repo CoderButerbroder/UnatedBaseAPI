@@ -29,6 +29,7 @@ else {
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
 <link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+<link rel="stylesheet" href="/assets/vendors/select2/select2.min.css">
 </head>
 <body>
 <div class="main-wrapper">
@@ -169,7 +170,7 @@ else {
                 <a href="/panel/settings/new_user" class="nav-link">Добавить пользователя</a>
               </li>
               <li class="nav-item">
-                <a href="/panel/settings/roles" class="nav-link">Права и роли</a>
+                <a href="/panel/settings/roles" class="nav-link">Роли и права</a>
               </li>
             </ul>
           </div>
