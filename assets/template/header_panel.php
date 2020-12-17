@@ -26,6 +26,7 @@ else {
 <link rel="stylesheet" href="/assets/css/demo_1/style.css">
 <!-- End layout styles -->
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
+<link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
 </head>
 <body>
 <div class="main-wrapper">
