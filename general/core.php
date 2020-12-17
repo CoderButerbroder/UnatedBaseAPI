@@ -4466,7 +4466,7 @@ class Settings {
       $role = $statement->fetch(PDO::FETCH_OBJ);
 
       if ($role) {
-          return json_encode(array('response' => true, 'data' = $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => true, 'data' => $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
           exit;
       }
       else {
@@ -4500,7 +4500,7 @@ class Settings {
 
             if ($id_new_role) {
                 $data_last_role = json_decode($this->get_role_data($id_new_role))->data;
-                return json_encode(array('response' => true, 'data' = $data_last_role, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                return json_encode(array('response' => true, 'data' => $data_last_role, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
                 exit;
             }
             else {
@@ -4535,6 +4535,26 @@ class Settings {
 
       	return $value;
    }
+
+  // получение пользователей по роли
+  public function get_data_role_user($id_role) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE role = :role");
+      $statement->bindParam(':role', $id_role, PDO::PARAM_INT);
+      $statement->execute();
+      $all_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($all_users) {
+          return json_encode(array('response' => true, 'data' => $all_users, 'description' => 'Пользователи с такой ролью успешно найдены'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Пользоатели с такой ролью не найдены'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+  }
 
 }
 

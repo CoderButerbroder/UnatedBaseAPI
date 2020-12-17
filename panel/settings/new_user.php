@@ -4,10 +4,18 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 
+<?php
+$data_all_roles_json = $settings->get_all_roles_sistem();
+
+$data_all_roles = json_decode($data_all_roles_json);
+
+// $data_all_roles->response = false;
+?>
+
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Настройки</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Добаление пользователя</li>
+    <li class="breadcrumb-item active" aria-current="page">Добавить пользователя</li>
   </ol>
 </nav>
 
@@ -15,11 +23,7 @@
     <div class="col-md-12 stretch-card">
                   <div class="card">
                       <div class="card-body">
-                        <div class="row">
-                          <div class="col-md-12 text-center">
-                            <h5></h5>
-                          </div>
-                        </div>
+                        <?php if ($data_all_roles->response) {?>
                         <div class="container">
                           <form class="forms-sample">
                               <div class="form-group row">
@@ -41,7 +45,7 @@
                                 </div>
                               </div>
                               <div class="form-group row">
-                                <label for="secondname" class="col-sm-3 col-form-label">Отчеcтво</label>
+                                <label for="secondname" class="col-sm-3 col-form-label">Отчество</label>
                                 <div class="col-sm-9">
                                   <input type="text" name="second_name" class="form-control" id="secondname" placeholder="Отчетсво">
                                 </div>
@@ -49,19 +53,16 @@
                               <div class="form-group row">
                                 <label for="phone" class="col-sm-3 col-form-label">Телефон</label>
                                 <div class="col-sm-9">
-                                  <input class="form-control" name="phone" id="secondname" data-inputmask-alias="+9(999)999-99-99">
+                                  <input class="form-control" name="phone" id="secondname" data-inputmask-alias="+9 (999) 999-99-99">
                                 </div>
                               </div>
                               <div class="form-group row">
                                 <label for="select_input" class="col-sm-3 col-form-label">Роль пользователя</label>
                                 <div class="col-sm-9">
                                   <select class="js-example-basic-single" id="select_input">
-                  										<option value="TX">Texas</option>
-                  										<option value="WY">Wyoming</option>
-                  										<option value="NY">New York</option>
-                  										<option value="FL">Florida</option>
-                  										<option value="KN">Kansas</option>
-                  										<option value="HW">Hawaii</option>
+                                      <?php foreach ($data_all_roles->data as $key => $value) { ?>
+                                          <option value="<?php echo $value->id;?>"><?php echo $value->alias;?></option>
+                                      <?}?>
                   									</select>
                                 </div>
 
@@ -79,6 +80,20 @@
 
                             </form>
                           </div>
+
+                        <?php } else {?>
+
+                          <div class="alert alert-info" role="alert">
+                            <h4 class="alert-heading ">Внимание!</h4>
+                            <p>Для того, что бы добавить пользователя, сначала добавьте хотябы одну роль.</p>
+                            <p class="mb-0">Все пользователи в системе должны обладать какой-либо ролью.</p>
+                            <a href="/panel/settings/new_role" type="button" class="btn btn-success btn-icon-text mt-3">
+                              <i class="btn-icon-prepend" data-feather="plus"></i>
+                              Добавить роль
+                            </a>
+                          </div>
+
+                        <?}?>
 
 
                       </div>
