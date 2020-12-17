@@ -70,7 +70,7 @@ if ($_SESSION["key_user"]) {
                       <a href="#" onclick="$('#recovery').modal('show');" class="d-block mt-3 text-muted">Забыли пароль?</a>
                       <div id="capcha_auth"></div>
                       <div class="mt-3">
-                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Вход</button>
+                        <button type="submit" name="btn_sub" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Вход</button>
                         <div class="mt-3" id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,google;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
                       </div>
                     </form>
@@ -107,7 +107,7 @@ if ($_SESSION["key_user"]) {
                       <input style="border-radius: 5px;" type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
                     </div>
                     <div id="capcha_rec"></div>
-                    <button type="submit" class="btn btn-block btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
+                    <button type="submit" name="btn_sub" class="btn btn-block btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
                   </form>
                 </div>
             </div>
@@ -116,7 +116,54 @@ if ($_SESSION["key_user"]) {
     </div>
   </div>
 
+  <div class="modal fade" id="recovery_pass" class="modal_backdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
+          <img src="img/lpm-connect3.png" height="20"style="margin: 10px 10px;">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"><ion-icon style="width: 35px; height: 35px;" class="text-secondary" name="close-outline"></ion-icon></span>
+          </button>
+        </div>
+        <div class="modal-body" style="top: -15px;">
+            <div class="row">
+                <div class="offset-2 col-8" >
+                  <center>
+                    <img src="/assets/images/custom/favicon2.png" height="20"style="margin: 10px 10px;">
+                    <h4>Востановление пароля</h4>
+                  </center>
+                  <form id="form_rec_p" action="general/actions/recovery_pass?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
+                    <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
+                      <input style="border-radius: 5px;" type="password" name="password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                      <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                      <!-- <div class="input-group-append">
+                          <button class="form-control btn-link" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" type="button" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                      </div> -->
+                    </div>
+                    <div class="input-group " style="margin-top: 4%; margin-bottom: 4%;">
+                      <input style="border-radius: 5px;" type="password" name="confirm_password" style="border: 1px solid #ced4da;" class="form-control" placeholder="Повторите пароль" required  autocomplete="new-password" oninput="verification_passwords(this)">
+                      <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                      <!-- <div class="input-group-append">
+                          <button class="form-control btn-link" type="button" style="border-radius: 0px 5px 5px 0px; border-left: none; border-top: 1px solid #ced4da; border-right: 1px solid #ced4da; border-bottom: 1px solid #ced4da;" onclick="change_view_pass(this);"><i style="color: #afc71e;" class="far fa-eye"></i></button>
+                      </div> -->
+                    </div>
+                    <div class="text-center" style="margin-bottom: 4%;">
+                      <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя цифры и символы разного регистра</small>
+                    </div>
+                      <!-- <div  id="capcha_rec_p" class="g-recaptcha" data-sitekey="<?php echo $google_recaptcha_open;?>" data-callback="submit_rec_p" data-size="invisible"></div> -->
+                      <div id="capcha_rec_p"></div>
+                    <button type="submit" name="btn_sub" class="btn btn-block btn-primary mr-2 mb-2 mb-md-0 text-white" disabled>Сохранить</button>
+                  </form>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <?php if (isset($_GET['link'])) {?>
+   <script> $(document).ready(function() {$('#recovery_pass').modal('show'); });</script>
+   <?php } ?>
 
   <script type="text/javascript">
     $(document).ready(function() {

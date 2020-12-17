@@ -57,20 +57,23 @@ if ($_SESSION["key_user"]) {
                   <div class="auth-form-wrapper px-4 py-5">
                     <a href="#" class="noble-ui-logo d-block mb-2">FULLDATA <span>ЛЕНПОЛИГРАФМАШ</span></a>
                     <h5 class="text-muted font-weight-normal mb-4">Восстановление доступа</h5>
-                    <form class="forms-sample" id="form_auth" action="/general/actions/auth">
+                    <form class="forms-sample" id="form_rec_p" action="general/actions/recovery_pass?action=new_pass&recovery_link=<?php echo $_GET['link']; ?>">
                       <div class="form-group">
                         <label for="exampleInputEmail1">Новый пароль</label>
-                        <input type="text" name="login" class="form-control" id="exampleInputEmail1" placeholder="Email или телефон">
+                        <input type="password" name="password" class="form-control" placeholder="Пароль" required  autocomplete="new-password"  oninput="verification_passwords(this)">
+                        <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                       </div>
                       <div class="form-group">
                         <label for="exampleInputPassword1">Повторите пароль</label>
-                        <input type="password" name="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Пароль">
+                        <input type="password" name="confirm_password" class="form-control" placeholder="Пароль" autocomplete="new-password" oninput="verification_passwords(this)">
                         <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
                       </div>
-
-                      <div id="capcha_auth"></div>
+                      <div class="text-center" style="margin-bottom: 4%;">
+                        <small id="small_text_rec_p" style="color:red">Укажите пароль от 6 символов <br> используя цифры и символы разного регистра</small>
+                      </div>
+                      <div id="capcha_rec_p"></div>
                       <div class="mt-3">
-                        <button type="submit" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
+                        <button type="btn_sub" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
                       </div>
                     </form>
                   </div>
@@ -83,38 +86,6 @@ if ($_SESSION["key_user"]) {
 			</div>
 		</div>
 	</div>
-
-
-  <div class="modal fade" id="recovery" class="modal_backdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="recoveryLabel" aria-hidden="true" >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header" style=" color: #000; padding: 0rem; border-bottom: none;">
-          <img src="/assets/images/custom/favicon2.png" height="20"style="margin: 10px 10px;">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin: 5px 2px;">
-            <i style="width: 35px; height: 35px;" class="fas fa-times text-secondary"></i>
-          </button>
-        </div>
-        <div class="modal-body" style="top: -15px;">
-            <div class="row justify-content-center">
-                <div class="col-md-9 col-sm-12" >
-                  <center>
-                    <img src="/img/paper-plane.png" alt="" width="42">
-                    <h4>Восстановление пароля</h4>
-                  </center>
-                  <form id="form_rec" action="/general/actions/recovery_pass?action=recovery">
-                    <div class="form-group" style="margin-top: 4%;">
-                      <input style="border-radius: 5px;" type="email" class="form-control text-center" name="email" placeholder="Почта" aria-describedby="" autofocus required autocomplete="on" oninput="this.value=this.value.replace(/[^0-9A-Za-z\-\@\_\.]/g, '');">
-                    </div>
-                    <div id="capcha_rec"></div>
-                    <button type="submit" class="btn btn-block btn-primary mr-2 mb-2 mb-md-0 text-white">Восстановить</button>
-                  </form>
-                </div>
-            </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 
 
   <script type="text/javascript">

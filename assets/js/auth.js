@@ -2,26 +2,34 @@
 var capcha1,capcha2,capcha3,capcha4;
 var onloadCallback = function() {
            var sitekey = '6Lc2muEZAAAAANkdNWL9ktrDN4jFng-kfR0x5vDx';
-           capcha1 = grecaptcha.render('capcha_auth', {
-               'sitekey' : sitekey,
-               'callback': 'submit_auth',
-               'size':'invisible'
-           });
-           // capcha2 = grecaptcha.render('capcha_reg', {
-           //     'sitekey' : sitekey,
-           //     'callback': 'submit_reg',
-           //     'size':'invisible'
-           // });
-           capcha3 = grecaptcha.render('capcha_rec', {
-               'sitekey' : sitekey,
-               'callback': 'submit_rec',
-               'size':'invisible'
-           });
-           // capcha4 = grecaptcha.render('capcha_rec_p', {
-           //     'sitekey' : sitekey,
-           //     'callback': 'submit_rec_p',
-           //     'size':'invisible'
-           // });
+           if($('#form_auth').attr('id')) {
+             capcha1 = grecaptcha.render('capcha_auth', {
+                 'sitekey' : sitekey,
+                 'callback': 'submit_auth',
+                 'size':'invisible'
+             });
+           }
+           if($('#form_reg').attr('id')) {
+             capcha2 = grecaptcha.render('capcha_reg', {
+                 'sitekey' : sitekey,
+                 'callback': 'submit_reg',
+                 'size':'invisible'
+             });
+           }
+           if($('#form_rec').attr('id')) {
+             capcha3 = grecaptcha.render('capcha_rec', {
+                 'sitekey' : sitekey,
+                 'callback': 'submit_rec',
+                 'size':'invisible'
+             });
+           }
+           if($('#form_rec_p').attr('id')) {
+             capcha4 = grecaptcha.render('capcha_rec_p', {
+                 'sitekey' : sitekey,
+                 'callback': 'submit_rec_p',
+                 'size':'invisible'
+             });
+          }
        };
 
 $(document).ready(function() {
@@ -37,10 +45,10 @@ $(document).ready(function() {
   //   }
   // });
 
-  $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
-  //$('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
-  $('#form_rec').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha3); });
-  //$('#form_rec_p').submit(function (event)  {   event.preventDefault();   grecaptcha.execute(capcha4); });
+  if($('#form_auth').attr('id')) $('#form_auth').submit(function (event)   {   event.preventDefault();   grecaptcha.execute(capcha1); });
+  if($('#form_reg').attr('id'))   $('#form_reg').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha2); });
+  if($('#form_rec').attr('id')) $('#form_rec').submit(function (event)    {   event.preventDefault();   grecaptcha.execute(capcha3); });
+  if($('#form_rec_p').attr('id')) $('#form_rec_p').submit(function (event)  {   event.preventDefault();   grecaptcha.execute(capcha4); });
 
 });
 
@@ -51,12 +59,14 @@ function submit_rec_p(token) {   check_auth('rec_p','form_rec_p'); };
 
 function check_auth(act,form_id) {
   form = document.getElementById(form_id);
+  $(form["btn_sub"]).attr('disabled', 'disabled');
   $.ajax({
     url: $(form).attr('action'),
     method: 'POST',
     dataType: 'html',
     data: $(form).serialize(),
     success: function(result) {
+      $(form["btn_sub"]).removeAttr('disabled');
       if (IsJsonString(result)) {
         arr = JSON.parse(result);
         if (arr["response"] == true) {
@@ -66,17 +76,16 @@ function check_auth(act,form_id) {
             $('#recovery').modal('hide');
           }
           if(act == 'rec_p') {
-            alerts('success', 'Проверьте email', arr["description"]);
-            $('#recovery_pass').modal('hide');
+            alerts('success', arr["description"], '');
+            setTimeout('window.location.href = "https://" + window.location.host;', 1500);
           }
-
-
         } else {
           alerts('warning', 'Ошибка', arr["description"]);
         }
       }
     },
     error: function(jqXHR, exception) {
+      $(form["btn_sub"]).removeAttr('disabled');
       alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
     }
   });
