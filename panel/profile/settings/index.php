@@ -32,13 +32,17 @@ $( document ).ready(function() {
     $("#social_user_link").load("/panel/elements/social_element > *");
 });
 
+function add_social(token){
+  action_social('add',token);
+}
+
 function action_social(type,value) {
     // alert("Удаление"+hash);
           // data_user = parseJSON(hash);
           $.ajax({
                 method: 'POST',
                 url: "https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/elements/action_social",
-                data: "type="+type+"&value="+hash,
+                data: "type="+type+"&value="+value,
                 success: function(result) {
                   if (IsJsonString(result)) {
                     arr = JSON.parse(result);
