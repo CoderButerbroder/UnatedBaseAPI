@@ -4055,130 +4055,23 @@ class Settings {
   }
 
   // Авторизация пользотвателя через социальную сеть
-  public function auth_user_social($data,$session_id,$ip) {
+  public function auth_user_social($data) {
       global $database;
 
-      $data_user = json_decode($data, true);
+      $data_user = json_decode($data);
 
-      $check_email = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email");
-      $check_email->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
-      $check_email->execute();
-      $user = $check_email->fetch(PDO::FETCH_OBJ);
-
-      if ($user) {
-            $check_social = $database->prepare("SELECT * FROM $this->main_users_social WHERE id_user = :id AND network = :network AND network_id = :network_id");
-            $check_social->bindParam(':id', $user->id, PDO::PARAM_INT);
-            $check_social->bindParam(':network', $data_user['network'], PDO::PARAM_STR);
-            $check_social->bindParam(':network_id', $data_user['uid'], PDO::PARAM_INT);
-            $check_social->execute();
-            $user_check_social = $check_social->fetch(PDO::FETCH_OBJ);
+      $check_social = $database->prepare("SELECT AU.id, AU.key_user FROM $this->API_USERS_SOCIAL AS AUS, $this->users AS AU WHERE AUS.network = :network AND AUS.network_id = :network_id");
+      $check_social->bindParam(':network', $data_user->network, PDO::PARAM_STR);
+      $check_social->bindParam(':network_id', $data_user->uid, PDO::PARAM_INT);
+      $check_social->execute();
+      $user_check_social = $check_social->fetch(PDO::FETCH_OBJ);
 
             if ($user_check_social) {
-                  $_SESSION["key_user"] = $user->hash;
-                  return json_encode(array('response' => true, 'description' => 'Пользотватель авторизован'),JSON_UNESCAPED_UNICODE);
+                  $_SESSION["key_user"] = $user_check_social->key_user;
+                  return json_encode(array('response' => true, 'description' => 'Пользотватель авторизован', 'check' => $user_check_social),JSON_UNESCAPED_UNICODE);
             } else {
                   return json_encode(array('response' => false, 'description' => 'Данная социальная сеть не привязана к аккаунту'),JSON_UNESCAPED_UNICODE);
             }
-      } else {
-            // Создание аккаунта если данный аккаунт не был создан
-            // проверяем не был ли аккаунт привязан ранее к другим записям
-            $check_social = $database->prepare("SELECT * FROM $this->main_users_social WHERE network = :network AND network_id = :network_id");
-            $check_social->bindParam(':network', $data_user['network'], PDO::PARAM_STR);
-            $check_social->bindParam(':network_id', $data_user['uid'], PDO::PARAM_INT);
-            $check_social->execute();
-            $user_check_social = $check_social->fetch(PDO::FETCH_OBJ);
-
-            if (!$user_check_social) {
-
-                $password = password_hash($data_user['email'].$data_user['uid'], PASSWORD_DEFAULT);
-                $default = '';
-                $default_int = 0;
-                $hash = md5($data_user['email'].$data_user['uid'].$data_user['first_name'].$data_user['last_name'].$password);
-                $DOB = '0000-00-00';
-
-                $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
-                $session_refer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
-                $session_refer->bindParam(':ip', $ip, PDO::PARAM_STR);
-                $session_refer->execute();
-                $user_session_refer = $session_refer->fetch(PDO::FETCH_OBJ);
-
-                if ($user_session_refer) {
-                    $first_referer = parse_url($user_session_refer->referer, PHP_URL_HOST);
-                } else {
-                    $first_referer = '';
-                }
-
-                $today = date("Y-m-d H:i:s");
-
-                $recocery_link = md5($hash);
-
-                $status = 'active';
-                $role = 'user';
-                $data_adres = json_decode($this->iplocate($this->get_ip()));
-                $adres = $data_adres->location->unrestricted_value;
-                if (!$adres) {
-                    $adres = '';
-                }
-
-                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
-                $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
-                $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
-                $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
-                $new_uruser->bindParam(':name', $data_user['first_name'], PDO::PARAM_STR);
-                $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
-                $new_uruser->bindParam(':second_name', $default, PDO::PARAM_STR);
-                $new_uruser->bindParam(':DOB', $DOB, PDO::PARAM_STR);
-                $new_uruser->bindParam(':photo', $default, PDO::PARAM_STR);
-                $new_uruser->bindParam(':adres', $default, PDO::PARAM_STR);
-                $new_uruser->bindParam(':inn', $default_int, PDO::PARAM_INT);
-                $new_uruser->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
-                $new_uruser->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
-                $new_uruser->bindParam(':position', $default, PDO::PARAM_STR);
-                $new_uruser->bindParam(':hash', $hash, PDO::PARAM_STR);
-                $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
-                $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
-                $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
-                $new_uruser->bindParam(':recovery_link', $recocery_link, PDO::PARAM_STR);
-                $new_uruser->bindParam(':status', $status, PDO::PARAM_STR);
-                $new_uruser->bindParam(':role', $role, PDO::PARAM_STR);
-                $new_uruser->execute();
-                $count = $new_uruser->rowCount();
-                $id_new_user = $database->lastInsertId();
-
-                if ($count) {
-
-                      if ($data_user['access_token']) {$token = $data_user['access_token'];} else {$token = '';}
-
-                            $new_uruser = $database->prepare("INSERT INTO $this->main_users_social (id_user,network,network_id,profile,email,first_name,last_name,token,date_binding) VALUES (:id_user,:network,:network_id,:profile,:email,:first_name,:last_name,:token,:date_binding)");
-                            $new_uruser->bindParam(':id_user', $id_new_user, PDO::PARAM_INT);
-                            $new_uruser->bindParam(':network', $data_user['network'], PDO::PARAM_STR);
-                            $new_uruser->bindParam(':network_id', $data_user['uid'], PDO::PARAM_INT);
-                            $new_uruser->bindParam(':profile', $data_user['profile'], PDO::PARAM_STR);
-                            $new_uruser->bindParam(':email', $data_user['email'], PDO::PARAM_STR);
-                            $new_uruser->bindParam(':first_name', $data_user['first_name'], PDO::PARAM_STR);
-                            $new_uruser->bindParam(':last_name', $data_user['last_name'], PDO::PARAM_STR);
-                            $new_uruser->bindParam(':token', $token, PDO::PARAM_STR);
-                            $new_uruser->bindParam(':date_binding', $today, PDO::PARAM_STR);
-                            $new_uruser->execute();
-                            $count = $new_uruser->rowCount();
-
-                      if ($count) {
-                            $_SESSION["key_user"] = $hash;
-                            return json_encode(array('response' => true, 'description' => 'Пользотватель успешно создан и авторизован'),JSON_UNESCAPED_UNICODE);
-                      } else {
-                            $check_social = $database->prepare("DELETE FROM $this->main_users WHERE id = :id");
-                            $check_social->bindParam(':id', $id_new_user, PDO::PARAM_INT);
-                            $check_social->execute();
-                            return json_encode(array('response' => false, 'description' => 'Ошибка 1 создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
-                      }
-                } else {
-                      return json_encode(array('response' => false, 'description' => 'Ошибка 2 создания пользователя через социальную сеть '.$data_user->network.', попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
-                }
-            } else {
-                  return json_encode(array('response' => false, 'description' => 'Данный аккунт социальной сети уже привязан к другой учетной записи'),JSON_UNESCAPED_UNICODE);
-            }
-      }
-
   }
 
   // Воссстановление достпа пользователя
