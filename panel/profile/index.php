@@ -342,28 +342,28 @@
   <div id="mod-success" tabindex="-1" role="dialog" style="" class="modal fade" data-backdrop="static" >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="border: 0;">
-        <div class="modal-header">
-          <div class="form-group form-group col-md-12  my-auto">
-            <input type="file" name="img[]" class="file-upload-default" id="cropperImageUpload">
-            <div class="row">
-              <div class="input-group col-md-11">
-                <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
-                <span class="input-group-append">
-                  <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-                </span>
-              </div>
-              <div class="col-md-1 my-auto">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            </div>
-
+        <div class="modal-header" style="border:0; padding:0">
+          <div class="modal-header col-md-12" style="border: 0; ">
+              <h5 class="modal-title" id="staticBackdropLabel">Обновление автара</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
           </div>
         </div>
 
-        <div class="modal-body" style="padding: 0;">
-            <div class="col-md-12" id="div_preview" style=" width:100%; max-height:350px; max-width:500px; padding: 0; " >
+        <div class="modal-body " style="border:0; padding-top:0;">
+          <div class="row">
+
+            <div class="col-md-12 form-group form-group " style="">
+              <input type="file" name="img[]" class="file-upload-default" id="cropperImageUpload">
+                <div class="input-group">
+                  <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
+                  <span class="input-group-append">
+                    <button class="file-upload-browse btn btn-primary" type="button">Загрузить</button>
+                  </span>
+                </div>
+            </div>
+            <div class="col-md-12" id="div_preview" style=" width:100%; max-height:350px; max-width:470px;  " >
               <style media="screen">
                 .cropper-view-box {
                   border-radius: 50%;
@@ -375,9 +375,10 @@
               </style>
               <img id="image_preview" width="100%" >
             </div>
+          </div>
 
         </div>
-        <div class="modal-footer" style="padding: 0; background-color: #0fb758; border-top: 1px solid #0fb758;"><button style="margin: 0;" class="btn btn-space btn-success btn-block" id="btn_update_send">Загузить</button></div>
+        <div class="modal-footer" style="border:0; padding-top:0;"><button style="" class="btn btn-space btn-success btn-block" id="btn_update_send">Сохранить</button></div>
       </div>
     </div>
   </div>
