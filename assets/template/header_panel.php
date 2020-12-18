@@ -95,13 +95,13 @@ else {
           <div class="collapse" id="uiComponents">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="#" class="nav-link">Все компании</a>
+                <a href="/panel/data/company" class="nav-link">Все компании</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Поиск компании</a>
+                <a href="/panel/data/company/search" class="nav-link">Поиск компании</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Компании IPCHhain</a>
+                <a href="/panel/data/company/ipchain" class="nav-link">Компании IPCHhain</a>
               </li>
             </ul>
           </div>
@@ -115,11 +115,11 @@ else {
           <div class="collapse" id="advancedUI">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="#" class="nav-link">Все пользователи</a>
+                <a href="/panel/data/users" class="nav-link">Все пользователи</a>
               </li>
-              <li class="nav-item">
-                  <a href="" class="nav-link">Поиск пользователя</a>
-                </li>
+              <!-- <li class="nav-item">
+                  <a href="/panel/data/users/search" class="nav-link">Поиск пользователя</a>
+              </li> -->
             </ul>
           </div>
         </li>
@@ -132,7 +132,7 @@ else {
           <div class="collapse" id="forms">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="../../pages/forms/basic-elements.html" class="nav-link">Все проприятия</a>
+                <a href="/panel/data/events" class="nav-link">Все проприятия</a>
               </li>
             </ul>
           </div>
@@ -146,16 +146,16 @@ else {
           <div class="collapse" id="charts">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="#" class="nav-link">Все отчеты</a>
+                <a href="/panel/data/reports" class="nav-link">Все отчеты</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Отчеты по компаниям</a>
+                <a href="#" class="nav-link">По компаниям</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Отчеты по пользователям</a>
+                <a href="#" class="nav-link">По пользователям</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Отчеты по мероприятиям</a>
+                <a href="#" class="nav-link">По мероприятиям</a>
               </li>
             </ul>
           </div>
