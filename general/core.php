@@ -996,8 +996,9 @@ class Settings {
       }
 
       $check_user = json_decode($this->get_cur_user($_SESSION["key_user"]));
-      if (!$check_user->response) {
-          return json_encode(array('response' => false, 'description' => 'Пользователь с даным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
+
+      if (!json_decode($check_user)->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
           exit;
       }
 
@@ -1030,7 +1031,7 @@ class Settings {
                 $statement->bindValue(':'.$key, $value, $field_type[$key]);
       }
 
-      $statement->bindParam(':id', $check_user->data->id, PDO::PARAM_INT);
+      $statement->bindParam(':id', $id_user->data->id, PDO::PARAM_INT);
       $statement->execute();
       $count = $statement->rowCount();
 
@@ -4043,7 +4044,7 @@ class Settings {
        $user_email = $check_email->fetch(PDO::FETCH_OBJ);
 
        if (password_verify($password, $user_email->password)) {
-                  $_SESSION["key_user"] = $user_email->hash;
+                  $_SESSION["key_user"] = $user_email->key_user;
                   return json_encode(array('response' => true, 'description' => 'Пользователь успешно авторизован'),JSON_UNESCAPED_UNICODE);
                   exit;
        } else {
@@ -4604,21 +4605,32 @@ class Settings {
 
   // Удаление роли пользователя
   public function delete_role_in_sistem($id_role) {
-    global $database;
+      global $database;
 
-    $statement = $database->prepare("SELECT * FROM $this->users WHERE role = :id");
-    $statement->bindParam(':id', $id_role, PDO::PARAM_INT);
-    $statement->execute();
-    $role = $statement->fetchAll(PDO::FETCH_OBJ);
+      $statement = $database->prepare("SELECT * FROM $this->users WHERE role = :id");
+      $statement->bindParam(':id', $id_role, PDO::PARAM_INT);
+      $statement->execute();
+      $role = $statement->fetchAll(PDO::FETCH_OBJ);
 
-    if (!$role) {
+      if (!$role) {
+            $statement = $database->prepare("DELETE FROM $this->API_USERS_ROLE WHERE id = :id");
+            $statement->bindParam(':id', $id_role, PDO::PARAM_INT);
+            $check_delete = $statement->execute();
 
-    }
-    else {
-          $count = count($role);
-          return json_encode(array('response' => false, 'description' => 'Ошибка, данная роль распространяется на '.$count.' пользователей системы, освободите роль от всех пользователей'),JSON_UNESCAPED_UNICODE);
-          exit;
-    }
+            if ($check_delete > 0) {
+                return json_encode(array('response' => true, 'description' => 'Роль успешно удалена'),JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+            else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка удаления роли, попробуйте чуть позже'),JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+      }
+      else {
+            $count = count($role);
+            return json_encode(array('response' => false, 'description' => 'Ошибка, данная роль распространяется на '.$count.' пользователей системы, освободите роль от всех пользователей'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
 
   }
 
@@ -4647,9 +4659,11 @@ class Settings {
   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
        global $database;
 
-       $hash = md5(date("Y-m-d H:i:s").$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
+       $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
        $upload_date = date("Y-m-d H:i:s");
+       $id_user = $_SESSION["cur_user_id"];
        $status = 0;
+
 
        $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
 
