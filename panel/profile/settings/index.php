@@ -1,6 +1,6 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
 <?php /*тут метатеги*/?>
-<title>Панель - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
+<title>Настройки пользователя - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 

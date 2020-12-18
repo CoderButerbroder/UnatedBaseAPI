@@ -59,24 +59,6 @@ $data_all_roles = json_decode($data_all_roles_json);
 
 <script>
 
-function IsJsonString(str) {
-  try {
-    JSON.parse(str);
-  } catch (e) {
-    return false;
-  }
-  return true;
-};
-
-function alerts(v_icon, v_title, v_msg) {
-  Swal.fire({
-    scrollbarPadding: false,
-    icon: v_icon,
-    title: v_title,
-    text: v_msg
-  })
-};
-
 $(document).ready(function($) {
         global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/all_roles_for_add.php','#select_role_copy');
         $('#new_role_sistem').submit(function(e) {
@@ -108,7 +90,7 @@ $(document).ready(function($) {
                     jQuery("#submit_button").attr('disabled', false);
                     jQuery("#reset_button").attr('disabled', false);
                     $("#submit_button").html('Добавить роль');
-                    global_load_block(url,idblock)
+                    global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/all_roles_for_add.php','#select_role_copy');
                 }
           });
       e.preventDefault();
