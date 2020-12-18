@@ -11,42 +11,18 @@ $data_role_json = $settings->get_role_data_name($name_role);
 
 $data_roles = json_decode($data_role_json);
 
-$alias_role = (isset($data_roles->data->alias)) ? $data_roles->data->alias : 'Ошибк';
+$alias_role = (isset($data_roles->data->alias)) ? $data_roles->data->alias : 'Ошибка';
 
-$data_json = json_decode('{
-"sistem":{
-          "settings":{
-              "name":"settings",
-              "description":"Доступ к настройкам системы",
-              "value":true
-          },
-          "load":{
-              "name":"load",
-              "description":"Доступ к нагрузке системы",
-              "value":true
-          },
-          "loging":{
-              "name":"loging",
-              "description":"Доступ к логированию и ошибкам системы системы",
-              "value":true
-          },
-          "history":{
-              "name":"loging",
-              "description":"Доступ к истории системы",
-              "value":true
-          }
-}
-}
-');
-
-var_dump($data_json);
+$data_json = json_decode($settings->get_global_settings('default_rules'));
+//
+// var_dump($data_json);
 ?>
 
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Настройки</a></li>
     <li class="breadcrumb-item"><a href="/panel/settings/roles">Роли и права</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Права роли <?php echo $alias_role;?>а</li>
+    <li class="breadcrumb-item active" aria-current="page">Права роли "<?php echo $alias_role;?>"</li>
   </ol>
 </nav>
 
@@ -75,18 +51,19 @@ var_dump($data_json);
                                           <div class="alert alert-primary" role="alert">
                                           Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым
                                           </div>
-                                          <?php foreach ($data_json->sistem as $key => $value) { ?>
-                                              <div class="row border-bottom">
-                                                <div class="col-sm-11 mt-2">
-                                                  <?php echo $value->description;?>
+
+                                            <?php foreach ($data_json->sistem as $key => $value) { ?>
+                                                <div class="row border-bottom">
+                                                  <div class="col-sm-11 mt-2">
+                                                    <?php echo $value->description;?>
+                                                  </div>
+                                                  <div class="col-sm-auto form-check">
+                                                        <label class="form-check-label">
+                                                          <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                        </label>
+                                                  </div>
                                                 </div>
-                                                <div class="col-sm-auto form-check">
-                                                      <label class="form-check-label">
-                                                        <input type="checkbox" name="<?php $value->name?>" <?php if ($value->value) {?>checked<?}?>class="form-check-input">
-                                                      </label>
-                                                </div>
-                                              </div>
-                                          <? }?>
+                                            <? }?>
 
                                     </div>
                                   </div>
@@ -111,6 +88,23 @@ var_dump($data_json);
                                   <div id="collapseUsers" class="collapse" role="tabpanel" aria-labelledby="headingUsers" data-parent="#accordion">
                                     <div class="card-body">
 
+                                      <div class="alert alert-primary" role="alert">
+                                      Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым
+                                      </div>
+
+                                        <?php foreach ($data_json->emploe as $key => $value) { ?>
+                                            <div class="row border-bottom">
+                                              <div class="col-sm-11 mt-2">
+                                                <?php echo $value->description;?>
+                                              </div>
+                                              <div class="col-sm-auto form-check">
+                                                    <label class="form-check-label">
+                                                      <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                    </label>
+                                              </div>
+                                            </div>
+                                        <? }?>
+
                                     </div>
                                   </div>
                                 </div>
@@ -133,6 +127,19 @@ var_dump($data_json);
                                   <div id="collapseDataCompany" class="collapse" role="tabpanel" aria-labelledby="headingDataCompany" data-parent="#accordion">
                                     <div class="card-body">
 
+                                      <?php foreach ($data_json->entity as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
+
                                     </div>
                                   </div>
                                 </div>
@@ -154,6 +161,19 @@ var_dump($data_json);
                                   </div>
                                   <div id="collapseDataUser" class="collapse" role="tabpanel" aria-labelledby="headingDataUser" data-parent="#accordion">
                                     <div class="card-body">
+
+                                      <?php foreach ($data_json->users as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
 
                                     </div>
                                   </div>
@@ -178,6 +198,19 @@ var_dump($data_json);
                                   <div id="collapseDataEvents" class="collapse" role="tabpanel" aria-labelledby="headingDataEvents" data-parent="#accordion">
                                     <div class="card-body">
 
+                                      <?php foreach ($data_json->events as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
+
                                     </div>
                                   </div>
                                 </div>
@@ -200,6 +233,19 @@ var_dump($data_json);
                                   </div>
                                   <div id="collapseDataReports" class="collapse" role="tabpanel" aria-labelledby="headingDataReports" data-parent="#accordion">
                                     <div class="card-body">
+
+                                      <?php foreach ($data_json->reports as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
 
                                     </div>
                                   </div>
@@ -225,6 +271,19 @@ var_dump($data_json);
                                   <div id="collapseSupports" class="collapse" role="tabpanel" aria-labelledby="headingSupports" data-parent="#accordion">
                                     <div class="card-body">
 
+                                      <?php foreach ($data_json->support as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
+
                                     </div>
                                   </div>
                                 </div>
@@ -248,6 +307,19 @@ var_dump($data_json);
                                   <div id="collapseDashbord" class="collapse" role="tabpanel" aria-labelledby="headingDashbord" data-parent="#accordion">
                                     <div class="card-body">
 
+                                      <?php foreach ($data_json->dashboard as $key => $value) { ?>
+                                          <div class="row border-bottom">
+                                            <div class="col-sm-11 mt-2">
+                                              <?php echo $value->description;?>
+                                            </div>
+                                            <div class="col-sm-auto form-check">
+                                                  <label class="form-check-label">
+                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
+                                                  </label>
+                                            </div>
+                                          </div>
+                                      <? }?>
+
                                     </div>
                                   </div>
                                 </div>
@@ -270,6 +342,10 @@ var_dump($data_json);
                                   </div>
                                   <div id="collapseIntegry" class="collapse" role="tabpanel" aria-labelledby="headingIntegry" data-parent="#accordion">
                                     <div class="card-body">
+
+                                      <div class="alert alert-info" role="alert">
+                                        Новый функционал пока что в разработке. Но скоро будет уже тут :)
+                                      </div>
 
                                     </div>
                                   </div>
