@@ -15,7 +15,7 @@
             </figure>
             <div class="cover-body d-flex justify-content-between align-items-center">
               <div>
-                <img class="profile-pic" onclick="$('#mod-success').modal('show');" style="cursor:pointer;" src="<?php echo ($data_user->data->photo) ? 'https://'.$_SERVER["SERVER-NAME"].$data_user->data->photo : 'https://via.placeholder.com/100x100'; ?>" alt="profile">
+                <img class="profile-pic" onclick="$('#mod-success').modal('show');" style="cursor:pointer;" src="<?php echo ($data_user->data->photo) ? 'https://'.$_SERVER["SERVER_NAME"].$data_user->data->photo : 'https://via.placeholder.com/100x100'; ?>" alt="profile">
                 <span class="profile-name"><?php echo $data_user->data->name.' '.$data_user->data->lastname; ?></span>
               </div>
               <div class="d-none d-md-block">

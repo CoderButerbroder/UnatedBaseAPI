@@ -996,9 +996,8 @@ class Settings {
       }
 
       $check_user = json_decode($this->get_cur_user($_SESSION["key_user"]));
-
-      if (!json_decode($check_user)->response) {
-          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
+      if (!$check_user->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с даным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
           exit;
       }
 
@@ -1031,7 +1030,7 @@ class Settings {
                 $statement->bindValue(':'.$key, $value, $field_type[$key]);
       }
 
-      $statement->bindParam(':id', $id_user->data->id, PDO::PARAM_INT);
+      $statement->bindParam(':id', $check_user->data->id, PDO::PARAM_INT);
       $statement->execute();
       $count = $statement->rowCount();
 
@@ -4648,11 +4647,9 @@ class Settings {
   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
        global $database;
 
-       $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
+       $hash = md5(date("Y-m-d H:i:s").$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
        $upload_date = date("Y-m-d H:i:s");
-       $id_user = $_SESSION["cur_user_id"];
        $status = 0;
-
 
        $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
 
