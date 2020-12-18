@@ -16,13 +16,47 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
           <div class="card-body">
-
+            <div class="table-responsive">
+              <table  class="table">
+                <thead>
+                  <tr>
+                    <th>id Tboil</th>
+                    <th>ФИО</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
 
           </div>
         </div>
     </div>
 </div>
 
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.table').DataTable({
+          "language": {
+            "url": "/assets/vendors/datatables.net/Russian.json"
+          },
+          "processing": true,
+          "serverSide": true,
+          "ajax": {
+                    "url": "/panel/data/users/get_usr",
+                    "type": "POST"
+                  },
+          "columns": [
+            { "data": "Number" },
+            { "data": "FIO" },
+            { "data": "Email" },
+            { "data": "Phone" },
+          ]
+    });
+  });
+</script>
 
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
