@@ -4655,38 +4655,36 @@ class Settings {
       	return $value;
   }
 
-   // Добаление файлов к проекту
+  // Добаление файлов к проекту
   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
-       global $database;
+      global $database;
 
-       $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
-       $upload_date = date("Y-m-d H:i:s");
-       $id_user = $_SESSION["cur_user_id"];
-       $status = 0;
+      $hash = md5(date("Y-m-d H:i:s").$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
+      $upload_date = date("Y-m-d H:i:s");
+      $status = 0;
 
+      $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
 
-       $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
+      $add_file_project->bindParam(':id_user', $id_father, PDO::PARAM_INT);
+      $add_file_project->bindParam(':type_father', $type_father, PDO::PARAM_STR);
+      $add_file_project->bindParam(':id_father', $id_father, PDO::PARAM_INT);
+      $add_file_project->bindParam(':name', $name, PDO::PARAM_STR);
+      $add_file_project->bindParam(':link', $path_file, PDO::PARAM_STR);
+      $add_file_project->bindParam(':upload_date', $upload_date, PDO::PARAM_STR);
+      $add_file_project->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $add_file_project->bindParam(':status', $status, PDO::PARAM_STR);
+      $add_file_project->bindParam(':ext', $ext, PDO::PARAM_STR);
+      $add_file_project->bindParam(':size', $size, PDO::PARAM_INT);
 
-       $add_file_project->bindParam(':id_user', $id_father, PDO::PARAM_INT);
-       $add_file_project->bindParam(':type_father', $type_father, PDO::PARAM_STR);
-       $add_file_project->bindParam(':id_father', $id_father, PDO::PARAM_INT);
-       $add_file_project->bindParam(':name', $name, PDO::PARAM_STR);
-       $add_file_project->bindParam(':link', $path_file, PDO::PARAM_STR);
-       $add_file_project->bindParam(':upload_date', $upload_date, PDO::PARAM_STR);
-       $add_file_project->bindParam(':hash', $hash, PDO::PARAM_STR);
-       $add_file_project->bindParam(':status', $status, PDO::PARAM_STR);
-       $add_file_project->bindParam(':ext', $ext, PDO::PARAM_STR);
-       $add_file_project->bindParam(':size', $size, PDO::PARAM_INT);
+      $checkadd = $add_file_project->execute();
 
-       $checkadd = $add_file_project->execute();
-
-       if ($checkadd) {
-           return true;
-       }
-       else {
-           return false;
-       }
-   }
+      if ($checkadd) {
+          return true;
+      }
+      else {
+          return false;
+      }
+  }
 
   // получение пользователей по роли
   public function get_data_role_user($id_role) {
