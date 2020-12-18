@@ -23,15 +23,21 @@ $array_social = array('vkontakte' => '<i class="fab fa-vk"></i>',
 
 if ($data_social) {
 foreach ($data_social as $key) { ?>
-    <div class="col-md-4">
-      <div class="panel panel-border" style="padding: 2rem">
-        <a href="<?php echo $key->profile;?>" style="color: #000;">
-          <h3><?php echo $array_social[$key->network];?>  <?php echo $key->network;?></h3>
-          <h2><img style="width: 50px; height: 50px;" src="<?php echo $key->photo_big;?>" class="img-circle">  <?php echo $key->first_name.' '.$key->last_name;?></h2>
-        </a>
-        <center>
-              <button onclick='action_social("del","<?php echo $key->hash;?>");' class="btn btn-space btn-danger"><i class="icon icon-left mdi mdi-delete"></i> Отвязать аккаунт</button>
-        </center>
+
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body" style="padding-right: 0;">
+          <div class="row">
+            <div class="col-5">
+              <img style="width: 100px; " src="<?php echo $key->photo_big;?>">
+            </div>
+            <div class="col-6">
+              <h5 class="card-title"><?php echo $key->network;?></h5>
+              <p class="card-text"><?php echo $key->first_name.' '.$key->last_name;?></p>
+              <button type="button" class="btn btn-danger btn-sm" onclick='action_social("del","<?php echo $key->hash;?>");'>Отвязать аккаунт</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 <?php }} else { ?>
