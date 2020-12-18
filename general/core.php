@@ -4061,8 +4061,8 @@ class Settings {
       $data_user = json_decode($data);
 
       $check_social = $database->prepare("SELECT AU.id, AU.key_user FROM $this->API_USERS_SOCIAL AS AUS, $this->users AS AU WHERE AUS.network = :network AND AUS.network_id = :network_id");
-      $check_social->bindParam(':network', $data_user['network'], PDO::PARAM_STR);
-      $check_social->bindParam(':network_id', $data_user['uid'], PDO::PARAM_INT);
+      $check_social->bindParam(':network', $data_user->network, PDO::PARAM_STR);
+      $check_social->bindParam(':network_id', $data_user->uid, PDO::PARAM_INT);
       $check_social->execute();
       $user_check_social = $check_social->fetch(PDO::FETCH_OBJ);
 
