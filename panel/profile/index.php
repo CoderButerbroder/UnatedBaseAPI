@@ -420,8 +420,8 @@
 
     $('#btn_update_send').on('click', function() {
       canvas_img = cropper.getCroppedCanvas({
-        width: 600,
-        height: 600,
+        width: 400,
+        height: 400,
         maxWidth: 2096,
         maxHeight: 2096,
         fillColor: '#fff'
