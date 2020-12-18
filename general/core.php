@@ -4636,7 +4636,7 @@ class Settings {
 
        $add_file_project = $database->prepare("INSERT INTO $this->API_UPLOAD_FILES (id_user,type_father,id_father,name,link,upload_date,hash,status,ext,size) VALUES (:id_user,:type_father,:id_father,:name,:link,:upload_date,:hash,:status,:ext,:size)");
 
-       $add_file_project->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+       $add_file_project->bindParam(':id_user', $id_father, PDO::PARAM_INT);
        $add_file_project->bindParam(':type_father', $type_father, PDO::PARAM_STR);
        $add_file_project->bindParam(':id_father', $id_father, PDO::PARAM_INT);
        $add_file_project->bindParam(':name', $name, PDO::PARAM_STR);

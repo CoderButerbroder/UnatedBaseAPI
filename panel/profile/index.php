@@ -339,25 +339,11 @@
   </div>
 
 
-  <!-- <style media="screen">
-    .cropper-container{
-      height: auto!important;
-      width: auto!important;
-    }
-    .cropper-crop-box, .cropper-view-box {
-      border-radius: 50%;
-    }
-    /* .cropper-view-box {
-      box-shadow: 0 0 0 1px #39f;
-      outline: 0;
-    } */
-  </style> -->
-
   <div id="mod-success" tabindex="-1" role="dialog" style="" class="modal fade">
-    <div class="modal-dialog ">
-      <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border: 0;">
         <div class="modal-header">
-          <div class="form-group form-group col-md-12">
+          <div class="form-group form-group col-md-12  my-auto">
             <input type="file" name="img[]" class="file-upload-default" id="cropperImageUpload">
             <div class="input-group col-md-12">
               <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
@@ -368,8 +354,8 @@
           </div>
         </div>
 
-        <div class="modal-body">
-            <div class="" id="div_preview" style=" width:100%;" >
+        <div class="modal-body" style="padding: 0;">
+            <div class="col-md-12" id="div_preview" style=" width:100%; max-height:350px; max-width:500px; padding: 0; " >
               <style media="screen">
                 .cropper-view-box {
                   border-radius: 50%;
@@ -379,11 +365,11 @@
                   outline: 0;
                 }
               </style>
-              <img id="image_preview"  >
+              <img id="image_preview" width="100%" >
             </div>
 
         </div>
-        <div class="modal-footer"><button class="btn btn-space btn-success btn-block" id="btn_update_send">Загузить</button></div>
+        <div class="modal-footer" style="padding: 0; background-color: #0fb758; border-top: 1px solid #0fb758;"><button style="margin: 0;" class="btn btn-space btn-success btn-block" id="btn_update_send">Загузить</button></div>
       </div>
     </div>
   </div>
@@ -398,30 +384,19 @@
 
     $(document).ready(function() {
 
+      croppingImage.src = 'https://<?php echo $_SERVER["SERVER_NAME"];?>/assets/images/placeholder.jpg';
+
       $('.file-upload-browse').on('click', function(e) {
         var file = $(this).parent().parent().parent().find('.file-upload-default');
         file.trigger('click');
       });
 
-      croppingImage.src = 'https://<?php echo $_SERVER["SERVER_NAME"];?>/assets/images/placeholder.jpg';
-      croppingImage.onload = function (e) {
-          cropper = new Cropper(croppingImage);
-      };
-      // cropper = new Cropper(croppingImage, {
-      //   aspectRatio: 1 / 1,
-      //   viewMode:1,
-      // });
-
-      // console.log(cropper);
-      // cropper.containerData['height'] = '100%';
-      // console.log(cropper);
-
-//       containerData:
-// height: 100
-// width: 200
-      //
-      // $('.cropper-container').css('height', '100%');
-      // $('.cropper-container').css('width', '100%');
+      $('#mod-success').on('shown.bs.modal', function (e) {
+        cropper = new Cropper(croppingImage, {
+          aspectRatio: 1 / 1,
+          viewMode:1,
+        });
+      })
 
       // on change show image with crop options
       upload.addEventListener('change', function (e) {
@@ -433,59 +408,81 @@
           reader.onload = function (e) {
             if(e.target.result){
               croppingImage.src = e.target.result;
-              cropper = new Cropper(croppingImage);
+              cropper = new Cropper(croppingImage, {
+                aspectRatio: 1 / 1,
+                viewMode:1,
+              });
             }
           };
           reader.readAsDataURL(e.target.files[0]);
         }
       });
 
+    $('#btn_update_send').on('click', function() {
+      canvas_img = cropper.getCroppedCanvas({
+        width: 600,
+        height: 600,
+        maxWidth: 2096,
+        maxHeight: 2096,
+        fillColor: '#fff'
+      }).toDataURL("image/png");
 
+      if (!canvas_img) {
+        alerts('warning', '', 'Необходимо добавить изображение');
+        return false;
+      }
+
+      if($('#cropperImageUpload').val() != ''){
+        name_img = $($('#cropperImageUpload').val().split('\\'))[2].split('.')[0];
+      } else {
+        name_img = 'example';
+      }
+      $.ajax({
+          type: 'POST',
+          async: false,
+          url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/profile/update_avatar.php',
+          data: "action=send_avatar&file_name=" + name_img + "&data_img=" + btoa(canvas_img),
+          success: function(result) {
+            if (IsJsonString(result)) {
+              arr_data = JSON.parse(result);
+              if (arr_data["response"]) {
+                window.location.href = "https://<? echo $_SERVER['SERVER_NAME']?>/panel/profile/";
+              } else {
+                alerts('error', 'Ошибка', arr_result["description"]);
+                return false;
+              }
+            } else {
+              alerts('error', '', 'Ошибка загрузки фотграфии на сервер');
+              return false;
+            }
+          },
+          error: function(jqXHR, textStatus) {
+            alerts('error', 'Ошибка подключения', '');
+            return false;
+          }
+        });
+      });
 
     });
 
+    function IsJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+      }
 
 
-    // $('#btn_update_send').on('click', function(){
-    //
-    // canvas_img = cropper.getCroppedCanvas({ width: 600,
-    //                           height: 600,
-    //                           maxWidth: 2096,
-    //                           maxHeight: 2096,
-    //                           fillColor: '#fff' });
-    // if(!canvas_img){
-    //     alerts('warning','','Необходимо добавить изображение');
-    //
-    //     return false;
-    //   }
-    // var temp_img = canvas_img.toDataURL("image/png");
-    // img_min = '';
-    // $.ajax({
-    //   type: 'POST',
-    //   async : false,
-    //   url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/profile/update_avatar.php',
-    //   data: "action=send_preview&file_name="+($('#file_preview').val().split('\\'))[2].split('.')[0]+"&data_img="+btoa(temp_img),
-    //   success: function(result) {
-    //     if (result == '') {
-    //       alerts('error', '', 'Ошибка загрузки фотграфии на сервер');
-    //
-    //       return false;
-    //     } else {
-    //       arr_result = JSON.parse(result);
-    //       if (arr_result["response"]) {
-    //           window.location.href = "https://<? echo $_SERVER['SERVER_NAME']?>/panel/profile/";
-    //       } else {
-    //         alerts('error', 'Ошибка', arr_result["description"]);
-    //       }
-    //
-    //     }
-    //   },
-    //   error: function(jqXHR, textStatus) {
-    //     alerts('error', '', 'Ошибка подключения');
-    //
-    //     return false;
-    //   }
-    // });
+    function alerts(v_icon,v_title,v_msg){
+      Swal.fire({
+        scrollbarPadding: false,
+        icon: v_icon,
+        title: v_title,
+        text: v_msg
+      })
+    };
 
   </script>
 
