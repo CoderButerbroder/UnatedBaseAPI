@@ -4629,7 +4629,7 @@ class Settings {
           exit;
       }
       else {
-          return json_encode(array('response' => false, 'description' => 'Роль c таким id ненайдена'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => false, 'description' => 'Роль c таким названием не найдена'),JSON_UNESCAPED_UNICODE);
           exit;
       }
 

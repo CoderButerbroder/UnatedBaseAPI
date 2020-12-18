@@ -58,7 +58,7 @@ if($data_all_roles) {
                       </td>
                       <td>
                         <?php if ($value->name != 'admin'){ ?>
-                            <a href="/panel/settings/view_rules" role="button" class="btn btn-sm btn-primary">Права</a>
+                            <a href="/panel/settings/view_rules?role=<?php echo $value->name;?>" role="button" class="btn btn-sm btn-primary">Права</a>
                             <button type="button" onclick="delete_role(<?php echo $value->id;?>);" class="btn btn-sm btn-danger">Удалить</button>
                         <? } ?>
                       </td>
