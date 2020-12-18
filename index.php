@@ -71,7 +71,7 @@ if ($_SESSION["key_user"]) {
                       <div id="capcha_auth"></div>
                       <div class="mt-3">
                         <button type="submit" name="btn_sub" class="btn btn-primary mr-2 mb-2 mb-md-0 text-white">Вход</button>
-                        <div class="mt-3" id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,google;redirect_uri=https://api.kt-segment.ru/general/actions/social_auth.php"></div>
+                        <div class="mt-3" id="uLogin69bf6abc" data-ulogin="display=panel;fields=first_name,last_name,email;mobilebuttons=0;sort=default;theme=flat;providers=vkontakte,yandex,odnoklassniki,googleplus,mailru,google;redirect_uri=;callback=social_auth"></div>
                       </div>
                     </form>
                   </div>
@@ -170,6 +170,50 @@ if ($_SESSION["key_user"]) {
       $('.loader').fadeOut(200);
       $('.line').addClass('active');
     });
+
+    function social_auth(token){
+    $.ajax({
+          method: 'POST',
+          url: "https://<?php echo $_SERVER["SERVER_NAME"]; ?>/general/actions/social_auth",
+          data: "token="+token,
+          success: function(result) {
+            if (IsJsonString(result)) {
+              arr = JSON.parse(result);
+              if (arr["response"]) {
+                window.location.href = "https://" + window.location.host + "/panel";
+              } else {
+                Swal.fire({
+                  icon: 'warning',
+                  title: 'Ошибка',
+                  text: arr["description"]
+                });
+              }
+            } else {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Ошибка',
+                text: 'Ошибка, пожалуйтса попробуйте чуть позже'
+              });
+            }
+          },
+          error: function(jqXHR, exception) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Ошибка',
+              text: 'Ошибка подключения, пожалуйтса попробуйте чуть позже'
+            });
+          }
+        });
+  }
+
+    function IsJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
   </script>
 
 	<!-- core:js -->
