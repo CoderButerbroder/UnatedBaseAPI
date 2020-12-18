@@ -996,9 +996,8 @@ class Settings {
       }
 
       $check_user = json_decode($this->get_cur_user($_SESSION["key_user"]));
-
-      if (!json_decode($check_user)->response) {
-          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
+      if (!$check_user->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с даным id не найден в bd api'),JSON_UNESCAPED_UNICODE);
           exit;
       }
 
@@ -1031,7 +1030,7 @@ class Settings {
                 $statement->bindValue(':'.$key, $value, $field_type[$key]);
       }
 
-      $statement->bindParam(':id', $id_user->data->id, PDO::PARAM_INT);
+      $statement->bindParam(':id', $check_user->data->id, PDO::PARAM_INT);
       $statement->execute();
       $count = $statement->rowCount();
 
