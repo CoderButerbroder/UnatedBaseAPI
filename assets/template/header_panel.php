@@ -115,7 +115,7 @@ else {
           <div class="collapse" id="advancedUI">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="" class="nav-link">Все пользователи</a>
+                <a href="#" class="nav-link">Все пользователи</a>
               </li>
               <li class="nav-item">
                   <a href="" class="nav-link">Поиск пользователя</a>
@@ -170,7 +170,7 @@ else {
           <div class="collapse" id="general-pages">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="/panel/settings/users" class="nav-link">Все пользователи</a>
+                <a href="/panel/settings/all_users" class="nav-link">Все пользователи</a>
               </li>
               <li class="nav-item">
                 <a href="/panel/settings/new_user" class="nav-link">Добавить пользователя</a>
