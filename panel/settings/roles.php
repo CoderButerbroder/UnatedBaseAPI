@@ -48,12 +48,15 @@ $data_all_roles = json_decode($data_all_roles_json);
                                 $check_users = $settings->get_data_role_user($value->id);
                                 if (json_decode($check_users)->response) {
                                     $users_in_role = array();
-                                    foreach (json_decode($check_users)->data as $key => $value) {
-                                        if ($value->photo) {
-                                            $users_in_role[] = $value->photo;
+                                    $users_fio = array();
+                                    foreach (json_decode($check_users)->data as $key2 => $value2) {
+                                        if ($value2->photo) {
+                                            $users_in_role[] = $value2->photo;
+                                            $users_fio[] = $value2->name.' '.$value2->lastname;
                                         }
                                         else {
                                             $users_in_role[] = '/assets/images/custom/avatar.png';
+                                            $users_fio[] = $value2->name.' '.$value2->lastname;
                                         }
                                     }
                                 }
@@ -64,13 +67,24 @@ $data_all_roles = json_decode($data_all_roles_json);
                                 ?>
 
                                 <tr>
-                                    <td><?php echo $value_users_data->alias; ?></td>';
+                                    <td><?php echo $value->alias; ?></td>
                                     <td>
-                                      <? for ($i=0; $i < $count; $i++) { ?>
-                                      <img src="<?php echo $users_in_role[$i]; ?>" />
+                                      <?
+                                      if (is_array($users_in_role)) {
+                                        for ($i=0; $i < $count; $i++) { ?>
+                                          <img  data-toggle="tooltip" data-placement="top" title="<?php echo $users_fio[$i];?>" src="<?php echo $users_in_role[$i]; ?>" />
+                                        <? }
+                                        if (count($users_in_role) > 5) { ?>
+                                          <img style="border: 1px solid #6b7677;" data-toggle="tooltip" data-placement="right" title="Смотреть всех" src="/assets/images/custom/troetoch.jpg" />
+                                        <?
+                                        }}
+                                        else { echo $users_in_role; } ?>
+                                    </td>
+                                    <td>
+                                      <?php if ($value->name != 'admin'){ ?>
+                                      <a href="/panel/settings/view_rules" type="button" class="btn btn-outline-primary">Права</a>
                                       <? } ?>
                                     </td>
-                                    <td><a href="/panel/settings/view_rules.php" type="button" class="btn btn-outline-primary">Права</a></td>
                                 </tr>
                             <? } ?>
                           </tbody>

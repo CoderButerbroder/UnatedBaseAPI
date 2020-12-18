@@ -4552,7 +4552,7 @@ class Settings {
   }
 
   // добавление новой роли
-  public function add_role_in_sistem($alias) {
+  public function add_role_in_sistem($alias,$copy_role = false) {
       global $database;
 
       $name = $this->translit_sef($alias);
@@ -4564,6 +4564,18 @@ class Settings {
       $all_roles = $statement->fetch(PDO::FETCH_OBJ);
 
       if (!$all_roles) {
+
+            if ($copy_role) {
+                $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
+                $statement->bindParam(':copy_role', $copy_role, PDO::PARAM_INT);
+                $statement->execute();
+                $rules_copy = $statement->fetch(PDO::FETCH_OBJ);
+                $rules = $rules_copy->rules;
+            }
+            else {
+                $rules = file_get_contents('https:'.$_SERVER['SERVER_NAME'].'/general/settings/default_rules');
+            }
+
             $root = 1;
             $statement = $database->prepare("INSERT INTO $this->API_USERS_ROLE (name,alias,rules,root) VALUES (:name,:alias,:rules,:root)");
             $statement->bindParam(':name', $name, PDO::PARAM_STR);
@@ -4609,10 +4621,10 @@ class Settings {
       	$value = trim($value, '-');
 
       	return $value;
-   }
+  }
 
    // Добаление файлов к проекту
-   public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
+  public function upload_file($type_father,$id_father,$name,$path_file,$ext,$size) {
        global $database;
 
        $hash = md5(date("Y-m-d H:i:s").$_SESSION['cur_user_id'].$path_file.$name.$type_father.$id_father.$ext.rand(0, 90000));
@@ -4644,11 +4656,11 @@ class Settings {
        }
    }
 
-   // получение пользователей по роли
-   public function get_data_role_user($id_role) {
+  // получение пользователей по роли
+  public function get_data_role_user($id_role) {
        global $database;
 
-       $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE role = :role");
+       $statement = $database->prepare("SELECT * FROM $this->users WHERE role = :role");
        $statement->bindParam(':role', $id_role, PDO::PARAM_INT);
        $statement->execute();
        $all_users = $statement->fetchAll(PDO::FETCH_OBJ);

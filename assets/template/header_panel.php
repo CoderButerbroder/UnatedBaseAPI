@@ -31,6 +31,8 @@ else {
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
 <link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+<script src="/assets/js/sweetalert2.all.js"></script>
+<link rel="stylesheet" href="/assets/css/sweetalert2.css">
 
 </head>
 <body>
@@ -174,6 +176,9 @@ else {
               <li class="nav-item">
                 <a href="/panel/settings/roles" class="nav-link">Роли и права</a>
               </li>
+              <li class="nav-item">
+                <a href="/panel/settings/new_role" class="nav-link">Добавление роли</a>
+              </li>
             </ul>
           </div>
         </li>
@@ -208,7 +213,7 @@ else {
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" target="_blank" class="nav-link">
+          <a href="https://documenter.getpostman.com/view/13182778/TVmQfcFz" target="_blank" class="nav-link">
             <i class="link-icon" data-feather="terminal"></i>
             <span class="link-title">Документация API</span>
           </a>
