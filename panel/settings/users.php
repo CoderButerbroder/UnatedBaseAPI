@@ -44,7 +44,7 @@
                                 $second_name = (isset($value_users_data->second_name)) ? $value_users_data->second_name : '';
                                 $name = (isset($value_users_data->name)) ? $value_users_data->name : '';
                                 $second_lastname = (isset($value_users_data->lastname)) ? $value_users_data->lastname : '';
-                                $photo = isset($key_users_data->photo) ? $key_users_data->photo : $default_user_photo;
+                                $photo = isset($value_users_data->photo) ? $value_users_data->photo : $default_user_photo;
                                 echo '<tr>';
                                   echo '<td><img src="'.$photo.'" /> '.$second_lastname.' '.$name.' '.$second_name.' '.'</td>';
                                   echo '<td>'.$value_users_data->alias.'</td>';
