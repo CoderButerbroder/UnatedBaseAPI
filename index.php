@@ -184,8 +184,7 @@ if ($_SESSION["key_user"]) {
               } else {
                 Swal.fire({
                   icon: 'warning',
-                  title: 'Ошибка',
-                  text: arr["description"]
+                  title: arr["description"]
                 });
               }
             } else {
