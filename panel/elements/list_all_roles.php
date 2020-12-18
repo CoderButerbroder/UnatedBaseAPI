@@ -77,5 +77,8 @@ if($data_all_roles) {
             "url": "/assets/vendors/datatables.net/Russian.json"
           }
     });
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
   });
 </script>
