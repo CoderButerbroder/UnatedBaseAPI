@@ -339,18 +339,26 @@
   </div>
 
 
-  <div id="mod-success" tabindex="-1" role="dialog" style="" class="modal fade">
+  <div id="mod-success" tabindex="-1" role="dialog" style="" class="modal fade" data-backdrop="static" >
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" style="border: 0;">
         <div class="modal-header">
           <div class="form-group form-group col-md-12  my-auto">
             <input type="file" name="img[]" class="file-upload-default" id="cropperImageUpload">
-            <div class="input-group col-md-12">
-              <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
-              <span class="input-group-append">
-                <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
-              </span>
+            <div class="row">
+              <div class="input-group col-md-11">
+                <input type="text" class="form-control file-upload-info" disabled="" placeholder="Upload Image">
+                <span class="input-group-append">
+                  <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                </span>
+              </div>
+              <div class="col-md-1 my-auto">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
             </div>
+
           </div>
         </div>
 
