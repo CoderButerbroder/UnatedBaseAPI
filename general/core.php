@@ -4070,6 +4070,88 @@ class Settings {
       }
   }
 
+  // функция связки аккаунта с соц. сетью
+  public function add_user_social($id_user,$data) {
+        global $database;
+
+        $data_user = json_decode($data);
+
+        $check_data_social = $this->get_user_social($id_user);
+
+
+        if ($check_data_social) {
+          foreach ($check_data_social as $key) {
+              if ($key->network == $data_user->network) {
+                  if ($key->network_id == $data_user->uid) {
+                     return json_encode(array('response' => false, 'description' => 'Данный аккаунт социальной сети уже привязан к аккаунту'),JSON_UNESCAPED_UNICODE);
+                     exit;
+                  }
+              }
+          }
+        }
+
+        $today = date("Y-m-d H:i:s");
+
+        $date = new DateTime($data_user->bdate);
+        $date_birth = $date->format('Y-m-d');
+
+        if (!$data_user->token) {$token = '';} else {$token = $data_user->token;}
+        if (!$data_user->photo) {$photo = '';} else {$photo = $data_user->photo;}
+        if (!$data_user->photo_big) {$photo_big = '';} else {$photo_big = $data_user->photo_big;}
+        if (!$data_user->profile) {$profile = '';} else {$profile = $data_user->profile;}
+        if (!$data_user->first_name) {$first_name = '';} else {$first_name = $data_user->first_name;}
+        if (!$data_user->last_name) {$last_name = '';} else {$last_name = $data_user->last_name;}
+        if (!$data_user->country) {$country = '';} else {$country = $data_user->country;}
+        if (!$data_user->city) {$city = '';} else {$city = $data_user->city;}
+
+        $hash = md5($id_user.$data_user->network.$data_user->uid.$profile.$data_user->email.$today);
+
+        $create_company = $database->prepare("INSERT INTO $this->API_USERS_SOCIAL (id_user,network,network_id,profile,email,first_name,last_name,token,date_binding,photo,photo_big,country,city,date_birth,hash) VALUES (:id_user,:network,:network_id,:profile,:email,:first_name,:last_name,:token,:date_binding,:photo,:photo_big,:country,:city,:date_birth,:hash)");
+        $create_company->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+        $create_company->bindParam(':network', $data_user->network, PDO::PARAM_STR);
+        $create_company->bindParam(':network_id', $data_user->uid, PDO::PARAM_STR);
+        $create_company->bindParam(':profile', $profile, PDO::PARAM_STR);
+        $create_company->bindParam(':email', $data_user->email, PDO::PARAM_STR);
+        $create_company->bindParam(':first_name', $first_name, PDO::PARAM_STR);
+        $create_company->bindParam(':last_name', $last_name, PDO::PARAM_STR);
+        $create_company->bindParam(':token', $token, PDO::PARAM_STR);
+        $create_company->bindParam(':date_binding', $today, PDO::PARAM_STR);
+        $create_company->bindParam(':photo', $photo, PDO::PARAM_STR);
+        $create_company->bindParam(':photo_big', $photo_big, PDO::PARAM_STR);
+        $create_company->bindParam(':country', $country, PDO::PARAM_STR);
+        $create_company->bindParam(':city', $city, PDO::PARAM_STR);
+        $create_company->bindParam(':date_birth', $date_birth, PDO::PARAM_STR);
+        $create_company->bindParam(':hash', $hash, PDO::PARAM_STR);
+
+        $check_create_company = $create_company->execute();
+
+        if ($check_create_company) {
+            return json_encode(array('response' => true, 'description' => 'Социальная сеть '.$data_user->network.' была успешно прявзана к аккаунту, теперь вы можете авторизовываться через данную социальную сеть.'),JSON_UNESCAPED_UNICODE);
+            exit;
+        } else {
+            return json_encode(array('response' => false, 'description' => 'Внутренняя ошибка привязки аккаунта социальной сети, пожалуйста попробуйте позже'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+  }
+
+  // функция отвязки аккаунта социальных сетей
+  public function delete_social($id_user,$hash) {
+      global $database;
+
+      $check_social = $database->prepare("DELETE FROM $this->API_USERS_SOCIAL WHERE hash = :hash AND id_user = :id_user");
+      $check_social->bindParam(':hash', $hash, PDO::PARAM_STR);
+      $check_social->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+      $check_delete = $check_social->execute();
+
+      if ($check_delete) {
+          return json_encode(array('response' => true, 'description' => 'Аккаунт социальной сети был отвязан'),JSON_UNESCAPED_UNICODE);
+          exit;
+      } else {
+          return json_encode(array('response' => false, 'description' => 'Неудалось отвязать аккаунт социальной сети, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+  }
+
   // Авторизация пользотвателя через социальную сеть
   public function auth_user_social($data) {
       global $database;

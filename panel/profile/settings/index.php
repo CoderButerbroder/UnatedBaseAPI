@@ -31,6 +31,51 @@
 $( document ).ready(function() {
     $("#social_user_link").load("/panel/elements/social_element > *");
 });
+
+function action_social(type,value) {
+    // alert("Удаление"+hash);
+          // data_user = parseJSON(hash);
+          $.ajax({
+                method: 'POST',
+                url: "https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/elements/action_social",
+                data: "type="+type+"&value="+hash,
+                success: function(result) {
+                  if (IsJsonString(result)) {
+                    arr = JSON.parse(result);
+                    if (arr["response"] == true) {
+                        $("#social_user_link").load("/panel/elements/social_element > *");
+                        Swal.fire({
+                          icon: 'success',
+                          title: 'Успешно',
+                          text: arr["description"]
+                        });
+                    } else {
+                      Swal.fire({
+                        icon: 'error',
+                        title: arr["description"]
+                      });
+                    }
+                  }
+                },
+                error: function(jqXHR, exception) {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Ошибка',
+                    text: 'Ошибка подключения, пожалуйтса попробуйте чуть позже'
+                  });
+                }
+          });
+
+  }
+
+
+
+
+
+
+
+
+
 </script>
 
 
