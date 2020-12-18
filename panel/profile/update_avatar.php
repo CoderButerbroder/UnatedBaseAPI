@@ -1,12 +1,24 @@
 <?php
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+  session_start();
+  if(!$_SESSION['key_user']) {
+    echo json_encode(array('response' => false, 'desciption' => 'Необходимо авторизоваться'), JSON_UNESCAPED_UNICODE );
+    exit();
+  }
 
   require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
   $settings = new Settings;
 
-  $folder_upload = "/upload/".$_SESSION['cur_user_hash']."/";
+  $data_user = json_decode($settings->get_cur_user($_SESSION["key_user"]));
+  if (!$data_user->response) {
+      header('Location: http://'.$_SERVER['SERVER_NAME'].'/general/actions/logout');
+      exit;
+  }
+
+  $folder_upload = "/upload/".$_SESSION['key_user']."/";
   $target_path = $_SERVER['DOCUMENT_ROOT'].$folder_upload;
 
   if (file_exists($target_path)) {
@@ -15,7 +27,6 @@
       mkdir("$target_path", 0777);
     //  echo 'папка была создана<br>';
   }
-
 
   if ($_POST["action"] == 'send_avatar'){
 
@@ -29,7 +40,7 @@
              file_put_contents($path_img, $data_image);
              $size = sprintf("%u",filesize($path_img));
              $size_final = round($size/1024);
-             $check_bool_upload =  $settings->upload_file('user',$_SESSION['cur_user_id'],$name.'.png',$folder_upload.$time.'_'.$name.'.png','png',$size_final);
+             $check_bool_upload =  $settings->upload_file('user',$data_user->data->id,$name.'.png',$folder_upload.$time.'_'.$name.'.png','png',$size_final);
              //
              if ($check_bool_upload) {
                  $check_update_user = $settings->mass_update_user_api_field(array('photo' => $folder_upload.$time.'_'.$name.'.png'));
