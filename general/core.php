@@ -4599,6 +4599,26 @@ class Settings {
 
    }
 
+  // получение даных по названию роли
+  public function get_role_data_name($name_role) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE name = :name_role");
+      $statement->bindParam(':name_role', $name_role, PDO::PARAM_STR);
+      $statement->execute();
+      $role = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($role) {
+          return json_encode(array('response' => true, 'data' => $role, 'description' => 'Роль успешно найдена'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Роль c таким id ненайдена'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+  }
+
 }
 
 ?>
