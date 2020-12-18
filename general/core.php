@@ -4573,7 +4573,7 @@ class Settings {
                 $rules = $rules_copy->rules;
             }
             else {
-
+                $rules = file_get_contents('https:'.$_SERVER['SERVER_NAME'].'/general/settings/default_rules');
             }
 
             $root = 1;

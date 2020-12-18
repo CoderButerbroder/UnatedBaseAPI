@@ -213,7 +213,7 @@ else {
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" target="_blank" class="nav-link">
+          <a href="https://documenter.getpostman.com/view/13182778/TVmQfcFz" target="_blank" class="nav-link">
             <i class="link-icon" data-feather="terminal"></i>
             <span class="link-title">Документация API</span>
           </a>
