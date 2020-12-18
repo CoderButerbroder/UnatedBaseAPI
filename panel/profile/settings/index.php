@@ -13,34 +13,18 @@
 
 <div class="row">
     <div class="col-md-12 stretch-card">
-                  <div class="card">
-                      <div class="card-body">
-                        <h6>Привяжите свои аккаунты социальных сетей прямо сейчас и авторизуйтесь через них без ввода логина и пароля</h6>
-                        <script src="//ulogin.ru/js/ulogin.js"></script><div id="uLogin_fab20c8b" data-uloginid="fab20c8b"></div>
-                        <h4>Список привязанных аккаунтов</h4>
-                        <div class="row" id="social_user_link">
-
-                        </div>
-
-                        <!-- <div class="col-md-3">
-                          <div class="card">
-                            <div class="card-body">
-                              <div class="row">
-                                <div class="col-5">
-                                  <img style="width: 100px; " src="https://sun1-92.userapi.com/impf/3Z4lMM88Idaa5KwH4Ei-CnvSMd0aiJmHs2S2Gw/H68cgi4z8qU.jpg?size=200x0&quality=96&crop=131,27,436,436&sign=0a068b0dbfab66d1e2062b33c1281e1d&c_uniq_tag=E63K6pqnYDrYmK7QH9Pd2_PGD8wqrGzxiJk4p_LZDYw&ava=1" alt="">
-                                </div>
-                                <div class="col-6">
-                                  <h5 class="card-title">Vkontakte</h5>
-                                  <p class="card-text">Виктор Кулик</p>
-                                  <button type="button" class="btn  btn-danger">Отвязать аккаунт</button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div> -->
-
-                      </div>
-                  </div>
+      <div class="card">
+          <div class="card-body">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Привяжите свои аккаунты социальных сетей прямо сейчас и авторизуйтесь через них без ввода логина и пароля</h5>
+                <h6 class="card-subtitle mb-2 text-muted"><script src="//ulogin.ru/js/ulogin.js"></script><div id="uLogin_fab20c8b" data-uloginid="fab20c8b"></div></h6>
+                  <div class="row" id="social_user_link">
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
     </div>
 </div>
 
