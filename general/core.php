@@ -3991,17 +3991,17 @@ class Settings {
    }
 
   // Получение данных пользователя
-  public function get_cur_user($hash_or_id) {
+  public function get_cur_user($key_user_or_id) {
       global $database;
 
-      $check_activiti = $this->update_activity($hash_or_id);
+      $check_activiti = $this->update_activity($key_user_or_id);
 
-          if (is_numeric($hash_or_id)) {
+          if (is_numeric($key_user_or_id)) {
               $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE id = :id");
-              $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
+              $check_user_data->bindParam(':id', $key_user_or_id, PDO::PARAM_INT);
           } else {
-              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE hash = :hash");
-              $check_user_data->bindParam(':hash', $hash_or_id, PDO::PARAM_STR);
+              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE key_user = :key_user");
+              $check_user_data->bindParam(':key_user', $key_user_or_id, PDO::PARAM_STR);
           }
           $check_user_data->execute();
           $user = $check_user_data->fetch(PDO::FETCH_OBJ);

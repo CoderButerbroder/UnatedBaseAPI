@@ -33,6 +33,8 @@ else {
 <link rel="stylesheet" href="/assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
 <script src="/assets/js/sweetalert2.all.js"></script>
 <link rel="stylesheet" href="/assets/css/sweetalert2.css">
+<script src="/assets/js/alerts.js"></script>
+<script src="/assets/js/IsJsonString.js"></script>
 
 </head>
 <body>

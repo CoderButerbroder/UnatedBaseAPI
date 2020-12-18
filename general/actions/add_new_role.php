@@ -4,7 +4,7 @@
 // ini_set('display_startup_errors', 1);
 
 // header('Content-type:application/json;charset=utf-8');
-$name_role = (isset(trim($_POST['name_role']))) ? trim($_POST['name_role']) : false;
+$name_role = (isset($_POST['name_role'])) ? trim($_POST['name_role']) : false;
 if(!$name_role){
     echo json_encode(array('response' => false, 'description' => 'Обязательно введите уникальное имя роли'),JSON_UNESCAPED_UNICODE);
     exit;

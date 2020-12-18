@@ -4,9 +4,6 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 <?php
-$data_all_roles_json = $settings->get_all_roles_sistem();
-$default_user_photo = $settings->get_global_settings('default_user_photo');
-$data_all_roles = json_decode($data_all_roles_json);
 
 ?>
 
@@ -29,71 +26,8 @@ $data_all_roles = json_decode($data_all_roles_json);
                 </a>
               </div>
             </div>
-              <div class="mt-4">
-              <?php
-              if($data_all_roles) {
-              ?>
-                      <div class="table-responsive">
-                        <table id="dataTableExample" class="table">
-                          <thead>
-                            <tr>
-                              <th>Название</th>
-                              <th>Пользователи</th>
-                              <th>Права</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <?php
+              <div class="mt-4" id="all_roles_list">
 
-                              foreach ($data_all_roles->data as $key => $value) {
-                                $check_users = $settings->get_data_role_user($value->id);
-                                if (json_decode($check_users)->response) {
-                                    $users_in_role = array();
-                                    $users_fio = array();
-                                    foreach (json_decode($check_users)->data as $key2 => $value2) {
-                                        if ($value2->photo) {
-                                            $users_in_role[] = $value2->photo;
-                                            $users_fio[] = $value2->name.' '.$value2->lastname;
-                                        }
-                                        else {
-                                            $users_in_role[] = $default_user_photo;
-                                            $users_fio[] = $value2->name.' '.$value2->lastname;
-                                        }
-                                    }
-                                }
-                                else {
-                                    $users_in_role = 'Пользователей нет';
-                                }
-                                $count = (count($users_in_role) > 5) ? 5 : count($users_in_role);
-                                ?>
-
-                                <tr>
-                                    <td><?php echo $value->alias; ?></td>
-                                    <td>
-                                      <?
-                                      if (is_array($users_in_role)) {
-                                        for ($i=0; $i < $count; $i++) { ?>
-                                          <img  data-toggle="tooltip" data-placement="top" title="<?php echo $users_fio[$i];?>" src="<?php echo $users_in_role[$i]; ?>" />
-                                        <? }
-                                        if (count($users_in_role) > 5) { ?>
-                                          <img style="border: 1px solid #6b7677;" data-toggle="tooltip" data-placement="right" title="Смотреть всех" src="/assets/images/custom/troetoch.jpg" />
-                                        <?
-                                        }}
-                                        else { echo $users_in_role; } ?>
-                                    </td>
-                                    <td>
-                                      <?php if ($value->name != 'admin'){ ?>
-                                          <a href="/panel/settings/view_rules" role="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="bottom" title="Настройки прав"><i data-feather="check-square"></i></a>
-                                          <a href="/panel/settings/view_rules" role="button" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Удалить роль"><i data-feather="trash"></i></a>
-                                      <? } ?>
-                                    </td>
-                                </tr>
-                            <? } ?>
-                          </tbody>
-                        </table>
-                      </div>
-
-              <?php } ?>
 
               </div>
 
@@ -102,14 +36,39 @@ $data_all_roles = json_decode($data_all_roles_json);
     </div>
 </div>
 
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.table').DataTable({
-          "language": {
-            "url": "/assets/vendors/datatables.net/Russian.json"
-          }
-    });
-  });
+
+
+
+<script>
+
+function delete_role(id_role) {
+
+    $.ajax({
+          method: 'POST',
+          url: 'https://<?php echo $_SERVER['SERVER_NAME'];?>/general/actions/delete_role',
+          data: 'id_role='+id_role,
+              success: function(result) {
+                  global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/list_all_roles','#all_roles_list');
+                if (IsJsonString(result)) {
+                  arr = JSON.parse(result);
+                  if (arr["response"] == true) {
+                      alerts('success', arr["description"], '');
+                  } else {
+                      alerts('warning', 'Внимание', arr["description"]);
+                  }
+                }
+              },
+              error: function(jqXHR, exception) {
+                  alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
+                  global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/list_all_roles','#all_roles_list');
+              }
+        });
+}
+
+
+$(document).ready(function($) {
+    global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/list_all_roles','#all_roles_list');
+});
 </script>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
