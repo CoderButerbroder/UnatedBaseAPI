@@ -82,7 +82,7 @@ $data_all_roles = json_decode($data_all_roles_json);
                                     </td>
                                     <td>
                                       <?php if ($value->name != 'admin'){ ?>
-                                      <a href="/panel/settings/view_rules" type="button" class="btn btn-outline-primary">Права</a>
+                                      <a href="/panel/settings/view_rules" type="button" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" title="Права"><i data-feather="star"></i></a>
                                       <? } ?>
                                     </td>
                                 </tr>
