@@ -17,7 +17,7 @@ $data_all_roles = json_decode($data_all_roles_json);
 
 
 <script>
-$(document).ready(function($) {
+// $(document).ready(function($) {
   $("#select_input").select2();
-});
+// });
 </script>

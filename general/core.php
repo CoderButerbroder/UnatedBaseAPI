@@ -4603,6 +4603,26 @@ class Settings {
 
   }
 
+  // Удаление роли пользователя
+  public function delete_role_in_sistem($id_role) {
+    global $database;
+
+    $statement = $database->prepare("SELECT * FROM $this->users WHERE role = :id");
+    $statement->bindParam(':id', $id_role, PDO::PARAM_INT);
+    $statement->execute();
+    $role = $statement->fetchAll(PDO::FETCH_OBJ);
+
+    if (!$role) {
+
+    }
+    else {
+          $count = count($role);
+          return json_encode(array('response' => false, 'description' => 'Ошибка, данная роль распространяется на '.$count.' пользователей системы, освободите роль от всех пользователей'),JSON_UNESCAPED_UNICODE);
+          exit;
+    }
+
+  }
+
   // транслит
   public function translit_sef($value){
       	$converter = array(
