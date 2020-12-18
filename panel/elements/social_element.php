@@ -1,8 +1,18 @@
 <?php
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+session_start();
+if(!isset($_SESSION["key_user"])){
+  echo "<h4>Ошибка авторизации</h4>";
+  exit();
+}
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$data_social = $user->get_user_social($_SESSION['cur_user_id']);
+$data_user = json_decode($settings->get_cur_user($_SESSION["key_user"]));
+
+$data_social = $settings->get_user_social($data_user->data->id);
 
 $array_social = array('vkontakte' => '<i class="fab fa-vk"></i>',
                       'mailru' => '<i class="fas fa-at"></i>',

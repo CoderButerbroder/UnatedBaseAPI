@@ -15,7 +15,7 @@
     <div class="col-md-12 stretch-card">
                   <div class="card">
                       <div class="card-body">
-                        <h4>Привяжите свои аккаунты социальных сетей прямо сейчас и авторизуйтесь через них без ввода логина и пароля</h4>
+                        <h5>Привяжите свои аккаунты социальных сетей прямо сейчас и авторизуйтесь через них без ввода логина и пароля</h5>
                         <script src="//ulogin.ru/js/ulogin.js"></script><div id="uLogin_fab20c8b" data-uloginid="fab20c8b"></div>
                         <h4>Список привязанных аккаунтов</h4>
                         <div class="row" id="social_user_link">
@@ -29,7 +29,7 @@
 
 <script>
 $( document ).ready(function() {
-    $("#social_user_link").load("/user/elements/social_element > *");
+    $("#social_user_link").load("/panel/elements/social_element > *");
 });
 </script>
 
