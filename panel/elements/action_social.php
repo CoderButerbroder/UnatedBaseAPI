@@ -1,7 +1,7 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 
 session_start();
 if(!isset($_SESSION["key_user"])){
@@ -24,7 +24,6 @@ if($_POST["type"] == 'add'){
 
   $data_user_str = file_get_contents('http://ulogin.ru/token.php?token=' . $_POST['value'] . '&host=' . $_SERVER['HTTP_HOST']);
   $data_user_soc = json_decode($data_user_str);
-  var_dump($data_user_str);
   if(is_object($data_user_soc)) {
     $check_auth = $settings->add_user_social($data_user->data->id,$data_user_str);
     echo $check_auth;
@@ -33,7 +32,7 @@ if($_POST["type"] == 'add'){
   }
 }
 if($_POST["type"] == 'del'){
-  $check_auth = $settings->delete_social($data_user->data->id,$data_user_str);
+  $check_auth = $settings->delete_social($data_user->data->id,$_POST['value']);
   echo $check_auth;
 }
 

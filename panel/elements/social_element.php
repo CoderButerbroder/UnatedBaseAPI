@@ -30,7 +30,7 @@ foreach ($data_social as $key) { ?>
           <h2><img style="width: 50px; height: 50px;" src="<?php echo $key->photo_big;?>" class="img-circle">  <?php echo $key->first_name.' '.$key->last_name;?></h2>
         </a>
         <center>
-              <button onclick='delete_social("<?php echo $key->hash;?>");' class="btn btn-space btn-danger"><i class="icon icon-left mdi mdi-delete"></i> Отвязать аккаунт</button>
+              <button onclick='action_social("del","<?php echo $key->hash;?>");' class="btn btn-space btn-danger"><i class="icon icon-left mdi mdi-delete"></i> Отвязать аккаунт</button>
         </center>
       </div>
     </div>
