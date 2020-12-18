@@ -4552,8 +4552,9 @@ class Settings {
   }
 
   // добавление новой роли
-  public function add_role_in_sistem($alias,$copy_role = false) {
+  public function add_role_in_sistem($alias,$copy_role = 0) {
       global $database;
+
 
       $name = $this->translit_sef($alias);
 
@@ -4565,15 +4566,15 @@ class Settings {
 
       if (!$all_roles) {
 
-            if ($copy_role) {
+            if ($copy_role != 0) {
                 $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
-                $statement->bindParam(':copy_role', $copy_role, PDO::PARAM_INT);
+                $statement->bindParam(':id', $copy_role, PDO::PARAM_INT);
                 $statement->execute();
                 $rules_copy = $statement->fetch(PDO::FETCH_OBJ);
                 $rules = $rules_copy->rules;
             }
             else {
-                $rules = file_get_contents('https:'.$_SERVER['SERVER_NAME'].'/general/settings/default_rules');
+                $rules = json_encode(json_decode($this->get_global_settings('default_rules')));
             }
 
             $root = 1;
@@ -4582,7 +4583,7 @@ class Settings {
             $statement->bindParam(':alias', $alias, PDO::PARAM_STR);
             $statement->bindParam(':rules', $rules, PDO::PARAM_STR);
             $statement->bindParam(':root', $root, PDO::PARAM_INT);
-            $statement->execute();
+            $check_exec = $statement->execute();
             $id_new_role = $database->lastInsertId();
 
             if ($id_new_role) {
@@ -4591,7 +4592,7 @@ class Settings {
                 exit;
             }
             else {
-                return json_encode(array('response' => false, 'description' => 'Роль успешно добавлена'),JSON_UNESCAPED_UNICODE);
+                return json_encode(array('response' => false, 'description' => 'Ошибка, роль не была добавлена'),JSON_UNESCAPED_UNICODE);
                 exit;
             }
       }
