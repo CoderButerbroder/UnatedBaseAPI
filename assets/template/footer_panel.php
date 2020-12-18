@@ -11,6 +11,7 @@
 
 <!-- core:js -->
 <script src="/assets/vendors/core/core.js"></script>
+
 <!-- endinject -->
 <script src="/assets/vendors/jquery-steps/jquery.steps.min.js"></script>
 <script src="/assets/js/wizard.js"></script>
@@ -44,6 +45,8 @@
 <script src="/assets/js/bootstrap-colorpicker.js"></script>
 <script src="/assets/js/datepicker.js"></script>
 <script src="/assets/js/timepicker.js"></script>
+
+<script src="/assets/js/load_block.js"></script>
 <!-- plugin js for this page -->
 <!-- end plugin js for this page -->
 <!-- inject:js -->

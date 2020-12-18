@@ -1,11 +1,7 @@
-<?php
-header('Content-type:application/json;charset=utf-8');
-
-$json = json_decode('
 {
 "rules":
     {
-      "view":
+     "view":
           {
             "all":false
           },
@@ -24,7 +20,3 @@ $json = json_decode('
           }
     }
 }
-');
-echo json_encode($json);
-
-?>

@@ -32,13 +32,13 @@ $data_all_roles = json_decode($data_all_roles_json);
                               </div>
                               <div class="form-group row">
                                 <label for="select_input" class="col-sm-3 col-form-label">Cкопировать права с роли</label>
-                                <div class="col-sm-9">
-                                  <select class="js-example-basic-single" name="role_copy" id="select_input">
+                                <div class="col-sm-9" id="select_role_copy">
+                                    <!-- <select class="js-example-basic-single" name="role_copy" id="select_input">
                                       <option default selected value="0">Не копировать</option>
                                       <?php foreach ($data_all_roles->data as $key => $value) { ?>
                                           <option value="<?php echo $value->id;?>"><?php echo $value->alias;?></option>
                                       <?}?>
-                                    </select>
+                                    </select> -->
                                 </div>
                               </div>
 
@@ -78,10 +78,12 @@ function alerts(v_icon, v_title, v_msg) {
 };
 
 $(document).ready(function($) {
+        global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/all_roles_for_add.php','#select_role_copy');
         $('#new_role_sistem').submit(function(e) {
         jQuery("#submit_button").attr('disabled', true);
         jQuery("#reset_button").attr('disabled', true);
         $("#submit_button").html('Добавление роли');
+
       var $form = $(this);
       $.ajax({
             method: 'POST',
@@ -91,6 +93,7 @@ $(document).ready(function($) {
                   jQuery("#submit_button").attr('disabled', false);
                   jQuery("#reset_button").attr('disabled', false);
                   $("#submit_button").html('Добавить роль');
+                  global_load_block('https://<?php echo $_SERVER['SERVER_NAME'];?>/panel/elements/all_roles_for_add.php','#select_role_copy');
                   if (IsJsonString(result)) {
                     arr = JSON.parse(result);
                     if (arr["response"] == true) {
@@ -105,6 +108,7 @@ $(document).ready(function($) {
                     jQuery("#submit_button").attr('disabled', false);
                     jQuery("#reset_button").attr('disabled', false);
                     $("#submit_button").html('Добавить роль');
+                    global_load_block(url,idblock)
                 }
           });
       e.preventDefault();
