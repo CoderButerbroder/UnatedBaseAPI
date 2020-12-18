@@ -26,13 +26,13 @@
               <div class="mt-4">
               <?php
               $users_data = $settings->get_all_api_users(true);
+              $default_user_photo = $settings->get_global_settings('default_user_photo');
               if($users_data) {
               ?>
                       <div class="table-responsive">
                         <table id="dataTableExample" class="table">
                           <thead>
                             <tr>
-                              <th>#</th>
                               <th>ФИО</th>
                               <th>Роль</th>
                             </tr>
@@ -44,11 +44,10 @@
                                 $second_name = (isset($value_users_data->second_name)) ? $value_users_data->second_name : '';
                                 $name = (isset($value_users_data->name)) ? $value_users_data->name : '';
                                 $second_lastname = (isset($value_users_data->lastname)) ? $value_users_data->lastname : '';
-                                $count_users_data++;
+                                $photo = isset($key_users_data->photo) ? $key_users_data->photo : $default_user_photo;
                                 echo '<tr>';
-                                echo '<td>'.$count_users_data.'</td>';
-                                echo '<td>'.$second_lastname.' '.$name.' '.$second_name.' '.'</td>';
-                                echo '<td>'.$value_users_data->alias.'</td>';
+                                  echo '<td><img src="'.$photo.'" /> '.$second_lastname.' '.$name.' '.$second_name.' '.'</td>';
+                                  echo '<td>'.$value_users_data->alias.'</td>';
                                 echo '</tr>';
                               }
                             ?>

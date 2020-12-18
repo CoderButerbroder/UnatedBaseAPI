@@ -5,7 +5,7 @@
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 <?php
 $data_all_roles_json = $settings->get_all_roles_sistem();
-
+$default_user_photo = $settings->get_global_settings('default_user_photo');
 $data_all_roles = json_decode($data_all_roles_json);
 
 ?>
@@ -44,6 +44,7 @@ $data_all_roles = json_decode($data_all_roles_json);
                           </thead>
                           <tbody>
                             <?php
+
                               foreach ($data_all_roles->data as $key => $value) {
                                 $check_users = $settings->get_data_role_user($value->id);
                                 if (json_decode($check_users)->response) {
@@ -55,7 +56,7 @@ $data_all_roles = json_decode($data_all_roles_json);
                                             $users_fio[] = $value2->name.' '.$value2->lastname;
                                         }
                                         else {
-                                            $users_in_role[] = '/assets/images/custom/avatar.png';
+                                            $users_in_role[] = $default_user_photo;
                                             $users_fio[] = $value2->name.' '.$value2->lastname;
                                         }
                                     }
@@ -82,7 +83,8 @@ $data_all_roles = json_decode($data_all_roles_json);
                                     </td>
                                     <td>
                                       <?php if ($value->name != 'admin'){ ?>
-                                      <a href="/panel/settings/view_rules" type="button" class="btn btn-outline-primary" data-toggle="tooltip" data-placement="bottom" title="Права"><i data-feather="star"></i></a>
+                                          <a href="/panel/settings/view_rules" role="button" class="btn btn-sm btn-primary" data-toggle="tooltip" data-placement="bottom" title="Настройки прав"><i data-feather="check-square"></i></a>
+                                          <a href="/panel/settings/view_rules" role="button" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Удалить роль"><i data-feather="trash"></i></a>
                                       <? } ?>
                                     </td>
                                 </tr>
