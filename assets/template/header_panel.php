@@ -71,16 +71,19 @@ else {
           <div class="collapse" id="emails">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="#" class="nav-link">Все заявки <span class="ml-2 badge badge-light">250</span></a>
+                <a href="/panel/support/canban" class="nav-link">Канбан</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">В работе <span class="ml-2 badge badge-primary">12</span></a>
+                <a href="/panel/support/tikets" class="nav-link">Все заявки <span class="ml-2 badge badge-light">250</span></a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Новые<span class="ml-2 badge badge-danger">14</span></a>
+                <a href="/panel/support/tikets?status=work" class="nav-link">В работе <span class="ml-2 badge badge-primary">12</span></a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">Закрытые <span class="ml-2 badge badge-success">25</span></a>
+                <a href="/panel/support/tikets?status=open" class="nav-link">Новые<span class="ml-2 badge badge-danger">14</span></a>
+              </li>
+              <li class="nav-item">
+                <a href="/panel/support/tikets?status=close" class="nav-link">Закрытые <span class="ml-2 badge badge-success">25</span></a>
               </li>
             </ul>
           </div>
@@ -89,19 +92,19 @@ else {
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false" aria-controls="uiComponents">
             <i class="link-icon" data-feather="briefcase"></i>
-            <span class="link-title">Компании</span>
+            <span class="link-title">Юр. лица</span>
             <i class="link-arrow" data-feather="chevron-down"></i>
           </a>
           <div class="collapse" id="uiComponents">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="/panel/data/company" class="nav-link">Все компании</a>
+                <a href="/panel/data/company" class="nav-link">Все юр. лица</a>
               </li>
               <li class="nav-item">
-                <a href="/panel/data/company/search" class="nav-link">Поиск компании</a>
+                <a href="/panel/data/company/search" class="nav-link">Поиск юр. лица</a>
               </li>
               <li class="nav-item">
-                <a href="/panel/data/company/ipchain" class="nav-link">Компании IPCHhain</a>
+                <a href="/panel/data/company/ipchain" class="nav-link">Юр.лица IPCHhain</a>
               </li>
             </ul>
           </div>
@@ -109,13 +112,13 @@ else {
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
             <i class="link-icon" data-feather="users"></i>
-            <span class="link-title">Пользователи</span>
+            <span class="link-title">Физ. лица</span>
             <i class="link-arrow" data-feather="chevron-down"></i>
           </a>
           <div class="collapse" id="advancedUI">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="/panel/data/users" class="nav-link">Все пользователи</a>
+                <a href="/panel/data/users" class="nav-link">Все физ. лица</a>
               </li>
               <!-- <li class="nav-item">
                   <a href="/panel/data/users/search" class="nav-link">Поиск пользователя</a>
@@ -132,7 +135,7 @@ else {
           <div class="collapse" id="forms">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="/panel/data/events" class="nav-link">Все проприятия</a>
+                <a href="/panel/data/events" class="nav-link">Все мероприятия</a>
               </li>
             </ul>
           </div>
@@ -149,10 +152,10 @@ else {
                 <a href="/panel/data/reports" class="nav-link">Все отчеты</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">По компаниям</a>
+                <a href="#" class="nav-link">По юр. лицам</a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">По пользователям</a>
+                <a href="#" class="nav-link">По физ. лицам</a>
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">По мероприятиям</a>
@@ -320,4 +323,4 @@ else {
       </div>
     </nav>
     <!-- partial -->
-    <div class="page-content">
+    <div class="page-content" id="need_kill_sometimes">

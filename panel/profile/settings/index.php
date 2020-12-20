@@ -15,14 +15,10 @@
     <div class="col-md-12 stretch-card">
       <div class="card">
           <div class="card-body">
-            <div class="card">
-              <div class="card-body">
                 <h5 class="card-title">Привяжите свои аккаунты социальных сетей прямо сейчас и авторизуйтесь через них без ввода логина и пароля</h5>
                 <h6 class="card-subtitle mb-2 text-muted"><script src="//ulogin.ru/js/ulogin.js"></script><div id="uLogin_fab20c8b" data-uloginid="fab20c8b"></div></h6>
                   <div class="row mt-3" id="social_user_link">
                 </div>
-              </div>
-            </div>
           </div>
       </div>
     </div>

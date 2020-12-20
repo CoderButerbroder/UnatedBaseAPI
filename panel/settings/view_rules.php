@@ -22,7 +22,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Настройки</a></li>
     <li class="breadcrumb-item"><a href="/panel/settings/roles">Роли и права</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Права роли "<?php echo $alias_role;?>"</li>
+    <li class="breadcrumb-item active" aria-current="page">Права роли «<?php echo $alias_role;?>»</li>
   </ol>
 </nav>
 
@@ -31,6 +31,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
         <div class="col-md-12 stretch-card">
                   <div id="accordion" class="accordion" role="tablist" style="width: 100%">
                               <div class="card">
+                                <form id="sistem_form">
                                   <div class="card-header" role="tab" id="heading1">
                                     <h6 class="mb-0">
                                       <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1" style="color: #fff;">
@@ -39,7 +40,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                             Настройки системы
                                           </div>
                                           <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
+                                            <button id="button_sistem" onclick="save_setting_rules(sistem,button_sistem,sistem_form);" class="btn btn-sm btn-success">Сохранить</button>
                                           </div>
                                         </div>
 
@@ -64,9 +65,10 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                                   </div>
                                                 </div>
                                             <? }?>
-
+                                            <button id="button_sistem" onclick="save_setting_rules(sistem,button_sistem,sistem_form);" class="btn btn-sm btn-success">Сохранить</button>
                                     </div>
                                   </div>
+                                </form>
                               </div>
 
 
@@ -362,5 +364,39 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
 
   </div>
 <?php } ?>
+
+
+
+<script>
+
+function save_setting_rules(type_settings,id_buton,id_form) {
+        $("#"+id_buton).attr('disabled', true);
+        $("#"+id_buton).html('Сохранение...');
+        e.preventDefault();
+        var $form = $(this);
+        $.ajax({
+            method: 'POST',
+            url: 'https://<?php echo $_SERVER['SERVER_NAME'];?>/general/actions/save_rules',
+            data: $form.serialize()+'&type_settings='+type_settings+'&role=<?php echo $_GET['role'];?>',
+                success: function(result) {
+                  $("#"+id_buton).attr('disabled', false);
+                  $("#"+id_buton).html('Сохранить');
+                  if (IsJsonString(result)) {
+                    arr = JSON.parse(result);
+                    if (arr["response"] == true) {
+                        alerts('success', arr["description"], '');
+                    } else {
+                        alerts('warning', 'Внимание', arr["description"]);
+                    }
+                  }
+                },
+                error: function(jqXHR, exception) {
+                    alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
+                    $("#"+id_buton).attr('disabled', false);
+                    $("#"+id_buton).html('Сохранить');
+                }
+        });
+};
+</script>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>

@@ -973,7 +973,6 @@ class Settings {
 
   }
 
-
   // Массовое обноление данных пользователя в единой базе данных
   public function mass_update_user_api_field($massiv_field_value2) {
       global $database;
@@ -1044,7 +1043,6 @@ class Settings {
       }
 
   }
-
 
   // //Обновление данных юридических лиц в единой базе данных
   public function update_entity_field($field,$value_field,$id_entity) {
@@ -4192,13 +4190,31 @@ class Settings {
               }
 
               $content =  'Здравствуйте, '.$user->name.' '.$user->second_name.'<br>';
-              $content .= 'Ваша ссылка для восстановления доступа на сайте e-spb.ru<br>';
-              $content .= '<a href="https://'.$_SERVER['SERVER_NAME'].'/recovery?link='.$user->recovery_link.'">https://'.$_SERVER['SERVER_NAME'].'/recovery?link='.$user->recovery_link.'</a>';
-              $content .= '<br></br> Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
+              $content .= 'Нажмите на кнопку ниже для начала заверешения восстановления доступа к вашему аккаунту.<br>';
+              $content .= 'Если Вы не делали запрос на восстановления доступа, просто проигнориуйте данное письмо.';
 
-              $tema = 'Восстановление пароля LPM connect';
+              $tema = 'Восстановление пароля';
 
-              $check_mail = $this->send_email_user($email,$tema,$content);
+              $today = date("d.m.Y H:i");
+
+              $maildata =
+                    array(
+                      'title' => $tema,
+                      'description' => $content,
+                      'link_to_server' => 'https://'.$_SERVER['SERVER_NAME'],
+                      'text_button' => 'Восстановить доступ',
+                      'link_button' => 'https://'.$_SERVER['SERVER_NAME'].'/recovery?link='.$user->recovery_link,
+                      'name_host' => $_SERVER['SERVER_NAME'],
+                      'date' => $today
+                    );
+
+              $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/one_button.php');
+
+              foreach ($maildata as $key => $value) {
+                $template_email = str_replace('['.$key.']', $value, $template_email);
+              }
+
+              $check_mail = $this->send_email_user($email,$tema,$template_email);
 
               return $check_mail;
 
