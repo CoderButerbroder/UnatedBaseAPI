@@ -4732,6 +4732,29 @@ class Settings {
 
   }
 
+  // Смена стиля пользвателя
+  public function switch_user_style($new_style,$id_user) {
+      global $database;
+
+      $upd_activity_user = $database->prepare("UPDATE $this->users SET css_style = :style WHERE id = :id");
+      $upd_activity_user->bindParam(':id', $id_user, PDO::PARAM_INT);
+      $upd_activity_user->bindParam(':style', $new_style, PDO::PARAM_STR);
+      $check_upd_activity_user = $upd_activity_user->execute();
+      $count = $upd_activity_user->rowCount();
+
+      if ($count) {
+            return json_encode(array('response' => true, 'description' => 'Стиль оформения страницы успешно сменен'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка смены стиля'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+
+
+  }
+
 }
 
 ?>

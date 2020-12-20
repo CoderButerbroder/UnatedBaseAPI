@@ -11,6 +11,8 @@ else {
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/general/actions/logout');
         exit;
     }
+    $new_swith_style = ($data_user->data->css_style == 'demo_1') ? 'demo_2' : 'demo_1';
+
 }
 ?>
 <!-- core:css -->
@@ -26,7 +28,7 @@ else {
 <link rel="stylesheet" href="/assets/vendors/cropperjs/cropper.min.css">
 <!-- endinject -->
 <!-- Layout styles -->
-<link rel="stylesheet" href="/assets/css/demo_1/style.css">
+<link rel="stylesheet" href="/assets/css/<?php echo $data_user->data->css_style;?>/style.css">
 <!-- End layout styles -->
 <link rel="shortcut icon" href="/assets/images/custom/favicon.ico" />
 <link rel="stylesheet" href="/assets/vendors/jquery-steps/jquery.steps.css">
@@ -280,7 +282,12 @@ else {
           </div>
         </form>
         <ul class="navbar-nav">
+          <li class="nav-item">
 
+            <span class="nav-link" href="" onclick="switch_new_user_css_style('<?php echo $new_swith_style;?>');" type="button">
+              <i data-feather="moon" class=""></i>
+            </span>
+          </li>
           <li class="nav-item dropdown nav-profile">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <img src="<?php echo ($data_user->data->photo) ? 'https://'.$_SERVER["SERVER_NAME"].$data_user->data->photo : 'https://via.placeholder.com/30x30'; ?>" alt="profile">

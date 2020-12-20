@@ -4,19 +4,18 @@
 // ini_set('display_startup_errors', 1);
 
 // header('Content-type:application/json;charset=utf-8');
-$id_role = (isset($_POST['id_role'])) ? trim($_POST['id_role']) : false;
-if(!$id_role || $id_role == 1){
+$css_style = (isset($_POST['css_style'])) ? trim($_POST['css_style']) : false;
+if(!$css_style){
     echo json_encode(array('response' => false, 'description' => 'Не все обязательные параметры были переданы, пожалуйста попробуйте позже'),JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
+$user_data = json_decode($settings->get_cur_user($_SESSION['key_user']));
 
-
-$check_role = $settings->delete_role_in_sistem($id_role);
+$check_role = $settings->switch_user_style($css_style,$user_data->data->id);
 
 echo $check_role;
-
 
 ?>
