@@ -8,7 +8,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
     <li class="breadcrumb-item"><a href="#">Мероприятия</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Детали Мероприятия {тут событие/наименование <?php echo $_POST["event"]; ?>}</li>
+    <li class="breadcrumb-item active" aria-current="page">Детали Мероприятия {тут событие/наименование <?php echo $_GET["event"]; ?>}</li>
   </ol>
 </nav>
 

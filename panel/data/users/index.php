@@ -40,7 +40,7 @@
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $('.table').DataTable({
+    var tab = $('.table').DataTable({
           "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
@@ -57,6 +57,10 @@
             { "data": "Phone" },
           ]
     });
+
+    tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil='+(tab.row(cell[0][0]['row']).data()["Number"]));
+        } );
   });
 </script>
 

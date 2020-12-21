@@ -8,7 +8,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
     <li class="breadcrumb-item"><a href="#">Все физ. лица</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Данные по физ. лицу {id_tboil}</li>
+    <li class="breadcrumb-item active" aria-current="page">Данные по физ. лицу {id_tboil <?php echo $_GET["tboil"];?>}</li>
   </ol>
 </nav>
 
