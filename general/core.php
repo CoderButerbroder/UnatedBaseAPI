@@ -4755,7 +4755,7 @@ class Settings {
 
   }
 
-  // Смена стиля пользвателя
+  // Получение пользователей постраничено с поискоим и без для datatable
   public function get_users_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
       global $database;
 
@@ -4768,7 +4768,36 @@ class Settings {
         $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->main_users WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY id");
         $data_users_count->execute();
         $data_users_count_result = $data_users_count->fetch(PDO::FETCH_OBJ);
-        $data_users = $database->prepare("SELECT * FROM $this->users WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+        $data_users = $database->prepare("SELECT * FROM $this->main_users WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+      }
+
+      $data_users->execute();
+      $data_users = $data_users->fetchAll(PDO::FETCH_OBJ);
+
+      if('' == $searh_value){
+        $recordsFiltered = $data_count_users->COUNT;
+      } else {
+        $recordsFiltered = $data_users_count_result->COUNT;
+      }
+
+      return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
+  }
+
+
+  // Получение компаний постраничено с поискоим и без для datatable
+  public function get_company_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
+      global $database;
+
+      $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->MAIN_entity ");
+      $count_users->execute();
+      $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
+      if('' == $searh_value){
+        $data_users = $database->prepare("SELECT * FROM $this->MAIN_entity ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+      } else {
+        $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->MAIN_entity WHERE inn LIKE '%{$searh_value}%' OR data_fns LIKE '%{$searh_value}%' ");
+        $data_users_count->execute();
+        $data_users_count_result = $data_users_count->fetch(PDO::FETCH_OBJ);
+        $data_users = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn LIKE '%{$searh_value}%' OR data_fns LIKE '%{$searh_value}%'  ");
       }
 
       $data_users->execute();
