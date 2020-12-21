@@ -7,8 +7,8 @@
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
-    <li class="breadcrumb-item"><a href="#">Юр. лица</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Детали юр. лица {тут компания <?php echo $_GET["inn"]; ?>}</li>
+    <li class="breadcrumb-item"><a href="#">Юр. лица IPchain</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Детали юр. лица IPchain{тут компания <?php echo $_GET["inn"]; ?>}</li>
   </ol>
 </nav>
 

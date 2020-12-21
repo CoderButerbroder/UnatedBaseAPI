@@ -71,7 +71,7 @@
     });
 
     tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
-            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/company/details_ip?inn='+(tab.row(cell[0][0]['row']).data()["INN"]));
+            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/company/details_ipchain?inn='+(tab.row(cell[0][0]['row']).data()["INN"]));
         } );
   });
 </script>
