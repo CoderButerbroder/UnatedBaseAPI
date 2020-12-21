@@ -7,8 +7,8 @@
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
-    <li class="breadcrumb-item"><a href="#">Компании</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Поиск компании</li>
+    <li class="breadcrumb-item"><a href="#">Юр. лица</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Поиск юр. лица</li>
   </ol>
 </nav>
 

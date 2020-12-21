@@ -13,10 +13,20 @@ $data_roles = json_decode($data_role_json);
 
 $alias_role = (isset($data_roles->data->alias)) ? $data_roles->data->alias : 'Ошибка';
 
-$data_json = json_decode($settings->get_global_settings('default_rules'));
+$data_json = json_decode($data_roles->data->rules);
 //
 // var_dump($data_json);
+
+$alert_text = 'Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым';
 ?>
+<style media="screen">
+  .accordion > .card .card-header a[aria-expanded="false"]:before {
+    content: "";
+  }
+  .accordion > .card .card-header a[aria-expanded="true"]:before {
+    content: "";
+  }
+</style>
 
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
@@ -30,331 +40,89 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
   <div class="row">
         <div class="col-md-12 stretch-card">
                   <div id="accordion" class="accordion" role="tablist" style="width: 100%">
-                              <div class="card">
-                                <form id="sistem_form" onsubmit="false; save_setting_rules(this,'button_sistem','sistem_form');">
-                                  <div class="card-header" role="tab" id="heading1">
+
+                          <?php foreach ($data_json as $key => $value) {
+                            ?>
+
+                            <div class="card">
+                              <form id="<?php echo $key?>" onsubmit="save_setting_rules(this,'<?php echo $key;?>','button_<?php echo $key;?>'); return false;">
+                                <div class="card-header" role="tab" id="heading<?php echo $key;?>">
+                                  <h6 class="mb-0">
+                                    <div class="row">
+                                        <div class="col-10 my-auto">
+                                            <a data-toggle="collapse" href="#collapse_<?php echo $key;?>" aria-expanded="false" aria-controls="collapse_<?php echo $key;?>">
+                                                  <?php echo $value->name;?>
+                                            </a>
+                                        </div>
+                                        <div class="col-2 text-right">
+                                            <button id="button_<?php echo $key;?>" type="submit" class="btn btn-sm btn-success">Сохранить</button>
+                                        </div>
+                                    </div>
+
+
+                                  </h6>
+                                </div>
+                                <div id="collapse_<?php echo $key;?>" class="collapse" role="tabpanel" aria-labelledby="heading<?php echo $key;?>" data-parent="#accordion">
+                                  <div class="card-body">
+                                        <?php if ($value->alert) { ?>
+                                            <div class="alert alert-primary" role="alert">
+                                              <?php echo $alert_text;?>
+                                            </div>
+                                        <?php } ?>
+
+                                          <?php foreach ($value->rule as $key2 => $value2) { ?>
+                                              <div class="row border-bottom">
+                                                <div class="col-sm-11 mt-2">
+                                                  <?php echo $value2->description;?>
+                                                </div>
+                                                <div class="col-sm-auto form-check">
+                                                      <label class="form-check-label">
+                                                        <input type="checkbox" name="<?php echo $value2->name;?>" <?php if ($value2->value) {echo 'checked';}?> class="form-check-input">
+                                                      </label>
+                                                </div>
+                                              </div>
+                                          <? } ?>
+                                          <!-- <button id="button_sistem" type="submit"  class="btn btn-sm btn-success">Сохранить</button> -->
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+
+
+
+                          <?  } ?>
+
+
+
+                              <!-- <div class="card">
+                                <form id="" onsubmit="">
+                                  <div class="card-header" role="tab" id="headin">
                                     <h6 class="mb-0">
                                       <div class="row">
                                           <div class="col-10 my-auto">
-                                              <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                                                    Настройки системы
+                                              <a data-toggle="collapse" href="#col" aria-expanded="false" aria-controls="coll">
+                                                    Интеграция
                                               </a>
                                           </div>
                                           <div class="col-2 text-right">
-                                              <button id="button_sistem" type="submit" class="btn btn-sm btn-success">Сохранить</button>
+                                              <button id="button" type="submit" class="btn btn-sm btn-success">Сохранить</button>
                                           </div>
-
                                       </div>
 
 
                                     </h6>
                                   </div>
-                                  <div id="collapse1" class="collapse" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
-                                    <div class="card-body">
-                                          <div class="alert alert-primary" role="alert">
-                                          Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым
-                                          </div>
-
-                                            <?php foreach ($data_json->sistem as $key => $value) { ?>
-                                                <div class="row border-bottom">
-                                                  <div class="col-sm-11 mt-2">
-                                                    <?php echo $value->description;?>
-                                                  </div>
-                                                  <div class="col-sm-auto form-check">
-                                                        <label class="form-check-label">
-                                                          <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                        </label>
-                                                  </div>
-                                                </div>
-                                            <? }?>
-                                            <!-- <button id="button_sistem" type="submit"  class="btn btn-sm btn-success">Сохранить</button> -->
-                                    </div>
-                                  </div>
-                                </form>
-                              </div>
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingUsers">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Настройки пользователей
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseUsers" class="collapse" role="tabpanel" aria-labelledby="headingUsers" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <div class="alert alert-primary" role="alert">
-                                      Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым
-                                      </div>
-
-                                        <?php foreach ($data_json->emploe as $key => $value) { ?>
-                                            <div class="row border-bottom">
-                                              <div class="col-sm-11 mt-2">
-                                                <?php echo $value->description;?>
-                                              </div>
-                                              <div class="col-sm-auto form-check">
-                                                    <label class="form-check-label">
-                                                      <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                    </label>
-                                              </div>
-                                            </div>
-                                        <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingDataCompany">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataCompany" aria-expanded="false" aria-controls="collapseDataCompany">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Данные компаний
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseDataCompany" class="collapse" role="tabpanel" aria-labelledby="headingDataCompany" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->entity as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingDataUser">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataUser" aria-expanded="false" aria-controls="collapseDataUser">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Данные пользователей
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseDataUser" class="collapse" role="tabpanel" aria-labelledby="headingDataUser" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->users as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingDataEvents">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataEvents" aria-expanded="false" aria-controls="collapseDataEvents">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Данные мероприятий
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseDataEvents" class="collapse" role="tabpanel" aria-labelledby="headingDataEvents" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->events as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingDataReports">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataReports" aria-expanded="false" aria-controls="collapseDataReports">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Данные отчетов
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseDataReports" class="collapse" role="tabpanel" aria-labelledby="headingDataReports" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->reports as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingSupports">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseSupports" aria-expanded="false" aria-controls="collapseSupports">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Тех.поддержка
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseSupports" class="collapse" role="tabpanel" aria-labelledby="headingSupports" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->support as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingDashbord">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDashbord" aria-expanded="false" aria-controls="collapseDashbord">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Дашборд
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseDashbord" class="collapse" role="tabpanel" aria-labelledby="headingDashbord" data-parent="#accordion">
-                                    <div class="card-body">
-
-                                      <?php foreach ($data_json->dashboard as $key => $value) { ?>
-                                          <div class="row border-bottom">
-                                            <div class="col-sm-11 mt-2">
-                                              <?php echo $value->description;?>
-                                            </div>
-                                            <div class="col-sm-auto form-check">
-                                                  <label class="form-check-label">
-                                                    <input type="checkbox" name="<?php $value->name;?>" <?php if ($value->value) {echo 'checked';}?> class="form-check-input">
-                                                  </label>
-                                            </div>
-                                          </div>
-                                      <? }?>
-
-                                    </div>
-                                  </div>
-                                </div>
-
-
-                                <div class="card">
-                                  <div class="card-header" role="tab" id="headingIntegry">
-                                    <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseIntegry" aria-expanded="false" aria-controls="collapseIntegry">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Интеграция
-                                          </div>
-                                          <div class="col-6 text-right">
-                                            <button type="button" class="btn btn-sm btn-success">Сохранить</button>
-                                          </div>
-                                        </div>
-                                      </a>
-                                    </h6>
-                                  </div>
-                                  <div id="collapseIntegry" class="collapse" role="tabpanel" aria-labelledby="headingIntegry" data-parent="#accordion">
+                                  <div id="coll" class="collapse" role="tabpanel" aria-labelledby="headin" data-parent="#accordion">
                                     <div class="card-body">
 
                                       <div class="alert alert-info" role="alert">
                                         Новый функционал пока что в разработке. Но скоро будет уже тут :)
                                       </div>
 
-                                    </div>
                                   </div>
-                                </div>
-
+                                </form>
+                              </div>
+                            </div> -->
 
                 </div>
         </div>
