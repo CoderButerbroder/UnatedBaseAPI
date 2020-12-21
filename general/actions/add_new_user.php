@@ -9,22 +9,21 @@ $lastname = (isset($_POST['lastname'])) ? trim($_POST['lastname']) : false;
 $name = (isset($_POST['name'])) ? trim($_POST['name']) : false;
 $second_name = (isset($_POST['second_name'])) ? trim($_POST['second_name']) : false;
 $phone = (isset($_POST['phone'])) ? trim($_POST['phone']) : false;
-$send_email = (isset($_POST['send_email'])) ? true : false;
+$send_email = ($_POST['send_email']) ? true : false;
 
 if(!$email || !$lastname || !$name || !$second_name || !$phone){
     echo json_encode(array('response' => false, 'description' => 'Обязательно введите уникальное имя роли'),JSON_UNESCAPED_UNICODE);
     exit;
 }
-$role_copy = (isset($_POST['role_copy'])) ? $_POST['role_copy'] : 0;
-
-
-
+$role_copy = (isset($_POST['role'])) ? $_POST['role'] : 0;
+// 
+// var_dump($_POST);
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 
-$check_role = $settings->regiter_user_in_sistem($email,$phone,$name,$last_name,$second_name,$send_email);
+$check_role = $settings->regiter_user_in_sistem($email,$phone,$name,$lastname,$second_name,$role_copy,$send_email);
 
 echo $check_role;
 

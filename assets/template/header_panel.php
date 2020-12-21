@@ -7,6 +7,7 @@ if (!$_SESSION["key_user"]) {
 }
 else {
     $data_user = json_decode($settings->get_cur_user($_SESSION["key_user"]));
+
     if (!$data_user->response) {
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/general/actions/logout');
         exit;

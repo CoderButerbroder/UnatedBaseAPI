@@ -3946,13 +3946,14 @@ class Settings {
 
 
   // регистрация пользователя в системе
-  public function regiter_user_in_sistem($email,$phone,$name,$last_name,$second_name,$mail) {
+  public function regiter_user_in_sistem($email,$phone,$name,$lastname,$second_name,$id_role,$mail) {
       global $database;
 
         $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
         $check_user_data->bindParam(':email', $email, PDO::PARAM_STR);
         $check_user_data->execute();
         $user = $check_user_data->fetch(PDO::FETCH_OBJ);
+
 
         if (!$user) {
 
@@ -3964,28 +3965,30 @@ class Settings {
                 while($max--)
                 $password.=$chars[rand(0,$size)];
 
+                $hash_password = password_hash($password, PASSWORD_DEFAULT);
+
 
                 $email = (isset($email)) ? $email : ' ';
                 $name = (isset($name)) ? $name : ' ';
                 $lastname = (isset($lastname)) ? $lastname : ' ';
                 $second_name = (isset($second_name)) ? $second_name : ' ';
                 $phone = (isset($phone)) ? $phone : '79999999999';
-                $key_user = (isset($key_user)) ? $key_user : ' ';
                 $photo = $this->get_global_settings('default_user_photo');
                 $id_role = (isset($id_role)) ? $id_role : 0;
                 $status = 'active';
                 $last_activity = date("Y-m-d H:i:s");
                 $css_style = 'demo_1';
                 $recovery_link = md5($email.$name.$lastname.$second_name.$phone.$last_activity.$status.$css_style);
-                $hash = md5($recovery_link);
+                $key_user = md5($recovery_link);
+                $hash = md5(md5($recovery_link));
 
-                $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,name,lastname,second_name,phone,password,hash,key_user,recovery_link,photo,role,status,last_activity,css_style) VALUES (:email,:name,:lastname,:second_name,:phone,:password,:hash,:key_user,:recovery_link,:photo,:role,:status,:last_activity,:css_style)");
+                $new_uruser = $database->prepare("INSERT INTO $this->users (email,name,lastname,second_name,phone,password,hash,key_user,recovery_link,photo,role,status,last_activity,css_style) VALUES (:email,:name,:lastname,:second_name,:phone,:password,:hash,:key_user,:recovery_link,:photo,:role,:status,:last_activity,:css_style)");
                 $new_uruser->bindParam(':email', $email, PDO::PARAM_STR);
                 $new_uruser->bindParam(':name', $name, PDO::PARAM_STR);
                 $new_uruser->bindParam(':lastname', $lastname, PDO::PARAM_STR);
                 $new_uruser->bindParam(':second_name', $second_name, PDO::PARAM_STR);
                 $new_uruser->bindParam(':phone', $phone, PDO::PARAM_STR);
-                $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
+                $new_uruser->bindParam(':password', $hash_password, PDO::PARAM_STR);
                 $new_uruser->bindParam(':hash', $hash, PDO::PARAM_STR);
                 $new_uruser->bindParam(':key_user', $key_user, PDO::PARAM_STR);
                 $new_uruser->bindParam(':recovery_link', $recovery_link, PDO::PARAM_STR);
@@ -4106,11 +4109,11 @@ class Settings {
 
       $check_activiti = $this->update_activity($hash_or_id);
 
-          if (is_numeric($hash_or_id)) {
+          if (is_int($hash_or_id)) {
               $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE id = :id");
               $check_user_data->bindParam(':id', $hash_or_id, PDO::PARAM_INT);
           } else {
-              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE hash = :hash");
+              $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE key_user = :hash");
               $check_user_data->bindParam(':hash', $hash_or_id, PDO::PARAM_STR);
           }
           $check_user_data->execute();
