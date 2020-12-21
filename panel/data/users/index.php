@@ -4,6 +4,7 @@
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 
+
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
@@ -40,11 +41,13 @@
 </div>
 
 <script type="text/javascript">
+  var tab;
   $(document).ready(function(){
-    $('.table').DataTable({
+    var tab = $('.table').DataTable({
           "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
+          "keys": true,
           cache: false,
           "ajax": {
                     url: "/panel/data/users/get_usr",
@@ -73,8 +76,16 @@
             { "data": "Phone" },
           ]
     });
+
+    console.log(tab);
+    tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/users/details?id_tboil='+(tab.row(cell[0][0]['row']).data()["Number"]));
+        } );
+
+
   });
 </script>
+
 
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
