@@ -21,7 +21,9 @@
                 <thead>
                   <tr>
                     <th>id Tboil</th>
-                    <th>ФИО</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
                     <th>Email</th>
                     <th>Phone</th>
                   </tr>
@@ -39,9 +41,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('.table').DataTable({
-          "language": {
-            "url": "/assets/vendors/datatables.net/Russian.json"
-          },
+          "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
           "ajax": {
@@ -50,7 +50,9 @@
                   },
           "columns": [
             { "data": "Number" },
-            { "data": "FIO" },
+            { "data": "L_Name" },
+            { "data": "Name" },
+            { "data": "S_Name" },
             { "data": "Email" },
             { "data": "Phone" },
           ]
