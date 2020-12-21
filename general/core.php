@@ -4759,13 +4759,13 @@ class Settings {
   public function get_users_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
       global $database;
 
-      $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->users ");
+      $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->main_users ");
       $count_users->execute();
       $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
       if('' == $searh_value){
-        $data_users = $database->prepare("SELECT * FROM $this->users ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+        $data_users = $database->prepare("SELECT * FROM $this->main_users ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
       } else {
-        $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM `MAIN_users` WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY id");
+        $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->main_users WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY id");
         $data_users_count->execute();
         $data_users_count_result = $data_users_count->fetch(PDO::FETCH_OBJ);
         $data_users = $database->prepare("SELECT * FROM $this->users WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
@@ -4780,7 +4780,7 @@ class Settings {
         $recordsFiltered = $data_users_count_result->COUNT;
       }
 
-      return array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
+      return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
   }
 
   // обновление прав роли

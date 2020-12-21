@@ -17,7 +17,7 @@
         <div class="card">
           <div class="card-body">
             <div class="table-responsive">
-              <table class="table" style="width: 100%">
+              <table class="table table-hover" style="width: 100%">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -50,12 +50,13 @@
                     url: "/panel/data/users/get_usr",
                     type: "POST",
                     "dataSrc": function ( json ) {
-                        if(json.response){
-                          return json.data.data;
-                        } else {
-                          alerts('warning', json.description, '');
-                          return false;
-                        }
+                      return json.data;
+                        // if(json.response){
+                        //   return json.data.data;
+                        // } else {
+                        //   alerts('warning', json.description, '');
+                        //   return false;
+                        // }
                     },
                     error: function(jqXHR, exception) {
                         alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
