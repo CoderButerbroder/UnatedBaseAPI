@@ -39,11 +39,13 @@
 </div>
 
 <script type="text/javascript">
+var tab;
   $(document).ready(function(){
-    var tab = $('.table').DataTable({
+      tab = $('.table').DataTable({
           "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
+          "keys": true,
           "ajax": {
                     "url": "/panel/data/users/get_usr",
                     "type": "POST"
