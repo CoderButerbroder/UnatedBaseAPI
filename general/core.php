@@ -4812,6 +4812,36 @@ class Settings {
       return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
   }
 
+  // Получение компаний постраничено с поискоим и без для datatable
+  public function get_IPcompany_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
+      global $database;
+
+      $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->IPCHAIN_entity ");
+      $count_users->execute();
+      $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
+      if('' == $searh_value){
+        $data_users = $database->prepare("SELECT * FROM $this->IPCHAIN_entity ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+      } else {
+        $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->IPCHAIN_entity WHERE Name LIKE '%{$searh_value}%' OR Inn LIKE '%{$searh_value}%' OR Ogrn LIKE '%{$searh_value}%' ");
+        $data_users_count->execute();
+        $data_users_count_result = $data_users_count->fetch(PDO::FETCH_OBJ);
+        $data_users = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Name LIKE '%{$searh_value}%' OR Inn LIKE '%{$searh_value}%' OR Ogrn LIKE '%{$searh_value}%'  ");
+      }
+
+      $data_users->execute();
+      $data_users = $data_users->fetchAll(PDO::FETCH_OBJ);
+
+      if('' == $searh_value){
+        $recordsFiltered = $data_count_users->COUNT;
+      } else {
+        $recordsFiltered = $data_users_count_result->COUNT;
+      }
+
+      return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
+  }
+
+
+
   // обновление прав роли
   public function update_rules_role($name_role,$json_string) {
         global $database;
