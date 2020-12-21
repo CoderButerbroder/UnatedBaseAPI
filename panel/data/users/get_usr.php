@@ -5,6 +5,7 @@
 session_start();
 
 if (!isset($_SESSION["key_user"])) {
+  echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
   exit();
 }
 
@@ -12,11 +13,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 
 $arr_result = (object) array();
 
-$arr_result->draw = $_POST["draw"];
-$limit_start = $_POST["start"] ;
-$limit_count = $_POST["length"];
-$searh_value = $_POST["search"]["value"];
-$settings = new Settings;
+$flag_error = false;
 
 //числовый ключ чтоб понять по какому столбцу запрашивается сортировка
 $array_table_colump = array('Number' => 'id_tboil', '0' => 'id_tboil',
@@ -26,10 +23,31 @@ $array_table_colump = array('Number' => 'id_tboil', '0' => 'id_tboil',
                             'Email' => 'email', '4' => 'email',
                             'Phone' => 'phone', '5' => 'phone');
 
-$order_num_request = $_POST["order"][0]["column"];
-$order_request = $array_table_colump[$order_num_request];
-$type_order_request = $_POST["order"][0]["dir"];
+if(intval($_POST["draw"])){
+  $arr_result->draw = intval($_POST["draw"]);
+} else $flag_error = true;
+if(intval($_POST["start"])){
+  $limit_start = intval($_POST["start"]);
+} else if($_POST["start"] == '0') { $limit_start = 0; } else $flag_error = true;
+if(intval($_POST["length"])){
+  $limit_count = intval($_POST["length"]);
+} else $flag_error = true;
+if(intval($_POST["order"][0]["column"])){
+  $order_num_request = intval($_POST["order"][0]["column"]);
+} else if($_POST["order"][0]["column"] == '0') { $order_num_request = 0; } else $flag_error = true;
+if($order_num_request < 0 || $order_num_request > 5) $flag_error = true;
+$searh_value = $_POST["search"]["value"];
 
+$order_request = $array_table_colump[$order_num_request];
+if(!$order_request) $flag_error = true;
+$type_order_request = (trim($_POST["order"][0]["dir"]) == 'asc') ? 'ASC' : 'DESC';
+
+if($flag_error){
+  echo json_encode(array('response' => false, 'data' => $limit_count, 'description' => 'Ошибка, Попробуйте позже'), JSON_UNESCAPED_UNICODE);
+  exit();
+}
+
+$settings = new Settings;
 global $database;
 $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM `MAIN_users` ");
 $count_users->execute();
@@ -67,7 +85,8 @@ foreach ($data_users as $key => $value) {
   $count_row++;
 }
 
-echo json_encode($arr_result ,JSON_UNESCAPED_UNICODE);
+//echo json_encode($arr_result ,JSON_UNESCAPED_UNICODE);
+echo json_encode(array('response' => true, 'data' => $arr_result) ,JSON_UNESCAPED_UNICODE);
 
 
 ?>
