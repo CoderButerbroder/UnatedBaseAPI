@@ -31,20 +31,22 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
         <div class="col-md-12 stretch-card">
                   <div id="accordion" class="accordion" role="tablist" style="width: 100%">
                               <div class="card">
-                                <form id="sistem_form" onsubmit="false">
+                                <form id="sistem_form" onsubmit="false; save_setting_rules(this,'button_sistem','sistem_form');">
                                   <div class="card-header" role="tab" id="heading1">
                                     <h6 class="mb-0">
-                                      <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
-                                        <div class="row">
-                                          <div class="col-6 mt-2 pl-3" style="color: #000;">
-                                            Настройки системы
+                                      <div class="row">
+                                          <div class="col-10 my-auto">
+                                              <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                                                    Настройки системы
+                                              </a>
                                           </div>
-                                          <div class="col-6 text-right">
-                                            <button id="button_sistem" onclick="save_setting_rules(sistem,button_sistem,sistem_form);" class="btn btn-sm btn-success">Сохранить</button>
+                                          <div class="col-2 text-right">
+                                              <button id="button_sistem" type="submit" class="btn btn-sm btn-success">Сохранить</button>
                                           </div>
-                                        </div>
 
-                                      </a>
+                                      </div>
+
+
                                     </h6>
                                   </div>
                                   <div id="collapse1" class="collapse" role="tabpanel" aria-labelledby="heading1" data-parent="#accordion">
@@ -65,7 +67,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                                   </div>
                                                 </div>
                                             <? }?>
-                                            <button id="button_sistem" type="submit" onclick="save_setting_rules('sistem','button_sistem','sistem_form');" class="btn btn-sm btn-success">Сохранить</button>
+                                            <!-- <button id="button_sistem" type="submit"  class="btn btn-sm btn-success">Сохранить</button> -->
                                     </div>
                                   </div>
                                 </form>
@@ -369,16 +371,15 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
 
 <script>
 
-function save_setting_rules(type_settings,id_buton,id_form) {
-        $("#"+id_buton).attr('disabled', true);
+function save_setting_rules(id_form,type_settings,id_buton) {
+        $("#"+id_buton).attr('disabled', 'disabled');
         $("#"+id_buton).html('Сохранение...');
-        var $form = $(this);
         $.ajax({
             method: 'POST',
             url: 'https://<?php echo $_SERVER['SERVER_NAME'];?>/general/actions/save_rules',
-            data: $form.serialize()+'&type_settings='+type_settings+'&role=<?php echo $_GET['role'];?>',
+            data: $(id_form).serialize()+'&type_settings='+type_settings+'&role=<?php echo $_GET['role'];?>',
                 success: function(result) {
-                  $("#"+id_buton).attr('disabled', false);
+                  $("#"+id_buton).removeAttr('disabled');
                   $("#"+id_buton).html('Сохранить');
                   if (IsJsonString(result)) {
                     arr = JSON.parse(result);
@@ -391,7 +392,7 @@ function save_setting_rules(type_settings,id_buton,id_form) {
                 },
                 error: function(jqXHR, exception) {
                     alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
-                    $("#"+id_buton).attr('disabled', false);
+                    $("#"+id_buton).removeAttr('disabled');
                     $("#"+id_buton).html('Сохранить');
                 }
         });
