@@ -1,8 +1,8 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-header('Content-type:application/json;charset=utf-8');
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// header('Content-type:application/json;charset=utf-8');
 $role = (isset($_POST['role'])) ? $_POST['role'] : false;
 
 if(!$role){
@@ -39,7 +39,7 @@ $massiv_keys =  array_keys($_POST);
 // var_dump($check_rules);
 
 
-var_dump($return_cur_rule_role);
+// var_dump($return_cur_rule_role);
 
 foreach ($return_cur_rule_role->$check_rules->rule as $key => $value) {
 
@@ -55,15 +55,21 @@ foreach ($return_cur_rule_role->$check_rules->rule as $key => $value) {
 
 }
 
-for ($i=0; $i < count($massiv_keys); $i++) {
-      $name_settings = $massiv_keys[$i];
-      $return_cur_rule_role->$check_rules->rule->$name_settings->value;
-}
-
-var_dump($return_cur_rule_role);
+// for ($i=0; $i < count($massiv_keys); $i++) {
+//       $name_settings = $massiv_keys[$i];
+//       $return_cur_rule_role->$check_rules->rule->$name_settings->value;
+// }
 
 
+$new_rules_string = json_encode($return_cur_rule_role,JSON_UNESCAPED_UNICODE);
 
+// var_dump($check_rules,$new_rules_string);
+//
+// var_dump($new_rules_string);
+
+$check_update = $settings->update_rules_role($role,$new_rules_string);
+
+echo $check_update;
 
 exit;
 ?>

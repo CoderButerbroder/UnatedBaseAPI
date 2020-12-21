@@ -1,4 +1,7 @@
 <?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
 <?php /*тут метатеги*/?>
 <title>Права роли - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
@@ -15,7 +18,7 @@ $alias_role = (isset($data_roles->data->alias)) ? $data_roles->data->alias : 'О
 
 $data_json = json_decode($data_roles->data->rules);
 //
-// var_dump($data_json);
+// var_dump($data_roles->data->rules);
 
 $alert_text = 'Пожалуйста будьте осторожны при назначении прав в даном разделе настроек. Каждый пользователь получивший доступ к настройкам системы получает полный контроль над всем. Если вы не уверены в своих действиях, оставьте данный раздел пустым';
 ?>
@@ -151,7 +154,8 @@ function save_setting_rules(id_form,type_settings,id_buton) {
                   $("#"+id_buton).html('Сохранить');
                   if (IsJsonString(result)) {
                     arr = JSON.parse(result);
-                    if (arr["response"] == true) {
+                    if (arr["response"]) {
+                        console.log('пупа');
                         alerts('success', arr["description"], '');
                     } else {
                         alerts('warning', 'Внимание', arr["description"]);

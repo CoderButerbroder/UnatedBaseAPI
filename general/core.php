@@ -4755,6 +4755,36 @@ class Settings {
 
   }
 
+  // обновление прав роли
+  public function update_rules_role($name_role,$json_string) {
+        global $database;
+
+        $check_json = $this->isJSON($json_string);
+
+        if ($check_json) {
+
+                $update_rules_role = $database->prepare("UPDATE $this->API_USERS_ROLE SET rules = :jsonstring WHERE name = :name");
+                $update_rules_role->bindParam(':name', $name_role, PDO::PARAM_STR);
+                $update_rules_role->bindParam(':jsonstring', $json_string, PDO::PARAM_STR);
+                $check_upd_activity_user = $update_rules_role->execute();
+                $count_rules = $update_rules_role->rowCount();
+
+                if ($count_rules) {
+                      return json_encode(array('response' => true, 'description' => 'Обновление прав роли прошло успешно'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                }
+                else {
+                      return json_encode(array('response' => false, 'description' => 'Права роли не были изменены'),JSON_UNESCAPED_UNICODE);
+                      exit;
+                }
+        }
+        else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                exit;
+        }
+
+  }
+
 }
 
 ?>
