@@ -48,31 +48,15 @@ if($flag_error){
 }
 
 $settings = new Settings;
-global $database;
-$count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM `MAIN_users` ");
-$count_users->execute();
-$data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
-if('' == $searh_value){
-  $data_users = $database->prepare("SELECT * FROM `MAIN_users` ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
-} else {
-  $data_users_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM `MAIN_users` WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY id");
-  $data_users_count->execute();
-  $data_users_count_result = $data_users_count->fetch(PDO::FETCH_OBJ);
-  $data_users = $database->prepare("SELECT * FROM `MAIN_users` WHERE id_tboil LIKE '%{$searh_value}%' OR last_name LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR second_name LIKE '%{$searh_value}%' OR email LIKE '%{$searh_value}%' OR phone LIKE '%{$searh_value}%' ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
-}
-$data_users->execute();
-$data_users = $data_users->fetchAll(PDO::FETCH_OBJ);
 
-$arr_result->recordsTotal = $data_count_users->COUNT;
-if('' == $searh_value){
-  $arr_result->recordsFiltered = $data_count_users->COUNT;
-} else {
-  $arr_result->recordsFiltered = $data_users_count_result->COUNT;
-}
+$get_data = get_users_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value);
+
+$arr_result->recordsTotal = $get_data->recordsTotal;
+$arr_result->recordsFiltered = $get_data->recordsFiltered;
 $arr_result->data = (array) $arr_result->data ;
 
 $count_row = 1;
-foreach ($data_users as $key => $value) {
+foreach ($get_data->data as $key => $value) {
   $temp_obj_data = (object) array();
   $temp_obj_data->Row = $count_row;
   $temp_obj_data->Number = $value->id_tboil;
@@ -85,7 +69,6 @@ foreach ($data_users as $key => $value) {
   $count_row++;
 }
 
-//echo json_encode($arr_result ,JSON_UNESCAPED_UNICODE);
 echo json_encode(array('response' => true, 'data' => $arr_result) ,JSON_UNESCAPED_UNICODE);
 
 
