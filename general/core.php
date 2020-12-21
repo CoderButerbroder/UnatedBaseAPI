@@ -3946,7 +3946,7 @@ class Settings {
 
 
   // регистрация пользователя в системе
-  public function regiter_user_in_sistem($email,$phone,$name,$last_name,$second_name) {
+  public function regiter_user_in_sistem($email,$phone,$name,$last_name,$second_name,$mail) {
       global $database;
 
         $check_user_data = $database->prepare("SELECT * FROM $this->users WHERE email = :email");
@@ -3963,7 +3963,6 @@ class Settings {
                 $password=null;
                 while($max--)
                 $password.=$chars[rand(0,$size)];
-
 
 
                 $email = (isset($email)) ? $email : ' ';
@@ -4000,47 +3999,54 @@ class Settings {
 
                 if ($check_add_user) {
 
-                      $content =  'Здравствуйте, '.$name.' '.$second_name.'<br>';
-                      $content .= 'Для Вас был зарегистирован аккаунт в системе FULLDATA ЛЕНПОЛИГРАФМАШ.<br>';
-                      $content .= 'Ваши авторизационные данные расположены ниже.<br>';
+                      if ($mail) {
 
-                      $tema = 'Регистрация аккаунта';
+                            $content =  'Здравствуйте, '.$name.' '.$second_name.'<br>';
+                            $content .= 'Для Вас был зарегистирован аккаунт в системе FULLDATA ЛЕНПОЛИГРАФМАШ.<br>';
+                            $content .= 'Ваши авторизационные данные расположены ниже.<br>';
 
-                      $today = date("d.m.Y H:i");
+                            $tema = 'Регистрация аккаунта';
 
-                      $maildata =
-                            array(
-                              'title' => $tema,
-                              'description' => $content,
-                              'link_to_server' => 'https://'.$_SERVER['SERVER_NAME'],
-                              'text_button' => 'Начать работу',
-                              'link_button' => 'https://'.$_SERVER['SERVER_NAME'].'/',
-                              'name_host' => $_SERVER['SERVER_NAME'],
-                              'date' => $today,
-                              'text_login' => $email,
-                              'text_password' => $password
-                            );
+                            $today = date("d.m.Y H:i");
 
-                      $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/pass_reg_user.php');
+                            $maildata =
+                                  array(
+                                    'title' => $tema,
+                                    'description' => $content,
+                                    'link_to_server' => 'https://'.$_SERVER['SERVER_NAME'],
+                                    'text_button' => 'Начать работу',
+                                    'link_button' => 'https://'.$_SERVER['SERVER_NAME'].'/',
+                                    'name_host' => $_SERVER['SERVER_NAME'],
+                                    'date' => $today,
+                                    'text_login' => $email,
+                                    'text_password' => $password
+                                  );
 
-                      foreach ($maildata as $key => $value) {
-                        $template_email = str_replace('['.$key.']', $value, $template_email);
-                      }
+                            $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/pass_reg_user.php');
 
-                      $check_mail = $this->send_email_user($email,$tema,$template_email);
+                            foreach ($maildata as $key => $value) {
+                              $template_email = str_replace('['.$key.']', $value, $template_email);
+                            }
 
-                      if (json_decode($check_mail)->response) {
-                            return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован письмо было выслано на адрес '.$email),JSON_UNESCAPED_UNICODE);
-                            exit;
+                            $check_mail = $this->send_email_user($email,$tema,$template_email);
+
+                            if (json_decode($check_mail)->response) {
+                                  return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован письмо было выслано на адрес '.$email),JSON_UNESCAPED_UNICODE);
+                                  exit;
+                            }
+                            else {
+                                  return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован, но письмо не было выслано на адрес '.$email),JSON_UNESCAPED_UNICODE);
+                                  exit;
+                            }
                       }
                       else {
-                            return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован, но письмо не было выслано на адрес '.$email),JSON_UNESCAPED_UNICODE);
-                            exit;
+                          return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован'),JSON_UNESCAPED_UNICODE);
+                          exit;
                       }
 
                   }
                   else {
-                      return json_encode(array('response' => false, 'description' => 'Ошибка создания пользователя, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                      return json_encode(array('response' => true, 'description' => 'Ошибка создания пользователя, попробуйте позже'),JSON_UNESCAPED_UNICODE);
                       exit;
                   }
 
@@ -4051,7 +4057,6 @@ class Settings {
         }
 
   }
-
 
   // Запись переходов реферов
   public function record_user_referer($session_id,$ip_user,$refer) {
@@ -4890,7 +4895,6 @@ class Settings {
       return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
   }
 
-
   // Получение компаний постраничено с поискоим и без для datatable
   public function get_company_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
       global $database;
@@ -4946,8 +4950,6 @@ class Settings {
 
       return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
   }
-
-
 
   // обновление прав роли
   public function update_rules_role($name_role,$json_string) {
