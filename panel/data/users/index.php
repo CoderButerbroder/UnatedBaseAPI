@@ -39,11 +39,13 @@
 </div>
 
 <script type="text/javascript">
+var tab;
   $(document).ready(function(){
-    $('.table').DataTable({
+      tab = $('.table').DataTable({
           "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
+          "keys": true,
           "ajax": {
                     "url": "/panel/data/users/get_usr",
                     "type": "POST"
@@ -57,6 +59,10 @@
             { "data": "Phone" },
           ]
     });
+
+    tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
+            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil='+(tab.row(cell[0][0]['row']).data()["Number"]));
+        } );
   });
 </script>
 
