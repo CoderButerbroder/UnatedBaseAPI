@@ -16,12 +16,10 @@ $arr_result = (object) array();
 $flag_error = false;
 
 //числовый ключ чтоб понять по какому столбцу запрашивается сортировка
-$array_table_colump = array('Number' => 'id_tboil', '0' => 'id_tboil', '1' => 'id_tboil',
-                            'L_Name' => 'last_name', '2' => 'last_name',
-                            'Name' => 'name', '3' => 'name',
-                            'S_Name' => 'second_name', '4' => 'second_name',
-                            'Email' => 'email', '5' => 'email',
-                            'Phone' => 'phone', '6' => 'phone');
+$array_table_colump = array('0' => 'Inn',
+                            '1' => 'Name',
+                            '2' => 'Inn',
+                            '3' => 'Ogrn');
 
 if(intval($_POST["draw"])){
   $arr_result->draw = intval($_POST["draw"]);
@@ -35,7 +33,7 @@ if(intval($_POST["length"])){
 if(intval($_POST["order"][0]["column"])){
   $order_num_request = intval($_POST["order"][0]["column"]);
 } else if($_POST["order"][0]["column"] == '0') { $order_num_request = 0; } else $flag_error = true;
-if($order_num_request < 0 || $order_num_request > 6) $flag_error = true;
+if($order_num_request < 0 || $order_num_request > 3) $flag_error = true;
 $searh_value = $_POST["search"]["value"];
 
 $order_request = $array_table_colump[$order_num_request];
@@ -49,7 +47,7 @@ if($flag_error){
 
 $settings = new Settings;
 
-$get_data = $settings->get_users_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value);
+$get_data = $settings->get_IPcompany_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value);
 
 $arr_result->recordsTotal = $get_data->recordsTotal;
 $arr_result->recordsFiltered = $get_data->recordsFiltered;
@@ -59,12 +57,10 @@ $count_row = 1;
 foreach ($get_data->data as $key => $value) {
   $temp_obj_data = (object) array();
   $temp_obj_data->Row = $count_row;
-  $temp_obj_data->Number = $value->id_tboil;
-  $temp_obj_data->L_Name = $value->last_name;
-  $temp_obj_data->Name = $value->name;
-  $temp_obj_data->S_Name = $value->second_name;
-  $temp_obj_data->Email = $value->email;
-  $temp_obj_data->Phone = $value->phone;
+  $temp_obj_data->Name = $value->Name;
+  $temp_obj_data->INN = $value->Inn;
+  $temp_obj_data->OGRN = $value->Ogrn;
+  //$temp_obj_data->Status =
   array_push($arr_result->data, $temp_obj_data);
   $count_row++;
 }
