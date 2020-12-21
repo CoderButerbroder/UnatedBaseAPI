@@ -20,6 +20,7 @@
               <table class="table" style="width: 100%">
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>id Tboil</th>
                     <th>Фамилия</th>
                     <th>Имя</th>
@@ -44,11 +45,25 @@
           "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
           "processing": true,
           "serverSide": true,
+          cache: false,
           "ajax": {
-                    "url": "/panel/data/users/get_usr",
-                    "type": "POST"
+                    url: "/panel/data/users/get_usr",
+                    type: "POST",
+                    "dataSrc": function ( json ) {
+                        if(json.response){
+                          return json.data.data;
+                        } else {
+                          alerts('warning', json.description, '');
+                          return false;
+                        }
+                    },
+                    error: function(jqXHR, exception) {
+                        alerts('error', 'Ошибка', 'Ошибка подключения, пожалуйтса попробуйте чуть позже');
+                        return false;
+                    },
                   },
           "columns": [
+            { "data": "Row", visible:false },
             { "data": "Number" },
             { "data": "L_Name" },
             { "data": "Name" },
