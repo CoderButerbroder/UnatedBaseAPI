@@ -31,10 +31,10 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
         <div class="col-md-12 stretch-card">
                   <div id="accordion" class="accordion" role="tablist" style="width: 100%">
                               <div class="card">
-                                <form id="sistem_form">
+                                <form id="sistem_form" onsubmit="false">
                                   <div class="card-header" role="tab" id="heading1">
                                     <h6 class="mb-0">
-                                      <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1" style="color: #fff;">
+                                      <a data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Настройки системы
@@ -65,7 +65,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                                   </div>
                                                 </div>
                                             <? }?>
-                                            <button id="button_sistem" onclick="save_setting_rules(sistem,button_sistem,sistem_form);" class="btn btn-sm btn-success">Сохранить</button>
+                                            <button id="button_sistem" type="submit" onclick="save_setting_rules('sistem','button_sistem','sistem_form');" class="btn btn-sm btn-success">Сохранить</button>
                                     </div>
                                   </div>
                                 </form>
@@ -75,7 +75,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingUsers">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseUsers" aria-expanded="false" aria-controls="collapseUsers">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Настройки пользователей
@@ -114,7 +114,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingDataCompany">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataCompany" aria-expanded="false" aria-controls="collapseDataCompany" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataCompany" aria-expanded="false" aria-controls="collapseDataCompany">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Данные компаний
@@ -149,7 +149,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingDataUser">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataUser" aria-expanded="false" aria-controls="collapseDataUser" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataUser" aria-expanded="false" aria-controls="collapseDataUser">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Данные пользователей
@@ -185,7 +185,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingDataEvents">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataEvents" aria-expanded="false" aria-controls="collapseDataEvents" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataEvents" aria-expanded="false" aria-controls="collapseDataEvents">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Данные мероприятий
@@ -221,7 +221,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingDataReports">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataReports" aria-expanded="false" aria-controls="collapseDataReports" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseDataReports" aria-expanded="false" aria-controls="collapseDataReports">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Данные отчетов
@@ -258,7 +258,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingSupports">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseSupports" aria-expanded="false" aria-controls="collapseSupports" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseSupports" aria-expanded="false" aria-controls="collapseSupports">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Тех.поддержка
@@ -294,7 +294,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingDashbord">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseDashbord" aria-expanded="false" aria-controls="collapseDashbord" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseDashbord" aria-expanded="false" aria-controls="collapseDashbord">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Дашборд
@@ -330,7 +330,7 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
                                 <div class="card">
                                   <div class="card-header" role="tab" id="headingIntegry">
                                     <h6 class="mb-0">
-                                      <a class="collapsed" data-toggle="collapse" href="#collapseIntegry" aria-expanded="false" aria-controls="collapseIntegry" style="color: #fff;">
+                                      <a class="collapsed" data-toggle="collapse" href="#collapseIntegry" aria-expanded="false" aria-controls="collapseIntegry">
                                         <div class="row">
                                           <div class="col-6 mt-2 pl-3" style="color: #000;">
                                             Интеграция
@@ -372,7 +372,6 @@ $data_json = json_decode($settings->get_global_settings('default_rules'));
 function save_setting_rules(type_settings,id_buton,id_form) {
         $("#"+id_buton).attr('disabled', true);
         $("#"+id_buton).html('Сохранение...');
-        e.preventDefault();
         var $form = $(this);
         $.ajax({
             method: 'POST',
