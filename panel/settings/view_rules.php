@@ -141,6 +141,17 @@ $alert_text = 'Пожалуйста будьте осторожны при на�
 
 
 <script>
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
 
 function save_setting_rules(id_form,type_settings,id_buton) {
         $("#"+id_buton).attr('disabled', 'disabled');
@@ -155,8 +166,10 @@ function save_setting_rules(id_form,type_settings,id_buton) {
                   if (IsJsonString(result)) {
                     arr = JSON.parse(result);
                     if (arr["response"]) {
-                        console.log('пупа');
-                        alerts('success', arr["description"], '');
+                        Toast.fire({
+                          icon: 'success',
+                          title: 'Настройки сохранены'
+                        })
                     } else {
                         alerts('warning', 'Внимание', arr["description"]);
                     }
