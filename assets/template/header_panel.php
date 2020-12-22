@@ -6,8 +6,9 @@ if (!$_SESSION["key_user"]) {
     exit;
 }
 else {
+    global $data_user, $data_user_rules;
     $data_user = json_decode($settings->get_cur_user($_SESSION["key_user"]));
-
+    $data_user_rules = json_decode($settings->get_user_rules($data_user->data->role))->rules;
     if (!$data_user->response) {
         header('Location: http://'.$_SERVER['SERVER_NAME'].'/general/actions/logout');
         exit;
@@ -58,12 +59,14 @@ else {
     <div class="sidebar-body">
       <ul class="nav">
         <li class="nav-item nav-category">Главное</li>
-        <li class="nav-item">
-          <a href="/panel" class="nav-link">
-            <i class="link-icon" data-feather="box"></i>
-            <span class="link-title">Главная</span>
-          </a>
-        </li>
+        <?php if ($data_user_rules->dashboard->rule->view_dashboard->value) {?>
+          <li class="nav-item">
+            <a href="/panel" class="nav-link">
+              <i class="link-icon" data-feather="box"></i>
+              <span class="link-title">Главная</span>
+            </a>
+          </li>
+        <?php } ?>
         <li class="nav-item nav-category">Тех. поддержка</li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#emails" role="button" aria-expanded="false" aria-controls="emails">

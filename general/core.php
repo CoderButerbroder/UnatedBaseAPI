@@ -4462,87 +4462,6 @@ class Settings {
 
   }
 
-  // функция регистрации пользователя
-  // public function base_register_user($email,$password,$phone,$name,$last_name,$session_id,$ip) {
-  //   global $database;
-  //
-  //       $check_email = $database->prepare("SELECT * FROM $this->main_users WHERE email = :email OR phone = :phone");
-  //       $check_email->bindParam(':email', $email, PDO::PARAM_STR);
-  //       $check_email->bindParam(':phone', $phone, PDO::PARAM_STR);
-  //       $check_email->execute();
-  //       $user = $check_email->fetch(PDO::FETCH_OBJ);
-  //
-  //       if ($user) {
-  //             if ($user->email == $email) {
-  //                   return json_encode(array('response' => false, 'description' => 'Пользователь с данным email уже зарегистрирован'),JSON_UNESCAPED_UNICODE);
-  //             } else {
-  //                   return json_encode(array('response' => false, 'description' => 'Данный телефон привязан к другому аккаунту'),JSON_UNESCAPED_UNICODE);
-  //             }
-  //       }
-  //
-  //
-  //       $password = password_hash($password, PASSWORD_DEFAULT);
-  //       $default = '';
-  //       $default_int = 0;
-  //       $hash = md5($email.$name.$last_name.$password);
-  //       $DOB = '0000-00-00';
-  //
-  //       $session_refer = $database->prepare("SELECT * FROM $this->user_referer WHERE session_id = :session_id OR ip = :ip ORDER BY date_record DESC LIMIT 1");
-  //       $session_refer->bindParam(':session_id', $session_id, PDO::PARAM_STR);
-  //       $session_refer->bindParam(':ip', $ip, PDO::PARAM_STR);
-  //       $session_refer->execute();
-  //       $user_session_refer = $session_refer->fetch(PDO::FETCH_OBJ);
-  //
-  //       if ($user_session_refer) {
-  //         $first_referer = parse_url($user_session_refer->referer, PHP_URL_HOST);
-  //       } else {
-  //         $first_referer = '';
-  //       }
-  //
-  //       $today = date("Y-m-d H:i:s");
-  //       $recocery_link = md5($hash);
-  //       $status = 'not active';
-  //       $role = 'user';
-  //       $data_adres = json_decode($this->iplocate($this->get_ip()));
-  //       $adres = $data_adres->location->unrestricted_value;
-  //       if (!$adres) {
-  //           $adres = '';
-  //       }
-  //
-  //       $new_uruser = $database->prepare("INSERT INTO $this->main_users (email,password,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,position,hash,first_referer,reg_date,last_activity,recovery_link,status,role) VALUES (:email,:password,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:position,:hash,:first_referer,:reg_date,:last_activity,:recovery_link,:status,:role)");
-  //       $new_uruser->bindParam(':email', $email, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':password', $password, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':phone', $default, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':name', $name, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':last_name', $last_name, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':second_name', $default, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':DOB', $DOB, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':photo', $default, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':adres', $adres, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':inn', $default_int, PDO::PARAM_INT);
-  //       $new_uruser->bindParam(':passport_id', $default_int, PDO::PARAM_INT);
-  //       $new_uruser->bindParam(':id_entity', $default_int, PDO::PARAM_INT);
-  //       $new_uruser->bindParam(':position', $default, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':hash', $hash, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':reg_date', $today, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':last_activity', $today, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':recovery_link', $recocery_link, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':status', $status, PDO::PARAM_STR);
-  //       $new_uruser->bindParam(':role', $role, PDO::PARAM_STR);
-  //       $new_uruser->execute();
-  //       $count = $new_uruser->rowCount();
-  //       $id_new_user = $database->lastInsertId();
-  //
-  //       if ($count) {
-  //             $_SESSION["key_user"] = $hash;
-  //             return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован'),JSON_UNESCAPED_UNICODE);
-  //       } else {
-  //             return json_encode(array('response' => false, 'description' => 'Пользователь не зарегистрирован, попробуйте позже'),JSON_UNESCAPED_UNICODE);
-  //       }
-  //
-  // }
-
   // функция отсылки письма об активации аккаунта
   public function send_email_activation($hash) {
       global $database;
@@ -5016,11 +4935,26 @@ class Settings {
 
   }
 
+  // получение данных по првам роли пользователя
+  public function get_user_rules($id_role){
+        global $database;
 
+        $statement = $database->prepare("SELECT * FROM $this->API_USERS_ROLE WHERE id = :id");
+        $statement->bindParam(':id', $id_role, PDO::PARAM_INT);
+        $statement->execute();
+        $rules = $statement->fetch(PDO::FETCH_OBJ);
 
+        if ($rules->rules) {
+            $data_rules = json_decode();
+            return json_encode(array('response' => true, 'rules' => $data_rules, 'description' => 'Права роли найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+            return json_encode(array('response' => false, 'description' => 'Роль с таким id не была найдена'),JSON_UNESCAPED_UNICODE);
+            exit;
+        }
 
-
-
+  }
 
 
 
