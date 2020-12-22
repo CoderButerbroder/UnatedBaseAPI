@@ -2221,8 +2221,8 @@ class Settings {
               $Fund_Ogrn = isset($value->Fund->Ogrn) ? $value->Fund->Ogrn : $Fund_Ogrn = 0;
 
               $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_entity WHERE Inn = :Inn AND Ogrn = :Ogrn");
-              $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
-              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
+              $statement->bindParam(':Inn', $Inn, PDO::PARAM_STR);
+              $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
               $statement->execute();
               $data = $statement->fetch(PDO::FETCH_OBJ);
 
@@ -2231,13 +2231,13 @@ class Settings {
                     $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators,Fund_Name,Fund_Ogrn) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators,:Fund_Name,:Fund_Ogrn)");
                     $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
                     $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
-                    $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
-                    $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+                    $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
+                    $statement->bindParam(':Inn', $Inn, PDO::PARAM_STR);
                     $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
                     $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
                     $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
                     $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
-                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
                     $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
                     $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
                     $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
@@ -2265,7 +2265,7 @@ class Settings {
                     $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
                     $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
                     $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
-                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                    $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
                     $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
                     $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
                     $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
@@ -2328,13 +2328,13 @@ class Settings {
                   $statement = $database->prepare("INSERT INTO $this->IPCHAIN_entity (Name,FullName,Ogrn,Inn,FoundationDate,LawAddress,Industries,Technologies,LeaderId,Website,Okved,Okveds,Region,Email,Notes,AnnualIndicators) VALUES (:Name,:FullName,:Ogrn,:Inn,:FoundationDate,:LawAddress,:Industries,:Technologies,:LeaderId,:Website,:Okved,:Okveds,:Region,:Email,:Notes,:AnnualIndicators)");
                   $statement->bindParam(':Name', $Name, PDO::PARAM_STR);
                   $statement->bindParam(':FullName', $FullName, PDO::PARAM_STR);
-                  $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_INT);
-                  $statement->bindParam(':Inn', $Inn, PDO::PARAM_INT);
+                  $statement->bindParam(':Ogrn', $Ogrn, PDO::PARAM_STR);
+                  $statement->bindParam(':Inn', $Inn, PDO::PARAM_STR);
                   $statement->bindParam(':FoundationDate', $FoundationDate, PDO::PARAM_STR);
                   $statement->bindParam(':LawAddress', $LawAddress, PDO::PARAM_STR);
                   $statement->bindParam(':Industries', $Industries, PDO::PARAM_STR);
                   $statement->bindParam(':Technologies', $Technologies, PDO::PARAM_STR);
-                  $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_INT);
+                  $statement->bindParam(':LeaderId', $LeaderId, PDO::PARAM_STR);
                   $statement->bindParam(':Website', $Website, PDO::PARAM_STR);
                   $statement->bindParam(':Okved', $Okved, PDO::PARAM_STR);
                   $statement->bindParam(':Okveds', $Okveds, PDO::PARAM_STR);
