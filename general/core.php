@@ -1171,6 +1171,8 @@ class Settings {
   public function register_entity($id_user_tboil,$inn,$msp,$site,$region,$staff,$district,$street,$house,$type_inf,$additionally,$export,$branch,$technology){
       global $database;
 
+      $today = date("Y-m-d H:i:s");
+
       $check_company = $this->get_data_entity_inn($inn);
 
       if (json_decode($check_company)->response) {
@@ -1268,8 +1270,8 @@ class Settings {
 
             $hash = md5($id_user_tboil.$inn.$msp.$site.$region.$staff.$district.$street.$house.$type_inf.$additionally.$date_pickup);
 
-            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branch,technology,hash,date_pickup)
-                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:technology,:hash,:date_pickup)");
+            $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,data_dadata,msp,site,region,staff,district,street,house,type_inf,additionally,export,branch,technology,hash,date_pickup,date_register)
+                                                  VALUES (:inn,:data_fns,:data_dadata,:msp,:site,:region,:staff,:district,:street,:house,:type_inf,:additionally,:export,:branch,:technology,:hash,:date_pickup,:date_register)");
             $request->bindParam(':inn', $inn, PDO::PARAM_INT);
             $request->bindParam(':data_fns', $default, PDO::PARAM_STR);
             $request->bindParam(':data_dadata', $default, PDO::PARAM_STR);
@@ -1287,6 +1289,8 @@ class Settings {
             $request->bindParam(':technology', $technology, PDO::PARAM_STR);
             $request->bindParam(':hash', $hash, PDO::PARAM_STR);
             $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+            $request->bindParam(':date_register', $today, PDO::PARAM_STR);
+
             $check_request = $request->execute();
             //$id_request = $request->rowCount();
             $id_request = $database->lastInsertId();
