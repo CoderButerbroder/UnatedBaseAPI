@@ -49,7 +49,7 @@
 
 <script src="/assets/js/load_block.js"></script>
 <script src="/assets/js/switch_user_css_style.js"></script>
-
+<script src="/assets/js/chat.js"></script>
 <!-- plugin js for this page -->
 <!-- end plugin js for this page -->
 <!-- inject:js -->
