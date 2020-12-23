@@ -34,6 +34,26 @@
                       "description":"Доступ к просмотру всех пользователей системы",
                       "value":true
                   },
+                  "add_new_users":{
+                      "name":"add_new_users",
+                      "description":"Доступ к добавлению новых пользователей в систему",
+                      "value":true
+                  },
+                  "edit_role_users":{
+                      "name":"edit_role_users",
+                      "description":"Доступ к изменению",
+                      "value":true
+                  },
+                  "delete_users":{
+                      "name":"delete_users",
+                      "description":"Доступ к удаению пользователей из системы",
+                      "value":true
+                  },
+                  "view_one_user":{
+                      "name":"view_one_user",
+                      "description":"Просмотр одного пользователя",
+                      "value":true
+                  },
                   "add_new_role":{
                       "name":"add_new_role",
                       "description":"Доступ к добавлению новых ролей",
@@ -162,6 +182,21 @@
                               "view_all_support_tikets":{
                                   "name":"view_all_support_tikets",
                                   "description":"Доступ к просмотру всех заявок",
+                                  "value":true
+                              },
+                              "allin_canban":{
+                                  "name":"allin_canban",
+                                  "description":"Доступ к просмотру к общему канбану заявок",
+                                  "value":true
+                              },
+                              "view_history":{
+                                  "name":"view_history",
+                                  "description":"Доступ к просмотру истории действий над заявками",
+                                  "value":true
+                              },
+                              "view_history_tiket":{
+                                  "name":"view_history",
+                                  "description":"Доступ к просмотру истории действий с одной завкой",
                                   "value":true
                               },
                               "view_all_open_support_tikets":{
