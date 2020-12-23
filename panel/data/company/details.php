@@ -39,7 +39,12 @@ function get_data_usr_entity($id_entity) {
 
 $data_user = json_decode(get_data_usr_entity($data_company->data->id));
 
-$data_fns = json_decode($data_company->data->data_fns);
+$data_fns_arr = json_decode($data_company->data->data_fns);
+$data_fns = array_pop($data_fns_arr->items);
+
+$flag_company_ip_ul = (isset($data_fns->ЮЛ)) ? true : false;
+
+
 $false_data = 'Данные отсутствуют';
 /* для технологий.. >_> */
 $arr_BM = [];
@@ -89,8 +94,7 @@ foreach ($test_json as $key) {
 }
 
 //для подсчета доходов с печени
-$out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
-
+$out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->inn);
 
 ?>
 
@@ -99,7 +103,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
     <li class="breadcrumb-item"><a href="#">Юр. лица</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Детали юр. лица <?php echo (isset($data_fns->items[0]->ЮЛ)) ? $data_fns->items[0]->ЮЛ->НаимСокрЮЛ : $data_fns->items[0]->ИП->ФИОПолн ; ?></li>
+    <li class="breadcrumb-item active" aria-current="page">Детали юр. лица <?php echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->НаимСокрЮЛ : $data_fns->ИП->ФИОПолн ; ?></li>
   </ol>
 </nav>
 
@@ -118,7 +122,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                       <h5>Основная информация</h5>
                     </div>
                     <div class="col-sm-3 text-right" style="padding-top: .05rem">
-                      <h5><a href="#" onclick="location='/register/step-2/'"><u>Ред.</u></a></h5>
+
                     </div>
                   </div>
                   <?php // Основная информация о компании  ?>
@@ -138,7 +142,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     </div>
                     <div class="col-sm-9">
                       <p>
-                        <? echo (isset($data_fns->items[0]->ЮЛ)) ? $data_fns->items[0]->ЮЛ->ОГРН : $data_fns->items[0]->ИП->ОГРНИП ; ?>
+                        <? echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->ОГРН : $data_fns->ИП->ОГРНИП ; ?>
                       </p>
                     </div>
                   </div>
@@ -148,7 +152,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     </div>
                     <div class="col-sm-9">
                       <p>
-                        <? echo (isset($data_fns->items[0]->ЮЛ)) ? $data_fns->items[0]->ЮЛ->КПП : $false_data ; ?>
+                        <? echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->КПП : $false_data ; ?>
                       </p>
                     </div>
                   </div>
@@ -158,7 +162,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     </div>
                     <div class="col-sm-9">
                       <p>
-                        <? echo (isset($data_fns->items[0]->ЮЛ)) ? $data_fns->items[0]->ЮЛ->ОснВидДеят->Код : $data_fns->items[0]->ИП->ОснВидДеят->Код ; ?>
+                        <? echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->ОснВидДеят->Код : $data_fns->ИП->ОснВидДеят->Код ; ?>
                       </p>
                     </div>
                   </div>
@@ -181,7 +185,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                           $arr_json_adr = json_decode($data_company->data->additionally);
                           if(isset($arr_json_adr->post_kod)) { echo $arr_json_adr->post_kod.', '; } echo $arr_json_adr->adr.', '.$arr_json_adr->house;
                         } else {
-                          echo (isset($data_fns->items[0]->ЮЛ)) ? $data_fns->items[0]->ЮЛ->Адрес->Индекс." ".$data_fns->items[0]->ЮЛ->Адрес->АдресПолн : $data_fns->items[0]->ИП->Адрес->Индекс." ".$data_fns->items[0]->ИП->Адрес->АдресПолн ;
+                          echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->Адрес->Индекс." ".$data_fns->ЮЛ->Адрес->АдресПолн : $data_fns->ИП->Адрес->Индекс." ".$data_fns->ИП->Адрес->АдресПолн ;
                         }
                        ?>
                     </div>
@@ -223,7 +227,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     <div class="col-sm-4">
                       <p>
                         <?
-                          if ($data_fns->items[0]->ЮЛ->ОткрСведения->СумДоход) {echo $data_fns->items[0]->ЮЛ->ОткрСведения->СумДоход.' руб.';}
+                          if ($data_fns->ЮЛ->ОткрСведения->СумДоход) {echo $data_fns->ЮЛ->ОткрСведения->СумДоход.' руб.';}
                           else {echo $false_data;}
                         ?>
                       </p>
@@ -236,7 +240,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     <div class="col-sm-4">
                       <p>
                         <?
-                         if ($data_fns->items[0]->ЮЛ->ОткрСведения->КолРаб) {echo $data_fns->items[0]->ЮЛ->ОткрСведения->КолРаб;}
+                         if ($data_fns->ЮЛ->ОткрСведения->КолРаб) {echo $data_fns->ЮЛ->ОткрСведения->КолРаб;}
                          else {echo $false_data;}
                         ?>
                       </p>
@@ -249,7 +253,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     <div class="col-sm-4">
                       <p>
                         <?
-                        if ($data_fns->items[0]->ЮЛ->ОткрСведения->СведСНР) {echo $data_fns->items[0]->ЮЛ->ОткрСведения->СведСНР;}
+                        if ($data_fns->ЮЛ->ОткрСведения->СведСНР) {echo $data_fns->ЮЛ->ОткрСведения->СведСНР;}
                         else {echo $false_data;}
                         ?>
                       </p>
@@ -267,10 +271,10 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     <div class="col-sm-4">
                       <p>
                         <?
-                        if ($data_fns->items[0]->ЮЛ->ОткрСведения->Налоги) {
+                        if ($data_fns->ЮЛ->ОткрСведения->Налоги) {
                           $nalog = 0;
-                          for ($i=0; $i < count($data_fns->items[0]->ЮЛ->ОткрСведения->Налоги); $i++) {
-                              $nalog = $nalog + $data_fns->items[0]->ЮЛ->ОткрСведения->Налоги[$i]->СумУплНал;
+                          for ($i=0; $i < count($data_fns->ЮЛ->ОткрСведения->Налоги); $i++) {
+                              $nalog = $nalog + $data_fns->ЮЛ->ОткрСведения->Налоги[$i]->СумУплНал;
                           }
                           echo $nalog.' руб.';
                         }
@@ -286,10 +290,10 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                     <div class="col-sm-4">
                       <p>
                         <?
-                        if ($data_fns->items[0]->ЮЛ->ОткрСведения->Налоги) {
+                        if ($data_fns->ЮЛ->ОткрСведения->Налоги) {
                           $peni = 0;
-                          for ($i=0; $i < count($data_fns->items[0]->ЮЛ->ОткрСведения->Налоги); $i++) {
-                              $peni = $peni + $data_fns->items[0]->ЮЛ->ОткрСведения->Налоги[$i]->ОбщСумНедоим;
+                          for ($i=0; $i < count($data_fns->ЮЛ->ОткрСведения->Налоги); $i++) {
+                              $peni = $peni + $data_fns->ЮЛ->ОткрСведения->Налоги[$i]->ОбщСумНедоим;
                           }
                           echo $peni.' руб.';
                         }
@@ -338,7 +342,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
                                 <h5>Национальная технологическая инициатива</h5>
                               </div>
                               <div class="col-sm-3 text-right" style="padding-top: .05rem">
-                                  <h5><a href="#" onclick="location='/register/step-2/'"><u>Ред.</u></a></h5>
+
                               </div>
                           </div>
                           <?php // Основная информация о компании  ?>
@@ -483,98 +487,123 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
               </div>
               <div id="collapse_card_fns_data" class="collapse" >
                 <div class="card-body">
+                  <div class="row">
+
                   <?php
                     $html_icon_popover_start = '<td><svg xmlns="http://www.w3.org/2000/svg" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="';
                     $html_icon_popover_end = '" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-info"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg></td>';
-                    if (isset($data_fns->items[0]->ИП)) {
+                    //var_dump($data_fns);
+                    echo json_encode($data_fns, JSON_UNESCAPED_UNICODE);
+                    if (isset($data_fns->ИП)) {
                     //заполняем таблицу для ИП
-                    //var_dump($data_fns->items[0]->ИП);
-                    ?>
-                    <table class="table table-hover">
-                      <thead>
-                        <tr>
-                          <th scope="col" style="width:5%;">Поле</th>
-                          <th scope="col" style="width:2%;">#</th>
-                          <th scope="col" style="width:90%;">Значение</th>
-                        </tr>
-                      </thead>
-                      <tbody>
+                    //var_dump($data_fns->ИП);
 
-                      <?php
+    $arr_fns_descr_IP = array(
+      'ФИОПолн' => (object) array( 'alias' => 'ФИО', 'descr' => 'Фамилия Имя Отчество индивидуального предпринимателя'),
+      'ИННФЛ' => (object) array( 'alias' => 'ИНН', 'descr' => 'ИНН физического лица'),
+      'ОГРНИП' => (object) array( 'alias' => 'ОГРН', 'descr' => 'ОГРН ИП'),
+      'ДатаОГРН' => (object) array( 'alias' => 'Дата присвоения', 'descr' => 'Дата внесения соответствующей записи в ЕГР' ),
+      'ДатаРег' => (object) array( 'alias' => 'Дата Регистрации', 'descr' => 'Дата регистрации ИП в формате YYYY-MM-DD'),
+      'ВидИП' => (object) array( 'alias' => 'Вид ИП', 'descr' => 'Индивидуальный предприниматель или глава крестьянского фермерского хозяйства'),
+      'Пол' => (object) array( 'alias' => 'Пол', 'descr' => 'Мужской или Женский'),
+      'ВидГражд' => (object) array( 'alias' => 'Вид Гражданства', 'descr' => 'Гражданин РФ или Иностранный гражданин'),
+      'Статус' => (object) array( 'alias' => 'Статус', 'descr' => 'Статус ИП. Например, «Действующее», Прекратило деятельность и др.'),
+      'СтатусДата' => (object) array( 'alias' => 'Актуальность Статуса', 'descr' => 'Дата актуальности статуса в формате YYYY-MM-DD'),
+      'СпОбрЮЛ' => (object) array( 'alias' => 'Способ обр. юр. лица', 'descr' => 'Способ образования юридического лица'),
+      'ДатаПрекр' => (object) array( 'alias' => 'Дата прекращения деятельности ИП', 'descr' => 'Дата прекращения деятельности ЮЛ (ИП) (если деятельность прекращена) в формате YYYY-MM-DD'),
+      'НО' => (object) array( 'alias' => 'Налоговые Органы', 'descr' => 'Сведения о налоговых органах'),
+      'Рег' => (object) array( 'alias' => 'Регистратор', 'descr' => 'Код и наименование регистрирующего (налогового) органа), внесшем запись о юридическом лице'),
+      'РегДата' => (object) array( 'alias' => 'Дата Регистрации', 'descr' => 'Дата внесения записи о регистрации'),
+      'Учет' => (object) array( 'alias' => 'Налог. Орган', 'descr' => 'Код и наименование налогового органа), в котором юридическое лицо состоит (для ЮЛ, прекративших деятельность - состояло) на учете'),
+      'УчетДата' => (object) array( 'alias' => 'Дата постановки', 'descr' => 'Дата постановки на учет в налоговом органе'),
+      'ПФ' => (object) array( 'alias' => 'Пенсионный фонд', 'descr' => 'Сведения о регистрации юридического лица в качестве страхователя в территориальном органе Пенсионного фонда Российской Федерации'),
+      'РегНомПФ' => (object) array( 'alias' => 'Регистрационный номер', 'descr' => 'Регистрационный номер в территориальном органе Пенсионного фонда Российской Федерации'),
+      'ДатаРегПФ' => (object) array( 'alias' => 'Дата регистрации', 'descr' => 'Дата регистрации юридического лица в качестве страхователя'),
+      'КодПФ' => (object) array( 'alias' => 'Код ПФ', 'descr' => 'Код и наименование территориального органа Пенсионного фонда Российской Федерации'),
+      'ФСС' => (object) array( 'alias' => 'ФСС', 'descr' => 'Сведения о регистрации юридического лица в качестве страхователя в территориальном органе Пенсионного фонда Российской Федерации'),
+      'РегНомФСС' => (object) array( 'alias' => 'Регистрациионный номер', 'descr' => 'Регистрационный номер в исполнительном органе Фонда социального страхования Российской Федерации'),
+      'ДатаРегФСС' => (object) array( 'alias' => 'Дата регистрации', 'descr' => 'Дата регистрации юридического лица в качестве страхователя'),
+      'КодФСС' => (object) array( 'alias' => 'Исполнительный Орган', 'descr' => 'Код и наименование исполнительного органа Фонда социального страхования Российской Федерации'),
+      'Адрес' => (object) array( 'alias' => 'Адрес', 'descr' => 'Сведения об адресе в РФ), внесенные в ЕГРЮЛ'),
+      'КодРегион' => (object) array( 'alias' => 'Код субъекта РФ', 'descr' => 'Код субъекта Российской Федерации'),
+      'Индекс' => (object) array( 'alias' => 'Индекс', 'descr' => 'Индекс'),
+      'АдресПолн' => (object) array( 'alias' => 'Адрес Полный', 'descr' => 'Полный адрес (Регион,Район,Город,Населенный пункт,Улица,Дом,Корпус,Квартира)'),
+      'E-mail' => (object) array( 'alias' => 'E-mail', 'descr' => 'Адрес электронной почты'),
+      'ОснВидДеят' => (object) array( 'alias' => 'Вид деятельности', 'descr' => 'Сведения об основном виде деятельности'),
+      'Код' => (object) array( 'alias' => 'Код', 'descr' => 'Код по Общероссийскому классификатору видов экономической деятельности'),
+      'ДопВидДеят' => (object) array( 'alias' => 'Сведения о доп. вид. деятельности', 'descr' => 'Сведения о дополнительных видах деятельности'),
+      'Текст' => (object) array( 'alias' => 'Наименование вида деятельности', 'descr' => 'Наименование вида деятельности по Общероссийскому классификатору видов экономической деятельности'),
+      'СПВЗ' => (object) array( 'alias' => 'Причина внесения', 'descr' => 'Сведения о причинах внесения записей в реестр ЕГРИП'),
+      'Дата' => (object) array( 'alias' => 'Дата внесения', 'descr' => 'Дата внесения записи в ЕГРЮЛ'),
+      'Лицензии' => (object) array( 'alias' => 'Лицензии', 'descr' => 'Сведения о лицензиях,выданных ИП'),
+      'НомерЛиц' => (object) array( 'alias' => 'Серия и номер', 'descr' => 'Серия и номер лицензии'),
+      'ВидДеятельности' => (object) array( 'alias' => 'Наименовние регистратора', 'descr' => 'Наименование лицензируемого вида деятельности, на который выдана лицензия'),
+      'ДатаНачала' => (object) array( 'alias' => 'Дата начала действия лицензии', 'descr' => 'Дата начала действия лицензии'),
+      'ДатаОконч' => (object) array( 'alias' => 'Дата окончания действия лицензии', 'descr' => 'Дата окончания действия лицензии'),
+      'МестоДейств' => (object) array( 'alias' => 'Сведения об адресах', 'descr' => 'Сведения об адресах осуществления лицензируемого вида деятельности (если несколько, то адреса разделяются знаком вертикальной черты |)'),
+      'История' => (object) array( 'alias' => 'История', 'descr' => 'Исторические сведения о компании'),
+      'Период актуальности данных' => (object) array('alias' => 'Актуальность', 'descr' => 'В формате YYYY-MM-DD ~ YYYY-MM-DD (начальная и конечная даты, разделенные знаком ~ «тильда»'));
 
-                      $arr_fns_descr = array( 'ФИОПолн' => 'Фамилия Имя Отчество индивидуального предпринимателя', 'ИННФЛ' => 'ИНН физического лица', 'ОГРНИП' => 'ОГРН ИП', 'ДатаРег' => 'Дата регистрации ИП в формате YYYY-MM-DD', 'ВидИП' => 'Индивидуальный предприниматель или глава крестьянского фермерского хозяйства', 'Пол' => 'Мужской или Женский', 'ВидГражд' => 'Гражданин РФ или Иностранный гражданин', 'Статус' => 'Статус ИП. Например, «Действующее», Прекратило деятельность и др.', 'СтатусДата' => 'Дата актуальности статуса в формате YYYY-MM-DD', 'СпОбрЮЛ' => 'Способ образования юридического лица', 'ДатаПрекр' => 'Дата прекращения деятельности ЮЛ (ИП) (если деятельность прекращена) в формате YYYY-MM-DD', 'НО' => 'Сведения о налоговых органах', 'Рег' => 'Код и наименование регистрирующего (налогового) органа, внесшем запись о юридическом лице', 'РегДата' => 'Дата внесения записи о регистрации', 'Учет' => 'Код и наименование налогового органа, в котором юридическое лицо состоит (для ЮЛ, прекративших деятельность - состояло) на учете', 'УчетДата' => 'Дата постановки на учет в налоговом органе', 'ПФ' => 'Сведения о регистрации юридического лица в качестве страхователя в территориальном органе Пенсионного фонда Российской Федерации', 'РегНомПФ' => 'Регистрационный номер в территориальном органе Пенсионного фонда Российской Федерации', 'ДатаРегПФ' => 'Дата регистрации юридического лица в качестве страхователя', 'КодПФ' => 'Код и наименование территориального органа Пенсионного фонда Российской Федерации', 'ФСС' => 'Сведения о регистрации юридического лица в качестве страхователя в территориальном органе Пенсионного фонда Российской Федерации', 'РегНомФСС' => 'Регистрационный номер в исполнительном органе Фонда социального страхования Российской Федерации', 'ДатаРегФСС' => 'Дата регистрации юридического лица в качестве страхователя', 'КодФСС' => 'Код и наименование исполнительного органа Фонда социального страхования Российской Федерации', 'Адрес' => 'Сведения об адресе в РФ, внесенные в ЕГРЮЛ', 'КодРегион' => 'Код субъекта Российской Федерации', 'Индекс' => 'Индекс', 'АдресПолн' => 'Полный адрес (Регион, Район, Город, Населенный пункт, Улица, Дом, Корпус, Квартира)', 'E-mail' => 'Адрес электронной почты', 'ОснВидДеят' => 'Сведения об основном виде деятельности', 'Код' => 'Код по Общероссийскому классификатору видов экономической деятельности', 'ДопВидДеят' => 'Сведения о дополнительных видах деятельности', 'Текст' => 'Наименование вида деятельности по Общероссийскому классификатору видов экономической деятельности', 'СПВЗ' => 'Сведения о причинах внесения записей в реестр ЕГРИП', 'Дата' => 'Дата внесения записи в ЕГРЮЛ', 'Лицензии' => 'Сведения о лицензиях, выданных ИП', 'НомерЛиц' => 'Серия и номер лицензии', 'ВидДеятельности' => 'Наименование лицензируемого вида деятельности, на который выдана лицензия', 'ДатаНачала' => 'Дата начала действия лицензии', 'ДатаОконч' => 'Дата окончания действия лицензии', 'МестоДейств' => 'Сведения об адресах осуществления лицензируемого вида деятельности (если несколько, то адреса разделяются знаком вертикальной черты |)', 'История' => 'Исторические сведения о компании', 'Период актуальности данных' => 'В формате YYYY-MM-DD ~ YYYY-MM-DD (начальная и конечная даты, разделенные знаком ~ «тильда»');
-                      echo json_encode($data_fns, JSON_UNESCAPED_UNICODE);
-                      function paint_table($arr, $name_id_tr = '')
-                      {
-                        global $html_icon_popover_start,$html_icon_popover_end,$arr_fns_descr;
-                        foreach ($arr as $key => $value) {
-                          echo "<tr>";
-                            echo "<td>".$key."</td>";
-                            echo $html_icon_popover_start.$arr_fns_descr[$key].$html_icon_popover_end;
-                            // if (is_object($value)) {
-                            //   echo '<td><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-down"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg></td>';
-                            //   paint_table($value);
-                            // }
-                            // if (is_array($value)) {
-                            //   echo "<td>wtf".key($value)."</td>";
-                            //   foreach ($value as $key_value => $value_value) {
-                            //     paint_table($value[$key_value]);
-                            //   }
-                            //
-                            // }
-                            if (is_string($value)) {
-                              echo "<td>".$value."</td>";
-                            }
-                          echo "</tr>";
-                        }
-                      }
+    /*
+        честно говоря мне оч стыдно за это глиномесие..
+    */
 
-                      paint_table($data_fns->items[0]->ИП);
-?>
-                        <!-- <tr>
-                          <td >ФИОПолн</td>
-                          <?php echo $html_icon_popover_start.'Фамилия Имя Отчество индивидуального предпринимателя'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ФИОПолн.'</td></tr><tr>'; ?>
-                          <td>ИННФЛ</td>
-                          <?php echo $html_icon_popover_start.'ИНН физического лица'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ИННФЛ.'</td></tr><tr>'; ?>
-                          <td>ОГРНИП</td>
-                          <?php echo $html_icon_popover_start.'ОГРН ИП'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ОГРНИП.'</td></tr><tr>'; ?>
-                          <td>ДатаРег</td>
-                          <?php echo $html_icon_popover_start.'Дата регистрации ИП в формате YYYY-MM-DD'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ДатаРег.'</td></tr><tr>'; ?>
-                          <td>ВидИП</td>
-                          <?php echo $html_icon_popover_start.'Индивидуальный предприниматель или глава крестьянского фермерского хозяйства'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ВидИП.'</td></tr><tr>'; ?>
-                          <td>Пол</td>
-                          <?php echo $html_icon_popover_start.'Мужской или Женский'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->Пол .'</td></tr><tr>'; ?>
-                          <td>ВидГражд</td>
-                          <?php echo $html_icon_popover_start.'Гражданин РФ или Иностранный гражданин'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ВидГражд.'</td></tr><tr>'; ?>
-                          <td>Статус</td>
-                          <?php echo $html_icon_popover_start.'Статус ИП. Например, «Действующее», Прекратило деятельность и др.'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->Статус.'</td></tr><tr>'; ?>
-                          <td>СтатусДата</td>
-                          <?php echo $html_icon_popover_start.'Дата актуальности статуса в формате YYYY-MM-DD'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->СтатусДата.'</td></tr><tr>'; ?>
-                          <td>СпОбрЮЛ</td>
-                          <?php echo $html_icon_popover_start.'Способ образования юридического лица'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->СпОбрЮЛ.'</td></tr><tr>'; ?>
-                          <td>ДатаПрекр</td>
-                          <?php echo $html_icon_popover_start.'Дата прекращения деятельности ЮЛ (ИП) (если деятельность прекращена) в формате YYYY-MM-DD'.$html_icon_popover_end; ?>
-                          <?php echo '<td>'.$data_fns->items[0]->ИП->ДатаПрекр.'</td></tr><tr>'; ?>
-                        </tr> -->
-                      </tbody>
-                    </table>
+    function paint_table_ip($arr)
+    {
+      global $html_icon_popover_start,$html_icon_popover_end,$arr_fns_descr_IP;
+      foreach ($arr as $key => $value) {
+
+          if ($key == 'Адрес') {
+            //var_dump($value);
+
+            if(!isset($value->КодРегион)) {
+              echo '<div class="col-md-12">
+                      <div class="row pl-1 pt-3">
+                        <div class="col-sm-3"><p><b>Адрес:</b></p></div>
+                        <div class="col-sm-9">';
+              foreach ($value as $key_adres => $value_adres) {
+                echo '<span class="badge mr-2" style="background: #727cf5; color: #fff; word-wrap: break-word" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="'.$value_adres->АдресПолн.'" >'.$key_adres.'</span>';
+              }
+              echo '</div></div></div>';
+              continue;
+            }
+          }
+
+          echo '<div class="col-md-12">
+          <div class="row pl-1 pt-3">
+            <div class="col-sm-3">
+              <p><b>'.$arr_fns_descr_IP[$key]->alias.':</b></p>
+            </div>
+            <div class="col-sm-9">
+              ';
+
+            if (is_object($value)) {
+              paint_table_ip($value);
+            }
+            if (is_array($value)) {
+              foreach ($value as $key_value => $value_value) {
+                if($key == 'ДопВидДеят') echo '<span class="badge mr-2" style="background: #727cf5; color: #fff; word-wrap: break-word" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="'.$value_value->Текст.' '.date('d.m.Y', strtotime($value_value->Дата)).'" >'.$value_value->Код.'</span>';
+                if($key == 'СПВЗ') echo '<span class="badge mr-2" style="background: #727cf5; color: #fff; word-wrap: break-word" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="'.$value_value->Текст.'" >'.date('d.m.Y', strtotime($value_value->Дата)).'</span>';
+                if($key == 'Лицензии') echo '<span class="badge mr-2" style="background: #727cf5; color: #fff; word-wrap: break-word" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="'.$value_value->ВидДеятельности.' '.$value->ДатаНачала.' '.$value->ДатаОконч.' '.$value->МестоДейств.'" >'.$value->НомерЛиц.'</span>';
+                if($key == 'Статус') {
+                  $temp_name_str = 'Период актуальности данных';
+                  echo '<span class="badge mr-2" style="background: #727cf5; color: #fff; word-wrap: break-word" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto" data-content="'.$arr_fns_descr_IP[$value->$temp_name_str]->descr.'" >'.$value->$temp_name_str.'</span>';
+                }
+              }
+            }
+            if (is_string($value)) {
+              echo $value;
+            }
+          echo '</div></div></div>';
+      }
+    }
+    paint_table_ip($data_fns->ИП);
+  } else {
 
 
-                    <?php
-                    } else {
-
-                    }
+  }
                   ?>
+
                 </div>
               </div>
             </div>
@@ -588,9 +617,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
 <script>
 
   $(document).ready(function() {
-    $('.popover').popover({
-      trigger : 'focus',
-    });
+
   });
 
   function fill_technolagy(str, name){
@@ -599,7 +626,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($inn);
       arr_data_tech = JSON.parse(str);
       for (var prop in arr_data_tech) {
           if(arr_data_tech[prop]["Name"] != 'Данные отсутствуют') {
-            $('#technology_'+name).html($('#technology_'+name).html()+'<text class="badge mr-2 h5" style="background: #2079cf; color: #fff; word-wrap: break-word">'+arr_data_tech[prop]["Name"]+'</text>');
+            $('#technology_'+name).html($('#technology_'+name).html()+'<text class="badge mr-2 h5" style="background: #727cf5; color: #fff; word-wrap: break-word">'+arr_data_tech[prop]["Name"]+'</text>');
           } else {
             $('#technology_'+name).html($('#technology_'+name).html()+'<text>'+arr_data_tech[prop]["Name"]+'</text>');
           }
