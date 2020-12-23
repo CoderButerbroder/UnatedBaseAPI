@@ -58,8 +58,8 @@ else {
     </div>
     <div class="sidebar-body">
       <ul class="nav">
-        <li class="nav-item nav-category">Главное</li>
         <?php if ($data_user_rules->dashboard->rule->view_dashboard->value) {?>
+        <li class="nav-item nav-category">Главное</li>
           <li class="nav-item">
             <a href="/panel" class="nav-link">
               <i class="link-icon" data-feather="box"></i>
@@ -67,6 +67,7 @@ else {
             </a>
           </li>
         <?php } ?>
+        <?php if ($data_user_rules->support->rule->view_all_support_tikets->value) {?>
         <li class="nav-item nav-category">Тех. поддержка</li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#emails" role="button" aria-expanded="false" aria-controls="emails">
@@ -94,7 +95,9 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
         <li class="nav-item nav-category">Данные</li>
+        <?php if ($data_user_rules->entity->rule->view_all_entity->value) {?>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#uiComponents" role="button" aria-expanded="false" aria-controls="uiComponents">
             <i class="link-icon" data-feather="briefcase"></i>
@@ -106,6 +109,7 @@ else {
               <li class="nav-item">
                 <a href="/panel/data/company" class="nav-link">Все юр. лица</a>
               </li>
+
               <li class="nav-item">
                 <a href="/panel/data/company/search" class="nav-link">Поиск юр. лица</a>
               </li>
@@ -115,6 +119,8 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
+        <?php if ($data_user_rules->users->rule->view_all_users->value) {?>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#advancedUI" role="button" aria-expanded="false" aria-controls="advancedUI">
             <i class="link-icon" data-feather="users"></i>
@@ -132,6 +138,8 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
+        <?php if ($data_user_rules->events->rule->view_all_events->value) {?>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#forms" role="button" aria-expanded="false" aria-controls="forms">
             <i class="link-icon" data-feather="inbox"></i>
@@ -146,6 +154,8 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
+        <?php if ($data_user_rules->events->rule->view_all_reports->value) {?>
         <li class="nav-item">
           <a class="nav-link"  data-toggle="collapse" href="#charts" role="button" aria-expanded="false" aria-controls="charts">
             <i class="link-icon" data-feather="pie-chart"></i>
@@ -169,6 +179,8 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
+        <?php if ($data_user_rules->emploe->rule->view_all_users->value) {?>
         <li class="nav-item nav-category">Настройки</li>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#general-pages" role="button" aria-expanded="false" aria-controls="general-pages">
@@ -178,21 +190,31 @@ else {
           </a>
           <div class="collapse" id="general-pages">
             <ul class="nav sub-menu">
+              <?php if ($data_user_rules->emploe->rule->view_all_users->value) {?>
               <li class="nav-item">
                 <a href="/panel/settings/all_users" class="nav-link">Все пользователи</a>
               </li>
+              <?php } ?>
+              <?php if ($data_user_rules->emploe->rule->add_new_users->value) {?>
               <li class="nav-item">
                 <a href="/panel/settings/new_user" class="nav-link">Добавить пользователя</a>
               </li>
+              <?php } ?>
+              <?php if ($data_user_rules->emploe->rule->view_all_role->value) {?>
               <li class="nav-item">
                 <a href="/panel/settings/roles" class="nav-link">Роли и права</a>
               </li>
-              <li class="nav-item">
-                <a href="/panel/settings/new_role" class="nav-link">Добавление роли</a>
-              </li>
+              <?php } ?>
+              <?php if ($data_user_rules->emploe->rule->add_new_role->value) {?>
+                <li class="nav-item">
+                  <a href="/panel/settings/new_role" class="nav-link">Добавление роли</a>
+                </li>
+                <?php } ?>
             </ul>
           </div>
         </li>
+        <?php } ?>
+        <?php if ($data_user_rules->sistem->rule->settings->value) {?>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#authPages" role="button" aria-expanded="false" aria-controls="authPages">
             <i class="link-icon" data-feather="unlock"></i>
@@ -216,6 +238,7 @@ else {
             </ul>
           </div>
         </li>
+        <?php } ?>
         <li class="nav-item nav-category">Документация</li>
         <li class="nav-item">
           <a href="#" target="_blank" class="nav-link">
