@@ -142,7 +142,7 @@ else {
         <?php if ($data_user_rules->events->rule->view_all_events->value) {?>
         <li class="nav-item">
           <a class="nav-link" data-toggle="collapse" href="#forms" role="button" aria-expanded="false" aria-controls="forms">
-            <i class="link-icon" data-feather="inbox"></i>
+            <i class="link-icon" data-feather="calendar"></i>
             <span class="link-title">Мероприятия</span>
             <i class="link-arrow" data-feather="chevron-down"></i>
           </a>
@@ -155,7 +155,7 @@ else {
           </div>
         </li>
         <?php } ?>
-        <?php if ($data_user_rules->events->rule->view_all_reports->value) {?>
+        <?php if ($data_user_rules->reports->rule->view_all_reports->value) {?>
         <li class="nav-item">
           <a class="nav-link"  data-toggle="collapse" href="#charts" role="button" aria-expanded="false" aria-controls="charts">
             <i class="link-icon" data-feather="pie-chart"></i>

@@ -6,9 +6,9 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$today = date("Y-m-d H:i:s");
+$inn = 7725692472;
 
-$data = $settings->get_state_support_types_ipchain();
+$data = $settings->check_status_skolkovo_entity($inn);
 
 var_dump($data);
 // $token_tboil = $settings->get_global_settings('tboil_token');
