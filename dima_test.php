@@ -6,7 +6,9 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$data = $settings->get_data_for_ipchain();
+$today = date("Y-m-d H:i:s");
+
+$data = $settings->get_state_support_types_ipchain();
 
 var_dump($data);
 // $token_tboil = $settings->get_global_settings('tboil_token');

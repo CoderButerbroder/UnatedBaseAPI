@@ -2126,7 +2126,44 @@ class Settings {
 
   }
 
+  // получение мероприятий отдельного пользователя по id_tboil
+  public function get_user_event($id_user_tboil) {
+      global $database;
 
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_users_events INNER JOIN $this->MAIN_events ON $this->MAIN_users_events.`id_event_on_referer` = $this->MAIN_events.`id_event_on_referer` AND $this->MAIN_users_events.`id_referer` = $this->MAIN_events.`id_referer` WHERE id_tboil = :id_tboil ORDER BY start_datetime_event DESC");
+      $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Мероприятия на которые ходил данный пользователь найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Мероприятий в базе данных не найдено, по данному запросу'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+
+  }
+
+  // вспомогающая функция для
+  public function date_time_rus($string_data,$time = true) {
+        if ($string_data) {
+          if ($time == false) {
+              $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y');
+          }
+          else {
+              $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y H:i');
+          }
+          return $newDateString;
+        }
+        else {
+          return false;
+        }
+  }
 
 
 
@@ -2762,6 +2799,32 @@ class Settings {
       }
 
       return true;
+  }
+
+  // получение типов поддержки из ipcain
+  public function get_state_support_types_ipchain() {
+
+      $curl = curl_init();
+      $headers = array(
+            'Content-Type: application/json',
+            'Accept: application/json'
+      );
+      curl_setopt($curl, CURLOPT_URL, 'https://dfptest.sk.ru/api/Common/GetStateSupportTypes');
+      curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+      curl_setopt($curl, CURLOPT_POST, false);
+      $out1 = curl_exec($curl);
+      curl_close($curl);
+
+      $out1 = json_decode($out1);
+
+      if (count($out1)) {
+          return $out1;
+      }
+      else {
+          return false;
+      }
+
   }
 
 
@@ -3600,9 +3663,9 @@ class Settings {
       $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
 
       if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки ридов'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки патентов из IPChain'), JSON_UNESCAPED_UNICODE);
       }
     }
 
@@ -3619,9 +3682,9 @@ class Settings {
       $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
 
       if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний из IPChain'), JSON_UNESCAPED_UNICODE);
       }
     }
 
@@ -3638,9 +3701,9 @@ class Settings {
       $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
 
       if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка получения  форм поддержки компании'), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => false, 'description' => 'Ошибка получения форм поддержки компании из IPChain'), JSON_UNESCAPED_UNICODE);
       }
     }
 
