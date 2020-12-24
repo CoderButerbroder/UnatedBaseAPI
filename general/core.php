@@ -2305,8 +2305,27 @@ class Settings {
 
   }
 
-  // добавление статуса в тикет
-  
+  // функция подсчета заявок
+  public function count_support_tickets($status){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE status = :status");
+      $statement->bindParam(':status', $status, PDO::PARAM_STR);
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+            $data_count = count($data);
+            return json_encode(array('response' => true, 'data' => $data_count, 'description' => 'Количество заявок со статусом '.$status), JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Заявок со статусом '.$status.' не найдено'), JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
 
 
   // Функция
