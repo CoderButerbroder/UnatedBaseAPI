@@ -15,7 +15,6 @@ $data_company_str = $settings->get_data_entity_inn(trim($_GET["inn"]));
 
 $data_company = json_decode($data_company_str);
 
-
 if (!$data_company->response) {
   //надо подумать что делать в таких случаях >_<
   echo "<h1>error</h1>";
@@ -95,6 +94,10 @@ foreach ($test_json as $key) {
 
 //для подсчета доходов с печени
 $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->inn);
+
+$data_local_ipchain = $settings->ipchain_get_data_entity('inn', $data_company->data->inn);
+
+echo json_encode($data_local_ipchain, JSON_UNESCAPED_UNICODE);
 
 ?>
 
@@ -216,7 +219,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                       <h5>Ключевые показатели</h5>
                     </div>
                     <div class="col-sm-3 text-right" style="padding-top: .05rem">
-                      <h5><span class="badge pr-3 pl-3" style="background: #727cf5; color: #fff">ФНС</span></h5>
+                      <h5><span class="badge" style="background: #727cf5; color: #fff">ФНС</span></h5>
                     </div>
                   </div>
                   <?php // Основная информация о компании  ?>
@@ -626,18 +629,22 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
           <div class="col-sm-9"><?php echo $data_fns->ЮЛ->НаимСокрЮЛ; ?></div>
         </div>
       </div>
-      <div class="col-md-12">
-        <div class="row pl-1 pt-3">
-          <div class="col-sm-3"><p><b>Номер контактного телефона:</b></p></div>
-          <div class="col-sm-9"><?php echo $data_fns->ЮЛ->НомТел; ?></div>
+      <?php if (isset( $data_fns->ЮЛ->НомТел)) { ?>
+        <div class="col-md-12">
+          <div class="row pl-1 pt-3">
+            <div class="col-sm-3"><p><b>Номер контактного телефона:</b></p></div>
+            <div class="col-sm-9"><?php echo $data_fns->ЮЛ->НомТел; ?></div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-12">
-        <div class="row pl-1 pt-3">
-          <div class="col-sm-3"><p><b>Адрес электронной почты:</b></p></div>
-          <div class="col-sm-9"><?php $temp_obj_fns_str = 'E-mail'; echo $data_fns->ЮЛ->$temp_obj_fns_str; ?></div>
+      <?php } ?>
+      <?php if (isset( $data_fns->ЮЛ->$temp_obj_fns_str)) { ?>
+        <div class="col-md-12">
+          <div class="row pl-1 pt-3">
+            <div class="col-sm-3"><p><b>Адрес электронной почты:</b></p></div>
+            <div class="col-sm-9"><?php $temp_obj_fns_str = 'E-mail'; echo $data_fns->ЮЛ->$temp_obj_fns_str; ?></div>
+          </div>
         </div>
-      </div>
+      <?php } ?>
       <div class="col-md-12">
         <div class="row pl-1 pt-3">
           <div class="col-sm-3"><p><b>НаимПолнЮЛ:</b></p></div>
@@ -662,25 +669,28 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
           <div class="col-sm-9"><?php echo $data_fns->ЮЛ->Статус; ?></div>
         </div>
       </div>
-      <div class="col-md-12">
-        <div class="row pl-1 pt-3">
-          <div class="col-sm-3"><p><b>СтатусДата:</b></p></div>
-          <div class="col-sm-9"><?php echo $data_fns->ЮЛ->СтатусДата; ?></div>
+      <?php if(isset($data_fns->ЮЛ->СтатусДата)) { ?>
+        <div class="col-md-12">
+          <div class="row pl-1 pt-3">
+            <div class="col-sm-3"><p><b>СтатусДата:</b></p></div>
+            <div class="col-sm-9"><?php echo $data_fns->ЮЛ->СтатусДата; ?></div>
+          </div>
         </div>
-      </div>
+      <?php } ?>
       <div class="col-md-12">
         <div class="row pl-1 pt-3">
           <div class="col-sm-3"><p><b>СпОбрЮЛ:</b></p></div>
           <div class="col-sm-9"><?php echo $data_fns->ЮЛ->СпОбрЮЛ; ?></div>
         </div>
       </div>
-      <?php if(isset($data_fns->ЮЛ->ДатаПрекр)) echo '
-      <div class="col-md-12">
-        <div class="row pl-1 pt-3">
-          <div class="col-sm-3"><p><b>ДатаПрекр:</b></p></div>
-          <div class="col-sm-9"><?php echo $data_fns->ЮЛ->ДатаПрекр; ?></div>
+      <?php if(isset($data_fns->ЮЛ->ДатаПрекр)) { ?>
+        <div class="col-md-12">
+          <div class="row pl-1 pt-3">
+            <div class="col-sm-3"><p><b>ДатаПрекр:</b></p></div>
+            <div class="col-sm-9"><?php echo $data_fns->ЮЛ->ДатаПрекр; ?></div>
+          </div>
         </div>
-      </div>'; ?>
+      <?php } ?>
       <!-- НО -->
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
@@ -730,31 +740,37 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ПФ->РегНомПФ; ?></div>
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>Дата рег. ЮЛ в кач. страхователя:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ПФ->ДатаРегПФ; ?></div>
+          <?php if (isset( $data_fns->ЮЛ->ПФ->ДатаРегПФ)) { ?>
+            <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>Дата рег. ЮЛ в кач. страхователя:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ПФ->ДатаРегПФ; ?></div>
+              </div>
             </div>
-          </div>
+          <?php } ?>
+          <?php if (isset( $data_fns->ЮЛ->ПФ->КодПФ)) { ?>
           <div class="col-md-12">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Код и наименование терр. Орг. ПФ РФ:</b></p></div>
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ПФ->КодПФ; ?></div>
             </div>
           </div>
+          <?php } ?>
+          <?php if (isset( $data_fns->ЮЛ->ПФ->УчетДата)) { ?>
           <div class="col-md-12">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Дата постановки на учет в НО:</b></p></div>
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ПФ->УчетДата; ?></div>
             </div>
           </div>
-        </div>
+        <?php } ?>
+      </div>
       <!-- ФСС -->
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения о рег. ЮЛ в качестве страхователя:</b><text></div>
-            <div class="col-sm-9">&nbsp;</div>
+            <div class="col-sm-7"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения о рег. ЮЛ в качестве страхователя:</b><text></div>
+            <div class="col-sm-5">&nbsp;</div>
           </div>
         </div>
         <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none">
@@ -764,24 +780,30 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ФСС->РегНомФСС; ?></div>
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>Дата рег. ЮЛ в кач. страхователя:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ФСС->ДатаРегФСС; ?></div>
+          <?php if (isset( $data_fns->ЮЛ->ФСС->ДатаРегФСС)) { ?>
+            <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>Дата рег. ЮЛ в кач. страхователя:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ФСС->ДатаРегФСС; ?></div>
+              </div>
             </div>
-          </div>
+          <?php } ?>
+          <?php if (isset( $data_fns->ЮЛ->ФСС->КодФСС)) { ?>
           <div class="col-md-12">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Код и наименование терр. Орг. Фонда соц. страхования РФ:</b></p></div>
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ФСС->КодФСС; ?></div>
             </div>
           </div>
+          <?php } ?>
+          <?php if (isset( $data_fns->ЮЛ->ФСС->УчетДата)) { ?>
           <div class="col-md-12">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Дата постановки на учет в НО:</b></p></div>
               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->ФСС->УчетДата; ?></div>
             </div>
           </div>
+        <?php } ?>
         </div>
       <!-- Капитал -->
         <div class="col-md-12" >
@@ -804,18 +826,22 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
             <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Капитал->СумКап; ?></div>
           </div>
         </div>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Код и наименование терр. Орг. Фонда соц. страхования РФ:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Капитал->КодФСС; ?></div>
+        <?php if (isset( $data_fns->ЮЛ->Капитал->КодФСС)) { ?>
+          <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Код и наименование терр. Орг. Фонда соц. страхования РФ:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Капитал->КодФСС; ?></div>
+            </div>
           </div>
-        </div>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Дата внесения информации о капитале:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Капитал->Дата; ?></div>
+        <?php } ?>
+        <?php if (isset( $data_fns->ЮЛ->Капитал->Дата)) { ?>
+          <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Дата внесения информации о капитале:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Капитал->Дата; ?></div>
+            </div>
           </div>
-        </div>
+        <?php } ?>
       </div>
       <!-- Адрес -->
         <div class="col-md-12">
@@ -939,12 +965,14 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                 <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ИННФЛ; ?></div>
               </div>
           </div>
-          <div class="col-md-12">
-               <div class="row pl-1 pt-3">
-                 <div class="offset-1 col-sm-3"><p><b>ОГРН ИП - управляющего ЮЛ:</b></p></div>
-                 <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ОГРНИП; ?></div>
-               </div>
-          </div>
+          <?php if(isset($data_fns->ЮЛ->Руководитель->ОГРНИП)) { ?>
+            <div class="col-md-12">
+                 <div class="row pl-1 pt-3">
+                   <div class="offset-1 col-sm-3"><p><b>ОГРН ИП - управляющего ЮЛ:</b></p></div>
+                   <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ОГРНИП; ?></div>
+                 </div>
+            </div>
+          <?php } ?>
           <?php
             if(isset($data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ)) { ?>
               <!-- Недостоверный адрес -->
@@ -1163,8 +1191,8 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                    <div class="col-sm-12">
                      <?php foreach($value_uch->Залогодержатели as $key_z => $value_z) { ?>
                      <div class="row" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++;?>">
-                       <hr style="border: none; color: #727c
-                       <?php if(isset($value_z->ОГРН)) { ?>f5; background-color: #727cf5; height: 1px; ">
+                       <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                       <?php if(isset($value_z->ОГРН)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ОГРН:</b></p></div>
@@ -1312,19 +1340,19 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                             <div class="col-md-12">
                               <div class="row pl-1 pt-3">
                                 <div class="col-sm-4"><p><b>ИНН:</b></p></div>
-                                <div class="col-sm-8"><?php echo $value_pred->ИНН; ?>></div>
+                                <div class="col-sm-8"><?php echo $value_pred->ИНН; ?></div>
                               </div>
                             </div>
                             <div class="col-md-12">
                               <div class="row pl-1 pt-3">
                                 <div class="col-sm-4"><p><b>ОГРН:</b></p></div>
-                                <div class="col-sm-8"><?php echo $value_pred->ОГРН; ?>></div>
+                                <div class="col-sm-8"><?php echo $value_pred->ОГРН; ?></div>
                               </div>
                             </div>
                             <div class="col-md-12">
                               <div class="row pl-1 pt-3">
                                 <div class="col-sm-4"><p><b>Статус:</b></p></div>
-                                <div class="col-sm-8"><?php echo $value_pred->Статус; ?>></div>
+                                <div class="col-sm-8"><?php echo $value_pred->Статус; ?></div>
                               </div>
                             </div>
                           </div>
@@ -1376,11 +1404,11 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                 <div class="col-md-12">
                   <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                   <div class="row pl-1 pt-3">
-                    <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о доверительном управляющем:</b></text></div>
-                    <div class="col-sm-9"></div>
+                    <div class="col-sm-7"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о доверительном управляющем:</b></text></div>
+                    <div class="col-sm-5"></div>
                   </div>
                 </div>
-                <div class="" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
+                <div class="" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width:100%;">
                 <?php if (!empty($data_fns->ЮЛ->УправлОрг)) {
                   foreach($data_fns->ЮЛ->УправлОрг as $key_pred => $value_pred){ ?>
                       <div class="offset-1 col-sm-11">
@@ -1414,8 +1442,8 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                   <div class="col-md-12">
                     <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                     <div class="row pl-1 pt-3">
-                      <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>" ><b>Сведения о держателе реестра акционеров акционерного общества:</b></text></div>
-                      <div class="col-sm-9"></div>
+                      <div class="col-sm-7"><text class="list_fns" list="<?php echo $count_list_fns; ?>" ><b>Сведения о держателе реестра акционеров акционерного общества:</b></text></div>
+                      <div class="col-sm-5"></div>
                     </div>
                   </div>
                   <div id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width:100%;">
@@ -1456,16 +1484,17 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                     <div class="col-md-12">
                       <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                       <div class="row pl-1 pt-3">
-                        <div class="col-sm-3"><p><b>Сведения об участниках в реорганизации:</b></p></div>
-                        <div class="col-sm-9"></div>
+                        <div class="col-sm-7"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения об участниках в реорганизации:</b></text></div>
+                        <div class="col-sm-5"></div>
                       </div>
                     </div>
+                    <div class="" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width: 100%;">
                     <?php
                       if (!empty($data_fns->ЮЛ->$temp_obj_value_Участники_реорганизации)) {
                       foreach($data_fns->ЮЛ->$temp_obj_value_Участники_реорганизации as $key_pred => $value_pred){ ?>
                           <div class="offset-1 col-sm-11">
-                            <div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></div>
-                            <div class="row pl-1 pt-3">
+                            <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text></div>
+                            <div class="row pl-1 pt-3" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width:100%;">
                                 <div class="col-md-12">
                                   <div class="row pl-1 pt-3">
                                     <div class="col-sm-4"><p><b>ИНН:</b></p></div>
@@ -1487,7 +1516,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                               </div>
                             </div>
                       <?php
-                      }}
+                    }} echo "</div>";
                     } ?>
 
                     <!-- ОснВидДеят  -->
@@ -2166,6 +2195,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                                         </div>
                                       </div>
                                     </div>
+                                    </div>
                                  <?php } $count_list_fns++;
                                    if(isset($value_uch->ПризнНедДанДолжнФЛ)) { ?>
                                      <!-- Недостоверный адрес -->
@@ -2202,8 +2232,8 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                                              <div class="col-sm-12">
                                                <?php foreach($value_uch->Залогодержатели as $key_z => $value_z) { ?>
                                                <div class="row" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++;?>">
-                                                 <hr style="border: none; color: #727c
-                                                 <?php if(isset($value_z->ОГРН)) { ?>f5; background-color: #727cf5; height: 1px; ">
+                                                 <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                                 <?php if(isset($value_z->ОГРН)) { ?>
                                                  <div class="col-md-12">
                                                    <div class="row pl-1 pt-3">
                                                      <div class="offset-1 col-sm-3"><p><b>ОГРН:</b></p></div>
@@ -2355,7 +2385,6 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
 
   $(document).ready(function() {
 
-    console.log($('.list_fns'));
     var icon_min = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
     var icon_plus = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
 
@@ -2381,75 +2410,6 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         }
       }
     });
-
-    // var str_fns_base = '<?php echo addslashes(json_encode($data_fns->ЮЛ, JSON_UNESCAPED_UNICODE)); ?>';
-    // var arr_fns_base = JSON.parse(str_fns_base);
-    //
-    // function read_fns(arr_fns) {
-    //   //arr_element =  document .createElement( 'div' );
-    //   var arr_element = [];
-    //   for (var prop in arr_fns) {
-    //     //console.log(create_div_obj(prop, arr_fns[prop]).outerHTML);
-    //     arr_element.push(create_div_obj(prop, arr_fns[prop]));
-    //
-    //     //console.log("obj." + prop + " = " + arr_fns_base[prop]);
-    //   }
-    //   return arr_element;
-    // }
-
-
-    // function create_div_obj(key, value) {
-    //     var div_col_12 = document .createElement( 'div' );
-    //     $(div_col_12).attr('class', 'col-md-12');
-    //     var div_col_row = document .createElement( 'div' );
-    //     $(div_col_row).attr('class', 'row pl-1 pt-3');
-    //     var div_col_row_sm_3 = document .createElement( 'div' );
-    //     $(div_col_row_sm_3).attr('class', 'col-sm-3');
-    //     var div_col_row_sm_9 = document .createElement( 'div' );
-    //     $(div_col_row_sm_9).attr('class', 'col-sm-9');
-    //
-    //     if(typeof value == 'object') {
-    //       $(div_col_row_sm_3).html('<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-    //       $(div_col_row_sm_9).html(read_fns(value));
-    //     }
-    //     if(typeof value == 'string') {
-    //       $(div_col_row_sm_9).html(value);
-    //     }
-    //
-    //     $(div_col_row_sm_3).html('<p>'+$(div_col_row_sm_3).html()+' '+'<b>'+key+'</p></b>');
-    //     $(div_col_row).html(div_col_row_sm_3.outerHTML+div_col_row_sm_9.outerHTML);
-    //     $(div_col_12).html(div_col_row.outerHTML);
-    //     return div_col_12;
-    // };
-
-    // <div class="col-md-12">
-    //   <div class="row pl-1 pt-3">
-    //     <div class="col-sm-3"><p><b>ИНН:</b></p></div>
-    //     <div class="col-sm-9"><?php echo $data_fns->ЮЛ->ИНН; ?></div>
-    //   </div>
-    // </div>
-
-    // console.log(arr_fns_base);
-    //
-    // result_fns_arr =  read_fns(arr_fns_base);
-    // result_fns_arr.forEach(element => {
-    //   //$(element).attr('class', 'row');
-    //   $('#list_fns_head').append(element).html();
-    // })
-    // console.log(result_fns_arr);
-    //$(result_fns).attr('class', 'row');
-
-    //$('#list_fns_head').append(result_fns).html();
-
-
-    // $('#list_fns_head').on('click', function(){
-    //   var element = event.path[0];
-    //   console.log($(element).children().length > 0);
-    //   //console.log();
-    // });
-
-
-
   });
 
   function fill_technolagy(str, name){
@@ -2458,7 +2418,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
       arr_data_tech = JSON.parse(str);
       for (var prop in arr_data_tech) {
           if(arr_data_tech[prop]["Name"] != 'Данные отсутствуют') {
-            $('#technology_'+name).html($('#technology_'+name).html()+'<text class="badge mr-2 h5" style="background: #727cf5; color: #fff; word-wrap: break-word">'+arr_data_tech[prop]["Name"]+'</text>');
+            $('#technology_'+name).html($('#technology_'+name).html()+'<text class="badge" style="background: #727cf5; color: #fff; word-wrap: break-word">'+arr_data_tech[prop]["Name"]+'</text>');
           } else {
             $('#technology_'+name).html($('#technology_'+name).html()+'<text>'+arr_data_tech[prop]["Name"]+'</text>');
           }
