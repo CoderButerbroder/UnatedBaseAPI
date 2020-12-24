@@ -232,7 +232,29 @@ class Settings {
 
       if ($data){
          if ($data->status == 'active') {
-           return json_encode(array('response' => true, 'data' => $data),JSON_UNESCAPED_UNICODE);
+           return json_encode(array('response' => true, 'data' => $data, 'description' => 'Рефер успешно найден'),JSON_UNESCAPED_UNICODE);
+         } else {
+           return json_encode(array('response' => false, 'description' => 'Данный ресурс не активирован'),JSON_UNESCAPED_UNICODE);
+         }
+      }
+      else {
+         return json_encode(array('response' => false, 'description' => 'Отказ в доступе, данный ресурс не зарегистрирован'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+  // получение данных по реферу и бд
+  public function get_data_referer_id($id_referer) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->api_referer WHERE id = :id");
+      $statement->bindParam(':id', $id_referer, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data){
+         if ($data->status == 'active') {
+           return json_encode(array('response' => true, 'data' => $data, 'description' => 'Рефер успешно найден'),JSON_UNESCAPED_UNICODE);
          } else {
            return json_encode(array('response' => false, 'description' => 'Данный ресурс не активирован'),JSON_UNESCAPED_UNICODE);
          }
@@ -2175,7 +2197,7 @@ class Settings {
       $data = $statement->fetch(PDO::FETCH_OBJ);
 
       if ($data) {
-          return json_encode(array('response' => false, 'data' => $data, 'description' => 'Данныt по мероприятияю успешно найдены'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данныt по мероприятияю успешно найдены'),JSON_UNESCAPED_UNICODE);
           exit;
       }
       else {
@@ -2239,6 +2261,357 @@ class Settings {
       }
 
   }
+
+  // получение данных по тикету поддержки
+  public function get_data_tiket($id_ticket){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id = :id");
+      $statement->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data->id) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные по тикету успешно найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Данные по тикету не найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
+  // Смена статуса тикета
+  public function update_status_support_tiket($id_ticket,$new_status) {
+        global $database;
+
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
+        $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+        $update_status_ticket->bindParam(':name', $name, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':description', $description, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':status', $status, PDO::PARAM_STR);
+        $temp = $update_status_ticket->execute();
+        $check = $update_status_ticket->rowCount();
+
+        if ($check) {
+            return json_encode(array('response' => true, 'description' => 'Статус заявки успешно изменен'), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка изменения статуса заявки'), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+  }
+
+  // добавление статуса в тикет
+  
+
+
+  // Функция
+  public function entity_additionally($id_entity) {
+        global $database;
+
+        //
+        $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
+        $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
+
+        $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
+        $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $check_data_с->execute();
+        $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
+
+        $fns_data_company = $this->fns_base($check_data_result_с->inn);
+
+
+        $category = (!empty($category)) ? $category : ' ';
+        $proceeds = (isset($proceeds)) ? $proceeds : ' ';
+        $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
+        $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
+        $count_staff = (isset($count_staff)) ? $count_staff : ' ';
+        $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
+        $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
+        $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
+        $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
+        $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
+        $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
+        $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
+        $land = (!empty($land)) ? $land : ' ';
+        $land_area = (!empty($land_area)) ? $land_area : ' ';
+        $room_area = (!empty($room_area)) ? $room_area : ' ';
+
+        if(is_Object($check_data_result)) {
+          //нашли прошлую запись, обновляем ее
+
+          $d_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
+            proceeds_export = :proceeds_export, count_staff = :count_staff, volume_fund = :volume_fund, volume_tax_customs = :volume_tax_customs,
+            volume_investments = :volume_investments, volume_credits = :volume_credits, count_patent = :count_patent, pay_research = :pay_research,
+            count_export_contracts = :count_export_contracts, land = :land, land_area = :land_area, room_area = :room_area  WHERE id_entity = :id_entity,");
+        } else {
+          $d_data = $database->prepare("INSERT INTO $this->errors_migrate (id_entity, category, proceeds, proceeds_import, proceeds_export, count_staff, volume_fund, volume_tax_customs, volume_investments, volume_credits, count_patent, pay_research, count_export_contracts, land, land_area, room_area)
+          VALUES (:id_entity, :category, :proceeds, :proceeds_import, :proceeds_export, :count_staff, :volume_fund, :volume_tax_customs, :volume_investments, :volume_credits, :count_patent, :pay_research, :count_export_contracts, :land, :land_area, :room_area)");
+        }
+
+        $d_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+        $d_data->bindParam(':category', $category, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
+        $d_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
+        $d_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
+        $d_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
+        $d_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
+        $d_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
+        $d_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
+        $d_data->bindParam(':land', $land, PDO::PARAM_STR);
+        $d_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
+        $d_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
+
+        $temp = $d_data->execute();
+        $count = $d_data->rowCount();
+
+        if($count > 0){
+          return json_encode(array('response' => true, 'description' => 'Данные добавлены/обновлены'), JSON_UNESCAPED_UNICODE);
+        } else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка добавление/обновления данных'), JSON_UNESCAPED_UNICODE);
+        }
+
+    }
+
+  // добавлени нового тикета в поддержку
+  public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
+      global $database;
+      if(!isset($id_tboil) && !isset($name)  && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+      $hash_tiket_support = md5($id_tboil.$name.$id_referer.$date_added);
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket (id_tboil, name, description, date_added, status, links_add_files, id_referer, hash_tiket_support)
+                                    VALUES (:id_tboil, :name, :description, :date_added, :status, :links_add_files, :id_referer, :hash_tiket_support)");
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $d_data->bindParam(':hash_tiket_support', $hash_tiket_support, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      $id_new_ticket = $database->lastInsertId();
+      if($id_new_ticket === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой заявки'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'заявка успешно добавлена', 'data' => (object) array('id' => $id_new_ticket, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+  // обновление тикета
+  public function upd_support_ticket($id_ticket, $name, $description, $status) {
+      global $database;
+
+      if(!isset($id_ticket) && !isset($name) && !isset($description) && !isset($status)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
+      $d_data->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка обновления тикета'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Тикет успешно обновлен'), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+  //получение данных по тикиту
+    //type_result = full - все / message - только  переписка по тикету / conclusion - с решением
+    //type_search поиск по id tiket = true
+    //или по user_tboil = false создавшего тикет для получения всех его тикетов и истории переписки
+  public function get_data_support_ticket($value_search, $type_result = 'message', $type_search = true) {
+      if(!isset($value_search)){
+        return json_encode(array('response' => false, 'description' => 'Не указаны все обходимые данные'), JSON_UNESCAPED_UNICODE);
+      }
+      global $database;
+
+      $arr_result = (object) array();
+
+      if($type_search){
+        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id = :id");
+        $ticket_data->bindParam(':id', $value_search, PDO::PARAM_INT);
+      } else {
+        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil");
+        $ticket_data->bindParam(':id_tboil', $value_search, PDO::PARAM_INT);
+      }
+      $ticket_data->execute();
+      $result_data_ticket = $ticket_data->fetchAll(PDO::FETCH_OBJ);
+
+      if (empty($result_data_ticket)) {
+        if($type_search){
+          return json_encode(array('response' => false, 'description' => 'Тикет с указаным id не найден'), JSON_UNESCAPED_UNICODE);
+        } else {
+          return json_encode(array('response' => false, 'description' => 'У Пользователя не было тикетов'), JSON_UNESCAPED_UNICODE);
+        }
+      }
+
+      foreach ($result_data_ticket as $key_tiket => $value_tiket) {
+        $result_data_message = [];
+        $message_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket");
+        $message_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
+        $message_data->execute();
+        $result_data_message = $message_data->fetchAll(PDO::FETCH_OBJ);
+
+        if(empty($result_data_message)){
+          $arr_result->$key_tiket->messages = 'Ошибка получения переписки в тиките';
+        } else {
+          $arr_result->$key_tiket->messages = $result_data_message;
+        }
+
+        if ($type_result == 'full') {
+          $arr_result->$key_tiket->ticket = $value_tiket;
+        }
+        if ($type_result == 'conclusion' || $type_result == 'full') {
+          $result_data_conclusion = [];
+          $conclusion_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_conclusion WHERE id_support_ticket = :id_support_ticket");
+          $conclusion_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
+          $conclusion_data->execute();
+          $result_data_conclusion = $conclusion_data->fetchAll(PDO::FETCH_OBJ);
+
+          if(empty($result_data_conclusion)){
+            $arr_result->$key_tiket->conclusion = 'Ошибка получения решения в тиките';
+          } else {
+            $arr_result->$key_tiket->conclusion = $result_data_conclusion;
+          }
+        }
+      }
+
+      return json_encode(array('response' => true, 'data' => $arr_result,'description' => 'Получение данных о тиките/ах'), JSON_UNESCAPED_UNICODE);
+    }
+
+  // добавление нового сообщения в тикет поддержки
+  public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+      global $database;
+
+      if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+
+      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil, message, links_add_files, date_added, id_referer, type_user)
+                                    VALUES (:id_support_ticket, :id_tboil, :message, :links_add_files, :date_added, :id_referer, :type_user)");
+      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
+      $d_data->bindParam(':type_user', $type_user, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      $id_new_messages = $database->lastInsertId();
+      if($id_new_messages === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления нового сообщения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+  // обновление сообщения в тикете поддержки
+  public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
+      global $database;
+
+      if(empty($id_support_ticket_msg) && empty($message)) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_messages SET message =:message, links_add_files =:links_add_files WHERE id =:id");
+      $d_data->bindParam(':id', $id_support_ticket_msg, PDO::PARAM_INT);
+      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования сообщения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Сообщение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+  // добавление решения по тикету поддержку
+  public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
+      global $database;
+
+      if(empty($id_support_ticket) && empty($id_tboil) && empty($description) && empty($action) ) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_conclusion (id_support_ticket, id_tboil, description, action, links_add_files, date_added)
+                                    VALUES (:id_support_ticket, :id_tboil, :description, :action, :links_add_files, :date_added)");
+      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
+      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
+
+      $temp = $d_data->execute();
+      $id_new_conclusion = $database->lastInsertId();
+      if($id_new_conclusion === false){
+        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой записи'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Решение успешно добавлено', 'data' => (object) array('id' => $id_new_conclusion)), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+  // обновление данных по решению
+  public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
+      global $database;
+
+      if(empty($id_ticket_conclusion) && empty($description) && empty($action) ) {
+        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      }
+      if($links_add_files) $links_add_files = trim($links_add_files);
+      $links_add_files = ($links_add_files != '') ? $links_add_files : NULL;
+      $date_added = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_conclusion SET description =:description, action =:action, links_add_files =:links_add_files WHERE id =:id");
+      $d_data->bindParam(':id', $id_ticket_conclusion, PDO::PARAM_INT);
+      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
+      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      if(!$d_data->rowCount()){
+        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования решения'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => true, 'description' => 'Решение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
+      }
+
+    }
+
+
+
+
+
 
 
 
@@ -2900,6 +3273,81 @@ class Settings {
 
   }
 
+  // соединие таблицы поддержки из ipchain и компании из ipchain
+  public function IPCHAIN_entity_inner_join($inn) {
+      global $database;
+
+      $data_с = $database->prepare("SELECT * FROM IPCHAIN_StateSupport INNER JOIN IPCHAIN_entity WHERE IPCHAIN_StateSupport.ipchain_id_entity = IPCHAIN_entity.id AND inn =:inn");
+      $data_с->bindParam(':inn', $inn, PDO::PARAM_STR);
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки данных'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+  //получение всех ридов из ЕБД
+  public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
+      global $database;
+
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки патентов из IPChain'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+  //получение всех проекты компаний в ipchain из ЕБД
+  public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний из IPChain'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+  //получение всех форм поддержки компании
+  public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
+      global $database;
+      if($type){
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE ipchain_id_entity =:ipchain_id_entity");
+        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
+      } else {
+        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport ");
+      }
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Ошибка получения форм поддержки компании из IPChain'), JSON_UNESCAPED_UNICODE);
+      }
+    }
+
+
 
 
 
@@ -3011,6 +3459,9 @@ class Settings {
           }
 
   }
+
+
+
 
 
 
@@ -3353,6 +3804,9 @@ class Settings {
         }
 
     }
+
+
+
 
 
 
@@ -3706,378 +4160,10 @@ class Settings {
         $this->telega_send($this->get_global_settings('telega_chat_error'), '[CRON] '.$type.' '.$id_tboil);
   }
 
-  // соединие таблицы поддержки из ipchain и компании из ipchain
-  public function IPCHAIN_entity_inner_join($inn) {
-      global $database;
-
-      $data_с = $database->prepare("SELECT * FROM IPCHAIN_StateSupport INNER JOIN IPCHAIN_entity WHERE IPCHAIN_StateSupport.ipchain_id_entity = IPCHAIN_entity.id AND inn =:inn");
-      $data_с->bindParam(':inn', $inn, PDO::PARAM_STR);
-      $data_с->execute();
-      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
-
-      if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные сформированы'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки данных'), JSON_UNESCAPED_UNICODE);
-      }
-    }
-
-  //получение всех ридов из ЕБД
-  public function get_EBD_IPCHAIN_IpObjects($type = false, $value = 0) {
-      global $database;
-
-      if($type){
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects WHERE ipchain_id_entity =:ipchain_id_entity");
-        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
-      } else {
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_IpObjects ");
-      }
-      $data_с->execute();
-      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
-
-      if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки патентов из IPChain'), JSON_UNESCAPED_UNICODE);
-      }
-    }
-
-  //получение всех проекты компаний в ipchain из ЕБД
-  public function get_EBD_IPCHAIN_Project($type = false, $value = 0) {
-      global $database;
-      if($type){
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project WHERE ipchain_id_entity =:ipchain_id_entity");
-        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
-      } else {
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_Project ");
-      }
-      $data_с->execute();
-      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
-
-      if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка выгрузки проектов компаний из IPChain'), JSON_UNESCAPED_UNICODE);
-      }
-    }
-
-  //получение всех форм поддержки компании
-  public function get_EBD_IPCHAIN_StateSupport($type = false, $value = 0) {
-      global $database;
-      if($type){
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE ipchain_id_entity =:ipchain_id_entity");
-        $data_с->bindParam(':ipchain_id_entity', $value, PDO::PARAM_INT);
-      } else {
-        $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport ");
-      }
-      $data_с->execute();
-      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
-
-      if($data_с_result){
-        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Данные успешно сформированы из IPChain'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => false, 'description' => 'Ошибка получения форм поддержки компании из IPChain'), JSON_UNESCAPED_UNICODE);
-      }
-    }
-
-  //Функция
-  public function entity_additionally($id_entity) {
-        global $database;
-
-        //
-        $check_data_с = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE id = :id_entity");
-        $check_data_с->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $check_data_с->execute();
-        $check_data_result_с = $check_data_с->fetch(PDO::FETCH_OBJ);
-
-        $check_data = $database->prepare("SELECT * FROM $this->MAIN_entity_additionally WHERE id_entity = :id_entity");
-        $check_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $check_data_с->execute();
-        $check_data_result = $check_data->fetch(PDO::FETCH_OBJ);
-
-        $fns_data_company = $this->fns_base($check_data_result_с->inn);
-
-
-        $category = (!empty($category)) ? $category : ' ';
-        $proceeds = (isset($proceeds)) ? $proceeds : ' ';
-        $proceeds_import = (!empty($proceeds_import)) ? $proceeds_import : ' ';
-        $proceeds_export = (!empty($proceeds_export)) ? $proceeds_export : ' ';
-        $count_staff = (isset($count_staff)) ? $count_staff : ' ';
-        $volume_fund = (!empty($volume_fund)) ? $volume_fund : ' ';
-        $volume_tax_customs = (!empty($volume_tax_customs)) ? $volume_tax_customs : ' ';
-        $volume_investments = (!empty($volume_investments)) ? $volume_investments : ' ';
-        $volume_credits = (!empty($volume_credits)) ? $volume_credits : ' ';
-        $count_patent = (!empty($count_patent)) ? $count_patent : ' ';
-        $pay_research = (!empty($pay_research)) ? $pay_research : ' ';
-        $count_export_contracts = (!empty($count_export_contracts)) ? $count_export_contracts : ' ';
-        $land = (!empty($land)) ? $land : ' ';
-        $land_area = (!empty($land_area)) ? $land_area : ' ';
-        $room_area = (!empty($room_area)) ? $room_area : ' ';
-
-        if(is_Object($check_data_result)) {
-          //нашли прошлую запись, обновляем ее
-
-          $d_data = $database->prepare("UPDATE $this->gen_settings SET category = :category, proceeds = :proceeds, proceeds_import = :proceeds_import,
-            proceeds_export = :proceeds_export, count_staff = :count_staff, volume_fund = :volume_fund, volume_tax_customs = :volume_tax_customs,
-            volume_investments = :volume_investments, volume_credits = :volume_credits, count_patent = :count_patent, pay_research = :pay_research,
-            count_export_contracts = :count_export_contracts, land = :land, land_area = :land_area, room_area = :room_area  WHERE id_entity = :id_entity,");
-        } else {
-          $d_data = $database->prepare("INSERT INTO $this->errors_migrate (id_entity, category, proceeds, proceeds_import, proceeds_export, count_staff, volume_fund, volume_tax_customs, volume_investments, volume_credits, count_patent, pay_research, count_export_contracts, land, land_area, room_area)
-          VALUES (:id_entity, :category, :proceeds, :proceeds_import, :proceeds_export, :count_staff, :volume_fund, :volume_tax_customs, :volume_investments, :volume_credits, :count_patent, :pay_research, :count_export_contracts, :land, :land_area, :room_area)");
-        }
-
-        $d_data->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
-        $d_data->bindParam(':category', $category, PDO::PARAM_STR);
-        $d_data->bindParam(':proceeds', $proceeds, PDO::PARAM_STR);
-        $d_data->bindParam(':proceeds_import', $proceeds_import, PDO::PARAM_STR);
-        $d_data->bindParam(':proceeds_export', $proceeds_export, PDO::PARAM_STR);
-        $d_data->bindParam(':count_staff', $count_staff, PDO::PARAM_STR);
-        $d_data->bindParam(':volume_fund', $volume_fund, PDO::PARAM_STR);
-        $d_data->bindParam(':volume_tax_customs', $volume_tax_customs, PDO::PARAM_STR);
-        $d_data->bindParam(':volume_investments', $volume_investments, PDO::PARAM_STR);
-        $d_data->bindParam(':volume_credits', $volume_credits, PDO::PARAM_STR);
-        $d_data->bindParam(':count_patent', $count_patent, PDO::PARAM_STR);
-        $d_data->bindParam(':pay_research', $pay_research, PDO::PARAM_STR);
-        $d_data->bindParam(':count_export_contracts', $count_export_contracts, PDO::PARAM_STR);
-        $d_data->bindParam(':land', $land, PDO::PARAM_STR);
-        $d_data->bindParam(':land_area', $land_area, PDO::PARAM_STR);
-        $d_data->bindParam(':room_area', $room_area, PDO::PARAM_STR);
-
-        $temp = $d_data->execute();
-        $count = $d_data->rowCount();
-
-        if($count > 0){
-          return json_encode(array('response' => true, 'description' => 'Данные добавлены/обновлены'), JSON_UNESCAPED_UNICODE);
-        } else {
-          return json_encode(array('response' => false, 'description' => 'Ошибка добавление/обновления данных'), JSON_UNESCAPED_UNICODE);
-        }
-
-    }
-
-
-    public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
-      global $database;
-      if(!isset($id_tboil) && !isset($name)  && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-
-      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
-      $date_added = date("Y-m-d H:i:s");
-      $hash_tiket_support = md5($id_tboil.$name.$id_referer.$date_added);
-
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket (id_tboil, name, description, date_added, status, links_add_files, id_referer, hash_tiket_support)
-                                    VALUES (:id_tboil, :name, :description, :date_added, :status, :links_add_files, :id_referer, :hash_tiket_support)");
-      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
-      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
-      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
-      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
-      $d_data->bindParam(':hash_tiket_support', $hash_tiket_support, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      $id_new_ticket = $database->lastInsertId();
-      if($id_new_ticket === false){
-        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой заявки'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'заявка успешно добавлена', 'data' => (object) array('id' => $id_new_ticket, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
-
-    public function upd_support_ticket($id_ticket, $name, $description, $status) {
-      global $database;
-
-      if(!isset($id_ticket) && !isset($name) && !isset($description) && !isset($status)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-
-      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
-      $d_data->bindParam(':id', $id_ticket, PDO::PARAM_INT);
-      $d_data->bindParam(':name', $name, PDO::PARAM_STR);
-      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
-      $d_data->bindParam(':status', $status, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      if(!$d_data->rowCount()){
-        return json_encode(array('response' => false, 'description' => 'Ошибка обновления тикета'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'Тикет успешно обновлен'), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
 
 
 
 
-    //получение данных по тикиту
-    //type_result = full - все / message - только  переписка по тикету / conclusion - с решением
-    //type_search поиск по id tiket = true
-    //или по user_tboil = false создавшего тикет для получения всех его тикетов и истории переписки
-    public function get_data_support_ticket($value_search, $type_result = 'message', $type_search = true) {
-      if(!isset($value_search)){
-        return json_encode(array('response' => false, 'description' => 'Не указаны все обходимые данные'), JSON_UNESCAPED_UNICODE);
-      }
-      global $database;
-
-      $arr_result = (object) array();
-
-      if($type_search){
-        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id = :id");
-        $ticket_data->bindParam(':id', $value_search, PDO::PARAM_INT);
-      } else {
-        $ticket_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil");
-        $ticket_data->bindParam(':id_tboil', $value_search, PDO::PARAM_INT);
-      }
-      $ticket_data->execute();
-      $result_data_ticket = $ticket_data->fetchAll(PDO::FETCH_OBJ);
-
-      if (empty($result_data_ticket)) {
-        if($type_search){
-          return json_encode(array('response' => false, 'description' => 'Тикет с указаным id не найден'), JSON_UNESCAPED_UNICODE);
-        } else {
-          return json_encode(array('response' => false, 'description' => 'У Пользователя не было тикетов'), JSON_UNESCAPED_UNICODE);
-        }
-      }
-
-      foreach ($result_data_ticket as $key_tiket => $value_tiket) {
-        $result_data_message = [];
-        $message_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket");
-        $message_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
-        $message_data->execute();
-        $result_data_message = $message_data->fetchAll(PDO::FETCH_OBJ);
-
-        if(empty($result_data_message)){
-          $arr_result->$key_tiket->messages = 'Ошибка получения переписки в тиките';
-        } else {
-          $arr_result->$key_tiket->messages = $result_data_message;
-        }
-
-        if ($type_result == 'full') {
-          $arr_result->$key_tiket->ticket = $value_tiket;
-        }
-        if ($type_result == 'conclusion' || $type_result == 'full') {
-          $result_data_conclusion = [];
-          $conclusion_data = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_conclusion WHERE id_support_ticket = :id_support_ticket");
-          $conclusion_data->bindParam(':id_support_ticket', $value_tiket->id, PDO::PARAM_INT);
-          $conclusion_data->execute();
-          $result_data_conclusion = $conclusion_data->fetchAll(PDO::FETCH_OBJ);
-
-          if(empty($result_data_conclusion)){
-            $arr_result->$key_tiket->conclusion = 'Ошибка получения решения в тиките';
-          } else {
-            $arr_result->$key_tiket->conclusion = $result_data_conclusion;
-          }
-        }
-      }
-
-      return json_encode(array('response' => true, 'data' => $arr_result,'description' => 'Получение данных о тиките/ах'), JSON_UNESCAPED_UNICODE);
-    }
-
-
-
-    public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
-      global $database;
-
-      if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-
-      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
-      $date_added = date("Y-m-d H:i:s");
-
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil, message, links_add_files, date_added, id_referer, type_user)
-                                    VALUES (:id_support_ticket, :id_tboil, :message, :links_add_files, :date_added, :id_referer, :type_user)");
-      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
-      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
-      $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
-      $d_data->bindParam(':type_user', $type_user, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      $id_new_messages = $database->lastInsertId();
-      if($id_new_messages === false){
-        return json_encode(array('response' => false, 'description' => 'Ошибка добавления нового сообщения'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages)), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
-
-    public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
-      global $database;
-
-      if(empty($id_support_ticket_msg) && empty($message)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-      if($links_add_files) $links_add_files = trim($links_add_files);
-      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
-
-      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_messages SET message =:message, links_add_files =:links_add_files WHERE id =:id");
-      $d_data->bindParam(':id', $id_support_ticket_msg, PDO::PARAM_INT);
-      $d_data->bindParam(':message', $message, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      if(!$d_data->rowCount()){
-        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования сообщения'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'Сообщение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
-
-    public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
-      global $database;
-
-      if(empty($id_support_ticket) && empty($id_tboil) && empty($description) && empty($action) ) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-      if($links_add_files) $links_add_files = trim($links_add_files);
-      $links_add_files = ($links_add_files) ? $links_add_files : NULL;
-      $date_added = date("Y-m-d H:i:s");
-
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_conclusion (id_support_ticket, id_tboil, description, action, links_add_files, date_added)
-                                    VALUES (:id_support_ticket, :id_tboil, :description, :action, :links_add_files, :date_added)");
-      $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
-      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
-      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
-      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
-
-      $temp = $d_data->execute();
-      $id_new_conclusion = $database->lastInsertId();
-      if($id_new_conclusion === false){
-        return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой записи'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'Решение успешно добавлено', 'data' => (object) array('id' => $id_new_conclusion)), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
-
-    public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
-      global $database;
-
-      if(empty($id_ticket_conclusion) && empty($description) && empty($action) ) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
-      if($links_add_files) $links_add_files = trim($links_add_files);
-      $links_add_files = ($links_add_files != '') ? $links_add_files : NULL;
-      $date_added = date("Y-m-d H:i:s");
-
-      $d_data = $database->prepare("UPDATE $this->MAIN_support_ticket_conclusion SET description =:description, action =:action, links_add_files =:links_add_files WHERE id =:id");
-      $d_data->bindParam(':id', $id_ticket_conclusion, PDO::PARAM_INT);
-      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
-      $d_data->bindParam(':action', $action, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      if(!$d_data->rowCount()){
-        return json_encode(array('response' => false, 'description' => 'Ошибка редактирования решения'), JSON_UNESCAPED_UNICODE);
-      } else {
-        return json_encode(array('response' => true, 'description' => 'Решение успешно отредактировано'), JSON_UNESCAPED_UNICODE);
-      }
-
-    }
 
 
 
