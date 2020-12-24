@@ -9,7 +9,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 
 <?php
-
+$count_list_fns = 0;
 
 $data_company_str = $settings->get_data_entity_inn(trim($_GET["inn"]));
 
@@ -685,11 +685,11 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3 "><text class="list_fns" list="1"><b>Сведения о налоговых органах:</b></text></div>
+            <div class="col-sm-3 "><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о налоговых органах:</b></text></div>
             <div class="col-sm-9"></div>
           </div>
         </div>
-        <div class="row" id="list_li_fns_1" style="display:none">
+        <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none">
           <div class="col-md-12">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Код и наименование регистрирующего НО:</b></p></div>
@@ -719,11 +719,11 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3" ><text class="list_fns" list="2"><b>Сведения Пенсионного фонда РФ:</b></text></div>
+            <div class="col-sm-3" ><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения Пенсионного фонда РФ:</b></text></div>
             <div class="col-sm-9"></div>
           </div>
         </div>
-        <div class="row" id="list_li_fns_2" style="display:none">
+        <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none">
           <div class="col-md-12 ">
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Регистрационный номер:</b></p></div>
@@ -753,11 +753,11 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3"><text class="list_fns" list="3"><b>Сведения о рег. ЮЛ в качестве страхователя:</b><text></div>
+            <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения о рег. ЮЛ в качестве страхователя:</b><text></div>
             <div class="col-sm-9">&nbsp;</div>
           </div>
         </div>
-        <div class="row" id="list_li_fns_3" style="display:none">
+        <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none">
           <div class="col-md-12 " >
             <div class="row pl-1 pt-3">
               <div class="offset-1 col-sm-3"><p><b>Регистрационный номер:</b></p></div>
@@ -787,11 +787,11 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         <div class="col-md-12" >
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3"><text class="list_fns" list="4"><b>Капитал:</b></text></div>
+            <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Капитал:</b></text></div>
             <div class="col-sm-9">&nbsp;</div>
           </div>
         </div>
-        <div class="row" id="list_li_fns_4" style="display:none">
+        <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none">
         <div class="col-md-12">
           <div class="row pl-1 pt-3">
             <div class="offset-1 col-sm-3"><p><b>Вид капитала.:</b></p></div>
@@ -821,34 +821,36 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
         <div class="col-md-12">
           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
           <div class="row pl-1 pt-3">
-            <div class="col-sm-3"><p><b>Сведения об адресе в РФ, внесенные в ЕГРЮЛ:</b></p></div>
-            <div class="col-sm-9"></div>
+            <div class="col-sm-4"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения об адресе в РФ, внесенные в ЕГРЮЛ:</b></text></div>
+            <div class="col-sm-8"></div>
           </div>
         </div>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Код субъекта Российской Федерации:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->КодРегион; ?></div>
+        <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none;">
+          <div class="col-md-12" >
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Код субъекта Российской Федерации:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->КодРегион; ?></div>
+            </div>
           </div>
-        </div>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Индекс:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->Индекс; ?></div>
+          <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Индекс:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->Индекс; ?></div>
+            </div>
           </div>
-        </div>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Полный адрес (Регион, Район, Город, Населенный пункт, Улица, Дом, Корпус, Квартира):</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->АдресПолн; ?></div>
+          <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Полный адрес (Регион, Район, Город, Населенный пункт, Улица, Дом, Корпус, Квартира):</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->АдресПолн; ?></div>
+            </div>
           </div>
-        </div>
-       <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Дата внесения информации в ЕГРЮЛ об адресе:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->Дата; ?></div>
+         <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Дата внесения информации в ЕГРЮЛ об адресе:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Адрес->Дата; ?></div>
+            </div>
           </div>
-        </div>
+
         <?php
           if(isset($data_fns->ЮЛ->Адрес->ПризнНедАдресЮЛ)) { ?>
             <!-- Недостоверный адрес -->
@@ -902,76 +904,79 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                 </div>
               </div>
         <?php } ?>
+        </div>
 
         <!-- Руководитель -->
           <div class="col-md-12">
             <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
             <div class="row pl-1 pt-3">
-              <div class="col-sm-3"><p><b>Сведения о руководителе организации:</b></p></div>
+              <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns;  ?>"><b>Сведения о руководителе организации:</b></text></div>
               <div class="col-sm-9"></div>
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>Вид должности по справочнику СКФЛЮЛ:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ВидДолжн; ?></div>
+          <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none;">
+            <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>Вид должности по справочнику СКФЛЮЛ:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ВидДолжн; ?></div>
+              </div>
             </div>
+            <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>Наименование должности:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->Должн; ?></div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>ФИО должностного лица:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ФИОПолн; ?></div>
+              </div>
+            </div>
+           <div class="col-md-12">
+              <div class="row pl-1 pt-3">
+                <div class="offset-1 col-sm-3"><p><b>ИНН должностного лица:</b></p></div>
+                <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ИННФЛ; ?></div>
+              </div>
           </div>
           <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>Наименование должности:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->Должн; ?></div>
-            </div>
+               <div class="row pl-1 pt-3">
+                 <div class="offset-1 col-sm-3"><p><b>ОГРН ИП - управляющего ЮЛ:</b></p></div>
+                 <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ОГРНИП; ?></div>
+               </div>
           </div>
-          <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>ФИО должностного лица:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ФИОПолн; ?></div>
-            </div>
-          </div>
-         <div class="col-md-12">
-            <div class="row pl-1 pt-3">
-              <div class="offset-1 col-sm-3"><p><b>ИНН должностного лица:</b></p></div>
-              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ИННФЛ; ?></div>
-            </div>
-        </div>
-        <div class="col-md-12">
-             <div class="row pl-1 pt-3">
-               <div class="offset-1 col-sm-3"><p><b>ОГРН ИП - управляющего ЮЛ:</b></p></div>
-               <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ОГРНИП; ?></div>
-             </div>
-        </div>
-        <?php
-          if(isset($data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ)) { ?>
-            <!-- Недостоверный адрес -->
-              <div class="col-md-12">
-                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                <div class="row pl-1 pt-3">
-                  <div class="col-sm-3"><p><b>Сведения о недостоверности данных о лице, имеющем доверенность ЮЛ:</b></p></div>
-                  <div class="col-sm-9">
-                    <div class="row">
-                      <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                      <div class="col-md-12">
-                        <div class="row pl-1 pt-3">
-                          <div class="offset-1 col-sm-3"><p><b>Дата начала дисквалификации лица:</b></p></div>
-                          <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ->ДатаНачДискв; ?></div>
+          <?php
+            if(isset($data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ)) { ?>
+              <!-- Недостоверный адрес -->
+                <div class="col-md-12">
+                  <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                  <div class="row pl-1 pt-3">
+                    <div class="col-sm-3"><p><b>Сведения о недостоверности данных о лице, имеющем доверенность ЮЛ:</b></p></div>
+                    <div class="col-sm-9">
+                      <div class="row">
+                        <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                        <div class="col-md-12">
+                          <div class="row pl-1 pt-3">
+                            <div class="offset-1 col-sm-3"><p><b>Дата начала дисквалификации лица:</b></p></div>
+                            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ->ДатаНачДискв; ?></div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="row pl-1 pt-3">
-                          <div class="offset-1 col-sm-3"><p><b>Дата окончания дисквалификации лица:</b></p></div>
-                          <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ->ДатаОкончДискв; ?></div>
+                        <div class="col-md-12">
+                          <div class="row pl-1 pt-3">
+                            <div class="offset-1 col-sm-3"><p><b>Дата окончания дисквалификации лица:</b></p></div>
+                            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->ПризнНедДанДолжнФЛ->ДатаОкончДискв; ?></div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-        <?php } ?>
-        <div class="col-md-12">
-          <div class="row pl-1 pt-3">
-            <div class="offset-1 col-sm-3"><p><b>Дата внесения в ЕГРЮЛ сведений о рук.:</b></p></div>
-            <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->Дата; ?></div>
+          <?php } ?>
+          <div class="col-md-12">
+            <div class="row pl-1 pt-3">
+              <div class="offset-1 col-sm-3"><p><b>Дата внесения в ЕГРЮЛ сведений о рук.:</b></p></div>
+              <div class="col-sm-8"><?php echo $data_fns->ЮЛ->Руководитель->Дата; ?></div>
+            </div>
           </div>
         </div>
         <!-- Учредители -->
@@ -979,103 +984,110 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
             echo '<div class="col-md-12">
             <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
               <div class="row pl-1 pt-3">
-                <div class="col-sm-5"><p><b>Сведения об учредителях (участниках) юридического лица:</b></p></div>
+                <div class="col-sm-5"><text class="list_fns" list="'.$count_list_fns.'"><b>Сведения об учредителях (участниках) юридического лица:</b></text></div>
                 <div class="col-sm-7"></div>
               </div>
             </div>';
-
-            echo '<div class="col-md-12">
-              <div class="row pl-1 pt-3">';
+            echo '<div class="col-md-12" id="list_li_fns_'.$count_list_fns.'" style="display:none;">
+                  <div class="row pl-1 pt-3">';
+            $count_list_fns++;
             foreach ($data_fns->ЮЛ->Учредители as $key_uch => $value_uch) {
+              $count_list_fns++;
               if (isset($value_uch->УчрЮЛ)) { ?>
-                <div class="offset-1 col-sm-3"><p><b>Наименование ЮЛ сокращенное:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрЮЛ->НаимСокрЮЛ; ?>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ОГРН; ?></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ИНН; ?></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->Статус; ?></div>
-                  </div>
-                </div>
-              <?php }
-              if (isset($value_uch->УчрИН)) { ?>
-                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - иностранном юридическом лице:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрИН->НаимПолнЮЛ; ?>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>ОКСМ:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрИН->ОКСМ; ?></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>Регистрационный номер:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрИН->РегНомер; ?></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>Дата регистрации:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрИН->ДатаРег; ?></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрИН->АдресПолн; ?></div>
-                  </div>
-                </div>
-              <?php }
-              if (isset($value_uch->УчрФЛ)) { ?>
-                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - физическом лице:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрФЛ->ФИОПолн; ?>
-                <div class="col-md-12">
-                  <div class="row pl-1 pt-3">
-                    <div class="col-sm-4"><p><b>ИНН учредителя:</b></p></div>
-                    <div class="col-sm-8"><?php echo $value_uch->УчрФЛ->ИННФЛ; ?></div>
-                  </div>
-                </div>
-              <?php }
-              if (isset($value_uch->УчрРФСубМО)) { ?>
-                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - Российской Федерации, субъекте Российской Федерации, муниципальном образовании:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрРФСубМО; ?>
-              <?php }
-              if (isset($value_uch->СвОргОсущПр)) { ?>
-                <div class="offset-1 col-sm-3"><p><b>Сведения об органе государственной власти, органе местного самоуправления или о юридическом лице, осуществляющем права учредителя (участника:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->НаимСокрЮЛ; ?>
+                <div class="offset-1 col-sm-3"><b>Наименование ЮЛ сокращенное:</b></div>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрЮЛ->НаимСокрЮЛ; ?></b></text>
+                <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
                   <div class="col-md-12">
                     <div class="row pl-1 pt-3">
                       <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
-                      <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ОГРН; ?></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ОГРН; ?></div>
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="row pl-1 pt-3">
                       <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
-                      <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ИНН; ?></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ИНН; ?></div>
                     </div>
                   </div>
                   <div class="col-md-12">
                     <div class="row pl-1 pt-3">
                       <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
-                      <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->Статус; ?></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->Статус; ?></div>
                     </div>
                   </div>
+              <?php }
+              if (isset($value_uch->УчрИН)) { ?>
+                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - иностранном юридическом лице:</b></p></div>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрИН->НаимПолнЮЛ; ?></b></text>
+                <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns;?>">
+                  <div class="col-md-12">
+                    <div class="row pl-1 pt-3">
+                      <div class="col-sm-4"><p><b>ОКСМ:</b></p></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->ОКСМ; ?></div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row pl-1 pt-3">
+                      <div class="col-sm-4"><p><b>Регистрационный номер:</b></p></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->РегНомер; ?></div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row pl-1 pt-3">
+                      <div class="col-sm-4"><p><b>Дата регистрации:</b></p></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->ДатаРег; ?></div>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="row pl-1 pt-3">
+                      <div class="col-sm-4"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->АдресПолн; ?></div>
+                    </div>
+                  </div>
+              <?php }
+              if (isset($value_uch->УчрФЛ)) { ?>
+                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - физическом лице:</b></p></div>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрФЛ->ФИОПолн; ?></b></text>
+                <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                  <div class="col-md-12">
+                    <div class="row pl-1 pt-3">
+                      <div class="col-sm-4"><p><b>ИНН учредителя:</b></p></div>
+                      <div class="col-sm-8"><?php echo $value_uch->УчрФЛ->ИННФЛ; ?></div>
+                    </div>
+                  </div>
+              <?php }
+              if (isset($value_uch->УчрРФСубМО)) { ?>
+                <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - Российской Федерации, субъекте Российской Федерации, муниципальном образовании:</b></p></div>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрРФСубМО; ?></b></text>
+                <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+              <?php }
+              if (isset($value_uch->СвОргОсущПр)) { ?>
+                <div class="offset-1 col-sm-3"><p><b>Сведения об органе государственной власти, органе местного самоуправления или о юридическом лице, осуществляющем права учредителя (участника:</b></p></div>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->НаимСокрЮЛ; ?></b></text>
+                  <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                    <div class="col-md-12">
+                      <div class="row pl-1 pt-3">
+                        <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
+                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ОГРН; ?></div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row pl-1 pt-3">
+                        <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
+                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ИНН; ?></div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row pl-1 pt-3">
+                        <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
+                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->Статус; ?></div>
+                      </div>
+                    </div>
             <?php }
               if (isset($value_uch->УчрПИФ)) { ?>
                 <div class="offset-1 col-sm-3"><p><b>Сведения о паевом инвестиционном фонде, в состав имущества которого включена доля в уставном капитале:</b></p></div>
-                <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрПИФ->НаимСокрЮЛ; ?>
+                <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрПИФ->НаимСокрЮЛ; ?><b></text>
+                  <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
                   <div class="col-md-12">
                     <div class="row pl-1 pt-3">
                       <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
@@ -1114,7 +1126,8 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                   </div>
                 </div>
               </div>
-           <?php }
+              </div>
+           <?php } $count_list_fns++;
              if(isset($value_uch->ПризнНедДанДолжнФЛ)) { ?>
                <!-- Недостоверный адрес -->
                  <div class="col-md-12">
@@ -1141,114 +1154,143 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                    </div>
                  </div>
            <?php }
-           if(isset($value_uch->Залогодержатели)) { ?>
+           if(!empty($value_uch->Залогодержатели)) { ?>
              <!-- Недостоверный адрес -->
                <div class="col-md-12">
                  <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                  <div class="row pl-1 pt-3">
-                   <div class="col-sm-4"><p><b>	Сведения о залогодержателе доли:</b></p></div>
-                   <div class="col-sm-8">
-                     <div class="row">
-                       <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                   <div class="col-sm-12"><tect class="list_fns" list="<?php echo $count_list_fns; ?>"><b>	Сведения о залогодержателе доли:</b></text></div>
+                   <div class="col-sm-12">
+                     <?php foreach($value_uch->Залогодержатели as $key_z => $value_z) { ?>
+                     <div class="row" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++;?>">
+                       <hr style="border: none; color: #727c
+                       <?php if(isset($value_z->ОГРН)) { ?>f5; background-color: #727cf5; height: 1px; ">
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ОГРН:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ОГРН; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ОГРН; ?></div>
                          </div>
                        </div>
+                     <?php } ?>
+                       <?php if(isset($value_z->ИНН)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ИНН:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИНН; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ИНН; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->НаимСокрЮЛ)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Наименование ЮЛ сокращенное (только для ЮЛ):</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->НаимСокрЮЛ; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->НаимСокрЮЛ; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->Статус)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Статус ЮЛ:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->Статус; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->Статус; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ФИОПолн)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Фамилия Имя Отчество залогодержателя (ФЛ):</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ФИОПолн; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ФИОПолн; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ИННФЛ)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ИНН залогодержателя (ФЛ):</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИННФЛ; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ИННФЛ; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->НаимПолнЮЛ)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Наименование организации залогодержателя (Иностранное лицо):</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->НаимПолнЮЛ; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->НаимПолнЮЛ; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ОКСМ)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ОКСМ:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ОКСМ; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ОКСМ; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ИННФЛ)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>ИННФЛ:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИННФЛ; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ИННФЛ; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->РегНомер)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Регистрационный номер:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->РегНомер; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->РегНомер; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ДатаРег)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Дата регистрации:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ДатаРег; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ДатаРег; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->АдресПолн)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->АдресПолн; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->АдресПолн; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->ВидОбременения)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Принимает значение: ЗАЛОГ | ИНОЕ ОБРЕМЕНЕНИЕ:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ВидОбременения; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->ВидОбременения; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->СрокОбременения)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Срок обременения или порядок определения срока:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->СрокОбременения; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->СрокОбременения; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
+                       <?php if(isset($value_z->Дата)) { ?>
                        <div class="col-md-12">
                          <div class="row pl-1 pt-3">
                            <div class="offset-1 col-sm-3"><p><b>Дата внесения в ЕГРЮЛ:</b></p></div>
-                           <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->Дата; ?></div>
+                           <div class="col-sm-8"><?php echo $value_z->Дата; ?></div>
                          </div>
                        </div>
+                       <?php } ?>
                      </div>
                    </div>
                  </div>
                </div>
-             <?php }
-            }
-            echo '</div>
-                </div>
-              </div>';
+             <?php } } echo '</div>
+               </div>'; }
+
             ?>
 
             <!-- Предшественники -->
@@ -1256,52 +1298,56 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
               <div class="col-md-12">
                 <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                 <div class="row pl-1 pt-3">
-                  <div class="col-sm-3"><p><b>Сведения о правопредшественниках:</b></p></div>
+                  <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о правопредшественниках:</b></text></div>
                   <div class="col-sm-9"></div>
                 </div>
               </div>
+              <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width: 100%;">
               <?php if (!empty($data_fns->ЮЛ->Предшественники)) {
                 foreach($data_fns->ЮЛ->Предшественники as $key_pred => $value_pred){ ?>
                   <div class="col-md-12">
                       <div class="row pl-1 pt-3">
-                        <div class="offset-1 col-sm-11"><div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></div>
-                          <div class="col-md-12">
-                            <div class="row pl-1 pt-3">
-                              <div class="col-sm-4"><p><b>ИНН:</b></p></div>
-                              <div class="col-sm-8"><?php echo $value_pred->ИНН; ?>></div>
+                        <div class="offset-1 col-sm-11"><div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text></div>
+                          <div id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
+                            <div class="col-md-12">
+                              <div class="row pl-1 pt-3">
+                                <div class="col-sm-4"><p><b>ИНН:</b></p></div>
+                                <div class="col-sm-8"><?php echo $value_pred->ИНН; ?>></div>
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-12">
-                            <div class="row pl-1 pt-3">
-                              <div class="col-sm-4"><p><b>ОГРН:</b></p></div>
-                              <div class="col-sm-8"><?php echo $value_pred->ОГРН; ?>></div>
+                            <div class="col-md-12">
+                              <div class="row pl-1 pt-3">
+                                <div class="col-sm-4"><p><b>ОГРН:</b></p></div>
+                                <div class="col-sm-8"><?php echo $value_pred->ОГРН; ?>></div>
+                              </div>
                             </div>
-                          </div>
-                          <div class="col-md-12">
-                            <div class="row pl-1 pt-3">
-                              <div class="col-sm-4"><p><b>Статус:</b></p></div>
-                              <div class="col-sm-8"><?php echo $value_pred->Статус; ?>></div>
+                            <div class="col-md-12">
+                              <div class="row pl-1 pt-3">
+                                <div class="col-sm-4"><p><b>Статус:</b></p></div>
+                                <div class="col-sm-8"><?php echo $value_pred->Статус; ?>></div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                 <?php
-              }} } ?>
+              }} echo "</div>"; } ?>
 
             <!-- Предшественники -->
             <?php if(isset($data_fns->ЮЛ->Преемники)) { ?>
               <div class="col-md-12">
                 <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                 <div class="row pl-1 pt-3">
-                  <div class="col-sm-3"><p><b>Сведения о правопреемниках:</b></p></div>
+                  <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения о правопреемниках:</b></text></div>
                   <div class="col-sm-9"></div>
                 </div>
               </div>
+              <div id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width: 100%;">
               <?php if (!empty($data_fns->ЮЛ->Преемники)) {
                 foreach($data_fns->ЮЛ->Преемники as $key_pred => $value_pred){ ?>
-                    <div class="offset-1 col-sm-11"><div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></div>
-                      <div class="row pl-1 pt-3">
+                    <div class="offset-1 col-sm-11"><div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text></div>
+                      <div class="row pl-1 pt-3" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
                           <div class="col-md-12">
                             <div class="row pl-1 pt-3">
                               <div class="col-sm-4"><p><b>ИНН:</b></p></div>
@@ -1323,22 +1369,23 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                         </div>
                       </div>
                 <?php
-              }} } ?>
+              }} echo "</div>"; } ?>
 
               <!-- УправлОрг -->
               <?php if(isset($data_fns->ЮЛ->УправлОрг)) { ?>
                 <div class="col-md-12">
                   <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                   <div class="row pl-1 pt-3">
-                    <div class="col-sm-3"><p><b>Сведения о доверительном управляющем:</b></p></div>
+                    <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о доверительном управляющем:</b></text></div>
                     <div class="col-sm-9"></div>
                   </div>
                 </div>
+                <div class="" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
                 <?php if (!empty($data_fns->ЮЛ->УправлОрг)) {
                   foreach($data_fns->ЮЛ->УправлОрг as $key_pred => $value_pred){ ?>
                       <div class="offset-1 col-sm-11">
-                        <div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></div>
-                        <div class="row pl-1 pt-3">
+                        <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns;?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text></div>
+                        <div class="row pl-1 pt-3" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
                             <div class="col-md-12">
                               <div class="row pl-1 pt-3">
                                 <div class="col-sm-4"><p><b>ИНН:</b></p></div>
@@ -1360,22 +1407,23 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                           </div>
                         </div>
                   <?php
-                }} } ?>
+                }} echo "</div>"; } ?>
 
                 <!-- ДержРеестрАО -->
                 <?php if(isset($data_fns->ЮЛ->ДержРеестрАО)) { ?>
                   <div class="col-md-12">
                     <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                     <div class="row pl-1 pt-3">
-                      <div class="col-sm-3"><p><b>Сведения о держателе реестра акционеров акционерного общества:</b></p></div>
+                      <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>" ><b>Сведения о держателе реестра акционеров акционерного общества:</b></text></div>
                       <div class="col-sm-9"></div>
                     </div>
                   </div>
+                  <div id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none; width:100%;">
                   <?php if (!empty($data_fns->ЮЛ->ДержРеестрАО)) {
                     foreach($data_fns->ЮЛ->ДержРеестрАО as $key_pred => $value_pred){ ?>
                         <div class="offset-1 col-sm-11">
-                          <div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b><div>
-                          <div class="row pl-1 pt-3">
+                          <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text><div>
+                          <div class="row pl-1 pt-3" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>" style="display:none;">
                               <div class="col-md-12">
                                 <div class="row pl-1 pt-3">
                                   <div class="col-sm-4"><p><b>ИНН:</b></p></div>
@@ -1399,7 +1447,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                         </div>
                       </div>
                     <?php
-                  }} } ?>
+                  }} echo "</div>"; } ?>
 
                   <!-- УправлОрг -->
                   <?php
@@ -1494,41 +1542,43 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                       <div class="col-md-12">
                         <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                         <div class="row pl-1 pt-3">
-                          <div class="col-sm-3"><p><b>Сведения о филиалах и представительствах компании:</b></p></div>
+                          <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения о филиалах и представительствах компании:</b></text></div>
                           <div class="col-sm-9"></div>
                         </div>
                       </div>
+                      <div style="display:none;   width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                       <?php if (!empty($data_fns->ЮЛ->Филиалы)) {
                         foreach($data_fns->ЮЛ->Филиалы as $key_pred => $value_pred){ ?>
                             <div class="offset-1 col-sm-11">
-                              <div class="mt-3"><b><?php echo $value_pred->Тип; ?></b></div>
-                              <div class="row pl-1 pt-3">
+                              <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->Тип; ?></b></text></div>
+                              <div class="row pl-1 pt-3" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                                 <div class="col-md-12">
                                   <div class="row pl-1 pt-3">
-                                    <div class="col-sm-4"><p><b>Наименование:</b></p></div>
-                                    <div class="col-sm-8"><?php echo $value_pred->Наименование; ?></div>
+                                    <div class="col-sm-3"><p><b>Наименование:</b></p></div>
+                                    <div class="col-sm-9"><?php echo $value_pred->Наименование; ?></div>
                                   </div>
                                 </div>
                                 <div class="col-md-12">
                                   <div class="row pl-1 pt-3">
-                                    <div class="col-sm-4"><p><b>Адрес:</b></p></div>
-                                    <div class="col-sm-8"><?php echo $value_pred->Адрес; ?></div>
+                                    <div class="col-sm-3"><p><b>Адрес:</b></p></div>
+                                    <div class="col-sm-9"><?php echo $value_pred->Адрес; ?></div>
                                   </div>
                                 </div>
                               </div>
                             </div>
                         <?php
-                      }} } ?>
+                      }} echo "</div>"; } ?>
 
                       <!-- Открытые Сведения -->
                       <?php if (isset($data_fns->ЮЛ->ОткрСведения)) { ?>
                         <div class="col-md-12">
                           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                           <div class="row pl-1 pt-3">
-                            <div class="col-sm-3"><p><b>Открытые Сведения:</b></p></div>
+                            <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Открытые Сведения:</b></text></div>
                             <div class="col-sm-9"></div>
                           </div>
                         </div>
+                        <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                         <div class="col-md-12">
                           <div class="row pl-1 pt-3">
                             <div class="offset-1 col-sm-3"><p><b>Среднесписочное количество работников юридического лица:</b></p></div>
@@ -1570,79 +1620,92 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                         <div class="col-md-12">
                           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                           <div class="row pl-1 pt-3">
-                            <div class="col-sm-3"><p><b>Информация об уплаченных компанией налогах и сборах за год:</b></p></div>
-                            <div class="col-sm-9"></div>
+                            <div class="col-sm-6"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Информация об уплаченных компанией налогах и сборах за год:</b></text></div>
+                            <div class="col-sm-6"></div>
                           </div>
                         </div>
+                        <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                         <?php
                           foreach($data_fns->ЮЛ->ОткрСведения->Налоги as $key_pred => $value_pred){ ?>
                               <div class="offset-1 col-sm-11">
-                                <div class="mt-3"><b><?php echo $value_pred->Тип; ?></b></div>
-                                <div class="row pl-1 pt-3">
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>Наименование налога или сбора:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_pred->НаимНалог; ?></div>
-                                      </div>
-                                    </div>
+                                <div class="col-sm-12"><hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; "></div>
+                                <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->НаимНалог; ?></b></text></div>
+                                <div class="row pl-1 pt-3" style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                  <?php if(isset($value_pred->СумУплНал)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Сумма уплаченного налога или сбора:</b></p></div>
                                         <div class="col-sm-8"><?php echo $value_pred->СумУплНал; ?></div>
                                       </div>
                                     </div>
+                                  <? } ?>
+                                  <?php if(isset($value_pred->СумНедНалог)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Сумма недоимки по налогу:</b></p></div>
                                         <div class="col-sm-8"><?php echo $value_pred->СумНедНалог; ?></div>
                                       </div>
                                     </div>
+                                  <? } ?>
+                                  <?php if(isset($value_pred->СумПени)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Сумма задолженности по пеням:</b></p></div>
                                         <div class="col-sm-8"><?php echo $value_pred->СумПени; ?></div>
                                       </div>
                                     </div>
+                                  <? } ?>
+                                  <?php if(isset($value_pred->СумШтраф)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Сумма штрафа из-за недоимки по налогу:</b></p></div>
                                         <div class="col-sm-8"><?php echo $value_pred->СумШтраф; ?></div>
                                       </div>
                                     </div>
+                                  <? } ?>
+                                  <?php if(isset($value_pred->ОбщСумНедоим)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Общая сумма недоимки по налогу, пени и штрафу:</b></p></div>
                                         <div class="col-sm-8"><?php echo $value_pred->ОбщСумНедоим; ?></div>
                                       </div>
                                     </div>
+                                  <? } ?>
+                                  <?php if(isset($value_pred->ОтраслевыеПок->Рентабельность) || isset($value_pred->ОтраслевыеПок->НалогНагрузка)) { ?>
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Сведения об отраслевых показателях:</b></p></div>
                                         <div class="col-sm-8">
                                           <div class="row">
+                                            <?php if(isset($value_pred->ОтраслевыеПок->НалогНагрузка)) { ?>
                                             <div class="col-md-12">
                                               <div class="row pl-1 pt-3">
                                                 <div class="col-sm-4"><p><b>Сведения о среднеотраслевой налоговой нагрузке:</b></p></div>
                                                 <div class="col-sm-8"><?php echo $value_pred->ОтраслевыеПок->НалогНагрузка; ?></div>
                                               </div>
                                             </div>
+                                          <? } ?>
+                                          <?php if(isset($value_pred->ОтраслевыеПок->Рентабельность)) { ?>
                                             <div class="col-md-12">
                                               <div class="row pl-1 pt-3">
                                                 <div class="col-sm-4"><p><b>Сведения о среднеотраслевой рентабельности:</b></p></div>
                                                 <div class="col-sm-8"><?php echo $value_pred->ОтраслевыеПок->Рентабельность; ?></div>
                                               </div>
                                             </div>
+                                          <? } ?>
                                           </div>
                                         </div>
                                       </div>
                                     </div>
+                                  <? } ?>
                                   </div>
                                 </div>
                           <?php
                         //конец блока с налогами
-                        }}
+                      } echo "</div>"; }
+                      echo "</div>";
                       //конец блока с ОткрСведения
-                      }
+                    }
                       ?>
 
                       <!-- Лицензии -->
@@ -1650,15 +1713,18 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                         <div class="col-md-12">
                           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                           <div class="row pl-1 pt-3">
-                            <div class="col-sm-3"><p><b>Cведения о лицензиях, выданных ЮЛ:</b></p></div>
+                            <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Cведения о лицензиях, выданных ЮЛ:</b></text></div>
                             <div class="col-sm-9"></div>
                           </div>
                         </div>
+                        <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                         <?php if (!empty($data_fns->ЮЛ->Лицензии)) {
                           foreach($data_fns->ЮЛ->Лицензии as $key_pred => $value_pred){ ?>
+
                               <div class="offset-1 col-sm-11">
-                                <div class="mt-3"><b><?php echo $value_pred->Тип; ?></b><div>
-                                <div class="row pl-1 pt-3">
+                                <div class="col-sm-5"><hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; "></div>
+                                <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->НомерЛиц; ?></b></text><div>
+                                <div class="row pl-1 pt-3" style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                                     <div class="col-md-12">
                                       <div class="row pl-1 pt-3">
                                         <div class="col-sm-4"><p><b>Серия и номер лицензии:</b></p></div>
@@ -1694,22 +1760,24 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                               </div>
                             </div>
                           <?php
-                        }} } ?>
+                        }} echo "</div>"; } ?>
 
                         <!-- Участия -->
                         <?php if (isset($data_fns->ЮЛ->Участия)) { ?>
                           <div class="col-md-12">
                             <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                             <div class="row pl-1 pt-3">
-                              <div class="col-sm-3"><p><b>Сведения об организациях, в капитале которых участвует компания:</b></p></div>
+                              <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Сведения об организациях, в капитале которых участвует компания:</b></text></div>
                               <div class="col-sm-9"></div>
                             </div>
                           </div>
+                          <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                           <?php if (!empty($data_fns->ЮЛ->Участия)) {
                             foreach($data_fns->ЮЛ->Участия as $key_pred => $value_pred){ ?>
                                 <div class="offset-1 col-sm-11">
-                                  <div class="mt-3"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b><div>
-                                  <div class="row pl-1 pt-3">
+                                  <div class="col-sm-5"><hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; "></div>
+                                  <div class="mt-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_pred->НаимСокрЮЛ; ?></b></text><div>
+                                  <div class="row pl-1 pt-3" style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
                                       <div class="col-md-12">
                                         <div class="row pl-1 pt-3">
                                           <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
@@ -1745,7 +1813,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                                 </div>
                               </div>
                             <?php
-                          }} } ?>
+                          }} echo "</div>"; } ?>
 
                           <!-- История -->
                           <?php if(isset($data_fns->ЮЛ->История)) {
@@ -1754,456 +1822,514 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                           <div class="col-md-12">
                             <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                             <div class="row pl-1 pt-3">
-                              <div class="col-sm-3"><p><b>Исторические сведения о компании:</b></p></div>
+                              <div class="col-sm-3"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Исторические сведения о компании:</b></text></div>
                               <div class="col-sm-9"></div>
                             </div>
                           </div>
-
-                          <!-- Капитал -->
-                          <?php if (isset($data_fns->ЮЛ->История->Капитал)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Капитал:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->Капитал as $key => $value){
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value->СумКап.'₽</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- НаимЮЛПолн -->
-                          <?php if (isset($data_fns->ЮЛ->История->НаимЮЛПолн)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Прошлые полные названия организации:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->НаимЮЛПолн as $key => $value){
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- НаимЮЛСокр -->
-                          <?php if (isset($data_fns->ЮЛ->История->НаимЮЛСокр)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Прошлые сокращенные названия организации:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->НаимЮЛСокр as $key => $value){
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- Статус -->
-                          <?php if (isset($data_fns->ЮЛ->История->Статус)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Прошлые статусы организации:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->Статус as $key => $value){
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- Адрес -->
-                          <?php if (isset($data_fns->ЮЛ->История->Адрес)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Исторические сведения о прошлых адресах компании:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->Адрес as $key => $value){
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value->АдресПолн.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- Руководитель -->
-                          <?php if (isset($data_fns->ЮЛ->История->Руководитель)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Исторические сведения о бывших руководителях:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->Руководитель as $key => $value){
-                                      //echo '<div class="row">';
-                                      echo '<div class="row mt-3"><div class="col-sm-12">'.$value->ФИОПолн.'</div>';
-                                      echo '<div class="offset-2 col-sm-2">Период</div><div class="col-sm-8">'.$key.'</div>';
-                                      echo '<div class="offset-2 col-sm-2">ИНН</div><div class="col-sm-8">'.$value->ИННФЛ.'</div>';
-                                      if (isset($value->ДатаОкончДискв)) {
-                                        echo '<div class="offset-2 col-sm-2">Недостоверность руководителя</div>';
-                                        echo '<div class="col-sm-8">';
-                                          echo '<div class="row">';
-                                            echo '<div class="offset-2 col-sm-2">Код</div><div class="col-sm-8">'.$value->ДатаОкончДискв->Код.'</div>';
-                                            echo '<div class="offset-2 col-sm-2">Результат</div><div class="col-sm-8">'.$value->ДатаОкончДискв->Текст.'</div>';
+                          <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                            <!-- Капитал -->
+                            <?php if (isset($data_fns->ЮЛ->История->Капитал)) { ?>
+                              <div class="col-md-12">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Капитал:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                      <?php
+                                        foreach($data_fns->ЮЛ->История->Капитал as $key => $value){
+                                          echo '<div class="row mt-3">';
+                                          echo '<div class="col-3">'.$key.'</div>';
+                                          echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                          echo '<div class="col-8">'.$value->СумКап.'₽</div>';
                                           echo '</div>';
+                                        }
+                                      ?>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <?php } ?>
+
+                            <!-- НаимЮЛПолн -->
+                            <?php if (isset($data_fns->ЮЛ->История->НаимЮЛПолн)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Прошлые полные названия организации:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                      <?php
+                                        foreach($data_fns->ЮЛ->История->НаимЮЛПолн as $key => $value){
+                                          echo '<div class="row mt-3">';
+                                          echo '<div class="col-3">'.$key.'</div>';
+                                          echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                          echo '<div class="col-8">'.$value.'</div>';
+                                          echo '</div>';
+                                        }
+                                      ?>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <?php } ?>
+
+                            <!-- НаимЮЛСокр -->
+                            <?php if (isset($data_fns->ЮЛ->История->НаимЮЛСокр)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Прошлые сокращенные названия организации:</text></b>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                    <?php
+                                      foreach($data_fns->ЮЛ->История->НаимЮЛСокр as $key => $value){
+                                        echo '<div class="row mt-3">';
+                                        echo '<div class="col-3">'.$key.'</div>';
+                                        echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                        echo '<div class="col-8">'.$value.'</div>';
                                         echo '</div>';
                                       }
-                                      if(isset($value->ДатаОкончДискв)) echo '<div class="offset-2 col-sm-2">Дате оконч. дисквалификации</div><div class="col-sm-8">'.$value->ДатаОкончДискв.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
+                                    ?>
+                                  </div>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          <?php }  ?>
+                            <?php } ?>
 
-                          <!-- НомТел -->
-                          <?php if (isset($data_fns->ЮЛ->История->НомТел)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Прошлые номера контактного телефона:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->НомТел as $key => $value){
-                                      //echo '<div class="row">';
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- НомТел -->
-                          <?php
-                            $str_obj_email = 'E-mail';
-                            if (isset($data_fns->ЮЛ->История->$str_obj_email)) { ?>
-                            <div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                              <div class="row pl-1 pt-3">
-                                <div class="offset-1 col-sm-11"><b>Прошлые адреса электронной почты:</b>
-                                  <?php
-                                    foreach($data_fns->ЮЛ->История->$str_obj_email as $key => $value){
-                                      //echo '<div class="row">';
-                                      echo '<div class="row mt-3">';
-                                      echo '<div class="col-3">'.$key.'</div>';
-                                      echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
-                                      echo '<div class="col-8">'.$value.'</div>';
-                                      echo '</div>';
-                                    }
-                                  ?>
-                                </div>
-                              </div>
-                            </div>
-                          <?php } ?>
-
-                          <!-- Учредители История -->
-                            <?php if(!empty($data_fns->ЮЛ->История->Учредители)){
-                              echo '<div class="col-md-12">
-                              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                            <!-- Статус -->
+                            <?php if (isset($data_fns->ЮЛ->История->Статус)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
                                 <div class="row pl-1 pt-3">
-                                  <div class="col-sm-5"><p><b>Сведения об учредителях (участниках) юридического лица:</b></p></div>
-                                  <div class="col-sm-7"></div>
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Прошлые статусы организации:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                    <?php
+                                      foreach($data_fns->ЮЛ->История->Статус as $key => $value){
+                                        echo '<div class="row mt-3">';
+                                        echo '<div class="col-3">'.$key.'</div>';
+                                        echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                        echo '<div class="col-8">'.$value.'</div>';
+                                        echo '</div>';
+                                      }
+                                    ?>
+                                  </div>
+                                  </div>
                                 </div>
-                              </div>';
+                              </div>
+                            <?php } ?>
 
-                              echo '<div class="col-md-12">
-                                <div class="row pl-1 pt-3">';
-                              foreach ($data_fns->ЮЛ->История->Учредители as $key_uch => $value_uch) {
-                                if (isset($value_uch->УчрЮЛ)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Наименование ЮЛ сокращенное:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрЮЛ->НаимСокрЮЛ; ?>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ОГРН; ?></div>
-                                    </div>
+                            <!-- Адрес -->
+                            <?php if (isset($data_fns->ЮЛ->История->Адрес)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Исторические сведения о прошлых адресах компании:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                    <?php
+                                      foreach($data_fns->ЮЛ->История->Адрес as $key => $value){
+                                        echo '<div class="row mt-3">';
+                                        echo '<div class="col-3">'.$key.'</div>';
+                                        echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                        echo '<div class="col-8">'.$value->АдресПолн.'</div>';
+                                        echo '</div>';
+                                      }
+                                    ?>
                                   </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ИНН; ?></div>
-                                    </div>
                                   </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->Статус; ?></div>
-                                    </div>
+                                </div>
+                              </div>
+                            <?php } ?>
+
+                            <!-- Руководитель -->
+                            <?php if (isset($data_fns->ЮЛ->История->Руководитель)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Исторические сведения о бывших руководителях:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                    <?php
+                                      foreach($data_fns->ЮЛ->История->Руководитель as $key => $value){
+                                        //echo '<div class="row">';
+                                        echo '<div class="row mt-3"><div class="col-sm-12"><text class="list_fns" list="'.$count_list_fns.'"><b>'.$value->ФИОПолн.'</b></text></div>';
+                                        echo '<div class="row" style="display:none; width: 100%;" id="list_li_fns_'.$count_list_fns.'">';
+                                        $count_list_fns++;
+                                        echo '<div class="offset-2 col-sm-2">Период</div><div class="col-sm-8">'.$key.'</div>';
+                                        echo '<div class="offset-2 col-sm-2">ИНН</div><div class="col-sm-8">'.$value->ИННФЛ.'</div>';
+                                        if (isset($value->ДатаОкончДискв)) {
+                                          echo '<div class="offset-2 col-sm-2">Недостоверность руководителя</div>';
+                                          echo '<div class="col-sm-8">';
+                                            echo '<div class="row">';
+                                              echo '<div class="offset-2 col-sm-2">Код</div><div class="col-sm-8">'.$value->ДатаОкончДискв->Код.'</div>';
+                                              echo '<div class="offset-2 col-sm-2">Результат</div><div class="col-sm-8">'.$value->ДатаОкончДискв->Текст.'</div>';
+                                            echo '</div>';
+                                          echo '</div>';
+                                        }
+                                        if(isset($value->ДатаОкончДискв)) echo '<div class="offset-2 col-sm-2">Дате оконч. дисквалификации</div><div class="col-sm-8">'.$value->ДатаОкончДискв.'</div>';
+                                        echo '</div>';
+                                        echo '</div>';
+                                      }
+                                    ?>
                                   </div>
-                                <?php }
-                                if (isset($value_uch->УчрИН)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - иностранном юридическом лице:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрИН->НаимПолнЮЛ; ?>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>ОКСМ:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->ОКСМ; ?></div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Регистрационный номер:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->РегНомер; ?></div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Дата регистрации:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->ДатаРег; ?></div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрИН->АдресПолн; ?></div>
-                                    </div>
-                                  </div>
-                                <?php }
-                                if (isset($value_uch->УчрФЛ)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - физическом лице:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрФЛ->ФИОПолн; ?>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>ИНН учредителя:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->УчрФЛ->ИННФЛ; ?></div>
-                                    </div>
-                                  </div>
-                                <?php }
-                                if (isset($value_uch->УчрРФСубМО)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - Российской Федерации, субъекте Российской Федерации, муниципальном образовании:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрРФСубМО; ?>
-                                <?php }
-                                if (isset($value_uch->СвОргОсущПр)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Сведения об органе государственной власти, органе местного самоуправления или о юридическом лице, осуществляющем права учредителя (участника:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->НаимСокрЮЛ; ?>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ОГРН; ?></div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ИНН; ?></div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->Статус; ?></div>
-                                      </div>
-                                    </div>
-                              <?php }
-                                if (isset($value_uch->УчрПИФ)) { ?>
-                                  <div class="offset-1 col-sm-3"><p><b>Сведения о паевом инвестиционном фонде, в состав имущества которого включена доля в уставном капитале:</b></p></div>
-                                  <div class="offset-4 col-sm-8"><?php echo $value_uch->УчрПИФ->НаимСокрЮЛ; ?>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->ОГРН; ?></div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->ИНН; ?></div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                      <div class="row pl-1 pt-3">
-                                        <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
-                                        <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->Статус; ?></div>
-                                      </div>
-                                    </div>
-                              <?php } ?>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Номинальная стоимость доли в рублях:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->СуммаУК; ?></div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Размер доли (в процентах):</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->Процент; ?></div>
-                                    </div>
-                                  </div>
-                                  <div class="col-md-12">
-                                    <div class="row pl-1 pt-3">
-                                      <div class="col-sm-4"><p><b>Дата внесения в ЕГРЮЛ:</b></p></div>
-                                      <div class="col-sm-8"><?php echo $value_uch->Дата; ?></div>
+                                </div>
+                              </div>
+                            <?php }  ?>
+
+                            <!-- НомТел -->
+                            <?php if (isset($data_fns->ЮЛ->История->НомТел)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Прошлые номера контактного телефона:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                      <?php
+                                        foreach($data_fns->ЮЛ->История->НомТел as $key => $value){
+                                          //echo '<div class="row">';
+                                          echo '<div class="row mt-3">';
+                                          echo '<div class="col-3">'.$key.'</div>';
+                                          echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                          echo '<div class="col-8">'.$value.'</div>';
+                                          echo '</div>';
+                                        }
+                                      ?>
                                     </div>
                                   </div>
                                 </div>
-                             <?php }
-                               if(isset($value_uch->ПризнНедДанДолжнФЛ)) { ?>
-                                 <!-- Недостоверный адрес -->
-                                   <div class="col-md-12">
-                                     <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                                     <div class="row pl-1 pt-3">
-                                       <div class="col-sm-4"><p><b>	Сведения о недостоверности данных об учредителе (участнике):</b></p></div>
-                                       <div class="col-sm-8">
-                                         <div class="row">
-                                           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                                           <div class="col-md-12">
-                                             <div class="row pl-1 pt-3">
-                                               <div class="offset-1 col-sm-3"><p><b>Признак недостоверности:</b></p></div>
-                                               <div class="col-sm-8"><?php echo $value_uch->ПризнНедДанУчр->Код; ?></div>
-                                             </div>
-                                           </div>
-                                           <div class="col-md-12">
-                                             <div class="row pl-1 pt-3">
-                                               <div class="offset-1 col-sm-3"><p><b>Результат:</b></p></div>
-                                               <div class="col-sm-8"><?php echo $value_uch->ПризнНедДанУчр->Текст; ?></div>
-                                             </div>
-                                           </div>
-                                         </div>
-                                       </div>
-                                     </div>
-                                   </div>
-                             <?php }
-                             if(isset($value_uch->Залогодержатели)) { ?>
-                               <!-- Недостоверный адрес -->
-                                 <div class="col-md-12">
-                                   <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                                   <div class="row pl-1 pt-3">
-                                     <div class="col-sm-4"><p><b>	Сведения о залогодержателе доли:</b></p></div>
-                                     <div class="col-sm-8">
-                                       <div class="row">
+                              </div>
+                            <?php } ?>
+
+                            <!-- НомТел -->
+                            <?php
+                              $str_obj_email = 'E-mail';
+                              if (isset($data_fns->ЮЛ->История->$str_obj_email)) { ?>
+                              <div class="col-md-12">
+                                <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                <div class="row pl-1 pt-3">
+                                  <div class="offset-1 col-sm-11"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b>Прошлые адреса электронной почты:</b></text>
+                                    <div style="display:none; width: 100%;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++; ?>">
+                                      <?php
+                                        foreach($data_fns->ЮЛ->История->$str_obj_email as $key => $value){
+                                          //echo '<div class="row">';
+                                          echo '<div class="row mt-3">';
+                                          echo '<div class="col-3">'.$key.'</div>';
+                                          echo '<div class="col-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevrons-right"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg></div>';
+                                          echo '<div class="col-8">'.$value.'</div>';
+                                          echo '</div>';
+                                        }
+                                      ?>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <?php } ?>
+
+                            <!-- Учредители История -->
+
+                                <?php if(!empty($data_fns->ЮЛ->История->Учредители)){
+                                  echo '<div class="col-md-12">
+                                  <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                    <div class="row pl-1 pt-3">
+                                      <div class="col-sm-5"><text class="list_fns" list="'.$count_list_fns.'"><b>Сведения об учредителях (участниках) юридического лица:</b></text></div>
+                                      <div class="col-sm-7"></div>
+                                    </div>
+                                  </div>';
+                                  echo '<div class="col-md-12" id="list_li_fns_'.$count_list_fns.'" style="display:none;">
+                                        <div class="row pl-1 pt-3">';
+                                  $count_list_fns++;
+                                  foreach ($data_fns->ЮЛ->История->Учредители as $key_uch => $value_uch) {
+                                    $count_list_fns++;
+                                    if (isset($value_uch->УчрЮЛ)) { ?>
+                                      <div class="offset-1 col-sm-3"><b>Наименование ЮЛ сокращенное:</b></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрЮЛ->НаимСокрЮЛ; ?></b></text>
+                                      <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ОГРН; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->ИНН; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрЮЛ->Статус; ?></div>
+                                          </div>
+                                        </div>
+                                    <?php }
+                                    if (isset($value_uch->УчрИН)) { ?>
+                                      <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - иностранном юридическом лице:</b></p></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрИН->НаимПолнЮЛ; ?></b></text>
+                                      <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns;?>">
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ОКСМ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрИН->ОКСМ; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>Регистрационный номер:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрИН->РегНомер; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>Дата регистрации:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрИН->ДатаРег; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрИН->АдресПолн; ?></div>
+                                          </div>
+                                        </div>
+                                    <?php }
+                                    if (isset($value_uch->УчрФЛ)) { ?>
+                                      <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - физическом лице:</b></p></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрФЛ->ФИОПолн; ?></b></text>
+                                      <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ИНН учредителя:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрФЛ->ИННФЛ; ?></div>
+                                          </div>
+                                        </div>
+                                    <?php }
+                                    if (isset($value_uch->УчрРФСубМО)) { ?>
+                                      <div class="offset-1 col-sm-3"><p><b>Сведения об учредителе (участнике) - Российской Федерации, субъекте Российской Федерации, муниципальном образовании:</b></p></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрРФСубМО; ?></b></text>
+                                      <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                                    <?php }
+                                    if (isset($value_uch->СвОргОсущПр)) { ?>
+                                      <div class="offset-1 col-sm-3"><p><b>Сведения об органе государственной власти, органе местного самоуправления или о юридическом лице, осуществляющем права учредителя (участника:</b></p></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->НаимСокрЮЛ; ?></b></text>
+                                        <div style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                                          <div class="col-md-12">
+                                            <div class="row pl-1 pt-3">
+                                              <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
+                                              <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ОГРН; ?></div>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-12">
+                                            <div class="row pl-1 pt-3">
+                                              <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
+                                              <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->ИНН; ?></div>
+                                            </div>
+                                          </div>
+                                          <div class="col-md-12">
+                                            <div class="row pl-1 pt-3">
+                                              <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
+                                              <div class="col-sm-8"><?php echo $value_uch->СвОргОсущПр->УчрЮЛ->Статус; ?></div>
+                                            </div>
+                                          </div>
+                                  <?php }
+                                    if (isset($value_uch->УчрПИФ)) { ?>
+                                      <div class="offset-1 col-sm-3"><p><b>Сведения о паевом инвестиционном фонде, в состав имущества которого включена доля в уставном капитале:</b></p></div>
+                                      <div class="offset-4 col-sm-8"><text class="list_fns" list="<?php echo $count_list_fns; ?>"><b><?php echo $value_uch->УчрПИФ->НаимСокрЮЛ; ?><b></text>
+                                        <div class="" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; ?>">
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ОГРН ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->ОГРН; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>ИНН ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->ИНН; ?></div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                          <div class="row pl-1 pt-3">
+                                            <div class="col-sm-4"><p><b>Статус ЮЛ:</b></p></div>
+                                            <div class="col-sm-8"><?php echo $value_uch->УчрПИФ->Статус; ?></div>
+                                          </div>
+                                        </div>
+                                  <?php } ?>
+                                      <div class="col-md-12">
+                                        <div class="row pl-1 pt-3">
+                                          <div class="col-sm-4"><p><b>Номинальная стоимость доли в рублях:</b></p></div>
+                                          <div class="col-sm-8"><?php echo $value_uch->СуммаУК; ?></div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-12">
+                                        <div class="row pl-1 pt-3">
+                                          <div class="col-sm-4"><p><b>Размер доли (в процентах):</b></p></div>
+                                          <div class="col-sm-8"><?php echo $value_uch->Процент; ?></div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-12">
+                                        <div class="row pl-1 pt-3">
+                                          <div class="col-sm-4"><p><b>Дата внесения в ЕГРЮЛ:</b></p></div>
+                                          <div class="col-sm-8"><?php echo $value_uch->Дата; ?></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                 <?php } $count_list_fns++;
+                                   if(isset($value_uch->ПризнНедДанДолжнФЛ)) { ?>
+                                     <!-- Недостоверный адрес -->
+                                       <div class="col-md-12">
                                          <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>ОГРН:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ОГРН; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>ИНН:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИНН; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Наименование ЮЛ сокращенное (только для ЮЛ):</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->НаимСокрЮЛ; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Статус ЮЛ:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->Статус; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Фамилия Имя Отчество залогодержателя (ФЛ):</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ФИОПолн; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>ИНН залогодержателя (ФЛ):</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИННФЛ; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Наименование организации залогодержателя (Иностранное лицо):</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->НаимПолнЮЛ; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>ОКСМ:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ОКСМ; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>ИННФЛ:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ИННФЛ; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Регистрационный номер:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->РегНомер; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Дата регистрации:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ДатаРег; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->АдресПолн; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Принимает значение: ЗАЛОГ | ИНОЕ ОБРЕМЕНЕНИЕ:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->ВидОбременения; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Срок обременения или порядок определения срока:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->СрокОбременения; ?></div>
-                                           </div>
-                                         </div>
-                                         <div class="col-md-12">
-                                           <div class="row pl-1 pt-3">
-                                             <div class="offset-1 col-sm-3"><p><b>Дата внесения в ЕГРЮЛ:</b></p></div>
-                                             <div class="col-sm-8"><?php echo $value_uch->Залогодержатели->Дата; ?></div>
+                                         <div class="row pl-1 pt-3">
+                                           <div class="col-sm-4"><p><b>	Сведения о недостоверности данных об учредителе (участнике):</b></p></div>
+                                           <div class="col-sm-8">
+                                             <div class="row">
+                                               <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                               <div class="col-md-12">
+                                                 <div class="row pl-1 pt-3">
+                                                   <div class="offset-1 col-sm-3"><p><b>Признак недостоверности:</b></p></div>
+                                                   <div class="col-sm-8"><?php echo $value_uch->ПризнНедДанУчр->Код; ?></div>
+                                                 </div>
+                                               </div>
+                                               <div class="col-md-12">
+                                                 <div class="row pl-1 pt-3">
+                                                   <div class="offset-1 col-sm-3"><p><b>Результат:</b></p></div>
+                                                   <div class="col-sm-8"><?php echo $value_uch->ПризнНедДанУчр->Текст; ?></div>
+                                                 </div>
+                                               </div>
+                                             </div>
                                            </div>
                                          </div>
                                        </div>
+                                     <?php }
+                                     if(!empty($value_uch->Залогодержатели)) { ?>
+                                       <!-- Недостоверный адрес -->
+                                         <div class="col-md-12">
+                                           <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+                                           <div class="row pl-1 pt-3">
+                                             <div class="col-sm-12"><tect class="list_fns" list="<?php echo $count_list_fns; ?>"><b>	Сведения о залогодержателе доли:</b></text></div>
+                                             <div class="col-sm-12">
+                                               <?php foreach($value_uch->Залогодержатели as $key_z => $value_z) { ?>
+                                               <div class="row" style="display:none;" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++;?>">
+                                                 <hr style="border: none; color: #727c
+                                                 <?php if(isset($value_z->ОГРН)) { ?>f5; background-color: #727cf5; height: 1px; ">
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>ОГРН:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ОГРН; ?></div>
+                                                   </div>
+                                                 </div>
+                                               <?php } ?>
+                                                 <?php if(isset($value_z->ИНН)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>ИНН:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ИНН; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->НаимСокрЮЛ)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Наименование ЮЛ сокращенное (только для ЮЛ):</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->НаимСокрЮЛ; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->Статус)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Статус ЮЛ:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->Статус; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ФИОПолн)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Фамилия Имя Отчество залогодержателя (ФЛ):</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ФИОПолн; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ИННФЛ)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>ИНН залогодержателя (ФЛ):</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ИННФЛ; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->НаимПолнЮЛ)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Наименование организации залогодержателя (Иностранное лицо):</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->НаимПолнЮЛ; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ОКСМ)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>ОКСМ:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ОКСМ; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ИННФЛ)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>ИННФЛ:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ИННФЛ; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->РегНомер)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Регистрационный номер:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->РегНомер; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ДатаРег)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Дата регистрации:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ДатаРег; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->АдресПолн)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Адрес (место нахождения) в стране происхождения:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->АдресПолн; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->ВидОбременения)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Принимает значение: ЗАЛОГ | ИНОЕ ОБРЕМЕНЕНИЕ:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->ВидОбременения; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->СрокОбременения)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Срок обременения или порядок определения срока:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->СрокОбременения; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                                 <?php if(isset($value_z->Дата)) { ?>
+                                                 <div class="col-md-12">
+                                                   <div class="row pl-1 pt-3">
+                                                     <div class="offset-1 col-sm-3"><p><b>Дата внесения в ЕГРЮЛ:</b></p></div>
+                                                     <div class="col-sm-8"><?php echo $value_z->Дата; ?></div>
+                                                   </div>
+                                                 </div>
+                                                 <?php } ?>
+                                               </div>
+                                             <?php } ?>
+                                         </div>
+                                       </div>
                                      </div>
-                                   </div>
-                                 </div>
-                    <?php    } } } ?>
+
+                      <?php    } } echo "</div>"; } ?>
 
     </div>
 
