@@ -58,13 +58,17 @@ foreach ($get_data->data as $key => $value) {
     $settings->telega_send($settings->get_global_settings('telega_chat_error'), 'error_fns '.$value->inn);
     continue;
   }
+  $fns_data_item = array_pop($fns_data->items);
 
   $temp_obj_data = (object) array();
   $temp_obj_data->Row = $count_row;
-  $temp_obj_data->Name = (isset($fns_data->items[0]->ЮЛ)) ? $fns_data->items[0]->ЮЛ->НаимСокрЮЛ : $fns_data->items[0]->ИП->ФИОПолн;
+  $temp_obj_data->Name = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->НаимСокрЮЛ : $fns_data_item->ИП->ФИОПолн;
   $temp_obj_data->INN = $value->inn;
-  $temp_obj_data->OGRN = (isset($fns_data->items[0]->ЮЛ)) ? $fns_data->items[0]->ЮЛ->ОГРН : $fns_data->items[0]->ИП->ОГРНИП;
-  $temp_obj_data->Status = (isset($fns_data->items[0]->ЮЛ)) ? $fns_data->items[0]->ЮЛ->Статус : $fns_data->items[0]->ИП->Статус;
+  $temp_obj_data->OGRN = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->ОГРН : $fns_data_item->ИП->ОГРНИП;
+  $temp_obj_data->FSI = ' ';
+  $temp_obj_data->SK = ($settings->check_status_skolkovo_entity($fns_data_item->inn)) ? 'Сколково' : 'Нет';
+  $temp_obj_data->Tboil = ($settings->get_id_user_tboil_entity($fns_data_item->inn)) ? 'Тбоил' : 'Нет';
+
   array_push($arr_result->data, $temp_obj_data);
   $count_row++;
 }
