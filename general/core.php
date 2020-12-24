@@ -232,7 +232,29 @@ class Settings {
 
       if ($data){
          if ($data->status == 'active') {
-           return json_encode(array('response' => true, 'data' => $data),JSON_UNESCAPED_UNICODE);
+           return json_encode(array('response' => true, 'data' => $data, 'description' => 'Рефер успешно найден'),JSON_UNESCAPED_UNICODE);
+         } else {
+           return json_encode(array('response' => false, 'description' => 'Данный ресурс не активирован'),JSON_UNESCAPED_UNICODE);
+         }
+      }
+      else {
+         return json_encode(array('response' => false, 'description' => 'Отказ в доступе, данный ресурс не зарегистрирован'),JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+  // получение данных по реферу и бд
+  public function get_data_referer_id($id_referer) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->api_referer WHERE id = :id");
+      $statement->bindParam(':id', $id_referer, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data){
+         if ($data->status == 'active') {
+           return json_encode(array('response' => true, 'data' => $data, 'description' => 'Рефер успешно найден'),JSON_UNESCAPED_UNICODE);
          } else {
            return json_encode(array('response' => false, 'description' => 'Данный ресурс не активирован'),JSON_UNESCAPED_UNICODE);
          }
@@ -2282,6 +2304,10 @@ class Settings {
         }
 
   }
+
+  // добавление статуса в тикет
+  
+
 
   // Функция
   public function entity_additionally($id_entity) {
