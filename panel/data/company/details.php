@@ -111,7 +111,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
     <div class="col-md-12 stretch-card">
         <div class="card">
           <div class="card-body">
-            <div class="container-fluid" style="background: #ffffff; border-radius: 3px;">
+            <div class="container-fluid" style="border-radius: 3px;">
             <?php // 1 строка с основной информацией и показателей ФНС ?>
             <div class="row border-bottom">
                 <?php // блок основной информации ?>
@@ -216,7 +216,7 @@ $out_stateSupport = $settings->IPCHAIN_entity_inner_join($data_company->data->in
                       <h5>Ключевые показатели</h5>
                     </div>
                     <div class="col-sm-3 text-right" style="padding-top: .05rem">
-                      <h5><span class="badge pr-3 pl-3" style="background: #2079cf; color: #fff">ФНС</span></h5>
+                      <h5><span class="badge pr-3 pl-3" style="background: #727cf5; color: #fff">ФНС</span></h5>
                     </div>
                   </div>
                   <?php // Основная информация о компании  ?>
