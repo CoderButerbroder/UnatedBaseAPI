@@ -16,8 +16,12 @@ $arr_result = (object) array();
 $flag_error = false;
 
 //числовый ключ чтоб понять по какому столбцу запрашивается сортировка
-$array_table_colump = array('0' => 'inn',
-                            '2' => 'inn');
+$array_table_colump = array('0' => 'id',
+                            '1' => 'id',
+                            '2' => 'type_support',
+                            '3' => 'name',
+                            '4' => 'date_added',
+                            '5' => 'status');
 
 if(intval($_POST["draw"])){
   $arr_result->draw = intval($_POST["draw"]);
@@ -31,7 +35,7 @@ if(intval($_POST["length"])){
 if(intval($_POST["order"][0]["column"])){
   $order_num_request = intval($_POST["order"][0]["column"]);
 } else if($_POST["order"][0]["column"] == '0') { $order_num_request = 0; } else $flag_error = true;
-if($order_num_request < 0 || $order_num_request > 2) $flag_error = true;
+if($order_num_request < 0 || $order_num_request > 5) $flag_error = true;
 $searh_value = $_POST["search"]["value"];
 
 $order_request = $array_table_colump[$order_num_request];
@@ -45,7 +49,7 @@ if($flag_error){
 
 $settings = new Settings;
 
-$get_data = $settings->get_company_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value);
+$get_data = $settings->get_ticket_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value);
 
 $arr_result->recordsTotal = $get_data->recordsTotal;
 $arr_result->recordsFiltered = $get_data->recordsFiltered;
@@ -53,22 +57,14 @@ $arr_result->data = (array) $arr_result->data;
 
 $count_row = 1;
 foreach ($get_data->data as $key => $value) {
-  $fns_data = json_decode($value->data_fns);
-  if($fns_data == NULL) {
-    $settings->telega_send($settings->get_global_settings('telega_chat_error'), 'error_fns '.$value->inn);
-    continue;
-  }
-  $fns_data_item = array_pop($fns_data->items);
-
   $temp_obj_data = (object) array();
   $temp_obj_data->Row = $count_row;
-  $temp_obj_data->Name = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->НаимСокрЮЛ : $fns_data_item->ИП->ФИОПолн;
-  $temp_obj_data->INN = $value->inn;
-  $temp_obj_data->OGRN = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->ОГРН : $fns_data_item->ИП->ОГРНИП;
-  $temp_obj_data->FSI = ' ';
-  $temp_obj_data->SK = ($settings->check_status_skolkovo_entity($fns_data_item->inn)) ? 'Сколково' : 'Нет';
-  $temp_obj_data->Tboil = ($settings->get_id_user_tboil_entity($fns_data_item->inn)) ? 'Тбоил' : 'Нет';
-
+  $temp_obj_data->Id = $value->id;
+  $temp_obj_data->Type = $value->type_support;
+  $temp_obj_data->Name = $value->name;
+  $temp_obj_data->Data = date('H:i d.m.Y', strtotime($value->date_added));
+  $temp_obj_data->Status = $value->status;
+  //$temp_obj_data->Status =
   array_push($arr_result->data, $temp_obj_data);
   $count_row++;
 }
