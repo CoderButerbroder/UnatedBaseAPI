@@ -52,6 +52,7 @@ $arr_result->recordsFiltered = $get_data->recordsFiltered;
 $arr_result->data = (array) $arr_result->data;
 
 $count_row = 1;
+
 foreach ($get_data->data as $key => $value) {
   $fns_data = json_decode($value->data_fns);
   if($fns_data == NULL) {
@@ -65,9 +66,10 @@ foreach ($get_data->data as $key => $value) {
   $temp_obj_data->Name = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->НаимСокрЮЛ : $fns_data_item->ИП->ФИОПолн;
   $temp_obj_data->INN = $value->inn;
   $temp_obj_data->OGRN = (isset($fns_data_item->ЮЛ)) ? $fns_data_item->ЮЛ->ОГРН : $fns_data_item->ИП->ОГРНИП;
-  $temp_obj_data->FSI = ' ';
-  $temp_obj_data->SK = ($settings->check_status_skolkovo_entity($fns_data_item->inn)) ? 'Сколково' : 'Нет';
-  $temp_obj_data->Tboil = ($settings->get_id_user_tboil_entity($fns_data_item->inn)) ? 'Тбоил' : 'Нет';
+  $temp_obj_data->FSI = '-';
+  $temp_obj_data->SK = ($settings->check_status_skolkovo_entity($value->inn) == false) ? false : true;
+  $temp_data_usr_company = $settings->get_id_user_tboil_entity($value->inn);
+  $temp_obj_data->Tboil = ($temp_data_usr_company == false) ? false : $temp_data_usr_company;
 
   array_push($arr_result->data, $temp_obj_data);
   $count_row++;

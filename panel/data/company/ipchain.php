@@ -63,7 +63,7 @@
                     },
                   },
           "columns": [
-            { "data": "Row", "width": "5%", "searchable": false},
+            { "data": "Row", "width": "5%", "searchable": false, visible : false},
             { "data": "Name", "width": "10%"},
             { "data": "INN", "width": "10%" },
             { "data": "OGRN", "width": "10%"},

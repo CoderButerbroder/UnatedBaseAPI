@@ -68,13 +68,34 @@
                     },
                   },
           "columns": [
-            { "data": "Row", "width": "5%", "searchable": false},
+            { "data": "Row", "width": "5%", "searchable": false, visible : false},
             { "data": "Name", "class" : "text-wrap", "width": "30%", "orderable": false },
             { "data": "INN", "width": "10%" },
             { "data": "OGRN", "width": "10%", "orderable": false },
-            { "data": "FSI", "width": "2%", "orderable": false },
-            { "data": "SK", "width": "2%", "orderable": false },
-            { "data": "Tboil", "width": "2%", "orderable": false },
+            { "data": "FSI", "width": "2%", "orderable": false , "class":"text-center",
+             render: function(data) {
+               if (data == true) {
+                 return '<span class="badge mr-2 badge-success" style=word-wrap: break-word">Да</span>';
+               } else {
+                 return '<span class="badge mr-2 badge-danger" style=word-wrap: break-word">Нет</span>';
+               }
+            }  },
+            { "data": "SK", "width": "2%", "orderable": false , "class":"text-center",
+             render: function(data) {
+               if (data == true) {
+                 return '<span class="badge mr-2 badge-success" style=word-wrap: break-word">Да</span>';
+               } else {
+                 return '<span class="badge mr-2 badge-danger" style=word-wrap: break-word">Нет</span>';
+               }
+            }  },
+            { "data": "Tboil", "width": "2%", "orderable": false , "class":"text-center",
+             render: function(data) {
+               if (data == false) {
+                 return '<span class="badge mr-2 badge-danger" style=word-wrap: break-word">Нет</span>';
+               } else {
+                 return '<span class="badge mr-2 badge-success" style=word-wrap: break-word" href="javascript:void(0)" onclick="window.open(\'<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil='+data+'\')">'+data+'</span>';
+               }
+            }  },
           ]
     });
 

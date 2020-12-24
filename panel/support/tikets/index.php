@@ -68,7 +68,7 @@
                     },
                   },
           "columns": [
-            { "data": "Row", "width": "5%", "searchable": false},
+            { "data": "Row", "width": "5%", "searchable": false, visible : false },
             { "data": "Id", "class" : "text-wrap", "width": "10%"},
             { "data": "Type", "width": "10%" },
             { "data": "Name", "width": "10%"},
