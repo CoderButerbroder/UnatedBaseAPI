@@ -1,9 +1,24 @@
-<?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
+
+<?php
+if (!isset($_GET["id"])) {
+  header('Location: https://'.$_SERVER["SERVER_NAME"]);
+  exit;
+}
+
+include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
 <?php /*тут метатеги*/?>
 <title>Данные по заявке - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
 <?php
+
+
+$data_ticket_str = $settings->get_data_tiket($_GET["id"]);
+$data_ticket = json_decode($data_ticket_str);
+$data_referer_ticket = json_decode($settings->get_data_referer_id($data_ticket->data->id_referer));
+$data_user_request = json_decode($settings->get_user_data_id_boil($data_ticket->data->id_tboil));
+$temp_null = 0;
+
 
 ?>
 
@@ -22,7 +37,7 @@
 
 
       <div class="card">
-            <div class="card-body">
+            <div class="card-body" >
               <div class="row position-relative">
                 <div class="col-lg-8 chat-aside border-lg-right">
                   <div class="aside-content">
@@ -34,21 +49,24 @@
                             <div class="status online"></div>
                           </figure> -->
                           <div>
-                            <h6><span class="badge badge-danger">Открыта</span> Заявка #34563 от 23.12.20</h6>
-                            <p class="text-muted mt-2 tx-13">Тип запроса</p>
+                            <h6><?php echo ($data_ticket->data->status == 'open') ? '<span class="badge badge-danger">Открыта</span>' : ''; ?>
+                                <?php echo ($data_ticket->data->status == 'close') ? '<span class="badge badge-success">Закрыта</span>' : ''; ?>
+                                <?php echo ($data_ticket->data->status == 'pause') ? '<span class="badge badge-info">Пауза</span>' : ''; ?>
+                               Заявка #<?php echo $data_ticket->data->id; ?> от <?php echo date('d.m.Y', strtotime($data_ticket->data->date_added)); ?></h6>
+                            <p class="text-muted mt-2 tx-13"><?php echo $data_ticket->data->type_support; ?></p>
                           </div>
                         </div>
-                        <div class="dropdown">
-                          <button class="btn p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <!-- <div class="dropdown">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="icon-lg text-muted pb-3px" data-feather="settings" data-toggle="tooltip" title="Настройки"></i>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          </button> -->
+                          <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View Profile</span></a>
                             <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit Profile</span></a>
                             <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="aperture" class="icon-sm mr-2"></i> <span class="">Add status</span></a>
                             <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="settings" class="icon-sm mr-2"></i> <span class="">Settings</span></a>
                           </div>
-                        </div>
+                        </div> -->
                       </div>
                       <!-- <form class="search-form">
                         <div class="input-group border rounded-sm">
@@ -61,6 +79,7 @@
                         </div>
                       </form> -->
                     </div>
+
                     <div class="aside-body">
                       <ul class="nav nav-tabs mt-3" role="tablist">
                         <li class="nav-item">
@@ -99,29 +118,52 @@
                       <div class="tab-content mt-3">
                         <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
                           <div>
-                            <p class="text-muted mb-1">Сведения о запросе</p>
+                              <h5 class="h5 mb-0">Сведения о запросе</h5>
+                              <hr>
+                                <div class="col">
+                                  <span class="h6 surtitle text-muted">Контакное лицо</span>
+                                  <span class="offset-1 d-block h6 btn-link" href="javascript:void(0)" class="btn btn btn-outline-info btn-link" style="cursor:pointer;" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $data_ticket->data->id_tboil; ?>')"><?php echo $data_user_request->data->last_name.' '.$data_user_request->data->name.' '.$data_user_request->data->second_name; ?></span>
+                                </div>
+                                <div class="col">
+                                  <span class="h6 surtitle text-muted">Название запроса</span>
+                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->name; ?></span>
+                                </div>
+                              <?php if($data_ticket->data->short_description) { ?>
+                                  <div class="col">
+                                    <span class="h6 surtitle text-muted">Короткое описание</span>
+                                    <span class="offset-1 d-block h6"><?php echo $data_ticket->data->short_description; ?></span>
+                                  </div>
+                              <?php } ?>
+                              <?php if($data_ticket->data->full_description) { ?>
+                                <div class="col">
+                                  <span class="h6 surtitle text-muted">Полное описание</span>
+                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->full_description; ?></span>
+                                </div>
+                              <?php } ?>
+                              <?php if($data_ticket->data->question_desc) { ?>
+                                <div class="col">
+                                  <span class="h6 surtitle text-muted">Описание вопроса</span>
+                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->question_desc; ?></span>
+                                </div>
+                              <?php } ?>
+
+
+                            <!-- <p class="text-muted mb-1">Сведения о запросе</p>
 
                             <p class="mb-1"><strong>Контакное лицо</strong></p>
-                            <p class="mb-1">Контакное лицо (id_tboil)</p>
+                            <p class="mb-1"><?php echo $data_user_request->data->last_name.' '.$data_user_request->data->name.' '.$data_user_request->data->second_name; ?></p>
 
                             <p class="mb-1"><strong>Название запроса</strong></p>
-                            <p class="mb-1">Название запроса</p>
+                            <p class="mb-1"><?php echo $data_ticket->data->name; ?></p>
 
                             <p class="mb-1"><strong>Короткое описание</strong></p>
-                            <p class="mb-1">Короткое описание</p>
+                            <p class="mb-1"><?php echo $data_ticket->data->short_description; ?></p>
 
-                            <p class="mb-1"><strong>Полное описание описание</strong></p>
-                            <p class="mb-1">Таким образом, рамки и место обучения кадров требует от нас системного анализа существующих финансовых и административных условий? Значимость этих проблем настолько очевидна, что курс на социально-ориентированный национальный проект требует определения и уточнения всесторонне сбалансированных нововведений. Соображения высшего порядка, а также социально-экономическое развитие требует определения и уточнения позиций, занимаемых участниками в отношении поставленных задач!
-
-Соображения высшего порядка, а также постоянный количественный рост и сфера нашей активности позволяет выполнить важнейшие задания по разработке соответствующих условий активизации. Практический опыт показывает, что повышение уровня гражданского сознания требует определения и уточнения форм воздействия! Соображения высшего порядка, а также начало повседневной работы по формированию позиции обеспечивает широкому кругу специалистов участие в формировании позиций, занимаемых участниками в отношении поставленных задач. Таким образом, новая модель организационной деятельности требует от нас анализа существующих финансовых и административных условий.
-
-Таким образом, выбранный нами инновационный путь в значительной степени обуславливает создание дальнейших направлений развития проекта! Разнообразный и богатый опыт постоянное информационно-техническое обеспечение нашей деятельности представляет собой интересный эксперимент проверки существующих финансовых и административных условий. Соображения высшего порядка, а также новая модель организационной деятельности играет важную роль в формировании всесторонне сбалансированных нововведений. Соображения высшего порядка, а также начало повседневной работы по формированию позиции позволяет оценить значение существующих финансовых и административных условий!</p>
+                            <p class="mb-1"><strong>Полное описание</strong></p>
+                            <p class="mb-1"><?php echo $data_ticket->data->full_description; ?></p>
 
                             <p class="mb-1"><strong>Описание вопроса</strong></p>
-                            <p class="mb-1">Короткое описание</p>
-
-
-
+                            <p class="mb-1"><?php echo $data_ticket->data->question_desc; ?></p> -->
                           </div>
                         </div>
                         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
@@ -136,13 +178,25 @@
 
                         </div>
                         <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
-                          <p class="text-muted mb-1">Прикрепленные файлы заявки</p>
+                          <?php
+                           $arr_files = explode(',', $data_ticket->data->links_add_files);
+                           if (empty($arr_files)) {
+                             echo '<p class="text-muted mb-1">Прикрепленные файлы заявки</p>';
+                             foreach ($arr_files as $key => $value) {
+                               echo '<p class="mb-1"><strong>Ссылка на документ</strong></p>';
+                               echo '<p class="mb-1"><a href="https://'.$data_referer_ticket->data->resourse.$value.'" download></a>Вложение</p>';
+                             }
+                           } else { ?>
+                             <div class="alert alert-info" role="alert">
+                                Нет прикрепленных файлов
+                             </div>
+                          <?php } ?>
 
-                          <p class="mb-1"><strong>Ссылка на фото</strong></p>
+                          <!-- <p class="mb-1"><strong>Ссылка на фото</strong></p>
                           <p class="mb-1"><a href="https://lpmtech.ru/">https://lpmtech.ru/</a></p>
 
                           <p class="mb-1"><strong>Ссылка на документ</strong></p>
-                          <p class="mb-1"><a href="https://lpmtech.ru/">https://lpmtech.ru/</a></p>
+                          <p class="mb-1"><a href="https://lpmtech.ru/">https://lpmtech.ru/</a></p> -->
 
                         </div>
                         <div class="tab-pane fade" id="conclusion" role="tabpanel" aria-labelledby="conclusion-tab">
@@ -155,7 +209,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-4 chat-content" style="position:relative;">
+                <div class="col-lg-4 chat-content" style="position:relative; min-height: 78vh;">
                   <div class="chat-header border-bottom pb-2">
                     <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center">
@@ -184,117 +238,10 @@
                     </div>
                   </div>
                   <div class="chat-body">
-                    <ul class="messages">
-                      <li class="message-item friend">
-                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
-                            </div>
-                            <span>23.12.20 в 17:00</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item me">
-                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
-                            </div>
-                            <span>23.12.20 в 17:02</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item friend">
-                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
-                            </div>
-                            <span>23.12.20 в 17:00</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item me">
-                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
-                            </div>
-                            <span>23.12.20 в 17:02</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item friend">
-                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
-                            </div>
-                            <span>23.12.20 в 17:00</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item me">
-                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
-                            </div>
-                            <span>23.12.20 в 17:02</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item friend">
-                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
-                            </div>
-                            <span>23.12.20 в 17:00</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item me">
-                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
-                            </div>
-                            <span>23.12.20 в 17:02</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item friend">
-                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
-                            </div>
-                            <span>23.12.20 в 17:00</span>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="message-item me">
-                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
-                        <div class="content">
-                          <div class="message">
-                            <div class="bubble">
-                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
-                            </div>
-                            <span>23.12.20 в 17:02</span>
-                          </div>
-                        </div>
-                      </li>
+                    <ul class="messages" id="messages">
+                      <div class="alert alert-light" role="alert">
+                        Нет истории переписки
+                      </div>;
                     </ul>
                   </div>
                   <div class="chat-footer d-flex" style="position:absolute; bottom:0; width: 98%;">
@@ -333,7 +280,11 @@
     </div>
 </div>
 
-
+<script>
+$( document ).ready(function() {
+    $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
+});
+</script>
 
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
