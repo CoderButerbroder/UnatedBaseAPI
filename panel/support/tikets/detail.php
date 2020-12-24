@@ -24,7 +24,7 @@
       <div class="card">
             <div class="card-body">
               <div class="row position-relative">
-                <div class="col-lg-6 chat-aside border-lg-right">
+                <div class="col-lg-8 chat-aside border-lg-right">
                   <div class="aside-content">
                     <div class="aside-header">
                       <div class="d-flex justify-content-between align-items-center pb-2 mb-2">
@@ -155,7 +155,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-6 chat-content" style="position:relative;">
+                <div class="col-lg-4 chat-content" style="position:relative;">
                   <div class="chat-header border-bottom pb-2">
                     <div class="d-flex justify-content-between">
                       <div class="d-flex align-items-center">
@@ -185,6 +185,94 @@
                   </div>
                   <div class="chat-body">
                     <ul class="messages">
+                      <li class="message-item friend">
+                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
+                            </div>
+                            <span>23.12.20 в 17:00</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item me">
+                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
+                            </div>
+                            <span>23.12.20 в 17:02</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item friend">
+                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
+                            </div>
+                            <span>23.12.20 в 17:00</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item me">
+                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
+                            </div>
+                            <span>23.12.20 в 17:02</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item friend">
+                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
+                            </div>
+                            <span>23.12.20 в 17:00</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item me">
+                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
+                            </div>
+                            <span>23.12.20 в 17:02</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item friend">
+                        <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Здравствуйте, хотел бы воспользоваться вашим сервисом</p>
+                            </div>
+                            <span>23.12.20 в 17:00</span>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="message-item me">
+                        <img src="<?php echo $data_user->data->photo;?>" class="img-xs rounded-circle" alt="avatar">
+                        <div class="content">
+                          <div class="message">
+                            <div class="bubble">
+                              <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry printing and typesetting industry.</p>
+                            </div>
+                            <span>23.12.20 в 17:02</span>
+                          </div>
+                        </div>
+                      </li>
                       <li class="message-item friend">
                         <img src="https://via.placeholder.com/43x43" class="img-xs rounded-circle" alt="avatar">
                         <div class="content">

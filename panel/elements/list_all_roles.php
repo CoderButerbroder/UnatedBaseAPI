@@ -58,8 +58,12 @@ if($data_all_roles) {
                       </td>
                       <td>
                         <?php if ($value->name != 'admin'){ ?>
+                            <?php if (!$data_user_rules->emploe->rule->edit_rules_role->value) {?>
                             <a href="/panel/settings/view_rules?role=<?php echo $value->name;?>" role="button" class="btn btn-sm btn-primary">Права</a>
+                            <?}?>
+                            <?php if (!$data_user_rules->emploe->rule->delete_role->value) {?>
                             <button type="button" onclick="delete_role(<?php echo $value->id;?>);" class="btn btn-sm btn-danger">Удалить</button>
+                            <?}?>
                         <? } ?>
                       </td>
                   </tr>

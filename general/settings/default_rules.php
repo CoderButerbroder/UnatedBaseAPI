@@ -21,7 +21,7 @@
                 "history":{
                     "name":"history",
                     "description":"Доступ к истории системы",
-                    "value":true
+                    "value":true 
                 }
             }
   },

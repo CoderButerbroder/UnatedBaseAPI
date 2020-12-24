@@ -5,6 +5,16 @@
 <title>Новый пользователь - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
+
+<?php if (!$data_user_rules->emploe->rule->add_new_role->value) {?>
+
+    <div class="container-fluid text-center">
+        <div class="alert alert-danger" role="alert"><i class="mb-3" style="width: 40px; height: 40px;" data-feather="alert-triangle"></i><h4>Доступ запрещен</h4><p>Доступ к данному разделу запрещен для вашей роли, запросите доступ у администратора</p> <a class="btn btn-primary m-4" href="/panel">Вернуться на главную</a></div>
+    </div>
+
+<?php } else { ?>
+
+
 <?php
 $data_all_roles_json = $settings->get_all_roles_sistem();
 
@@ -98,5 +108,6 @@ $(document).ready(function($) {
 });
 </script>
 
+<?php } ?>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>
