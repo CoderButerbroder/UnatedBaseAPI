@@ -2170,22 +2170,22 @@ class Settings {
   }
 
   // вспомогающая функция для
-  // public function date_time_rus($string_data,$time = true) {
-  //       if ($string_data) {
-  //         if ($time == false) {
-  //             $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
-  //             $newDateString = $myDateTime->format('d.m.Y');
-  //         }
-  //         else {
-  //             $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
-  //             $newDateString = $myDateTime->format('d.m.Y H:i');
-  //         }
-  //         return $newDateString;
-  //       }
-  //       else {
-  //         return false;
-  //       }
-  // }
+  public function date_time_rus($string_data,$time = true) {
+        if ($string_data) {
+          if ($time == false) {
+              $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y');
+          }
+          else {
+              $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y H:i');
+          }
+          return $newDateString;
+        }
+        else {
+          return false;
+        }
+  }
 
   // получение данных по отдельному мероприятияю
   public function get_data_one_event($id_event){
@@ -2305,8 +2305,27 @@ class Settings {
 
   }
 
-  // добавление статуса в тикет
-  
+  // функция подсчета заявок
+  public function count_support_tickets($status){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE status = :status");
+      $statement->bindParam(':status', $status, PDO::PARAM_STR);
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+            $data_count = count($data);
+            return json_encode(array('response' => true, 'data' => $data_count, 'description' => 'Количество заявок со статусом '.$status), JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => true, 'data' => 0, 'description' => 'Заявок со статусом '.$status.' не найдено'), JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
 
 
   // Функция

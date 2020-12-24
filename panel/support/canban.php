@@ -18,7 +18,7 @@
 
   <div class="col-md-4">
     <div class="">
-      <button type="button" disabled class="btn btn-danger btn-block">Новые <span class="badge badge-light">14</span></button>
+      <button type="button" disabled class="btn btn-danger btn-block">Новые <span class="badge badge-light"></span></button>
     </div>
     <div class="p-3" style="
                             border-left:  2px dashed rgba(156, 156, 156, 0.2);
