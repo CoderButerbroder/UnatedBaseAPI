@@ -2260,6 +2260,29 @@ class Settings {
 
   }
 
+  // Смена статуса тикета
+  public function update_status_support_tiket($id_ticket,$new_status) {
+        global $database;
+
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
+        $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+        $update_status_ticket->bindParam(':name', $name, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':description', $description, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':status', $status, PDO::PARAM_STR);
+        $temp = $update_status_ticket->execute();
+        $check = $update_status_ticket->rowCount();
+
+        if ($check) {
+            return json_encode(array('response' => true, 'description' => 'Статус заявки успешно изменен'), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка изменения статуса заявки'), JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+
+  }
+
   // Функция
   public function entity_additionally($id_entity) {
         global $database;
