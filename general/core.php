@@ -2175,7 +2175,7 @@ class Settings {
       $data = $statement->fetch(PDO::FETCH_OBJ);
 
       if ($data) {
-          return json_encode(array('response' => false, 'data' => $data, 'description' => 'Данныt по мероприятияю успешно найдены'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данныt по мероприятияю успешно найдены'),JSON_UNESCAPED_UNICODE);
           exit;
       }
       else {
@@ -2239,6 +2239,28 @@ class Settings {
       }
 
   }
+
+  // получение данных по тикету поддержки
+  public function get_data_tiket($id_ticket){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id = :id");
+      $statement->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data->id) {
+            return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные по тикету успешно найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Данные по тикету не найдены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
+
 
 
 
@@ -3780,7 +3802,7 @@ class Settings {
       }
     }
 
-  //Функция
+  // Функция
   public function entity_additionally($id_entity) {
         global $database;
 
@@ -3854,8 +3876,8 @@ class Settings {
 
     }
 
-
-    public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
+  // добавлени нового тикета в поддержку
+  public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
       global $database;
       if(!isset($id_tboil) && !isset($name)  && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
@@ -3883,9 +3905,10 @@ class Settings {
         return json_encode(array('response' => true, 'description' => 'заявка успешно добавлена', 'data' => (object) array('id' => $id_new_ticket, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
       }
 
-    }
+  }
 
-    public function upd_support_ticket($id_ticket, $name, $description, $status) {
+  // обновление тикета
+  public function upd_support_ticket($id_ticket, $name, $description, $status) {
       global $database;
 
       if(!isset($id_ticket) && !isset($name) && !isset($description) && !isset($status)) {
@@ -3906,14 +3929,11 @@ class Settings {
 
     }
 
-
-
-
-    //получение данных по тикиту
+  //получение данных по тикиту
     //type_result = full - все / message - только  переписка по тикету / conclusion - с решением
     //type_search поиск по id tiket = true
     //или по user_tboil = false создавшего тикет для получения всех его тикетов и истории переписки
-    public function get_data_support_ticket($value_search, $type_result = 'message', $type_search = true) {
+  public function get_data_support_ticket($value_search, $type_result = 'message', $type_search = true) {
       if(!isset($value_search)){
         return json_encode(array('response' => false, 'description' => 'Не указаны все обходимые данные'), JSON_UNESCAPED_UNICODE);
       }
@@ -3973,9 +3993,8 @@ class Settings {
       return json_encode(array('response' => true, 'data' => $arr_result,'description' => 'Получение данных о тиките/ах'), JSON_UNESCAPED_UNICODE);
     }
 
-
-
-    public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+  // добавление нового сообщения в тикет поддержки
+  public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
       global $database;
 
       if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
@@ -4004,7 +4023,8 @@ class Settings {
 
     }
 
-    public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
+  // обновление сообщения в тикете поддержки
+  public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
       global $database;
 
       if(empty($id_support_ticket_msg) && empty($message)) {
@@ -4026,7 +4046,8 @@ class Settings {
 
     }
 
-    public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
+  // добавление решения по тикету поддержку
+  public function add_new_support_conclusion($id_support_ticket, $id_tboil, $description, $action, $links_add_files) {
       global $database;
 
       if(empty($id_support_ticket) && empty($id_tboil) && empty($description) && empty($action) ) {
@@ -4055,7 +4076,8 @@ class Settings {
 
     }
 
-    public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
+  // обновление данных по решению
+  public function upd_support_conclusion($id_ticket_conclusion, $description, $action, $links_add_files) {
       global $database;
 
       if(empty($id_ticket_conclusion) && empty($description) && empty($action) ) {
