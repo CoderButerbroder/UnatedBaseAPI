@@ -2170,22 +2170,22 @@ class Settings {
   }
 
   // вспомогающая функция для
-  // public function date_time_rus($string_data,$time = true) {
-  //       if ($string_data) {
-  //         if ($time == false) {
-  //             $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
-  //             $newDateString = $myDateTime->format('d.m.Y');
-  //         }
-  //         else {
-  //             $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
-  //             $newDateString = $myDateTime->format('d.m.Y H:i');
-  //         }
-  //         return $newDateString;
-  //       }
-  //       else {
-  //         return false;
-  //       }
-  // }
+  public function date_time_rus($string_data,$time = true) {
+        if ($string_data) {
+          if ($time == false) {
+              $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y');
+          }
+          else {
+              $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
+              $newDateString = $myDateTime->format('d.m.Y H:i');
+          }
+          return $newDateString;
+        }
+        else {
+          return false;
+        }
+  }
 
   // получение данных по отдельному мероприятияю
   public function get_data_one_event($id_event){
@@ -2320,7 +2320,7 @@ class Settings {
             exit;
       }
       else {
-            return json_encode(array('response' => false, 'description' => 'Заявок со статусом '.$status.' не найдено'), JSON_UNESCAPED_UNICODE);
+            return json_encode(array('response' => true, 'data' => 0, 'description' => 'Заявок со статусом '.$status.' не найдено'), JSON_UNESCAPED_UNICODE);
             exit;
       }
 
