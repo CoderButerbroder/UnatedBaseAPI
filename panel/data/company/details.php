@@ -119,7 +119,7 @@ if($flag_ipchein_data) {
 <nav class="page-breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="#">Данные</a></li>
-    <li class="breadcrumb-item"><a href="#">Юр. лица</a></li>
+    <li class="breadcrumb-item"><a href="/panel/data/company/">Юр. лица</a></li>
     <li class="breadcrumb-item active" aria-current="page">Детали юр. лица <?php echo ($flag_company_ip_ul) ? $data_fns->ЮЛ->НаимСокрЮЛ : $data_fns->ИП->ФИОПолн ; ?></li>
   </ol>
 </nav>
@@ -145,7 +145,7 @@ if($flag_ipchein_data) {
                   <?php // Основная информация о компании  ?>
                   <div class="row pl-1 pt-3">
                     <div class="col-sm-3">
-                      <p><b>ИНН:</b></p>
+                      <p>ИНН:</p>
                     </div>
                     <div class="col-sm-9">
                       <p>
@@ -153,9 +153,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>ОГРН:</b></p>
+                      <p>ОГРН:</p>
                     </div>
                     <div class="col-sm-9">
                       <p>
@@ -163,9 +163,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>КПП:</b></p>
+                      <p>КПП:</p>
                     </div>
                     <div class="col-sm-9">
                       <p>
@@ -173,9 +173,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>Код ОКВЭД:</b></p>
+                      <p>Код ОКВЭД:</p>
                     </div>
                     <div class="col-sm-9">
                       <p>
@@ -183,18 +183,18 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>Сайт:</b></p>
+                      <p>Сайт:</p>
                     </div>
                     <div class="col-sm-9">
-                      <a style="color: #000" href="<? echo (trim($data_company->data->site) != '' && $data_company->data->site != NULL) ? $data_company->data->site : $false_data ?>">
+                      <a href="<? echo (trim($data_company->data->site) != '' && $data_company->data->site != NULL) ? $data_company->data->site : $false_data ?>">
                         <? echo (trim($data_company->data->site) != '' && $data_company->data->site != NULL) ? $data_company->data->site : $false_data ?></a>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>Адрес:</b></p>
+                      <p>Адрес:</p>
                     </div>
                     <div class="col-sm-9">
                       <?php
@@ -207,17 +207,17 @@ if($flag_ipchein_data) {
                        ?>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>Отрасль:</b></p>
+                      <p>Отрасль:</p>
                     </div>
                     <div class="col-sm-9">
                       <div id="technology_branch"></div>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-3">
-                      <p><b>Технологии:</b></p>
+                      <p>Технологии:</p>
                     </div>
                     <div class="col-sm-9">
                       <div id="technology_TECH"></div>
@@ -237,9 +237,9 @@ if($flag_ipchein_data) {
                     </div>
                   </div>
                   <?php // Основная информация о компании  ?>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-8">
-                      <p><b>Выручка за год:</b></p>
+                      <p>Выручка за год:</p>
                     </div>
                     <div class="col-sm-4">
                       <p>
@@ -250,9 +250,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-8">
-                      <p><b>Количество сотрудников:</b></p>
+                      <p>Количество сотрудников:</p>
                     </div>
                     <div class="col-sm-4">
                       <p>
@@ -263,9 +263,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-8">
-                      <p><b>Специальные налоговые режимы:</b></p>
+                      <p>Специальные налоговые режимы:</p>
                     </div>
                     <div class="col-sm-4">
                       <p>
@@ -276,14 +276,14 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1 pt-1">
+                  <div class="row pl-1 pt-3">
                     <div class="col-md-12">
                       <h5>Налоги или сборы (последний год)</h5>
                     </div>
                   </div>
                   <div class="row pl-1 pt-1">
                     <div class="col-sm-8">
-                      <p><b>Сумма уплаченных налогов или сборов:</b></p>
+                      <p>Сумма уплаченных налогов или сборов:</p>
                     </div>
                     <div class="col-sm-4">
                       <p>
@@ -300,9 +300,9 @@ if($flag_ipchein_data) {
                       </p>
                     </div>
                   </div>
-                  <div class="row pl-1">
+                  <div class="row pl-1 pt-1">
                     <div class="col-sm-8">
-                      <p><b>Общая сумма недоимки по налогу, пени и штрафу:</b></p>
+                      <p>Общая сумма недоимки по налогу, пени и штрафу:</p>
                     </div>
                     <div class="col-sm-4">
                       <p>
@@ -342,11 +342,11 @@ if($flag_ipchein_data) {
                             <img style="width: 180px; height: auto;" src="/assets/images/male-user-profile-picture.png" />
                           </div>
                           <div class="col-sm-auto">
-                              <p><? echo ($data_user->data->name) ? $data_user->data->last_name." ".$data_user->data->name." ".$data_user->data->second_name : $false_data; ?></p>
-                              <p><? echo ($data_user->data->position) ? $data_user->data->position : $false_data; ?></p>
-                              <p><? echo ($data_user->data->phone) ? $data_user->data->phone : $false_data; ?></p>
-                              <p><? echo ($data_user->data->email) ? $data_user->data->email : $false_data; ?></p>
-                              <p>Tboil ID: <a href="https://tboil.spb.ru/" style="color: #000;"><? echo ($data_user->data->id_tboil) ? $data_user->data->id_tboil : $false_data; ?></a></p>
+                              <p><? echo ($data_user->data->name) ? $data_user->data->last_name." ".$data_user->data->name." ".$data_user->data->second_name : 'ФИО не указано'; ?></p>
+                              <p><? echo ($data_user->data->position) ? $data_user->data->position : 'Должность не указан'; ?></p>
+                              <p><? echo ($data_user->data->phone) ? $data_user->data->phone : 'Телефон не указан'; ?></p>
+                              <p><? echo ($data_user->data->email) ? $data_user->data->email : 'Email не указан'; ?></p>
+                              <p>Tboil ID: <a href="https://tboil.spb.ru/"><? echo ($data_user->data->id_tboil) ? $data_user->data->id_tboil : 'Не зарегистрирован'; ?></a></p>
                               <?php if($data_user->data->id_tboil) { ?><p><button href="javascript:void(0)" class="btn btn btn-outline-info" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $data_user->data->id_tboil; ?>')">Посмотреть профиль</button></p> <?php } ?>
                           </div>
                       </div>
@@ -366,23 +366,23 @@ if($flag_ipchein_data) {
                           <?php // Основная информация о компании  ?>
                           <div class="row pl-1 pt-3">
                               <div class="col-sm-auto ">
-                                <p><b>Рынки НТИ:</b></p>
+                                <p>Рынки НТИ:</p>
                               </div>
                               <div class="col-sm-auto">
                                   <div id="technology_NTI"></div>
                               </div>
                           </div>
-                          <div class="row pl-1">
+                          <div class="row pl-1 pt-1">
                               <div class="col-sm-auto">
-                                <p><b>Национальные и федеральные проекты:</b></p>
+                                <p>Национальные и федеральные проекты:</p>
                               </div>
                               <div class="col-sm-auto">
                                   <div id="technology_NFP"></div>
                               </div>
                           </div>
-                          <div class="row pl-1">
+                          <div class="row pl-1 pt-1">
                               <div class="col-sm-auto">
-                                <p><b>Цифровые сквозные технологии:</b></p>
+                                <p>Цифровые сквозные технологии:</p>
                               </div>
                               <div class="col-sm-auto">
                                   <div id="technology_CST"></div>

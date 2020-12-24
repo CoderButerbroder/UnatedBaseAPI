@@ -2148,24 +2148,97 @@ class Settings {
   }
 
   // вспомогающая функция для
-  public function date_time_rus($string_data,$time = true) {
-        if ($string_data) {
-          if ($time == false) {
-              $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
-              $newDateString = $myDateTime->format('d.m.Y');
-          }
-          else {
-              $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
-              $newDateString = $myDateTime->format('d.m.Y H:i');
-          }
-          return $newDateString;
-        }
-        else {
-          return false;
-        }
+  // public function date_time_rus($string_data,$time = true) {
+  //       if ($string_data) {
+  //         if ($time == false) {
+  //             $myDateTime = DateTime::createFromFormat('Y-m-d', $string_data);
+  //             $newDateString = $myDateTime->format('d.m.Y');
+  //         }
+  //         else {
+  //             $myDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $string_data);
+  //             $newDateString = $myDateTime->format('d.m.Y H:i');
+  //         }
+  //         return $newDateString;
+  //       }
+  //       else {
+  //         return false;
+  //       }
+  // }
+
+  // получение данных по отдельному мероприятияю
+  public function get_data_one_event($id_event){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE id = :id");
+      $statement->bindParam(':inn', $inn_entity, PDO::PARAM_INT);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data) {
+          return json_encode(array('response' => false, 'data' => $data, 'description' => 'Данныt по мероприятияю успешно найдены'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Данных по данному мероприятию не найдено'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
   }
 
+  // провекра статуса сколково по инн и API Сколково
+  public function check_status_skolkovo_entity($inn) {
 
+        $check_valid_inn = $this->is_valid_inn($inn);
+        $check_json = $this->isJSON($check_valid_inn);
+        if ($check_json) {
+            return false;
+        }
+        else {
+                $skolkovo_fond = file_get_contents("https://crmapi.sk.ru/api/Public/GetMembers");
+                $test_json = json_decode($skolkovo_fond);
+                $status_skolkovo = false;
+                foreach ($test_json as $key) {
+                      if ($key->Inn == $inn) {
+                          $status_skolkovo = true;
+                          break;
+                      }
+                }
+                return $status_skolkovo;
+        }
+
+  }
+
+  // получение пользователя по инн компании (привязанного пользователя)
+  public function get_id_user_tboil_entity($inn_entity) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn = :inn");
+      $statement->bindParam(':inn', $inn_entity, PDO::PARAM_STR);
+      $statement->execute();
+      $data = $statement->fetch(PDO::FETCH_OBJ);
+
+      if ($data->id) {
+            $id_entity = $data->id;
+            $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id_entity = :id_entity");
+            $statement->bindParam(':id_entity', $id_entity, PDO::PARAM_INT);
+            $statement->execute();
+            $data_user = $statement->fetch(PDO::FETCH_OBJ);
+
+            if ($data_user) {
+                return $data_user->id_tboil;
+                exit;
+            }
+            else {
+                return false;
+                exit;
+            }
+
+      } else {
+          return false;
+          exit;
+      }
+
+  }
 
 
 
