@@ -1,4 +1,7 @@
 <?php
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 require_once(__DIR__.'/plugins/smtp/PHPMailer.php');
 require_once(__DIR__.'/plugins/smtp/SMTP.php');
 require_once(__DIR__.'/plugins/smtp/Exception.php');
@@ -765,7 +768,7 @@ class Settings {
         }
 
         $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE inn = :inn");
-        $statement->bindParam(':inn', $inn, PDO::PARAM_INT);
+        $statement->bindParam(':inn', $inn, PDO::PARAM_STR);
         $statement->execute();
         $data = $statement->fetch(PDO::FETCH_OBJ);
 
@@ -4945,7 +4948,7 @@ class Settings {
         $rules = $statement->fetch(PDO::FETCH_OBJ);
 
         if ($rules->rules) {
-            $data_rules = json_decode();
+            $data_rules = json_decode($rules->rules);
             return json_encode(array('response' => true, 'rules' => $data_rules, 'description' => 'Права роли найдены'),JSON_UNESCAPED_UNICODE);
             exit;
         }
@@ -4956,7 +4959,7 @@ class Settings {
 
   }
 
-  
+
 
 
 }
