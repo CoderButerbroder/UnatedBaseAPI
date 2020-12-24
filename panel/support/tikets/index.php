@@ -51,7 +51,7 @@
           "keys": true,
           "cache": false,
           "ajax": {
-                    url: "/panel/data/support/tikets/get_tikets.php",
+                    url: "/panel/support/tikets/get_tikets.php",
                     type: "POST",
                     "dataSrc": function ( json ) {
                       return json.data;
@@ -69,16 +69,29 @@
                   },
           "columns": [
             { "data": "Row", "width": "5%", "searchable": false},
-            { "data": "Id", "class" : "text-wrap", "width": "30%", "orderable": false },
+            { "data": "Id", "class" : "text-wrap", "width": "10%"},
             { "data": "Type", "width": "10%" },
-            { "data": "Name", "width": "10%", "orderable": false },
-            { "data": "Data", "width": "2%", "orderable": false },
-            { "data": "Status", "width": "2%", "orderable": false },
+            { "data": "Name", "width": "10%"},
+            { "data": "Data", "width": "2%"},
+            { "data": "Status",
+              "width": "2%",
+               render: function(data) {
+                 if (data == 'close') {
+                   var el = '<span class="badge mr-2 badge-success" style=word-wrap: break-word">Закрыта</span>';
+                 }
+                 if (data == 'open') {
+                   var el = '<span class="badge mr-2 badge-danger" style=word-wrap: break-word">Открыта</span>';
+                 }
+                 if (data == 'pause') {
+                   var el = '<span class="badge mr-2 badge-info" style=word-wrap: break-word">Пауза</span>';
+                 }
+                return  el ;
+              }  },
           ]
     });
 
     tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
-            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/data/company/details?inn='+(tab.row(cell[0][0]['row']).data()["INN"]));
+            window.open('http://<?php echo $_SERVER["SERVER_NAME"];?>/panel/support/tikets/detail?id='+(tab.row(cell[0][0]['row']).data()["Id"]));
         } );
   });
 </script>

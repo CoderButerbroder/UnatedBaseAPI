@@ -4998,7 +4998,7 @@ class Settings {
       if('' == $searh_value){
         $data_ticket = $database->prepare("SELECT * FROM $this->MAIN_support_ticket ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
       } else {
-        $data_ticket_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->IPCHAIN_entity WHERE id LIKE '%{$searh_value}%' OR type_support LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR 	date_added LIKE '%{$searh_value}%' OR status LIKE '%{$searh_value}%' ");
+        $data_ticket_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->MAIN_support_ticket WHERE id LIKE '%{$searh_value}%' OR type_support LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR 	date_added LIKE '%{$searh_value}%' OR status LIKE '%{$searh_value}%' ");
         $data_ticket_count->execute();
         $data_ticket_count_result = $data_ticket_count->fetch(PDO::FETCH_OBJ);
         $data_ticket = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id LIKE '%{$searh_value}%' OR type_support LIKE '%{$searh_value}%' OR name LIKE '%{$searh_value}%' OR 	date_added LIKE '%{$searh_value}%' OR status LIKE '%{$searh_value}%' ");
@@ -5013,7 +5013,7 @@ class Settings {
         $recordsFiltered = $data_users_count_result->COUNT;
       }
 
-      return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
+      return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_ticket);
   }
 
   // Получение IPcompany постраничено с поискоим и без для datatable

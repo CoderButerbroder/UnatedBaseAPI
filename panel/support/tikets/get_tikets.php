@@ -58,10 +58,12 @@ $arr_result->data = (array) $arr_result->data;
 $count_row = 1;
 foreach ($get_data->data as $key => $value) {
   $temp_obj_data = (object) array();
-  // $temp_obj_data->Row = $count_row;
-  // $temp_obj_data->Name = $value->Name;
-  // $temp_obj_data->INN = $value->Inn;
-  // $temp_obj_data->OGRN = $value->Ogrn;
+  $temp_obj_data->Row = $count_row;
+  $temp_obj_data->Id = $value->id;
+  $temp_obj_data->Type = $value->type_support;
+  $temp_obj_data->Name = $value->name;
+  $temp_obj_data->Data = date('H:i d.m.Y', strtotime($value->date_added));
+  $temp_obj_data->Status = $value->status;
   //$temp_obj_data->Status =
   array_push($arr_result->data, $temp_obj_data);
   $count_row++;
