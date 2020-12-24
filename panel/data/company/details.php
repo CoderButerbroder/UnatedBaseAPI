@@ -347,6 +347,7 @@ if($flag_ipchein_data) {
                               <p><? echo ($data_user->data->phone) ? $data_user->data->phone : $false_data; ?></p>
                               <p><? echo ($data_user->data->email) ? $data_user->data->email : $false_data; ?></p>
                               <p>Tboil ID: <a href="https://tboil.spb.ru/" style="color: #000;"><? echo ($data_user->data->id_tboil) ? $data_user->data->id_tboil : $false_data; ?></a></p>
+                              <?php if($data_user->data->id_tboil) { ?><p><button href="javascript:void(0)" class="btn btn btn-outline-info" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $data_user->data->id_tboil; ?>')">Посмотреть профиль</button></p> <?php } ?>
                           </div>
                       </div>
                   </div>
