@@ -50,7 +50,7 @@ $temp_null = 0;
                           <div>
                                   <h6><?php echo ($data_ticket->data->status == 'open') ? '<span class="badge badge-danger">Открыта</span>' : ''; ?>
                                     <?php echo ($data_ticket->data->status == 'close') ? '<span class="badge badge-success">Закрыта</span>' : ''; ?>
-                                    <?php echo ($data_ticket->data->status == 'pause') ? '<span class="badge badge-info">Пауза</span>' : ''; ?>
+                                    <?php echo ($data_ticket->data->status == 'work') ? '<span class="badge badge-primary">В работе</span>' : ''; ?>
                                    Заявка #<?php echo $data_ticket->data->id; ?> от <?php echo date('d.m.Y', strtotime($data_ticket->data->date_added)); ?>
                                  </h6>
                             <p class="text-muted mt-2 tx-13"><?php echo $data_ticket->data->type_support; ?></p>
@@ -132,9 +132,13 @@ $temp_null = 0;
                                   </span>
                                   <?php if($data_user_request->data->id_entity) {
                                     $company = json_decode($settings->get_data_entity($data_user_request->data->id_entity));
-                                    if ($company->response) { ?>
+                                    if ($company->response) {
+                                      $fns_data = json_decode($company->data->data_fns);
+                                      $fns_data_company = array_pop($fns_data->items);
+                                      $name_company = (isset($fns_data_company->ЮЛ)) ? $fns_data_company->ЮЛ->НаимСокрЮЛ : $fns_data_company->ИП->ФИОПолн;
+                                      ?>
                                         <span style="cursor:pointer;" class="badge badge-primary" href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $company->data->inn; ?>')">
-                                          <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i><?php echo $data_user_request->data->name; ?>
+                                          <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i><?php echo $name_company; ?>
                                         </span>
                                     <?php
                                     }
@@ -143,46 +147,29 @@ $temp_null = 0;
                                 </div>
                                </div>
                               <hr>
-                                <div class="col">
+                                <div class="mt-3 col">
                                   <span class="h6 surtitle text-muted">Название запроса</span>
-                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->name; ?></span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->name; ?></span>
                                 </div>
                               <?php if($data_ticket->data->short_description) { ?>
-                                  <div class="col">
+                                  <div class="mt-3 col">
                                     <span class="h6 surtitle text-muted">Короткое описание</span>
-                                    <span class="offset-1 d-block h6"><?php echo $data_ticket->data->short_description; ?></span>
+                                    <span class="d-block h6"><?php echo $data_ticket->data->short_description; ?></span>
                                   </div>
                               <?php } ?>
                               <?php if($data_ticket->data->full_description) { ?>
-                                <div class="col">
+                                <div class="mt-3 col">
                                   <span class="h6 surtitle text-muted">Полное описание</span>
-                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->full_description; ?></span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->full_description; ?></span>
                                 </div>
                               <?php } ?>
                               <?php if($data_ticket->data->question_desc) { ?>
-                                <div class="col">
+                                <div class="mt-3 col">
                                   <span class="h6 surtitle text-muted">Описание вопроса</span>
-                                  <span class="offset-1 d-block h6"><?php echo $data_ticket->data->question_desc; ?></span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->question_desc; ?></span>
                                 </div>
                               <?php } ?>
 
-
-                            <!-- <p class="text-muted mb-1">Сведения о запросе</p>
-
-                            <p class="mb-1"><strong>Контакное лицо</strong></p>
-                            <p class="mb-1"><?php echo $data_user_request->data->last_name.' '.$data_user_request->data->name.' '.$data_user_request->data->second_name; ?></p>
-
-                            <p class="mb-1"><strong>Название запроса</strong></p>
-                            <p class="mb-1"><?php echo $data_ticket->data->name; ?></p>
-
-                            <p class="mb-1"><strong>Короткое описание</strong></p>
-                            <p class="mb-1"><?php echo $data_ticket->data->short_description; ?></p>
-
-                            <p class="mb-1"><strong>Полное описание</strong></p>
-                            <p class="mb-1"><?php echo $data_ticket->data->full_description; ?></p>
-
-                            <p class="mb-1"><strong>Описание вопроса</strong></p>
-                            <p class="mb-1"><?php echo $data_ticket->data->question_desc; ?></p> -->
                           </div>
                         </div>
                         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
