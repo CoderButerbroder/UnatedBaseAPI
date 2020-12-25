@@ -134,7 +134,7 @@ $temp_null = 0;
                                     $company = json_decode($settings->get_data_entity($data_user_request->data->id_entity));
                                     if ($company->response) { ?>
                                         <span style="cursor:pointer;" class="badge badge-primary" href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $company->data->inn; ?>')">
-                                          <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i>Компания
+                                          <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i><?php echo $data_user_request->data->name; ?>
                                         </span>
                                     <?php
                                     }
