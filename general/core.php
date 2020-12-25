@@ -2587,10 +2587,10 @@ class Settings {
       $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
       $date_added = date("Y-m-d H:i:s");
 
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil, message, links_add_files, date_added, id_referer, type_user)
-                                    VALUES (:id_support_ticket, :id_tboil, :message, :links_add_files, :date_added, :id_referer, :type_user)");
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil_or_id_support, message, links_add_files, date_added, id_referer, type_user)
+                                    VALUES (:id_support_ticket, :id_tboil_or_id_support, :message, :links_add_files, :date_added, :id_referer, :type_user)");
       $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
-      $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':id_tboil_or_id_support', $id_tboil, PDO::PARAM_INT);
       $d_data->bindParam(':message', $message, PDO::PARAM_STR);
       $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
       $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
