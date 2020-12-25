@@ -58,7 +58,7 @@
   </div>
   <div class="col-md-4">
     <div class="">
-      <button type="button" disabled class="btn btn-primary btn-block">В работе <span class="badge badge-light">12</span></button>
+      <button type="button" disabled class="btn btn-primary btn-block"  onclick="update_status(this,'search', 'status');">В работе <span class="badge badge-light">12</span></button>
     </div>
     <div class="p-3" style="
                             border-left:  2px dashed rgba(156, 156, 156, 0.2);
@@ -85,7 +85,7 @@
               <button type="button" class="btn btn-sm btn-outline-danger btn-block">Приостановка <i style="width: 13px;" data-feather="alert-octagon"></i></button>
             </div>
             <div class="col-md-6">
-              <button type="button" class="btn btn-sm btn-outline-success btn-block">Завершить <i style="width: 13px;" data-feather="check-circle"></i></button>
+              <button type="button" class="btn btn-sm btn-outline-success btn-block" onclick="update_status(this,'search', 'status');">Завершить <i style="width: 13px;" data-feather="check-circle"></i></button>
             </div>
           </div>
         </div>
@@ -110,6 +110,40 @@
   </div>
 
 </div>
+
+<script type="text/javascript">
+  function update_status(btn,search, status) {
+    $('#spiner').removeClass('d-none');
+    $(btn).attr('disabled','disabled');
+    $.ajax({
+      type: 'POST',
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/support/update_status',
+      data: {
+              "search": search,
+              "status": status
+      },
+      success: function(result) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        if (IsJsonString(result)) {
+          var arr = JSON.parse(result);
+          if (arr["response"]) {
+            alerts('success', arr["description"], '');
+          } else {
+            alerts('warning', 'Ошибка', arr["description"]);
+          }
+        } else {
+          alerts('warning', 'Ошибка', 'Попробуйте позже');
+        }
+      },
+      error: function(jqXHR, textStatus) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        alerts('error', 'Ошибка подключения', 'Попробуйте позже');
+      }
+    });
+  }
+</script>
 
 
 

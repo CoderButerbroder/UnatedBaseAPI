@@ -42,6 +42,9 @@ else {
 
 </head>
 <body>
+<div id="spiner" class="spinner-border text-primary d-none" style="position: fixed; margin: -25px 0 0 -25px; top: 50%; left: 50%;  width: 3rem; height: 3rem; z-index:99999;" role="status">
+  <span class="sr-only">Loading...</span>
+</div>
 <div class="main-wrapper">
 
   <!-- partial:../../partials/_sidebar.html -->
