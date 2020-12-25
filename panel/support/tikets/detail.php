@@ -263,12 +263,13 @@ $temp_null = 0;
                     <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $_GET["id"]; ?>'); return false;">
                       <div class="input-group">
                         <input type="text" class="form-control rounded-pill" id="chatForm" placeholder="Введите сообщение для пользователя" required>
+                        <div class="input-group-append">
+                          <button type="submit" name="btn_send" class="btn btn-primary btn-icon rounded-circle">
+                            <i data-feather="send"></i>
+                          </button>
+                        </div>
                       </div>
-                      <div>
-                        <button type="button" name="btn_send" type="submit" class="btn btn-primary btn-icon rounded-circle">
-                          <i data-feather="send"></i>
-                        </button>
-                      </div>
+
                     </form>
 
                   </div>
@@ -300,7 +301,8 @@ $temp_null = 0;
         if (IsJsonString(result)) {
           var arr = JSON.parse(result);
           if (arr["response"]) {
-            alerts('success', arr["description"], '');
+            //alerts('success', arr["description"], '');
+            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
           } else {
             alerts('warning', 'Ошибка', arr["description"]);
           }

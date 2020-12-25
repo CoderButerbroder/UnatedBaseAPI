@@ -16,7 +16,7 @@ if(!isset($_POST["status"]) || !isset($_POST["search"])){
 
 $status = trim($_POST["search"]);
 
-if($status != 'open' && $status != 'close' && $status != 'pause') {
+if($status != 'open' && $status != 'close' && $status != 'work') {
   echo json_encode(array('response' => false, 'description' => 'Ошибка получения статуса'), JSON_UNESCAPED_UNICODE);
   exit();
 }
