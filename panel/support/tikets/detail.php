@@ -262,7 +262,7 @@ $temp_null = 0;
                     </div> -->
                     <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $_GET["id"]; ?>'); return false;">
                       <div class="input-group">
-                        <input type="text" class="form-control rounded-pill" id="chatForm" placeholder="Введите сообщение для пользователя" required>
+                        <input type="text" class="form-control rounded-pill mr-2" id="chatForm" placeholder="Введите сообщение для пользователя" required>
                         <div class="input-group-append">
                           <button type="submit" name="btn_send" class="btn btn-primary btn-icon rounded-circle">
                             <i data-feather="send"></i>

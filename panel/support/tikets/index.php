@@ -83,7 +83,7 @@
                    var el = '<span class="badge mr-2 btn-block badge-danger" style=word-wrap: break-word">Открыта</span>';
                  }
                  if (data == 'work') {
-                   var el = '<span class="badge mr-2 btn-block badge-primary" style=word-wrap: break-word">Пауза</span>';
+                   var el = '<span class="badge mr-2 btn-block badge-primary" style=word-wrap: break-word">В работе</span>';
                  }
                 return  el ;
               }  },
