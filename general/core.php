@@ -41,6 +41,7 @@ class Settings {
   private $MAIN_support_ticket_messages = 'MAIN_support_ticket_messages';
   private $MAIN_support_ticket_conclusion = 'MAIN_support_ticket_conclusion';
   private $API_USERS_ROLE = 'API_USERS_ROLE';
+  private $MAIN_support_ticket_status_history = 'MAIN_support_ticket_status_history';
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -2192,7 +2193,7 @@ class Settings {
       global $database;
 
       $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE id = :id");
-      $statement->bindParam(':inn', $inn_entity, PDO::PARAM_INT);
+      $statement->bindParam(':id', $id_event, PDO::PARAM_INT);
       $statement->execute();
       $data = $statement->fetch(PDO::FETCH_OBJ);
 
@@ -2286,8 +2287,11 @@ class Settings {
   public function update_status_support_tiket($id_ticket,$new_status) {
         global $database;
 
-        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status WHERE id =:id");
+        $date_update = date("Y-m-d H:i:s");
+
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status, date_update = :date_update  WHERE id =:id");
         $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+        $update_status_ticket->bindParam(':date_update', $date_update, PDO::PARAM_STR);
         $update_status_ticket->bindParam(':status', $new_status, PDO::PARAM_STR);
         $temp = $update_status_ticket->execute();
         $check = $update_status_ticket->rowCount();
@@ -2341,6 +2345,31 @@ class Settings {
             return json_encode(array('response' => false, 'description' => 'Ошибка изменения статуса заявки'), JSON_UNESCAPED_UNICODE);
             exit;
         }
+
+  }
+
+  // добавление истории обновления статусов тикетов поддержки
+  public function add_status_in_history($id_ticket,$status) {
+      global $database;
+
+      $date = date("Y-m-d H:i:s");
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_status_history (id_support_ticket,status,date_update)
+                                    VALUES (:id_support_ticket,:status,:date_update)");
+      $d_data->bindParam(':id_support_ticket', $id_tboil, PDO::PARAM_INT);
+      $d_data->bindParam(':status', $name, PDO::PARAM_STR);
+      $d_data->bindParam(':date_update', $description, PDO::PARAM_STR);
+      $temp = $d_data->execute();
+      $id_new_ticket = $database->lastInsertId();
+
+      if ($id_new_ticket) {
+
+      }
+      else {
+          
+      }
+
+
 
   }
 
@@ -2601,6 +2630,50 @@ class Settings {
       if($id_new_messages === false){
         return json_encode(array('response' => false, 'description' => 'Ошибка добавления нового сообщения'), JSON_UNESCAPED_UNICODE);
       } else {
+
+        if ($type_user == 'support') {
+
+              $data_tiket_support = json_decode($this->get_data_tiket($id_support_ticket))->data;
+              $data_user_tiket = json_decode($this->get_user_data_id_boil($data_tiket_support->id_tboil))->data;
+              $data_referer_ticket = json_decode($this->get_data_referer_id($data_tiket_support->id_referer))->data;
+
+              $array_status = array('work' => 'в работе',
+                                    'close' => 'закрыта',
+                                    'open' => 'открыта'
+                                  );
+
+              $content =  $data_user_tiket->name.' '.$data_user_tiket->second_name.', ';
+              $content .= 'на Вашу заявку поступило новое сообщение от технической поддержки.<br>';
+              $content .= 'Посмотреть подробности Вы можете в личном кабинете.';
+
+              $tema = 'Сообщение по заявке #'.$id_support_ticket;
+
+              $today = date("d.m.Y H:i");
+
+              $maildata =
+                    array(
+                      'title' => $tema,
+                      'description' => $content,
+                      'link_to_server' => 'https://'.$data_referer_ticket->resourse,
+                      'text_button' => 'Личный кабинет',
+                      'link_button' => $data_referer_ticket->link_to_support,
+                      'link_to_logo' => $data_referer_ticket->link_to_logo,
+                      'alt_link_to_logo' => $data_referer_ticket->resourse,
+                      'color_button1' => $data_referer_ticket->color_button1,
+                      'text_color_button1' =>$data_referer_ticket->color_text_button1,
+                      'name_host' => $data_referer_ticket->resourse,
+                      'date' => $today
+                    );
+
+              $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/support_tikcet_status.php');
+
+              foreach ($maildata as $key => $value) {
+                    $template_email = str_replace('['.$key.']', $value, $template_email);
+              }
+
+              $check_mail = $this->send_email_user($data_user_tiket->email,$tema,$template_email);
+
+        }
         return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages)), JSON_UNESCAPED_UNICODE);
       }
 

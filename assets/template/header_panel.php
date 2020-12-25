@@ -320,10 +320,15 @@ else {
         </form>
         <ul class="navbar-nav">
           <li class="nav-item">
-
-            <span class="nav-link" href="" onclick="switch_new_user_css_style('<?php echo $new_swith_style;?>');" type="button">
-              <i data-feather="moon" class=""></i>
-            </span>
+            <?php if ($new_swith_style != 'demo_1') { ?>
+              <span class="nav-link" href="" onclick="switch_new_user_css_style('<?php echo $new_swith_style;?>');" type="button">
+                <i data-feather="moon" data-content="Вкл. ночной режим" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" class=""></i>
+              </span>
+            <?php } else { ?>
+              <span class="nav-link" href="" onclick="switch_new_user_css_style('<?php echo $new_swith_style;?>');" type="button">
+                <i data-feather="sun" data-content="Выкл. ночной режим" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="bottom" class=""></i>
+              </span>
+            <?php } ?>
           </li>
           <li class="nav-item dropdown nav-profile">
             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
