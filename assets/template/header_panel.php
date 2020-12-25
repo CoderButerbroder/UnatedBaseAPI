@@ -39,6 +39,7 @@ else {
 <link rel="stylesheet" href="/assets/css/sweetalert2.css">
 <script src="/assets/js/alerts.js"></script>
 <script src="/assets/js/IsJsonString.js"></script>
+<link href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" rel="stylesheet">
 
 </head>
 <body>
