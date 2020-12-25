@@ -260,16 +260,18 @@ $temp_null = 0;
                         <i data-feather="mic" class="text-muted"></i>
                       </button>
                     </div> -->
-                    <form class="search-form flex-grow mr-2">
+                    <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $_GET["id"]; ?>'); return false;">
                       <div class="input-group">
-                        <input type="text" class="form-control rounded-pill" id="chatForm" placeholder="Введите сообщение для пользователя">
+                        <input type="text" class="form-control rounded-pill" id="chatForm" placeholder="Введите сообщение для пользователя" required>
+                        <div class="input-group-append">
+                          <button type="submit" name="btn_send" class="btn btn-primary btn-icon rounded-circle">
+                            <i data-feather="send"></i>
+                          </button>
+                        </div>
                       </div>
+
                     </form>
-                    <div>
-                      <button type="button" class="btn btn-primary btn-icon rounded-circle">
-                        <i data-feather="send"></i>
-                      </button>
-                    </div>
+
                   </div>
                 </div>
               </div>
@@ -280,11 +282,73 @@ $temp_null = 0;
     </div>
 </div>
 
-<script>
-$( document ).ready(function() {
-    $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
-});
-</script>
+<script type="text/javascript">
+  $( document ).ready(function() {
+      $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
+  });
 
+  function send_message(form, value) {
+    $('#spiner').removeClass('d-none');
+    btn = form.elements["btn_send"];
+    $(btn).attr('disabled','disabled');
+    $.ajax({
+      type: 'POST',
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/support/ticket/push_message',
+      data: {"search": value}+$(form).serialize(),
+      success: function(result) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        if (IsJsonString(result)) {
+          var arr = JSON.parse(result);
+          if (arr["response"]) {
+            //alerts('success', arr["description"], '');
+            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
+          } else {
+            alerts('warning', 'Ошибка', arr["description"]);
+          }
+        } else {
+          alerts('warning', 'Ошибка', 'Попробуйте позже');
+        }
+      },
+      error: function(jqXHR, textStatus) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        alerts('error', 'Ошибка подключения', 'Попробуйте позже');
+      }
+    });
+  };
+
+  function update_status(btn,search, status) {
+    $('#spiner').removeClass('d-none');
+    $(btn).attr('disabled','disabled');
+    $.ajax({
+      type: 'POST',
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/support/update_status',
+      data: {
+              "search": search,
+              "status": status
+      },
+      success: function(result) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        if (IsJsonString(result)) {
+          var arr = JSON.parse(result);
+          if (arr["response"]) {
+            alerts('success', arr["description"], '');
+          } else {
+            alerts('warning', 'Ошибка', arr["description"]);
+          }
+        } else {
+          alerts('warning', 'Ошибка', 'Попробуйте позже');
+        }
+      },
+      error: function(jqXHR, textStatus) {
+        $(btn).removeAttr('disabled');
+        $('#spiner').addClass('d-none');
+        alerts('error', 'Ошибка подключения', 'Попробуйте позже');
+      }
+    });
+  };
+</script>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/footer_panel.php');?>

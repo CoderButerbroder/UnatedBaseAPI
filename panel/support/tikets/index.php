@@ -77,13 +77,13 @@
               "width": "2%",
                render: function(data) {
                  if (data == 'close') {
-                   var el = '<span class="badge mr-2 badge-success" style=word-wrap: break-word">Закрыта</span>';
+                   var el = '<span class="badge mr-2 btn-block badge-success" style=word-wrap: break-word">Закрыта</span>';
                  }
                  if (data == 'open') {
-                   var el = '<span class="badge mr-2 badge-danger" style=word-wrap: break-word">Открыта</span>';
+                   var el = '<span class="badge mr-2 btn-block badge-danger" style=word-wrap: break-word">Открыта</span>';
                  }
-                 if (data == 'pause') {
-                   var el = '<span class="badge mr-2 badge-info" style=word-wrap: break-word">Пауза</span>';
+                 if (data == 'work') {
+                   var el = '<span class="badge mr-2 btn-block badge-primary" style=word-wrap: break-word">Пауза</span>';
                  }
                 return  el ;
               }  },
