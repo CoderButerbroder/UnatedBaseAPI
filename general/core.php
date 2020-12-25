@@ -2316,11 +2316,11 @@ class Settings {
 
       if ($data) {
             $data_count = count($data);
-            return json_encode(array('response' => true, 'data' => $data_count, 'description' => 'Количество заявок со статусом '.$status), JSON_UNESCAPED_UNICODE);
+            return $data_count;
             exit;
       }
       else {
-            return json_encode(array('response' => true, 'data' => 0, 'description' => 'Заявок со статусом '.$status.' не найдено'), JSON_UNESCAPED_UNICODE);
+            return 0;
             exit;
       }
 

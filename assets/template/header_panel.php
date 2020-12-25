@@ -80,20 +80,26 @@ else {
           </a>
           <div class="collapse" id="emails">
             <ul class="nav sub-menu">
+              <?php
+              $tiket_open = $settings->count_support_tickets('open');
+              $tiket_close = $settings->count_support_tickets('close');
+              $tiket_work = $settings->count_support_tickets('work');
+              $tiket_all = $tiket_open+$tiket_close+$tiket_work;
+              ?>
               <li class="nav-item">
                 <a href="/panel/support/canban" class="nav-link">Канбан</a>
               </li>
               <li class="nav-item">
-                <a href="/panel/support/tikets" class="nav-link">Все заявки <span class="ml-2 badge badge-light">250</span></a>
+                <a href="/panel/support/tikets" class="nav-link">Все заявки <span class="ml-2 badge badge-light"><?php echo $tiket_all;?></span></a>
               </li>
               <li class="nav-item">
-                <a href="/panel/support/tikets?status=work" class="nav-link">В работе <span class="ml-2 badge badge-primary">12</span></a>
+                <a href="/panel/support/tikets?status=work" class="nav-link">В работе <span class="ml-2 badge badge-primary"><?php echo $tiket_work;?></span></a>
               </li>
               <li class="nav-item">
-                <a href="/panel/support/tikets?status=open" class="nav-link">Новые<span class="ml-2 badge badge-danger">14</span></a>
+                <a href="/panel/support/tikets?status=open" class="nav-link">Новые<span class="ml-2 badge badge-danger"><?php echo $tiket_open;?></span></a>
               </li>
               <li class="nav-item">
-                <a href="/panel/support/tikets?status=close" class="nav-link">Закрытые <span class="ml-2 badge badge-success">25</span></a>
+                <a href="/panel/support/tikets?status=close" class="nav-link">Закрытые <span class="ml-2 badge badge-success"><?php echo $tiket_close;?></span></a>
               </li>
             </ul>
           </div>

@@ -3,6 +3,7 @@
 <title>Канбан - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
 
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/header_panel.php');?>
+
 <?php
 
 ?>
@@ -18,7 +19,7 @@
 
   <div class="col-md-4">
     <div class="">
-      <button type="button" disabled class="btn btn-danger btn-block">Новые <span class="badge badge-light"></span></button>
+      <button type="button" disabled class="btn btn-danger btn-block">Новые <span class="badge badge-light"><?php echo $tiket_open;?></span></button>
     </div>
     <div class="p-3" style="
                             border-left:  2px dashed rgba(156, 156, 156, 0.2);
@@ -58,7 +59,7 @@
   </div>
   <div class="col-md-4">
     <div class="">
-      <button type="button" disabled class="btn btn-primary btn-block"  onclick="update_status(this,'search', 'status');">В работе <span class="badge badge-light">12</span></button>
+      <button type="button" disabled class="btn btn-primary btn-block">В работе <span class="badge badge-light"><?php echo $tiket_work;?></span></button>
     </div>
     <div class="p-3" style="
                             border-left:  2px dashed rgba(156, 156, 156, 0.2);
@@ -95,7 +96,7 @@
   </div>
   <div class="col-md-4">
     <div class="">
-      <button type="button" disabled class="btn btn-success btn-block">Закрытые <span class="badge badge-light">25</span></button>
+      <button type="button" disabled class="btn btn-success btn-block">Закрытые <span class="badge badge-light"><?php echo $tiket_close;?></span></button>
     </div>
     <div class="p-3" style="
                             border-left:  2px dashed rgba(156, 156, 156, 0.2);
