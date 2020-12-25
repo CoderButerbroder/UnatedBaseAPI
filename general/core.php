@@ -2296,7 +2296,7 @@ class Settings {
 
             $data_tiket_support = json_decode($this->get_data_tiket($id_ticket))->data;
             $data_user_tiket = json_decode($this->get_user_data_id_boil($data_tiket_support->id_tboil))->data;
-            $data_referer_ticket = json_decode($this->get_data_referer_id($id_referer))->data;
+            $data_referer_ticket = json_decode($this->get_data_referer_id($data_tiket_support->id_referer))->data;
 
             $array_status = array('work' => 'в работе',
                                   'close' => 'закрыта',
