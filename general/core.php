@@ -2326,6 +2326,24 @@ class Settings {
 
   }
 
+  // получение тикетов заявок по статусом
+  public function get_support_tiket_status($status) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE status = :status");
+      $statement->bindParam(':status', $status, PDO::PARAM_STR);
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Заявки со статусом успешно найдены'), JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Нет заявок'), JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+  }
 
 
   // Функция
