@@ -14,9 +14,16 @@ if(!isset($_POST["status"]) || !isset($_POST["search"])){
   exit();
 }
 
+$status = trim($_POST["search"]);
+
+if($status != 'open' && $status != 'close' && $status != 'pause') {
+  echo json_encode(array('response' => false, 'description' => 'Ошибка получения статуса'), JSON_UNESCAPED_UNICODE);
+  exit();
+}
+
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-echo $settings->update_status_support_tiket(trim($_POST["search"]), trim($_POST["status"]));
+echo $settings->update_status_support_tiket(trim($_POST["search"]), $status);
 
 ?>
