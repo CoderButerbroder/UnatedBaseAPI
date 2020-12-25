@@ -19,7 +19,6 @@ $data_referer_ticket = json_decode($settings->get_data_referer_id($data_ticket->
 $data_user_request = json_decode($settings->get_user_data_id_boil($data_ticket->data->id_tboil));
 $temp_null = 0;
 
-
 ?>
 
 <!-- <nav class="page-breadcrumb">
@@ -49,10 +48,11 @@ $temp_null = 0;
                             <div class="status online"></div>
                           </figure> -->
                           <div>
-                            <h6><?php echo ($data_ticket->data->status == 'open') ? '<span class="badge badge-danger">Открыта</span>' : ''; ?>
-                                <?php echo ($data_ticket->data->status == 'close') ? '<span class="badge badge-success">Закрыта</span>' : ''; ?>
-                                <?php echo ($data_ticket->data->status == 'pause') ? '<span class="badge badge-info">Пауза</span>' : ''; ?>
-                               Заявка #<?php echo $data_ticket->data->id; ?> от <?php echo date('d.m.Y', strtotime($data_ticket->data->date_added)); ?></h6>
+                                  <h6><?php echo ($data_ticket->data->status == 'open') ? '<span class="badge badge-danger">Открыта</span>' : ''; ?>
+                                    <?php echo ($data_ticket->data->status == 'close') ? '<span class="badge badge-success">Закрыта</span>' : ''; ?>
+                                    <?php echo ($data_ticket->data->status == 'pause') ? '<span class="badge badge-info">Пауза</span>' : ''; ?>
+                                   Заявка #<?php echo $data_ticket->data->id; ?> от <?php echo date('d.m.Y', strtotime($data_ticket->data->date_added)); ?>
+                                 </h6>
                             <p class="text-muted mt-2 tx-13"><?php echo $data_ticket->data->type_support; ?></p>
                           </div>
                         </div>
@@ -67,6 +67,9 @@ $temp_null = 0;
                             <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="settings" class="icon-sm mr-2"></i> <span class="">Settings</span></a>
                           </div>
                         </div> -->
+                        <div class="col text-right">
+                          <span class="text-right" data-content="Последнее обновление статуса" data-container="body" data-trigger="hover" data-toggle="popover" data-placement="auto"><i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="calendar"></i><?php echo date('H:i d.m.Y', strtotime($data_ticket->data->date_update_status));?></span>
+                        </div>
                       </div>
                       <!-- <form class="search-form">
                         <div class="input-group border rounded-sm">
@@ -118,12 +121,28 @@ $temp_null = 0;
                       <div class="tab-content mt-3">
                         <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
                           <div>
-                              <h5 class="h5 mb-0">Сведения о запросе</h5>
-                              <hr>
-                                <div class="col">
-                                  <span class="h6 surtitle text-muted">Контакное лицо</span>
-                                  <span class="offset-1 d-block h6 btn-link" href="javascript:void(0)" class="btn btn btn-outline-info btn-link" style="cursor:pointer;" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $data_ticket->data->id_tboil; ?>')"><?php echo $data_user_request->data->last_name.' '.$data_user_request->data->name.' '.$data_user_request->data->second_name; ?></span>
+                              <div class="row m-0 p-0">
+                                <div class="col my-auto">
+                                  <h5 class="h5 mb-0">Сведения о запросе</h5>
                                 </div>
+                                <div class="col my-auto text-right" >
+                                  <span style="cursor:pointer;" class="badge badge-success"href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $data_ticket->data->id_tboil; ?>')">
+                                    <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="user"></i>
+                                    <?php echo $data_user_request->data->last_name.' '.$data_user_request->data->name.' '.$data_user_request->data->second_name; ?>
+                                  </span>
+                                  <?php if($data_user_request->data->id_entity) {
+                                    $company = json_decode($settings->get_data_entity($data_user_request->data->id_entity));
+                                    if ($company->response) { ?>
+                                        <span style="cursor:pointer;" class="badge badge-primary" href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $company->data->inn; ?>')">
+                                          <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i>Компания
+                                        </span>
+                                    <?php
+                                    }
+                                  }
+                                  ?>
+                                </div>
+                               </div>
+                              <hr>
                                 <div class="col">
                                   <span class="h6 surtitle text-muted">Название запроса</span>
                                   <span class="offset-1 d-block h6"><?php echo $data_ticket->data->name; ?></span>
@@ -237,11 +256,11 @@ $temp_null = 0;
                       </div> -->
                     </div>
                   </div>
-                  <div class="chat-body">
+                  <div class="chat-body" id="div_messages">
                     <ul class="messages" id="messages">
                       <div class="alert alert-light" role="alert">
                         Нет истории переписки
-                      </div>;
+                      </div>
                     </ul>
                   </div>
                   <div class="chat-footer d-flex" style="position:absolute; bottom:0; width: 98%;">
@@ -262,7 +281,7 @@ $temp_null = 0;
                     </div> -->
                     <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $_GET["id"]; ?>'); return false;">
                       <div class="input-group">
-                        <input type="text" class="form-control rounded-pill mr-2" id="chatForm" placeholder="Введите сообщение для пользователя" required>
+                        <input type="text" name="msg" class="form-control rounded-pill mr-2" id="chatForm" placeholder="Введите сообщение для пользователя" required>
                         <div class="input-group-append">
                           <button type="submit" name="btn_send" class="btn btn-primary btn-icon rounded-circle">
                             <i data-feather="send"></i>
@@ -283,8 +302,14 @@ $temp_null = 0;
 </div>
 
 <script type="text/javascript">
+  var ps;
+
   $( document ).ready(function() {
-      $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
+      $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *", function() {
+        $('#div_messages').animate({
+            scrollTop: $('#div_messages').get(0).scrollHeight
+        }, 10);
+      });
   });
 
   function send_message(form, value) {
@@ -293,16 +318,21 @@ $temp_null = 0;
     $(btn).attr('disabled','disabled');
     $.ajax({
       type: 'POST',
-      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/support/ticket/push_message',
-      data: {"search": value}+$(form).serialize(),
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/support/tikets/push_message',
+      data: {"search": value, "msg" : form.elements['msg'].value},
       success: function(result) {
         $(btn).removeAttr('disabled');
         $('#spiner').addClass('d-none');
         if (IsJsonString(result)) {
           var arr = JSON.parse(result);
           if (arr["response"]) {
+            $('#chatForm').val('');
             //alerts('success', arr["description"], '');
-            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *");
+            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *", function() {
+              $('#div_messages').animate({
+                  scrollTop: $('#div_messages').get(0).scrollHeight
+              }, 200);
+            });
           } else {
             alerts('warning', 'Ошибка', arr["description"]);
           }
