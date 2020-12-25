@@ -30,12 +30,25 @@ $tiket_all = $tiket_open+$tiket_close+$tiket_work;
         <div class="card mt-3 mb-3">
           <div class="card-header">
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-4">
                 <i data-feather="briefcase" class="text-danger" style="width: 1.2em;"></i>#<?php echo $value->id;?>
               </div>
-              <div class="col-sm-6 text-right">
+              <div class="col-sm-4 text-right">
                 <?php echo $settings->date_time_rus($value->date_added,true);?>
               </div>
+              <div class="col-md-auto">
+                  <button class="btn p-0" type="button" id="dropdownMenuButton<?php echo $value->id;?>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                  </button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton<?php echo $value->id;?>">
+                    <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
+                    <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
+                    <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
+                    <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
+                    <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                  </div>
+              </div>
+
             </div>
           </div>
           <div class="card-body">
@@ -44,10 +57,10 @@ $tiket_all = $tiket_open+$tiket_close+$tiket_work;
           <div class="card-footer">
             <div class="row">
               <div class="col-md-6">
-                <a target="_blank" href="/panel/support/tikets/detail?id=<?php echo $value->id;?>" type="button" class="btn btn-sm btn-outline-info btn-block">Информация <i style="width: 13px;" data-feather="info"></i></a>
+                <a target="_blank" href="/panel/support/tikets/detail?id=<?php echo $value->id;?>" type="button" class="btn btn-sm btn-outline-info btn-block">Информация</a>
               </div>
               <div class="col-md-6">
-                <button type="button" onclick="update_status(this,'<?php echo $value->id;?>', 'work');" class="btn btn-sm btn-outline-primary btn-block">В работу <i style="width: 13px;" data-feather="arrow-right"></i></button>
+                <button type="button" onclick="update_status(this,'<?php echo $value->id;?>', 'work');" class="btn btn-sm btn-outline-primary btn-block">В работу</button>
               </div>
             </div>
           </div>
@@ -90,12 +103,17 @@ $tiket_all = $tiket_open+$tiket_close+$tiket_work;
                     <p><?php echo $value->name;?></p>
                   </div>
                   <div class="card-footer">
+                    <div class="row mb-2">
+                      <div class="col-md-12">
+                        <a target="_blank" href="/panel/support/tikets/detail?id=<?php echo $value->id;?>" type="button" class="btn btn-xs btn-outline-info btn-block">Информация </a>
+                      </div>
+                    </div>
                     <div class="row">
                       <div class="col-md-6">
-                        <button type="button" class="btn btn-sm btn-outline-danger btn-block" onclick="update_status(this,'<?php echo $value->id;?>', 'open');">Приостановка <i style="width: 13px;" data-feather="alert-octagon"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-danger btn-block" onclick="update_status(this,'<?php echo $value->id;?>', 'open');">Приостановка</button>
                       </div>
                       <div class="col-md-6">
-                        <button type="button" class="btn btn-sm btn-outline-success btn-block" onclick="update_status(this,'<?php echo $value->id;?>', 'close');">Завершить <i style="width: 13px;" data-feather="check-circle"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-success btn-block" onclick="update_status(this,'<?php echo $value->id;?>', 'close');">Завершить</button>
                       </div>
                     </div>
                   </div>
@@ -138,10 +156,10 @@ $tiket_all = $tiket_open+$tiket_close+$tiket_work;
                       <div class="card-footer">
                         <div class="row">
                           <div class="col-md-6">
-                            <button type="button" onclick="update_status(this,'<?php echo $value->id;?>', 'work');" class="btn btn-sm btn-outline-primary btn-block">В работу <i style="width: 13px;" data-feather="arrow-right"></i></button>
+                            <button type="button" onclick="update_status(this,'<?php echo $value->id;?>', 'work');" class="btn btn-sm btn-outline-primary btn-block">В работу</button>
                           </div>
                           <div class="col-md-6">
-                            <a target="_blank" href="/panel/support/tikets/detail?id=<?php echo $value->id;?>" type="button" class="btn btn-sm btn-outline-info btn-block">Информация <i style="width: 13px;" data-feather="info"></i></a>
+                            <a target="_blank" href="/panel/support/tikets/detail?id=<?php echo $value->id;?>" type="button" class="btn btn-sm btn-outline-info btn-block">Информация</a>
                           </div>
                         </div>
                       </div>

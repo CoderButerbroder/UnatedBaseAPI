@@ -20,6 +20,17 @@
 </div>
 
 <script type="text/javascript">
+  const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.addEventListener('mouseenter', Swal.stopTimer)
+    toast.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+  });
   function update_status(btn,search, status) {
     $('#spiner').removeClass('d-none');
     $(btn).attr('disabled','disabled');
@@ -37,7 +48,10 @@
         if (IsJsonString(result)) {
           var arr = JSON.parse(result);
           if (arr["response"]) {
-            alerts('success', arr["description"], '');
+            Toast.fire({
+                icon: 'success',
+                title: arr["description"]
+              });
           } else {
             alerts('warning', 'Ошибка', arr["description"]);
           }

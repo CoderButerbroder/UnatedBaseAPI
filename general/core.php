@@ -2286,16 +2286,55 @@ class Settings {
   public function update_status_support_tiket($id_ticket,$new_status) {
         global $database;
 
-        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET name =:name, description =:description, status =:status WHERE id =:id");
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status WHERE id =:id");
         $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
-        $update_status_ticket->bindParam(':name', $name, PDO::PARAM_STR);
-        $update_status_ticket->bindParam(':description', $description, PDO::PARAM_STR);
-        $update_status_ticket->bindParam(':status', $status, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':status', $new_status, PDO::PARAM_STR);
         $temp = $update_status_ticket->execute();
         $check = $update_status_ticket->rowCount();
 
         if ($check) {
-            return json_encode(array('response' => true, 'description' => 'Статус заявки успешно изменен'), JSON_UNESCAPED_UNICODE);
+
+            $data_tiket_support = json_decode($this->get_data_tiket($id_ticket))->data;
+            $data_user_tiket = json_decode($this->get_user_data_id_boil($data_tiket_support->id_tboil))->data;
+            $data_referer_ticket = json_decode($this->get_data_referer_id($id_referer))->data;
+
+            $array_status = array('work' => 'в работе',
+                                  'close' => 'закрыта',
+                                  'open' => 'открыта'
+                                );
+
+            $content =  'Здравствуйте, '.$data_user_tiket->name.' '.$data_user_tiket->second_name.'<br>';
+            $content .= 'Статус вашей заявки был изменен на «'.$array_status[$new_status].'».<br>';
+            $content .= 'Посмотреть подробности заявки Вы можете в личном кабинете.';
+
+            $tema = 'Статус заявки #'.$id_ticket;
+
+            $today = date("d.m.Y H:i");
+
+            $maildata =
+                  array(
+                    'title' => $tema,
+                    'description' => $content,
+                    'link_to_server' => 'https://'.$data_referer_ticket->resourse,
+                    'text_button' => 'Личный кабинет',
+                    'link_button' => $data_referer_ticket->link_to_support,
+                    'link_to_logo' => $data_referer_ticket->link_to_logo,
+                    'alt_link_to_logo' => $data_referer_ticket->resourse,
+                    'color_button1' => $data_referer_ticket->color_button1,
+                    'text_color_button1' =>$data_referer_ticket->color_text_button1,
+                    'name_host' => $data_referer_ticket->resourse,
+                    'date' => $today
+                  );
+
+            $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/support_tikcet_status.php');
+
+            foreach ($maildata as $key => $value) {
+              $template_email = str_replace('['.$key.']', $value, $template_email);
+            }
+
+            $check_mail = $this->send_email_user($data_user_tiket->email,$tema,$template_email);
+
+            return json_encode(array('response' => true, 'description' => 'Статус заявки изменен'), JSON_UNESCAPED_UNICODE);
             exit;
         }
         else {
