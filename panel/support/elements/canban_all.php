@@ -1,3 +1,15 @@
+<?php
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$settings = new Settings;
+if (!$_SESSION["key_user"]) {
+    header('Location: /');
+    exit;
+}
+$tiket_open = $settings->count_support_tickets('open');
+$tiket_close = $settings->count_support_tickets('close');
+$tiket_work = $settings->count_support_tickets('work');
+$tiket_all = $tiket_open+$tiket_close+$tiket_work;
+?>
 <div class="col-md-4">
   <div class="">
     <button type="button" disabled class="btn btn-danger btn-block">Новые <span class="badge badge-light"><?php echo $tiket_open;?></span></button>
