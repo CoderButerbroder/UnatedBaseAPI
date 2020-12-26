@@ -18,7 +18,7 @@ $data_ticket = json_decode($data_ticket_str);
 $data_referer_ticket = json_decode($settings->get_data_referer_id($data_ticket->data->id_referer));
 $data_user_request = json_decode($settings->get_user_data_id_boil($data_ticket->data->id_tboil));
 $temp_null = 0;
-
+$history_status_ticket = json_decode($settings->get_ticket_status_history($data_ticket->data->id));
 ?>
 
 <!-- <nav class="page-breadcrumb">
@@ -109,14 +109,14 @@ $temp_null = 0;
                             </div>
                           </a>
                         </li>
-                        <li class="nav-item">
+                        <!-- <li class="nav-item">
                           <a class="nav-link" id="conclusion-tab" data-toggle="tab" href="#conclusion" role="tab" aria-controls="conclusion" aria-selected="false">
                             <div class="d-flex flex-row flex-lg-column flex-xl-row align-items-center">
                               <i data-feather="check-circle" class="icon-sm mr-sm-2 mr-lg-0 mr-xl-2 mb-md-1 mb-xl-0"></i>
                               <p class="d-none d-sm-block">Заключение</p>
                             </div>
                           </a>
-                        </li>
+                        </li> -->
                       </ul>
                       <div class="tab-content mt-3">
                         <div class="tab-pane fade show active" id="general" role="tabpanel" aria-labelledby="general-tab">
@@ -174,15 +174,31 @@ $temp_null = 0;
                         </div>
                         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                           <p class="text-muted mb-1">История статусов</p>
-
-
+                          <? if ($history_status_ticket->response) {?>
+                              <div class="row">
+                                <?php foreach ($history_status_ticket->data as $key => $value) { ?>
+                                    <div class="col-md-auto">
+                                        <?php echo $settings->date_time_rus($value->date_update,true) ;?>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <?php echo $value->status;?>
+                                    </div>
+                                <?}?>
+                              </div>
+                          <? } else { ?>
+                              <div class="row">
+                                <div class="col-md-12 text-center">
+                                    нет истории статусов
+                                </div>
+                              </div>
+                          <? } ?>
                         </div>
-                        <div class="tab-pane fade" id="conclusion" role="tabpanel" aria-labelledby="conclusion-tab">
+                        <!-- <div class="tab-pane fade" id="conclusion" role="tabpanel" aria-labelledby="conclusion-tab">
                           <p class="text-muted mb-1">Заключение по заявке</p>
 
 
 
-                        </div>
+                        </div> -->
                         <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
                           <?php
                            $arr_files = explode(',', $data_ticket->data->links_add_files);
