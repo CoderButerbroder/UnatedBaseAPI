@@ -5736,7 +5736,52 @@ class Settings {
   }
 
   // подсчет компаний имеющих статус поддержки
-  public function get_count_entity_fci_groupby_time_reg($period)
+  public function get_count_entity_fci_groupby_time_reg($period) {
+      global $database;
+      $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id` INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn` GROUP BY $this->IPCHAIN_entity.`inn`");
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (!$data_users) {
+          return 0;
+          exit;
+      }
+
+      $array_document_fsi = array(
+        'У' => 'Умник',
+        'Соц' => 'Социум Цифровые технологии',
+        'С1ЦТ' => 'Старт-1 Цифровые технологии',
+        'С2ЦТ' => 'Старт-2 Цифровые технологии',
+        'С2ЦТ' => 'Старт-3 Цифровые технологии',
+        'С1' => 'Старт-1',
+        'С2' => 'Старт-2',
+        'СЦТ' => 'Старт Цифровые технологии',
+        'Комм' => 'Коммерциализация',
+        'КЭ' => 'Коммерциализация Экспорт',
+        'Разв' => 'Развитие',
+        'ЦТ' => 'Цифровые технологии',
+        'НТИ' => 'Развитие НТИ',
+        'ЦП' => 'Развитие-Цифровые платформы',
+        'ДП' => 'Дежурный по планете',
+        'Мол' => 'Вовлечение молодежи в инновационную деятельность',
+        'С1ЦП' => 'Старт-Цифровые платформы',
+        'С1Н' => 'Старт-1',
+        'Агро' => 'АГРОНТИ',
+        'Kor' => 'Российско-корейский конкурс',
+        'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
+      );
+
+      $count_fci_entity = 0;
+      foreach ($data_users as $key => $value) {
+          if ($array_document_fsi[stristr($value->id_Support, '-', true)]) {
+              $count_fci_entity++;
+          }
+          else {
+            continue;
+          }
+      }
+
+  }
 
 }
 
