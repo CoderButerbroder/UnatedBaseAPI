@@ -174,14 +174,19 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                         </div>
                         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                           <p class="text-muted mb-1">История статусов</p>
-                          <? if ($history_status_ticket->response) {?>
-                              <div class="row">
+                          <?
+                          $array_status = array('work' => 'Заявка <span class="badge badge-primary">в работе</span>',
+                                                'close' => 'Заявка <span class="badge badge-success">закрыта</span>',
+                                                'open' => 'Заявка <span class="badge badge-danger">открыта</span>'
+                                              );
+                          if ($history_status_ticket->response) {?>
+                              <div class="row mt-2">
                                 <?php foreach ($history_status_ticket->data as $key => $value) { ?>
                                     <div class="col-md-auto">
                                         <?php echo $settings->date_time_rus($value->date_update,true) ;?>
                                     </div>
                                     <div class="col-md-10">
-                                        <?php echo $value->status;?>
+                                        <?php echo $array_status[$value->status];?>
                                     </div>
                                 <?}?>
                               </div>
