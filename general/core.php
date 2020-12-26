@@ -2289,9 +2289,9 @@ class Settings {
 
         $date_update = date("Y-m-d H:i:s");
 
-        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status, date_update = :date_update  WHERE id =:id");
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status, date_added = :date_added  WHERE id =:id");
         $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
-        $update_status_ticket->bindParam(':date_update', $date_update, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':date_added', $date_update, PDO::PARAM_STR);
         $update_status_ticket->bindParam(':status', $new_status, PDO::PARAM_STR);
         $temp = $update_status_ticket->execute();
         $check = $update_status_ticket->rowCount();
@@ -2338,6 +2338,8 @@ class Settings {
 
             $check_mail = $this->send_email_user($data_user_tiket->email,$tema,$template_email);
 
+            $chek_history_status = $this->add_status_in_history($data_tiket_support->id,$new_status);
+
             return json_encode(array('response' => true, 'description' => 'Статус заявки изменен'), JSON_UNESCAPED_UNICODE);
             exit;
         }
@@ -2350,26 +2352,46 @@ class Settings {
 
   // добавление истории обновления статусов тикетов поддержки
   public function add_status_in_history($id_ticket,$status) {
-      global $database;
+        global $database;
 
-      $date = date("Y-m-d H:i:s");
+        $date = date("Y-m-d H:i:s");
 
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_status_history (id_support_ticket,status,date_update)
-                                    VALUES (:id_support_ticket,:status,:date_update)");
-      $d_data->bindParam(':id_support_ticket', $id_tboil, PDO::PARAM_INT);
-      $d_data->bindParam(':status', $name, PDO::PARAM_STR);
-      $d_data->bindParam(':date_update', $description, PDO::PARAM_STR);
-      $temp = $d_data->execute();
-      $id_new_ticket = $database->lastInsertId();
+        $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_status_history (id_support_ticket,status,date_update)
+                                      VALUES (:id_support_ticket,:status,:date_update)");
+        $d_data->bindParam(':id_support_ticket', $id_ticket, PDO::PARAM_INT);
+        $d_data->bindParam(':status', $status, PDO::PARAM_STR);
+        $d_data->bindParam(':date_update', $date, PDO::PARAM_STR);
+        $temp = $d_data->execute();
+        $id_new_ticket = $database->lastInsertId();
 
-      if ($id_new_ticket) {
+        if ($id_new_ticket) {
+              return json_encode(array('response' => true, 'description' => 'Статус заявки успешно записан в историю статусов запроса'), JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+        else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка записи истории'), JSON_UNESCAPED_UNICODE);
+              exit;
+        }
 
-      }
-      else {
-          
-      }
+  }
 
+  // получить данные по истории статусов
+  public function get_ticket_status_history($id_ticket) {
+        global $database;
 
+        $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_status_history WHERE id_support_ticket = :id");
+        $statement->bindParam(':id', $id_ticket, PDO::PARAM_INT);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if ($data) {
+              return json_encode(array('response' => true, 'data' => $data, 'description' => 'История статусов заявки успешно найдена'), JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+        else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка, история статусов заявки не найдена'), JSON_UNESCAPED_UNICODE);
+              exit;
+        }
 
   }
 
