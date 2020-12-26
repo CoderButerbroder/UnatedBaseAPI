@@ -2211,23 +2211,18 @@ class Settings {
   // провекра статуса сколково по инн и API Сколково
   public function check_status_skolkovo_entity($inn) {
 
-        $check_valid_inn = $this->is_valid_inn($inn);
-        $check_json = $this->isJSON($check_valid_inn);
-        if ($check_json) {
-            return false;
-        }
-        else {
                 $skolkovo_fond = file_get_contents("https://crmapi.sk.ru/api/Public/GetMembers");
                 $test_json = json_decode($skolkovo_fond);
-                $status_skolkovo = false;
+                $massiv_skolkovo = array();
                 foreach ($test_json as $key) {
-                      if ($key->Inn == $inn) {
-                          $status_skolkovo = true;
-                          break;
-                      }
+                  array_push($massiv_skolkovo,$key->Inn);
                 }
-                return $status_skolkovo;
-        }
+
+                if (in_array($inn, $massiv_skolkovo)) {
+                    return true;
+                } else {
+                    return false;
+                }
 
   }
 
@@ -3518,8 +3513,53 @@ class Settings {
       }
     }
 
+  // получение всех документов подддержки компаний
+  public function get_all_statesupport_ipchain() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id` GROUP BY $this->IPCHAIN_entity.`inn`");
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data_users) {
+          return json_encode(array('response' => true, 'data' => $data_users, 'description' => 'Данные по поддержке из ipchain успешно получены'), JSON_UNESCAPED_UNICODE);
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка получения данных по поддержке из ipchain'), JSON_UNESCAPED_UNICODE);
+      }
+
+  }
+
+  // полчучение отраслей из ipchain
+  public function ipchain_GetIndustries() {
+      global $database;
+
+      if( $curl = curl_init() ) {
+          curl_setopt($curl, CURLOPT_URL, 'https://dfptest.sk.ru/api/Common/GetIndustries');
+          curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+          curl_setopt($curl, CURLOPT_POST, false);
+          $out_branch = curl_exec($curl);
+          curl_close($curl);
+          $arr_val_branch = json_decode($out_branch);
+
+          if ($arr_val_branch) {
+                return json_encode(array('response' => true, 'data' => $arr_val_branch, 'description' => 'Данные по типам отрослей из ipchain успешно получены'), JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+          else {
+                return json_encode(array('response' => false, 'description' => 'Ошибка получения данных из ipchain'), JSON_UNESCAPED_UNICODE);
+                exit;
+          }
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка CURL получения данных из ipchain'), JSON_UNESCAPED_UNICODE);
+          exit;
+      }
 
 
+
+
+  }
 
 
 
@@ -5382,6 +5422,321 @@ class Settings {
 
 
 
+
+
+
+
+
+
+
+
+  /* Функции пердназнаяеные для отчетов из фулдаты  */
+
+
+  // подсчет юридических лиц зарегистрированных в лпмтех
+  public function count_main_entity(){
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity");
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      $count_data = count($data);
+
+      if ($count_data > 0) {
+          return $count_data;
+          exit;
+      } else {
+          return 0;
+          exit;
+      }
+
+  }
+
+  // Получение всех юридических лиц
+  public function get_all_main_entity() {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity");
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (count($data)) {
+          return $data;
+          exit;
+      } else {
+          return false;
+          exit;
+      }
+
+  }
+
+  // подсчет количества компаний являющихся резидентами сколково
+  public function count_main_entity_skolkovo() {
+      global $database;
+
+        $check_entity = $this->get_all_main_entity();
+
+        if ($check_entity) {
+
+
+            $array_entity = array();
+            foreach ($check_entity as $key => $value) {
+                array_push($array_entity,$value->inn);
+            }
+
+            $skolkovo_fond = file_get_contents("https://crmapi.sk.ru/api/Public/GetMembers");
+            $test_json = json_decode($skolkovo_fond);
+            $massiv_skolkovo = array();
+            foreach ($test_json as $key) {
+              array_push($massiv_skolkovo,$key->Inn);
+            }
+
+            $return_array = array_intersect($array_entity,$massiv_skolkovo);
+
+            return count($return_array);
+            exit;
+
+        }
+        else {
+            return 0;
+            exit;
+        }
+  }
+
+  // Количество участников ФСИ в фулл дата
+  public function count_main_entity_fci() {
+        global $database;
+
+        $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id` INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn` GROUP BY $this->IPCHAIN_entity.`inn`");
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+
+        $array_document_fsi = array(
+          'У' => 'Умник',
+          'Соц' => 'Социум Цифровые технологии',
+          'С1ЦТ' => 'Старт-1 Цифровые технологии',
+          'С2ЦТ' => 'Старт-2 Цифровые технологии',
+          'С2ЦТ' => 'Старт-3 Цифровые технологии',
+          'С1' => 'Старт-1',
+          'С2' => 'Старт-2',
+          'СЦТ' => 'Старт Цифровые технологии',
+          'Комм' => 'Коммерциализация',
+          'КЭ' => 'Коммерциализация Экспорт',
+          'Разв' => 'Развитие',
+          'ЦТ' => 'Цифровые технологии',
+          'НТИ' => 'Развитие НТИ',
+          'ЦП' => 'Развитие-Цифровые платформы',
+          'ДП' => 'Дежурный по планете',
+          'Мол' => 'Вовлечение молодежи в инновационную деятельность',
+          'С1ЦП' => 'Старт-Цифровые платформы',
+          'С1Н' => 'Старт-1',
+          'Агро' => 'АГРОНТИ',
+          'Kor' => 'Российско-корейский конкурс',
+          'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
+        );
+
+        $count_fci_entity = 0;
+        foreach ($data_users as $key => $value) {
+            if ($array_document_fsi[stristr($value->id_Support, '-', true)]) {
+                $count_fci_entity++;
+            }
+            else {
+              continue;
+            }
+        }
+
+        return $count_fci_entity;
+        exit;
+
+  }
+
+  // получение количества юридических лиц по отраслям:
+  public function get_count_entity_branch() {
+      global $database;
+
+      $data_all_entity = $this->get_all_main_entity();
+      $ipchain_GetIndustries = json_decode($this->ipchain_GetIndustries())->data;
+
+      $array_brach = array();
+      foreach ($data_all_entity as $key => $value) {
+          $data_brach = json_decode($value->branch);
+          for ($i=0; $i < count($data_brach); $i++) {
+              array_push($array_brach,$data_brach[$i]->Name);
+          }
+      }
+
+      $count_branches = array_count_values($array_brach);
+
+      return $count_branches;
+
+  }
+
+  // получение количства компаний по типам компанией
+  public function get_count_entity_type_inf() {
+      global $database;
+
+      $data_entity = $this->get_all_main_entity();
+
+      $array_massiv = array();
+
+      foreach ($data_entity as $key => $value) {
+          $type_inf = ($value->type_inf == ' ' || !$value->type_inf) ? 'Без типа' : $value->type_inf;
+          array_push($array_massiv,$type_inf);
+      }
+
+      $count_type_inf = array_count_values($array_massiv);
+
+      return $count_type_inf;
+      exit;
+
+  }
+
+  // подсчет юридических лиц осуществляющих экспорт
+  public function get_count_entity_export() {
+      global $database;
+
+      $data_entity = $this->get_all_main_entity();
+
+      $count_entity = 0;
+      foreach ($data_entity as $key => $value) {
+          $data_entity2 = json_decode($value->export);
+          //var_dump($data_entity2);
+          // var_dump($data_entity2->other);
+          $pos = strripos($value->export, 'true');
+          if (!$pos) {
+              if (is_array($data_entity2->other)) {
+                $count_entity++;
+              }
+          }
+          else {
+              $count_entity++;
+          }
+      }
+
+      return $count_entity;
+      exit;
+
+
+  }
+
+  // подсчет получения компаний за период
+  public function count_main_entity_period(){
+    global $database;
+
+
+
+
+  }
+
+  // подсчет юридеских лиц по периодам год/месяц/неделя/день
+  public function get_count_entity_groupby_time_reg($period) {
+    global $database;
+
+    if ($period == 'year') {
+      $statement = $database->prepare("SELECT count(inn) as sum,YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY YEAR(date_register)");
+    }
+    if ($period == 'month') {
+      $statement = $database->prepare("SELECT count(inn) as sum,MONTH(date_register) as monthd,YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY MONTH(date_register),YEAR(date_register)");
+    }
+    if ($period == 'week') {
+      $statement = $database->prepare("SELECT count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY WEEK(date_register),YEAR(date_register)");
+    }
+    if ($period == 'day') {
+      $statement = $database->prepare("SELECT count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY DAY(date_register),MONTH(date_register),YEAR(date_register)");
+    }
+    $statement->execute();
+    $data = $statement->fetchAll(PDO::FETCH_OBJ);
+    return $data;
+
+  }
+
+  // подсчет юридических лиц имеющих статус сколково
+  public function get_count_entity_skolkovo_groupby_time_reg($period) {
+      global $database;
+
+      $skolkovo_fond = file_get_contents("https://crmapi.sk.ru/api/Public/GetMembers");
+      $test_json = json_decode($skolkovo_fond);
+      $massiv_skolkovo = array();
+      foreach ($test_json as $key) {
+          array_push($massiv_skolkovo,$key->Inn);
+      }
+
+      $check_entity = $this->get_all_main_entity();
+
+      if ($check_entity) {
+
+          $array_entity = array();
+          foreach ($check_entity as $key => $value) {
+              array_push($array_entity,$value->inn);
+          }
+          $return_array = array_intersect($array_entity,$massiv_skolkovo);
+      }
+      else {
+          return 0;
+          exit;
+      }
+
+      $strokaSQL = "SELECT";
+      // return $return_array;
+      if ($period == 'year') {
+          $strokaSQL .= ' count(inn) as sum, YEAR(date_register) as yeard';
+      }
+      if ($period == 'month') {
+          $strokaSQL .= ' count(inn) as sum, MONTH(date_register) as monthd, YEAR(date_register) as yeard';
+      }
+      if ($period == 'week') {
+          $strokaSQL .= ' count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard';
+      }
+      if ($period == 'day') {
+          $strokaSQL .= ' count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard';
+      }
+
+      $strokaSQL .=  " FROM $this->MAIN_entity WHERE";
+
+      $count = 0;
+      foreach ($return_array as $i => $value){
+            if ($count == 0 ) {
+                $strokaSQL .= " inn = :inn_$i";
+                $count++;
+            }
+            else {
+                $strokaSQL .= " OR inn = :inn_$i";
+            }
+      }
+
+      if ($period == 'year') {
+          $strokaSQL .= ' GROUP BY YEAR(date_register)';
+      }
+      if ($period == 'month') {
+          $strokaSQL .= ' GROUP BY MONTH(date_register), YEAR(date_register)';
+      }
+      if ($period == 'week') {
+          $strokaSQL .= ' GROUP BY WEEK(date_register), YEAR(date_register)';
+      }
+      if ($period == 'day') {
+          $strokaSQL .= ' GROUP BY DAY(date_register), MONTH(date_register), YEAR(date_register)';
+      }
+
+      $statement = $database->prepare($strokaSQL);
+
+      foreach ($return_array as $i => $value){
+          $statement->bindValue(":inn_$i", $value, PDO::PARAM_STR);
+      }
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      return $data;
+
+  }
+
+  // подсчет компаний имеющих статус поддержки
+  public function get_count_entity_fci_groupby_time_reg($period)
 
 }
 

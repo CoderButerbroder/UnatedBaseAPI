@@ -6,26 +6,33 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$inn = 7725692472;
+$inn = 7701899412;
 
-$data = $settings->check_status_skolkovo_entity($inn);
+// echo '$period == "year"';
+// $data = $settings->get_count_entity_groupby_time_reg('year');
+// var_dump($data);
+//
+// echo '$period == "month"';
+// $data = $settings->get_count_entity_groupby_time_reg('month');
+// var_dump($data);
+//
+// echo '$period == "week"';
+// $data = $settings->get_count_entity_groupby_time_reg('week');
+// var_dump($data);
+//
+// echo '$period == "day"';
+// $data = $settings->get_count_entity_groupby_time_reg('day');
+//
+// var_dump($data);
 
+
+$data = $settings->get_count_entity_skolkovo_groupby_time_reg('year');
 var_dump($data);
-// $token_tboil = $settings->get_global_settings('tboil_token');
-// $tboil_site = 'https://tboil.spb.ru';
-// // $token_tboil1 = $settings->refresh_token_tboil();
-// // $token_tboil = json_decode($token_tboil1)->token;
-//
-// $data_one_event = json_decode(file_get_contents($tboil_site."/api/v2/getEvent/22849/?token=1".$token_tboil));
-//
-//
-// var_dump($data_one_event);
-// echo '<br>';
-// echo $tboil_site."/api/v2/getEvent/22849/?token=1".$token_tboil;
-//
-//
-
-
-
+$data = $settings->get_count_entity_skolkovo_groupby_time_reg('month');
+var_dump($data);
+$data = $settings->get_count_entity_skolkovo_groupby_time_reg('week');
+var_dump($data);
+$data = $settings->get_count_entity_skolkovo_groupby_time_reg('day');
+var_dump($data);
 
 ?>
