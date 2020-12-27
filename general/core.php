@@ -5639,16 +5639,19 @@ class Settings {
     global $database;
 
     if ($period == 'year') {
-      $statement = $database->prepare("SELECT count(inn) as sum,YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY YEAR(date_register)");
+      $statement = $database->prepare("SELECT count(inn) as sum,YEAR(date_register) as yeard, count(inn) as entity_groupby FROM $this->MAIN_entity GROUP BY YEAR(date_register)");
     }
     if ($period == 'month') {
-      $statement = $database->prepare("SELECT count(inn) as sum,MONTH(date_register) as monthd,YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY MONTH(date_register),YEAR(date_register)");
+      $statement = $database->prepare("SELECT count(inn) as sum,MONTH(date_register) as monthd,YEAR(date_register) as yeard, count(inn) as entity_groupby FROM $this->MAIN_entity GROUP BY MONTH(date_register),YEAR(date_register)");
     }
     if ($period == 'week') {
-      $statement = $database->prepare("SELECT count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY WEEK(date_register),YEAR(date_register)");
+      $statement = $database->prepare("SELECT count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard, count(inn) as entity_groupby FROM $this->MAIN_entity GROUP BY WEEK(date_register),YEAR(date_register)");
     }
     if ($period == 'day') {
-      $statement = $database->prepare("SELECT count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard FROM $this->MAIN_entity GROUP BY DAY(date_register),MONTH(date_register),YEAR(date_register)");
+      $statement = $database->prepare("SELECT count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as entity_groupby FROM $this->MAIN_entity GROUP BY DAY(date_register),MONTH(date_register),YEAR(date_register)");
+    }
+    if ($period == 'data') {
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity");
     }
     $statement->execute();
     $data = $statement->fetchAll(PDO::FETCH_OBJ);
@@ -5656,7 +5659,7 @@ class Settings {
 
   }
 
-  // подсчет юридических лиц имеющих статус сколково
+  // подсчет юридических лиц имеющих статус сколково по периодам год/месяц/неделя/день
   public function get_count_entity_skolkovo_groupby_time_reg($period) {
       global $database;
 
@@ -5685,16 +5688,19 @@ class Settings {
       $strokaSQL = "SELECT";
       // return $return_array;
       if ($period == 'year') {
-          $strokaSQL .= ' count(inn) as sum, YEAR(date_register) as yeard';
+          $strokaSQL .= ' count(inn) as sum, YEAR(date_register) as yeard, count(inn) as skolkovo_groupby';
       }
       if ($period == 'month') {
-          $strokaSQL .= ' count(inn) as sum, MONTH(date_register) as monthd, YEAR(date_register) as yeard';
+          $strokaSQL .= ' count(inn) as sum, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as skolkovo_groupby';
       }
       if ($period == 'week') {
-          $strokaSQL .= ' count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard';
+          $strokaSQL .= ' count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard, count(inn) as skolkovo_groupby';
       }
       if ($period == 'day') {
-          $strokaSQL .= ' count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard';
+          $strokaSQL .= ' count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as skolkovo_groupby';
+      }
+      if ($period == 'data') {
+          $strokaSQL .= ' * ';
       }
 
       $strokaSQL .=  " FROM $this->MAIN_entity WHERE";
@@ -5722,6 +5728,9 @@ class Settings {
       if ($period == 'day') {
           $strokaSQL .= ' GROUP BY DAY(date_register), MONTH(date_register), YEAR(date_register)';
       }
+      if ($period == 'data') {
+          $strokaSQL .= '';
+      }
 
       $statement = $database->prepare($strokaSQL);
 
@@ -5735,9 +5744,11 @@ class Settings {
 
   }
 
-  // подсчет компаний имеющих статус поддержки
+  // подсчет компаний имеющих статус поддержки по периодам год/месяц/неделя/день
   public function get_count_entity_fci_groupby_time_reg($period) {
       global $database;
+
+
       $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id` INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn` GROUP BY $this->IPCHAIN_entity.`inn`");
       $statement->execute();
       $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
@@ -5771,17 +5782,316 @@ class Settings {
         'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
       );
 
-      $count_fci_entity = 0;
+      $count_fci_entity = array();
       foreach ($data_users as $key => $value) {
           if ($array_document_fsi[stristr($value->id_Support, '-', true)]) {
-              $count_fci_entity++;
+              array_push($count_fci_entity,$value->inn);
           }
           else {
-            continue;
+              continue;
           }
       }
 
+
+
+      $strokaSQL = "SELECT";
+      // return $return_array;
+      if ($period == "year") {
+          $strokaSQL .= " count(inn) as sum, YEAR(date_register) as yeard, count(inn) as fci_groupby";
+      }
+      if ($period == "month") {
+          $strokaSQL .= " count(inn) as sum, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as fci_groupby";
+      }
+      if ($period == "week") {
+          $strokaSQL .= " count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard, count(inn) as fci_groupby";
+      }
+      if ($period == "day") {
+          $strokaSQL .= " count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as fci_groupby";
+      }
+      if ($period == "data") {
+          $strokaSQL .= " * ";
+      }
+
+
+      $strokaSQL .=  " FROM $this->MAIN_entity WHERE";
+
+      $count = 0;
+      foreach ($count_fci_entity as $i => $value){
+            if ($count == 0 ) {
+                $strokaSQL .= " inn = :inn_$i";
+                $count++;
+            }
+            else {
+                $strokaSQL .= " OR inn = :inn_$i";
+            }
+      }
+
+      if ($period == 'year') {
+          $strokaSQL .= " GROUP BY YEAR(date_register)";
+      }
+      if ($period == 'month') {
+          $strokaSQL .= " GROUP BY MONTH(date_register), YEAR(date_register)";
+      }
+      if ($period == 'week') {
+          $strokaSQL .= " GROUP BY WEEK(date_register), YEAR(date_register)";
+      }
+      if ($period == 'day') {
+          $strokaSQL .= " GROUP BY DAY(date_register), MONTH(date_register), YEAR(date_register)";
+      }
+      if ($period == 'data') {
+          $strokaSQL .= "";
+      }
+
+      $statement = $database->prepare($strokaSQL);
+
+      foreach ($count_fci_entity as $i => $value){
+          $statement->bindValue(":inn_$i", $value, PDO::PARAM_STR);
+      }
+
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+
+
+
+
+      return $data_users;
+      exit;
+
+
+
   }
+
+  // подсчет юридических лиц осуществляющих экспорт по периодам год/месяц/неделя/день
+  public function get_count_entity_export_groupby_time_reg($period) {
+      global $database;
+
+
+      $data_entity = $this->get_all_main_entity();
+
+      $new_data_entity = array();
+      foreach ($data_entity as $key => $value) {
+          $data_entity2 = json_decode($value->export);
+          $pos = strripos($value->export, 'true');
+          if (!$pos) {
+              if (is_array($data_entity2->other)) {
+                array_push($new_data_entity,$value->inn);
+              }
+              else {continue;}
+          }
+          else {
+              array_push($new_data_entity,$value->inn);
+          }
+      }
+
+
+      $strokaSQL = "SELECT";
+      // return $return_array;
+      if ($period == "year") {
+          $strokaSQL .= " count(inn) as sum, YEAR(date_register) as yeard, count(inn) as export_groupby";
+      }
+      if ($period == "month") {
+          $strokaSQL .= " count(inn) as sum, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as export_groupby";
+      }
+      if ($period == "week") {
+          $strokaSQL .= " count(inn) as sum, WEEK(date_register) as weekd, YEAR(date_register) as yeard, count(inn) as export_groupby";
+      }
+      if ($period == "day") {
+          $strokaSQL .= " count(inn) as sum, DAY(date_register) as dayd, MONTH(date_register) as monthd, YEAR(date_register) as yeard, count(inn) as export_groupby";
+      }
+      if ($period == "data") {
+          $strokaSQL .= " * ";
+      }
+
+
+      $strokaSQL .=  " FROM $this->MAIN_entity WHERE";
+
+      $count = 0;
+      foreach ($new_data_entity as $i => $value){
+            if ($count == 0 ) {
+                $strokaSQL .= " inn = :inn_$i";
+                $count++;
+            }
+            else {
+                $strokaSQL .= " OR inn = :inn_$i";
+            }
+      }
+
+      if ($period == 'year') {
+          $strokaSQL .= " GROUP BY YEAR(date_register)";
+      }
+      if ($period == 'month') {
+          $strokaSQL .= " GROUP BY MONTH(date_register), YEAR(date_register)";
+      }
+      if ($period == 'week') {
+          $strokaSQL .= " GROUP BY WEEK(date_register), YEAR(date_register)";
+      }
+      if ($period == 'day') {
+          $strokaSQL .= " GROUP BY DAY(date_register), MONTH(date_register), YEAR(date_register)";
+      }
+      if ($period == 'data') {
+          $strokaSQL .= "";
+      }
+
+      $statement = $database->prepare($strokaSQL);
+
+      foreach ($new_data_entity as $i => $value){
+          $statement->bindValue(":inn_$i", $value, PDO::PARAM_STR);
+      }
+
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+
+
+
+
+      return $data_users;
+      exit;
+
+  }
+
+  // выгрузка компаний по очтетам
+  public function get_entity_by_category($category) {
+      global $database;
+
+
+          $stroka_sql = "SELECT * FROM $this->MAIN_entity";
+          $statement = $database->prepare($stroka_sql);
+          $statement->execute();
+          $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if ($category == 'УчасСколково') {
+            $data_entity_param = $this->get_count_entity_skolkovo_groupby_time_reg('data');
+            $massiv_data_entity_param = array();
+            foreach ($data_entity_param as $key => $value) {
+                  array_push($massiv_data_entity_param,$value->inn);
+            }
+        }
+        if ($category == 'УчасФСИ') {
+            $data_entity_param = $this->get_count_entity_fci_groupby_time_reg('data');
+            $massiv_data_entity_param = array();
+            foreach ($data_entity_param as $key => $value) {
+                  array_push($massiv_data_entity_param,$value->inn);
+            }
+        }
+        // if ($category == 'УчасЛПМ') {
+        //     $stroka_sql = "";
+        // }
+
+
+
+
+
+          $itog_masiv = array ();
+      foreach ($data_users as $key => $value) {
+
+            $temp_array = array();
+            $temp_array['inn'] = $value->inn;
+            $mass_entity = json_decode($value->data_fns);
+            $data_fns = end($mass_entity->items);
+            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП'.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
+
+            if ($category == 'мсп') {
+                    $temp_array['value'] = ($value->msp && $value->msp != ' ') ? $value->msp : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'регион') {
+                    $temp_array['value'] = ($value->region && $value->region != ' ') ? $value->region : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'Район') {
+                    $temp_array['value'] = ($value->region && $value->district != ' ') ? $value->district : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'Тип') {
+                    $temp_array['value'] = ($value->region && $value->type_inf != ' ') ? $value->type_inf : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'Отрасль') {
+                    $massiv_branch = json_decode($value->branch);
+                    $temp_string = '';
+                    for ($i=0; $i < count($massiv_branch); $i++) {
+                        $temp_string .= $massiv_branch[$i]->Name.', ';
+                    }
+                    $temp_string = substr($temp_string, 0, -2);
+                    $temp_array['value'] = ($temp_string) ? $temp_string : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'УчасСколково') {
+                    $temp_array['value'] = (in_array($value->inn,$massiv_data_entity_param)) ? 'Да' : 'Нет';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'УчасФСИ') {
+                    $temp_array['value'] = (in_array($value->inn,$massiv_data_entity_param)) ? 'Да' : 'Нет';
+                    array_push($itog_masiv,$temp_array);
+            }
+            // if ($category == 'УчасЛПМ') {
+            //
+            // }
+            if ($category == 'экспорт') {
+                    $massiv_export = json_decode($value->export);
+                    $temp_string = '';
+                    if ($massiv_export->SNG == true) {$temp_string .= 'СНГ, ';}
+                    if ($massiv_export->ES == true) {$temp_string .= 'Евросоюз, ';}
+                    if ($massiv_export->all_world  == true) {$temp_string .= 'Весь мир, ';}
+
+                    if (is_array($massiv_export->other)) {
+                            $temp_string .= 'Другое: ';
+                            for ($i=0; $i < count($massiv_export->other); $i++) {
+                                $temp_string .= $massiv_export->other[$i].', ';
+                            }
+                    }
+
+                    $temp_string = substr($temp_string, 0, -2);
+                    $temp_array['value'] = ($temp_string) ? $temp_string : 'Не экспортирует';
+                    array_push($itog_masiv,$temp_array);
+            }
+
+      }
+
+
+
+
+
+      return $itog_masiv;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  }
+
+  // получение существующих параметров по юридическим лицам
+  public function get_current_parameters($parameter) {
+    
+  }
+
 
 }
 
