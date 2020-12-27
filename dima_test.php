@@ -1,7 +1,7 @@
 <?php
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
@@ -61,8 +61,11 @@ $inn = 7701899412;
 
 
 
-$data = $settings->get_entity_by_category('экспорт');
+// $data = $settings->get_current_parameters('technology');
+// var_dump($data);
+$data = $settings->get_entity_search_by_parameter('technology','Бизнес для Потребителя (B2C)');
 var_dump($data);
+
 // $data = $settings->get_entity_by_category('регион');
 // var_dump($data);
 // $data = $settings->get_entity_by_category('Район');

@@ -6000,15 +6000,15 @@ class Settings {
                     $temp_array['value'] = ($value->region && $value->region != ' ') ? $value->region : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'Район') {
+            if ($category == 'район') {
                     $temp_array['value'] = ($value->region && $value->district != ' ') ? $value->district : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'Тип') {
+            if ($category == 'тип') {
                     $temp_array['value'] = ($value->region && $value->type_inf != ' ') ? $value->type_inf : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'Отрасль') {
+            if ($category == 'отрасль') {
                     $massiv_branch = json_decode($value->branch);
                     $temp_string = '';
                     for ($i=0; $i < count($massiv_branch); $i++) {
@@ -6050,48 +6050,116 @@ class Settings {
 
       }
 
-
-
-
-
       return $itog_masiv;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   }
 
   // получение существующих параметров по юридическим лицам
   public function get_current_parameters($parameter) {
-    
+    global $database;
+
+      $data_entity = $this->get_all_main_entity();
+      $new_array = array();
+
+      foreach ($data_entity as $key => $value) {
+
+            if ($parameter == 'msp') {
+                if ($value->msp && $value->msp != ' ') {
+                    array_push($new_array,$value->msp);
+                }
+            }
+
+            if ($parameter == 'region') {
+                if ($value->region && $value->region != ' ') {
+                    array_push($new_array,$value->region);
+                }
+            }
+
+            if ($parameter == 'staff') {
+                if ($value->staff && $value->staff != ' ') {
+                    array_push($new_array,$value->staff);
+                }
+            }
+
+            if ($parameter == 'district') {
+                if ($value->district && $value->district != ' ') {
+                    array_push($new_array,$value->district);
+                }
+            }
+
+            if ($parameter == 'type_inf') {
+                if ($value->type_inf && $value->type_inf != ' ') {
+                    array_push($new_array,$value->type_inf);
+                }
+            }
+
+            if ($parameter == 'export') {
+                if ($value->export && $value->export != ' ') {
+                    $massiv_export = json_decode($value->export);
+                    if ($massiv_export->SNG == true) {array_push($new_array,'СНГ');}
+                    if ($massiv_export->ES == true) {array_push($new_array,'Евросоюз');}
+                    if ($massiv_export->all_world  == true) {array_push($new_array,'Весь мир');}
+                    if (is_array($massiv_export->other)) {
+                            $temp_string .= 'Другое: ';
+                            for ($i=0; $i < count($massiv_export->other); $i++) {
+                                array_push($new_array,'Другое: '.$massiv_export->other[$i]);
+                            }
+                    }
+                }
+            }
+
+            if ($parameter == 'branch') {
+                if ($value->branch && $value->branch != ' ') {
+                    $massiv_branch = json_decode($value->branch);
+                    for ($i=0; $i < count($massiv_branch); $i++) {
+                        array_push($new_array,$massiv_branch[$i]->Name);
+                    }
+                }
+            }
+
+            if ($parameter == 'technology') {
+                if ($value->technology && $value->technology != ' ') {
+                    $massiv_technology = json_decode($value->technology);
+                    for ($i=0; $i < count($massiv_technology); $i++) {
+                        array_push($new_array,$massiv_technology[$i]->Name);
+                    }
+                }
+            }
+      }
+
+      $result = array_values(array_unique($new_array));
+
+      return $result;
+      exit;
+
   }
 
+  // получение компаий по определенному критерию
+  public function get_entity_search_by_parameter($parameter,$parameter_value) {
+      global $database;
+
+      $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE {$parameter} LIKE concat('%',:parameter_value,'%')");
+      $statement->bindParam(':parameter_value', $parameter_value, PDO::PARAM_STR);
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (count($data)) {
+          return $data;
+          exit;
+      } else {
+          return false;
+          exit;
+      }
+
+  }
+
+  // выгрузка пользователей у которых есть приявязанные компании
+  public function get_users_entity_data() {
+    global $database;
+
+
+
+  }
 
 }
 
