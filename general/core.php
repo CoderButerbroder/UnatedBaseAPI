@@ -6143,8 +6143,64 @@ class Settings {
       $statement->execute();
       $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
-      if (count($data)) {
-          return $data;
+      $itog_masiv = array();
+
+      foreach ($variable as $key => $value) {
+            $temp_array = array();
+            $temp_array['inn'] = $value->inn;
+            $mass_entity = json_decode($value->data_fns);
+            $data_fns = end($mass_entity->items);
+            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП'.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
+
+            if ($category == 'msp') {
+                    $temp_array['value'] = ($value->msp && $value->msp != ' ') ? $value->msp : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'region') {
+                    $temp_array['value'] = ($value->region && $value->region != ' ') ? $value->region : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'district') {
+                    $temp_array['value'] = ($value->region && $value->district != ' ') ? $value->district : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'type_inf') {
+                    $temp_array['value'] = ($value->region && $value->type_inf != ' ') ? $value->type_inf : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'branch') {
+                    $massiv_branch = json_decode($value->branch);
+                    $temp_string = '';
+                    for ($i=0; $i < count($massiv_branch); $i++) {
+                        $temp_string .= $massiv_branch[$i]->Name.', ';
+                    }
+                    $temp_string = substr($temp_string, 0, -2);
+                    $temp_array['value'] = ($temp_string) ? $temp_string : 'Не указано';
+                    array_push($itog_masiv,$temp_array);
+            }
+            if ($category == 'export') {
+                    $massiv_export = json_decode($value->export);
+                    $temp_string = '';
+                    if ($massiv_export->SNG == true) {$temp_string .= 'СНГ, ';}
+                    if ($massiv_export->ES == true) {$temp_string .= 'Евросоюз, ';}
+                    if ($massiv_export->all_world  == true) {$temp_string .= 'Весь мир, ';}
+
+                    if (is_array($massiv_export->other)) {
+                            $temp_string .= 'Другое: ';
+                            for ($i=0; $i < count($massiv_export->other); $i++) {
+                                $temp_string .= $massiv_export->other[$i].', ';
+                            }
+                    }
+
+                    $temp_string = substr($temp_string, 0, -2);
+                    $temp_array['value'] = ($temp_string) ? $temp_string : 'Не экспортирует';
+                    array_push($itog_masiv,$temp_array);
+            }
+      }
+
+
+      if ($itog_masiv) {
+          return $itog_masiv;
           exit;
       } else {
           return false;
