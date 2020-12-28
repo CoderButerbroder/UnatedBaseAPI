@@ -5420,8 +5420,23 @@ class Settings {
 
   }
 
-  public function get_support_tikets_list_html($id_tboil) {
+  // получение списка заявок пользователя
+  public function get_support_tikets_list($id_tboil) {
+    global $database;
 
+    $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil");
+    $count_users->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+    $count_users->execute();
+    $data_count_users = $count_users->fetchAll(PDO::FETCH_OBJ);
+
+    if (count($data_count_users)) {
+        return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Стиль оформения страницы успешно сменен'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    else {
+        return json_encode(array('response' => false, 'description' => 'Стиль оформения страницы успешно сменен'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
 
   }
 
