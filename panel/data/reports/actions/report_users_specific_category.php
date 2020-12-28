@@ -8,11 +8,15 @@ if (!isset($_SESSION["key_user"])) {
   //echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
   exit();
 }
+// $select = $_POST["select"];
+// if ($select != 'мсп' && $select != 'регион' && $select != 'район' && $select != 'тип' && $select != 'отрасль' && $select != 'УчасСколково' && $select != 'УчасФСИ' && $select != 'экспорт'){
+//   exit();
+// }
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$data_array = $settings->get_users_entity_data();
+$data_array = $settings->get_entity_search_by_parameter($_POST["select"],$_POST["select2"]);
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '2' => (object) array('name' => 'Февраль', ),
@@ -40,37 +44,26 @@ $spreadsheet = new Spreadsheet();
 //$sheet = $spreadsheet->getActiveSheet();
 $actual_row = 1;
 $sheet = $spreadsheet->setActiveSheetIndex(0);
-$sheet->setTitle('Пользователи');
+$sheet->setTitle('Компании');
 
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Фамилия:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, 'Имя:');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, 'Отчество:');
-$sheet->setCellValueByColumnAndRow(4,$actual_row, 'Email:');
-$sheet->setCellValueByColumnAndRow(5,$actual_row, 'Телефон:');
-$sheet->setCellValueByColumnAndRow(6,$actual_row, 'Должность:');
-$sheet->setCellValueByColumnAndRow(7,$actual_row, 'Юр. лицо:');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Название компании:');
+$sheet->setCellValueByColumnAndRow(2,$actual_row, $_POST["select2"].':');
+$sheet->setCellValueByColumnAndRow(3,$actual_row, 'ИНН:');
 $actual_row++;
 foreach ($data_array as $key => $value) {
-  $sheet->setCellValueByColumnAndRow(1,$actual_row, $value["last_name"]);
-  $sheet->setCellValueByColumnAndRow(2,$actual_row, $value["name"]);
-  $sheet->setCellValueByColumnAndRow(3,$actual_row, $value["second_name"]);
-  $sheet->setCellValueByColumnAndRow(4,$actual_row, $value["email"]);
-  //$sheet->setCellValueByColumnAndRow(5,$actual_row, $value["phone"]);
 
-  $spreadsheet->getActiveSheet()->getCell(('E'.$actual_row))
-    ->setValueExplicit( $value["phone"], \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING );
-  $sheet->setCellValueByColumnAndRow(6,$actual_row, $value["position"]);
-  $sheet->setCellValueByColumnAndRow(7,$actual_row, $value["name_entity"]);
+  $sheet->setCellValueByColumnAndRow(1,$actual_row, $value["name_entity"]);
+  $sheet->setCellValueByColumnAndRow(2,$actual_row, $value["value"]);
+  $sheet->setCellValueByColumnAndRow(3,$actual_row, $value["inn"]);
   $actual_row++;
+
 }
 
 $writer = new Xlsx($spreadsheet);
-$now = date("_H_i_d_m_Y");
-$now = trim($now);
 
 // Redirect output to a client’s web browser (Xlsx)
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="report_FULLDATA_users'.$now.'.xlsx"');
+header('Content-Disposition: attachment;filename="report_FULLDATA'.date("_H_i_d_m_Y ").'.xlsx"');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');
