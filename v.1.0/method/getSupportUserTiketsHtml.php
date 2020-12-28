@@ -11,7 +11,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($id_tboil)) {
+if (isset($id_user_tboil)) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);
@@ -20,7 +20,7 @@ if (isset($id_tboil)) {
       if (json_decode($check_valid_token)->response) {
             $check_id_referer = $settings->get_data_referer($resource);
             if (json_decode($check_id_referer)->response) {
-                           $settings->get_support_tikets_list($id_tboil,$resource);
+                           $settings->get_support_tikets_list($id_user_tboil,json_decode($check_id_referer)->data->id);
                            $settings->recording_history($resource,'getSupportUserTiketsHtml',$check_id_referer);
             } else {
                   echo $check_id_referer;
