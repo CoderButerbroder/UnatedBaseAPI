@@ -20,8 +20,9 @@ if (isset($id_user_tboil)) {
       if (json_decode($check_valid_token)->response) {
             $check_id_referer = $settings->get_data_referer($resource);
             if (json_decode($check_id_referer)->response) {
-                           $settings->get_support_tikets_list($id_user_tboil,json_decode($check_id_referer)->data->id);
-                           $settings->recording_history($resource,'getSupportUserTiketsHtml',$check_id_referer);
+                    $response = $settings->get_support_tikets_list($id_user_tboil);
+                                $settings->recording_history($resource,'getSupportUserTiketsHtml',$response);
+                    echo $response;
             } else {
                   echo $check_id_referer;
             }

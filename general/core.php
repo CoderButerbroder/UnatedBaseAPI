@@ -5430,11 +5430,11 @@ class Settings {
     $data_count_users = $count_users->fetchAll(PDO::FETCH_OBJ);
 
     if (count($data_count_users)) {
-        return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Стиль оформения страницы успешно сменен'),JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Данные по заявкам пользователя успешно найдены'),JSON_UNESCAPED_UNICODE);
         exit;
     }
     else {
-        return json_encode(array('response' => false, 'description' => 'Стиль оформения страницы успешно сменен'),JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => false, 'description' => 'Ошибка, данных по заявкам поддержки пользователя не найдено'),JSON_UNESCAPED_UNICODE);
         exit;
     }
 
