@@ -63,8 +63,8 @@ $inn = 7701899412;
 
 // $data = $settings->get_current_parameters('technology');
 // var_dump($data);
-$data = $settings->get_entity_search_by_parameter('technology','Бизнес для Потребителя (B2C)');
-var_dump($data);
+// $data = $settings->get_entity_search_by_parameter('msp','Среднее предприятие');
+// var_dump($data);
 
 // $data = $settings->get_entity_by_category('регион');
 // var_dump($data);
@@ -84,6 +84,12 @@ var_dump($data);
 // var_dump($data);
 // $data = $settings->get_entity_by_category('all');
 // var_dump($data);
+
+
+$data = $settings->get_users_entity_data();
+var_dump($data);
+
+
 
 
 ?>

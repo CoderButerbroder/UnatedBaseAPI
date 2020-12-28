@@ -5420,7 +5420,10 @@ class Settings {
 
   }
 
+  public function get_support_tikets_list_html($id_tboil) {
 
+
+  }
 
 
 
@@ -5990,7 +5993,7 @@ class Settings {
             $temp_array['inn'] = $value->inn;
             $mass_entity = json_decode($value->data_fns);
             $data_fns = end($mass_entity->items);
-            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП'.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
+            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП '.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
 
             if ($category == 'мсп') {
                     $temp_array['value'] = ($value->msp && $value->msp != ' ') ? $value->msp : 'Не указано';
@@ -6129,6 +6132,7 @@ class Settings {
 
       $result = array_values(array_unique($new_array));
 
+
       return $result;
       exit;
 
@@ -6141,34 +6145,34 @@ class Settings {
       $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE {$parameter} LIKE concat('%',:parameter_value,'%')");
       $statement->bindParam(':parameter_value', $parameter_value, PDO::PARAM_STR);
       $statement->execute();
-      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+      $data_user = $statement->fetchAll(PDO::FETCH_OBJ);
 
       $itog_masiv = array();
 
-      foreach ($variable as $key => $value) {
+      foreach ($data_user as $key => $value) {
             $temp_array = array();
             $temp_array['inn'] = $value->inn;
             $mass_entity = json_decode($value->data_fns);
             $data_fns = end($mass_entity->items);
-            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП'.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
+            $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП '.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
 
-            if ($category == 'msp') {
+            if ($parameter == 'msp') {
                     $temp_array['value'] = ($value->msp && $value->msp != ' ') ? $value->msp : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'region') {
+            if ($parameter == 'region') {
                     $temp_array['value'] = ($value->region && $value->region != ' ') ? $value->region : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'district') {
-                    $temp_array['value'] = ($value->region && $value->district != ' ') ? $value->district : 'Не указано';
+            if ($parameter == 'district') {
+                    $temp_array['value'] = ($value->district && $value->district != ' ') ? $value->district : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'type_inf') {
-                    $temp_array['value'] = ($value->region && $value->type_inf != ' ') ? $value->type_inf : 'Не указано';
+            if ($parameter == 'type_inf') {
+                    $temp_array['value'] = ($value->type_inf && $value->type_inf != ' ') ? $value->type_inf : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'branch') {
+            if ($parameter == 'branch') {
                     $massiv_branch = json_decode($value->branch);
                     $temp_string = '';
                     for ($i=0; $i < count($massiv_branch); $i++) {
@@ -6178,7 +6182,7 @@ class Settings {
                     $temp_array['value'] = ($temp_string) ? $temp_string : 'Не указано';
                     array_push($itog_masiv,$temp_array);
             }
-            if ($category == 'export') {
+            if ($parameter == 'export') {
                     $massiv_export = json_decode($value->export);
                     $temp_string = '';
                     if ($massiv_export->SNG == true) {$temp_string .= 'СНГ, ';}
@@ -6199,13 +6203,8 @@ class Settings {
       }
 
 
-      if ($itog_masiv) {
-          return $itog_masiv;
-          exit;
-      } else {
-          return false;
-          exit;
-      }
+      return $itog_masiv;
+      exit;
 
   }
 
@@ -6213,7 +6212,29 @@ class Settings {
   public function get_users_entity_data() {
     global $database;
 
+      $statement = $database->prepare("SELECT * FROM $this->main_users INNER JOIN $this->MAIN_entity ON $this->main_users.`id_entity` = $this->MAIN_entity.`id` WHERE $this->main_users.`id_entity` > 0");
+      $statement->execute();
+      $data_user = $statement->fetchAll(PDO::FETCH_OBJ);
 
+      $itog_masiv = array();
+
+      foreach ($data_user as $key => $value) {
+          $temp_array = array();
+          $temp_array['name'] = ($value->name) ? $value->name : '-';
+          $temp_array['last_name'] = ($value->last_name) ? $value->last_name : '-';
+          $temp_array['second_name'] = ($value->second_name) ? $value->second_name : '-';
+          $temp_array['email'] = ($value->email) ? $value->email : '-';
+          $temp_array['phone'] = ($value->phone) ? $value->phone : '-';
+          $temp_array['position'] = ($value->position) ? $value->position : '-';
+          $mass_entity = json_decode($value->data_fns);
+          $data_fns = end($mass_entity->items);
+          $temp_array['name_entity'] = (strlen($value->inn) == 12) ? 'ИП '.$data_fns->ИП->ФИОПолн : $data_fns->ЮЛ->НаимСокрЮЛ;
+          array_push($itog_masiv,$temp_array);
+
+      }
+
+      return $itog_masiv;
+      exit;
 
   }
 
