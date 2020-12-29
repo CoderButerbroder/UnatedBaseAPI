@@ -2509,7 +2509,8 @@ class Settings {
   public function add_new_support_ticket($type_support,$id_tboil,$name,$short_description,$full_description,$target,$question_desc,$links_add_files,$link_to_photo,$programma_fci,$contact_face,$contacts,$id_referer) {
 
     global $database;
-    if(!isset($id_tboil) && !isset($name)  && !isset($contact_face) && !isset($status) && !isset($contacts) && !isset($id_referer)) {
+
+    if(!isset($id_tboil) || !isset($name)  || !isset($contact_face) || !isset($contacts) || !isset($id_referer)) {
       return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
     }
 
@@ -2813,7 +2814,7 @@ class Settings {
       }
   }
 
-  
+
 
 
 
