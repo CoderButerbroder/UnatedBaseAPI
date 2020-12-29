@@ -8,7 +8,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if (isset($hash_tiket) && isset($data_user_tboil)) {
+if (isset($hash_tiket_support) && isset($data_user_tboil)) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);

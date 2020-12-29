@@ -116,9 +116,6 @@ $message = $_POST["message"];
 $action = $_POST["action"];
 $type_user = $_POST["type_user"];
 
-$hash_tiket = $_POST["hash_tiket"];
-
-
 $type_support = $_POST['type_support'];
 $id_tboil = $_POST['id_user_tboil'];
 $short_description = $_POST['short_description'];
