@@ -127,6 +127,7 @@ $programma_fci = $_POST['programma_fci'];
 $contact_face = $_POST['contact_face'];
 $contacts = $_POST['contacts'];
 $hash_tiket_support = $_POST['hash_tiket_support'];
+$target = $_POST['target'];
 
 
 
