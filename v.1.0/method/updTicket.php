@@ -1,6 +1,11 @@
 <?
-// Обновление полей тикета
-
+/*
+Обновление полей тикета
+$id_ticket = номер тикета поддержки
+$name = навзвание тикета
+$description = описание
+$status = статус
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

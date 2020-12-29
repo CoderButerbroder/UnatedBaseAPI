@@ -1,6 +1,8 @@
 <?
-// Добавление технологического запроса от лица компании
+/* Добавление технологического запроса от лица компании
 
+
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

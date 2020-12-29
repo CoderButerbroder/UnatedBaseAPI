@@ -1,5 +1,14 @@
 <?
-// Добавление рейтинга к сервису
+/*
+Добавление рейтинга к сервису
+$id_services_rating_on_referer = id
+$id_service_on_referer = id сервиса на рефере
+$id_comment = id комментария
+$id_user_tboil = id пользователя tboil
+$rating = рейтинг
+$date_update = дата обновления
+
+*/
 
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 

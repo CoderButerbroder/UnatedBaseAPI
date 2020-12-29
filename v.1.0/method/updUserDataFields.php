@@ -1,6 +1,10 @@
 <?
-// обновление поля в физического лица в единой  базе данных
+/* обновление поля в физического лица в единой  базе данных
 
+$massiv_field_value = JSON массив поля ключ значение поля
+$id_user_tboil = id пользователя tboil
+
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

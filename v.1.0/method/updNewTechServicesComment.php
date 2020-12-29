@@ -1,6 +1,14 @@
 <?
-// Добавление сервисов комментариев к сервису
-
+/*
+Добавление сервисов комментариев к сервису
+$id_services_comments_on_referer = id комментария на рефере
+$id_service_on_referer = id сервиса на рефере
+$id_user_tboil = id пользователя tboil добавившего комментарий
+$comment = комментарий
+$status = стаутс комментария
+$date_update = дата обновления комментраия
+$comments_hash = хэш комментария
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

@@ -1,6 +1,22 @@
 <?php
-// Регистрация нового пользователя юридического лица и привязка его к физическому лицу
+/* Регистрация нового пользователя юридического лица и привязка его к физическому лицу
 
+$id_user_tboil =
+$inn = инн компании
+$msp = категория
+$site = сайт компании
+$region = регион
+$staff = количество сотрудников в штате
+$district = район
+$street = улица
+$house = дом
+$type_inf = тип юр лица
+$additionally = JSON из yandex map
+$export = JSON по даыным экспорта юр.лица
+$branch = JSON по данным отраслей юр.лица
+$technology = JSON по данным технологий юр.лица
+
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

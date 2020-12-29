@@ -119,6 +119,20 @@ $type_user = $_POST["type_user"];
 $hash_tiket = $_POST["hash_tiket"];
 
 
+$type_support = $_POST['type_support'];
+$id_tboil = $_POST['id_user_tboil'];
+$short_description = $_POST['short_description'];
+$full_description = $_POST['full_description'];
+$question_desc = $_POST['question_desc'];
+$links_add_files = $_POST['links_add_files'];
+$link_to_photo = $_POST['link_to_photo'];
+$programma_fci = $_POST['programma_fci'];
+$contact_face = $_POST['contact_face'];
+$contacts = $_POST['contacts'];
+$hash_tiket_support = $_POST['hash_tiket_support'];
+
+
+
 /* для тестового режима */
 
 // $key = 'cf984170e648791061171339dd8b5c12';

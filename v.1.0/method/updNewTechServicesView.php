@@ -1,6 +1,12 @@
 <?
-// Добавление рейтинга к сервису
-
+/*
+Добавление рейтинга к сервису
+$id_services_view_on_referer = id просмотриваемого сервиса на рефере
+$id_service_on_referer = сервис просматриваеммый
+$id_user_tboil = пользователь tboil
+$view = количество просмотров
+$date_update = дата обновления
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

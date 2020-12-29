@@ -1,5 +1,18 @@
 <?
-// Добавление мероприятия в единую базу данных
+/* Добавление мероприятия в единую базу данных
+
+$id_event_on_referer = id мероприятия на рефере
+$place = метоположение
+$interest = интерес пользоватля
+$type_event = тип меропрития жесткий выбор
+$name = наименование мероприятия
+$description = описание мероприятия
+$organizer = id tboil организатора
+$status =  статус
+$start_datetime_event = дата начал  мероприятия
+$end_datetime_event = дата окончания меропрития
+
+*/
 
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
