@@ -2556,7 +2556,7 @@ class Settings {
       if($id_new_ticket === false){
         return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой заявки'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => true, 'description' => 'Заявка успешно добавлена')), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'description' => 'Заявка успешно добавлена'), JSON_UNESCAPED_UNICODE);
       }
 
   }
