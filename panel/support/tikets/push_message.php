@@ -31,6 +31,6 @@ if(!$data_refer->response || !$data_user->response) {
   exit();
 }
 
-echo $settings->add_new_support_messages(trim($_POST["search"]), $data_user->data->id, $msg, $links_add_files, $data_refer->data->id, 'support');
+echo $settings->add_new_support_messages(trim($_POST["search"]), $data_user->data->id, $msg, $data_refer->data->id, 'support');
 
 ?>

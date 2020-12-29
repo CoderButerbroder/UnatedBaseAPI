@@ -2634,7 +2634,7 @@ class Settings {
     }
 
   // добавление нового сообщения в тикет поддержки
-  public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $links_add_files, $id_referer, $type_user) {
+  public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $id_referer, $type_user) {
       global $database;
 
       if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
