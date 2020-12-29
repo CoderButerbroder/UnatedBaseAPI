@@ -2641,15 +2641,13 @@ class Settings {
         return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
       }
 
-      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
       $date_added = date("Y-m-d H:i:s");
 
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil_or_id_support, message, links_add_files, date_added, id_referer, type_user)
-                                    VALUES (:id_support_ticket, :id_tboil_or_id_support, :message, :links_add_files, :date_added, :id_referer, :type_user)");
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket_messages (id_support_ticket, id_tboil_or_id_support, message, date_added, id_referer, type_user)
+                                    VALUES (:id_support_ticket, :id_tboil_or_id_support, :message, :date_added, :id_referer, :type_user)");
       $d_data->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
       $d_data->bindParam(':id_tboil_or_id_support', $id_tboil, PDO::PARAM_INT);
       $d_data->bindParam(':message', $message, PDO::PARAM_STR);
-      $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
       $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
       $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
       $d_data->bindParam(':type_user', $type_user, PDO::PARAM_STR);
@@ -2816,17 +2814,46 @@ class Settings {
       $count_users->execute();
       $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
 
-      if (count($data_count_users)) {
+      if ($data_count_users) {
           return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Данные по заявке пользователя успешно найдены'),JSON_UNESCAPED_UNICODE);
           exit;
       }
       else {
-          return json_encode(array('response' => false, 'description' => 'Ошибка, данных по данному тикету не найдено или тике не принадлежит данному пользователю'),JSON_UNESCAPED_UNICODE);
+          return json_encode(array('response' => false, 'description' => 'Ошибка, данных по данному тикету не найдено или тикет не принадлежит данному пользователю'),JSON_UNESCAPED_UNICODE);
           exit;
       }
   }
 
+  // получениt сообщений по тикету
+  public function get_support_messages_tiket($hash_tiket,$id_tboil) {
+      global $database;
 
+      $chek_ticket = $this->get_support_data_tiket($hash_tiket,$id_tboil);
+
+      if (json_decode($chek_ticket)->response) {
+          $id_ticket_support = json_decode($chek_ticket)->data->id;
+          $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket");
+          $count_users->bindParam(':id_support_ticket', $id_ticket_support, PDO::PARAM_INT);
+          $count_users->execute();
+          $data_count_users = $count_users->fetchAll(PDO::FETCH_OBJ);
+
+
+          if ($data_count_users) {
+              return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Сообщения по тикету найдены'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+          else {
+              return json_encode(array('response' => false, 'description' => 'Нет сообщений по данному тикету'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+
+      }
+      else {
+          return $chek_ticket;
+          exit;
+      }
+
+  }
 
 
 
