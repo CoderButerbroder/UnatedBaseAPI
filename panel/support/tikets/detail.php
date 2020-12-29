@@ -169,6 +169,24 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                                   <span class="d-block h6"><?php echo $data_ticket->data->question_desc; ?></span>
                                 </div>
                               <?php } ?>
+                              <?php if($data_ticket->data->target && trim($data_ticket->data->target) != '') { ?>
+                                <div class="mt-3 col">
+                                  <span class="h6 surtitle text-muted">Цель, с которой запрашивается информ. поддержка</span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->target; ?></span>
+                                </div>
+                              <?php } ?>
+                              <?php if($data_ticket->data->contact_face && trim($data_ticket->data->contact_face) != '') { ?>
+                                <div class="mt-3 col">
+                                  <span class="h6 surtitle text-muted">Контактное лицо</span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->contact_face; ?></span>
+                                </div>
+                              <?php } ?>
+                              <?php if($data_ticket->data->contacts && trim($data_ticket->data->contacts) != '') { ?>
+                                <div class="mt-3 col">
+                                  <span class="h6 surtitle text-muted">Контакты</span>
+                                  <span class="d-block h6"><?php echo $data_ticket->data->contacts; ?></span>
+                                </div>
+                              <?php } ?>
 
                           </div>
                         </div>
