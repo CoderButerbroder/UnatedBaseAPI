@@ -2634,11 +2634,20 @@ class Settings {
     }
 
   // добавление нового сообщения в тикет поддержки
-  public function add_new_support_messages($id_support_ticket, $id_tboil, $message, $id_referer, $type_user) {
+  public function add_new_support_messages($hash_tiket, $id_tboil, $message, $id_referer, $type_user) {
       global $database;
 
-      if(!isset($id_support_ticket) && !isset($id_tboil) && !isset($message) && !isset($id_referer) && !isset($type_user)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+      $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE hash_tiket_support = :hash_tiket_support");
+      $count_users->bindParam(':hash_tiket_support', $hash_tiket, PDO::PARAM_STR);
+      $count_users->execute();
+      $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
+
+      if ($data_count_users) {
+          $id_support_ticket = $data_count_users->id;
+      }
+      else {
+          return $data_tickkets;
+          exit;
       }
 
       $date_added = date("Y-m-d H:i:s");
