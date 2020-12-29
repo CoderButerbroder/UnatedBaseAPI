@@ -2506,32 +2506,57 @@ class Settings {
     }
 
   // добавлени нового тикета в поддержку
-  public function add_new_support_ticket($id_tboil, $name, $description, $links_add_files, $status, $id_referer) {
-      global $database;
-      if(!isset($id_tboil) && !isset($name)  && !isset($description) && !isset($status) && !isset($links_add_files) && !isset($id_referer)) {
-        return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
-      }
+  public function add_new_support_ticket($type_support,$id_tboil,$name,$short_description,$full_description,$target,$question_desc,$links_add_files,$link_to_photo,$programma_fci,$contact_face,$contacts,$id_referer) {
 
-      $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
-      $date_added = date("Y-m-d H:i:s");
-      $hash_tiket_support = md5($id_tboil.$name.$id_referer.$date_added);
+    global $database;
+    if(!isset($id_tboil) && !isset($name)  && !isset($contact_face) && !isset($status) && !isset($contacts) && !isset($id_referer)) {
+      return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
+    }
 
-      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket (id_tboil, name, description, date_added, status, links_add_files, id_referer, hash_tiket_support)
-                                    VALUES (:id_tboil, :name, :description, :date_added, :status, :links_add_files, :id_referer, :hash_tiket_support)");
+    $type_support = (isset($type_support)) ? $type_support : NULL;
+    $name = (isset($name)) ? $name : NULL;
+    $short_description = (isset($short_description)) ? $short_description : NULL;
+    $full_description = (isset($full_description)) ? $full_description : NULL;
+    $target = (isset($target)) ? $target : NULL;
+    $question_desc = (isset($question_desc)) ? $question_desc : NULL;
+    $links_add_files = (isset($links_add_files)) ? $links_add_files : NULL;
+    $link_to_photo = (isset($link_to_photo)) ? $link_to_photo : NULL;
+    $programma_fci = (isset($programma_fci)) ? $programma_fci : NULL;
+    $contact_face = (isset($contact_face)) ? $contact_face : NULL;
+    $contacts = (isset($contacts)) ? $contacts : NULL;
+
+    $date_added = date("Y-m-d H:i:s");
+    $date_update_status = date("Y-m-d H:i:s");
+    $status = 'open';
+    $hash_tiket_support = md5($date_added.$date_update_status.$id_tboil.$name);
+
+      $d_data = $database->prepare("INSERT INTO $this->MAIN_support_ticket (type_support, id_tboil, name, short_description, full_description, target, question_desc, date_added, status, links_add_files, link_to_photo, programma_fci, contact_face, contacts, id_referer, hash_tiket_support, date_update_status)
+                                    VALUES (:type_support,:id_tboil,:name,:short_description,:full_description,:target,:question_desc,:date_added,:status,:links_add_files,:link_to_photo,:programma_fci,:contact_face,:contacts,:id_referer,:hash_tiket_support,:date_update_status)");
+
+      $d_data->bindParam(':type_support', $type_support, PDO::PARAM_STR);
       $d_data->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
       $d_data->bindParam(':name', $name, PDO::PARAM_STR);
-      $d_data->bindParam(':description', $description, PDO::PARAM_STR);
+      $d_data->bindParam(':short_description', $short_description, PDO::PARAM_STR);
+      $d_data->bindParam(':full_description', $full_description, PDO::PARAM_STR);
+      $d_data->bindParam(':target', $target, PDO::PARAM_STR);
+      $d_data->bindParam(':question_desc', $question_desc, PDO::PARAM_STR);
       $d_data->bindParam(':date_added', $date_added, PDO::PARAM_STR);
       $d_data->bindParam(':status', $status, PDO::PARAM_STR);
       $d_data->bindParam(':links_add_files', $links_add_files, PDO::PARAM_STR);
+      $d_data->bindParam(':link_to_photo', $link_to_photo, PDO::PARAM_STR);
+      $d_data->bindParam(':programma_fci', $programma_fci, PDO::PARAM_STR);
+      $d_data->bindParam(':contact_face', $contact_face, PDO::PARAM_STR);
+      $d_data->bindParam(':contacts', $contacts, PDO::PARAM_STR);
       $d_data->bindParam(':id_referer', $id_referer, PDO::PARAM_INT);
       $d_data->bindParam(':hash_tiket_support', $hash_tiket_support, PDO::PARAM_STR);
+      $d_data->bindParam(':date_update_status', $date_update_status, PDO::PARAM_STR);
+
       $temp = $d_data->execute();
       $id_new_ticket = $database->lastInsertId();
       if($id_new_ticket === false){
         return json_encode(array('response' => false, 'description' => 'Ошибка добавления новой заявки'), JSON_UNESCAPED_UNICODE);
       } else {
-        return json_encode(array('response' => true, 'description' => 'заявка успешно добавлена', 'data' => (object) array('id' => $id_new_ticket, 'hash' => $hash_tiket_support)), JSON_UNESCAPED_UNICODE);
+        return json_encode(array('response' => true, 'description' => 'Заявка успешно добавлена')), JSON_UNESCAPED_UNICODE);
       }
 
   }
