@@ -12,7 +12,7 @@ if (!isset($_SESSION["key_user"]) || !isset($_GET["value"])) {
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 $temp_null = 0;
-$data_message_ticket = json_decode($settings->get_data_support_ticket($_GET["value"],"conclusion"))->data->$temp_null;
+$data_message_ticket = json_decode($settings->get_data_support_ticket($_GET["value"],true))->data->$temp_null;
 $data_ticket_str = $settings->get_data_tiket($_GET["value"]);
 $data_ticket = json_decode($data_ticket_str);
 //$data_referer_ticket = json_decode($settings->get_data_referer_id($data_ticket->data->id_referer));
