@@ -2514,6 +2514,18 @@ class Settings {
       return json_encode(array('response' => false, 'description' => 'Не все обезательные поля были указаны'), JSON_UNESCAPED_UNICODE);
     }
 
+    $type_support = trim($type_support);
+    $name = trim($name);
+    $short_description = trim($short_description);
+    $full_description = trim($full_description);
+    $target = trim($target);
+    $question_desc = trim($question_desc);
+    $links_add_files = trim($links_add_files);
+    $link_to_photo = trim($link_to_photo);
+    $programma_fci = trim($programma_fci);
+    $contact_face = trim($contact_face);
+    $contacts = trim($contacts);
+
     $type_support = (isset($type_support)) ? $type_support : NULL;
     $name = (isset($name)) ? $name : NULL;
     $short_description = (isset($short_description)) ? $short_description : NULL;

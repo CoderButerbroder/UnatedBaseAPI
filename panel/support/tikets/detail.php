@@ -151,19 +151,19 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                                   <span class="h6 surtitle text-muted">Название запроса</span>
                                   <span class="d-block h6"><?php echo $data_ticket->data->name; ?></span>
                                 </div>
-                              <?php if($data_ticket->data->short_description) { ?>
+                              <?php if($data_ticket->data->short_description && trim($data_ticket->data->short_description) != '') { ?>
                                   <div class="mt-3 col">
                                     <span class="h6 surtitle text-muted">Короткое описание</span>
                                     <span class="d-block h6"><?php echo $data_ticket->data->short_description; ?></span>
                                   </div>
                               <?php } ?>
-                              <?php if($data_ticket->data->full_description) { ?>
+                              <?php if($data_ticket->data->full_description && trim($data_ticket->data->full_description) != '') { ?>
                                 <div class="mt-3 col">
                                   <span class="h6 surtitle text-muted">Полное описание</span>
                                   <span class="d-block h6"><?php echo $data_ticket->data->full_description; ?></span>
                                 </div>
                               <?php } ?>
-                              <?php if($data_ticket->data->question_desc) { ?>
+                              <?php if($data_ticket->data->question_desc && trim($data_ticket->data->question_desc) != '') { ?>
                                 <div class="mt-3 col">
                                   <span class="h6 surtitle text-muted">Описание вопроса</span>
                                   <span class="d-block h6"><?php echo $data_ticket->data->question_desc; ?></span>
@@ -206,16 +206,19 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                         </div> -->
                         <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="files-tab">
                           <?php
-                           $arr_files = explode(',', $data_ticket->data->links_add_files);
-                           if (empty($arr_files)) {
-                             echo '<p class="text-muted mb-1">Прикрепленные файлы заявки</p>';
-                             foreach ($arr_files as $key => $value) {
-                               echo '<p class="mb-1"><strong>Ссылка на документ</strong></p>';
-                               echo '<p class="mb-1"><a href="https://'.$data_referer_ticket->data->resourse.$value.'" download></a>Вложение</p>';
-                             }
+                           if (isset( $data_ticket->data->links_add_files ) &&  trim($data_ticket->data->links_add_files) != '') {
+                             echo '<p class="mb-1"><a href="'.$data_ticket->data->links_add_files.'">'.$data_ticket->data->links_add_files.'</a></p>';
                            } else { ?>
                              <div class="alert alert-info" role="alert">
-                                Нет прикрепленных файлов
+                                Нет прикрепленного файла
+                             </div>
+                          <?php } ?>
+                          <?php
+                           if (isset( $data_ticket->data->link_to_photo ) &&  trim($data_ticket->data->link_to_photo) != '') {
+                             echo '<p class="mb-1"><a href="'.$data_ticket->data->link_to_photo.'">'.$data_ticket->data->link_to_photo.'</a></p>';
+                           } else { ?>
+                             <div class="alert alert-info" role="alert">
+                                Нет прикрепленного фото
                              </div>
                           <?php } ?>
 
