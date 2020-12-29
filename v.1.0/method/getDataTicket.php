@@ -20,7 +20,7 @@ if (isset($ticket_type_result) && isset($ticket_type_search) && isset($ticket_se
       if (json_decode($check_valid_token)->response) {
             $check_id_referer = $settings->get_data_referer($resource);
             if (json_decode($check_id_referer)->response) {
-                           $response = $settings->get_data_support_ticket($ticket_search, $ticket_type_result, $ticket_type_search);
+                           $response = $settings->get_data_support_ticket($ticket_search, $ticket_type_search);
                            $settings->recording_history($resource,'getDataTicket',$response);
                            echo $response;
             } else {
