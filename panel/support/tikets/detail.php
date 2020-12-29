@@ -308,7 +308,7 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                         <i data-feather="mic" class="text-muted"></i>
                       </button>
                     </div> -->
-                    <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $_GET["id"]; ?>'); return false;">
+                    <form class="search-form flex-grow mr-2" onsubmit="send_message(this, '<?php echo $data_ticket->data->hash_tiket_support; ?>'); return false;">
                       <div class="input-group">
                         <input type="text" name="msg" class="form-control rounded-pill mr-2" id="chatForm" placeholder="Введите сообщение для пользователя" required>
                         <div class="input-group-append">
@@ -357,7 +357,7 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
           if (arr["response"]) {
             $('#chatForm').val('');
             //alerts('success', arr["description"], '');
-            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $data_ticket->data->hash_tiket_support;?> > *", function() {
+            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $data_ticket->data->id;?> > *", function() {
               $('#div_messages').animate({
                   scrollTop: $('#div_messages').get(0).scrollHeight
               }, 200);
