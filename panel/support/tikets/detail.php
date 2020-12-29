@@ -357,7 +357,7 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
           if (arr["response"]) {
             $('#chatForm').val('');
             //alerts('success', arr["description"], '');
-            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $_GET["id"];?> > *", function() {
+            $("#messages").load("/panel/support/tikets/history_message?value=<?php echo $data_ticket->data->hash_tiket_support;?> > *", function() {
               $('#div_messages').animate({
                   scrollTop: $('#div_messages').get(0).scrollHeight
               }, 200);
