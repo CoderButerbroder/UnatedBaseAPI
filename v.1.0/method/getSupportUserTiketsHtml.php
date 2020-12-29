@@ -1,9 +1,7 @@
 <?php
 /*
 Метод для получения списка тикетов поддержки пользователя
-$ticket_type_result = full - все / message - только  переписка по тикету / conclusion - с решением
-$ticket_type_search поиск по id tiket = true или по user_tboil = false создавшего тикет для получения всех его тикетов и истории переписки
-$ticket_search = передаваемое значение по которму будет происходить поиск
+$id_user_tboil = id_tboil пользователя в единой базе данных
 */
 
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');

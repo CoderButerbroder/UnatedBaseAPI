@@ -116,6 +116,7 @@ $message = $_POST["message"];
 $action = $_POST["action"];
 $type_user = $_POST["type_user"];
 
+$hash_tiket = $_POST["hash_tiket"];
 
 
 /* для тестового режима */

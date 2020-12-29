@@ -1,6 +1,7 @@
 <?php
 /*
 Метод для вывода мероприятий из базы данных
+$type_event = тип мероприятия
 */
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 

@@ -1,6 +1,6 @@
 <?php
 // Регистрация нового пользователя юридического лица и привязка его к физическому лицу
-
+// $inn = инн юридичского лица получившего поддержку сколково или фси
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

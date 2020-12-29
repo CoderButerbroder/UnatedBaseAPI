@@ -1,6 +1,8 @@
 <?
-// обновление поля в физического лица в единой  базе данных
-
+/* обновление поля в физического лица в единой  базе данных
+$massiv_field_value = массив значений JSON ключ => значение для изменения полей в единой базе данных
+$id_entity = компании в единой базе данных
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

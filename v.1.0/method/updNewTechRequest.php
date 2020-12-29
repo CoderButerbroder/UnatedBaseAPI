@@ -1,6 +1,21 @@
 <?
-// Обновление технологического запроса от лица компании
+/*
+Обновление технологического запроса от лица компании
+$id_requests_on_referer = id запроса на рефере
+$id_entity =  id компании в единой базе данных
+$id_user_tboil = id пользователя tboil
+$name_request = навзвание технологического запроса
+$description = описание технологического запроса
+$demand = требование
+$collection_time = конечная дата сбора заявок
+$links_to_logos = ссылка на логотип компании
+$type_request = тип запроса
+$links_add_files = ссылки через апятую на добавленые файлы
+$request_hash = хэш запроса
+$status = статус
+$date_added = дата добавления
 
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

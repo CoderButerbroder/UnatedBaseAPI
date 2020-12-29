@@ -5424,7 +5424,7 @@ class Settings {
   public function get_support_tikets_list($id_tboil) {
     global $database;
 
-    $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil");
+    $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE id_tboil = :id_tboil ORDER BY id DESC");
     $count_users->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
     $count_users->execute();
     $data_count_users = $count_users->fetchAll(PDO::FETCH_OBJ);
@@ -5440,7 +5440,25 @@ class Settings {
 
   }
 
+  // Получение данных по хэшу заявки
+  public function get_support_data_tiket($hash_tiket,$id_tboil) {
+      global $database;
 
+      $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE hash_tiket_support = :hash_tiket_support AND id_tboil = :id_tboil");
+      $count_users->bindParam(':hash_tiket_support', $hash_tiket, PDO::PARAM_STR);
+      $count_users->bindParam(':id_tboil', $id_tboil, PDO::PARAM_INT);
+      $count_users->execute();
+      $data_count_users = $count_users->fetch(PDO::FETCH_OBJ);
+
+      if (count($data_count_users)) {
+          return json_encode(array('response' => true, 'data'=> $data_count_users, 'description' => 'Данные по заявке пользователя успешно найдены'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка, данных по данному тикету не найдено или тике не принадлежит данному пользователю'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+  }
 
 
 

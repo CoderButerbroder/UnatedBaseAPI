@@ -1,6 +1,23 @@
 <?
-// Обновление ответа на технологический запрос в единой  базе данных
+/*
+Обновление ответа на технологический запрос в единой  базе данных
+$id_requests_on_referer = id тех запроса на рефере
+$id_solution_on_referer = id решения на рефере
+$id_entity = id компании в едниой базе данных
+$id_user_tboil = id пользователя tboil добавившего решение
+$name_project = название проекта
+$description - описание проекта
+$result_project = результат проекта
+$readiness = готовность проекта
+$period = период работы
+$forms_of_support = формы поддержки проекта
+$protection = защита проекта
+$links_add_files = ссылки через заяпятую на добавленные файлы
+$solutions_hash = хэш решения
+$status = статус
+$date_receiving = дата получения ответа
 
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

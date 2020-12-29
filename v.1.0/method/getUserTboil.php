@@ -2,7 +2,7 @@
 /*
 
 Метод для получения данных по пользователю из единой базы даннх
-
+$id_user_tboil = id_tboil поользователя в единой базе данных
 */
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 

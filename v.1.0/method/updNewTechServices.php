@@ -1,6 +1,22 @@
 <?
-// Добавление сервисов в едину юазу данных
-
+/*
+Добавление сервисов в едину юазу данных
+$id_service_on_referer = id сервиса на рефере
+$id_entity = id компании в единой базе данных
+$id_user_tboil = id пользователя tboil
+$name = название сервиса
+$category = категория сервиса
+$object_type = тип объекта
+$description = описание
+$district = район
+$street = улица
+$link_preview = ссылка на картинку превью
+$links_add_files = сслыки на добавленые файлы через запятую
+$status = стаутус
+$additionally = добавочное поле с данными из yandex map
+$data_added = дата добавления
+$service_hash = хэш сервиса
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
