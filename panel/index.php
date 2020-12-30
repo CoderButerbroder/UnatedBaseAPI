@@ -165,6 +165,9 @@
     <div class="row">
         <div class="col-md-6 stretch-card">
             <div class="card">
+              <div class="card-header">
+               <h5 class="card-title my-auto">Юр. лица по отрослям</h5>
+              </div>
               <div class="card-body" style="max-height: 420px;">
                     <div class="" id="div_chart_line_branch" >
                     </div>
@@ -173,8 +176,11 @@
         </div>
         <div class="col-md-6 stretch-card">
             <div class="card">
+              <div class="card-header">
+                 <h5 class="card-title my-auto">Количественные показатели Юр. лиц</h5>
+              </div>
               <div class="card-body" style="/*max-height: 420px;*/">
-                    <div class="" id="div_chart_line_user" >
+                    <div class="" id="div_chart_line_company" >
                     </div>
               </div>
             </div>
@@ -182,11 +188,14 @@
     </div>
 
     <div class="row mt-3">
-      <div class="offset-6 col-md-6 stretch-card">
+      <div class="col-md-12 stretch-card">
           <div class="card">
+            <div class="card-header">
+               <h5 class="card-title my-auto">Физ лица</h5>
+            </div>
             <div class="card-body" style="/*max-height: 420px;*/">
-                  <div class="" id="div_chart_line_company" >
-                  </div>
+              <div class="" id="div_chart_line_user" >
+              </div>
             </div>
           </div>
       </div>
@@ -231,9 +240,9 @@
           dataLabels: {
             enabled: false
           },
-          title: {
-                text: 'Юр. лица по отрослям',
-          },
+          // title: {
+          //       text: 'Юр. лица по отрослям',
+          // },
           noData: {
              text: 'Загрузка...'
            },
