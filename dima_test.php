@@ -126,7 +126,7 @@ $last_time_message = '2020-12-29 20:34:45';
 // var_dump($data);
 
 
-$data = get_count_entity_branch();
+$data = $settings->get_count_all_users();
 var_dump($data);
 
 
