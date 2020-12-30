@@ -18,33 +18,33 @@ $last_time_message = '2020-12-29 20:34:45';
 // echo $since_start->h.' hours<br>';
 // echo $since_start->i.' minutes<br>';
 // echo $since_start->s.' seconds<br>';
-
-$origin = date_create($date_added);
-$target = date_create($last_time_message);
-$interval = date_diff($origin, $target);
-$hours = intval($interval->format('%H'));
-$days =  intval($interval->format('%d'));
-$month = intval($interval->format('%m'));
-$years = intval($interval->format('%Y'));
-
-var_dump($hours);
-var_dump($days);
-var_dump($month);
-var_dump($years);
-
-
-
-$now_date = new DateTime(date($date_added));    //время сейчас
-$old_date = new DateTime($last_time_message); //дата с которой отчитываем
-$interval = $now_date->diff($old_date);
-echo $interval->format("%H:%I:%S - времени прошло");
-
-
-$time_now = strtotime($date_added);
-$time_need = strtotime($last_time_message);
-
-echo ($time_now-$time_need)/60/60;
-// echo '$period == "year"';
+//
+// $origin = date_create($date_added);
+// $target = date_create($last_time_message);
+// $interval = date_diff($origin, $target);
+// $hours = intval($interval->format('%H'));
+// $days =  intval($interval->format('%d'));
+// $month = intval($interval->format('%m'));
+// $years = intval($interval->format('%Y'));
+//
+// var_dump($hours);
+// var_dump($days);
+// var_dump($month);
+// var_dump($years);
+//
+//
+//
+// $now_date = new DateTime(date($date_added));    //время сейчас
+// $old_date = new DateTime($last_time_message); //дата с которой отчитываем
+// $interval = $now_date->diff($old_date);
+// echo $interval->format("%H:%I:%S - времени прошло");
+//
+//
+// $time_now = strtotime($date_added);
+// $time_need = strtotime($last_time_message);
+//
+// echo ($time_now-$time_need)/60/60;
+// // echo '$period == "year"';
 // $data = $settings->get_count_entity_groupby_time_reg('year');
 // var_dump($data);
 //
@@ -124,6 +124,11 @@ echo ($time_now-$time_need)/60/60;
 //
 // $data = $settings->get_users_entity_data();
 // var_dump($data);
+
+
+$data = get_count_entity_branch();
+var_dump($data);
+
 
 
 

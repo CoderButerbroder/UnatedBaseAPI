@@ -29,15 +29,11 @@
 
 
     <div class="row">
-        <div class="col-md-12 stretch-card">
+        <div class="col-md-6 stretch-card">
             <div class="card">
               <div class="card-body">
-              </div>
-              <div class="card-body">
-                <div class="col-md-6">
                     <div class="" id="div_chart_line">
                     </div>
-                </div>
               </div>
             </div>
         </div>
