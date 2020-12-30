@@ -6343,6 +6343,51 @@ class Settings {
 
   /* функции для вывода графиков  */
 
+  public function get_count_all_users() {
+      global $database;
+      $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date)");
+      //$statement = $database->prepare("SELECT count(id) as sum, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY MONTH(reg_date),YEAR(reg_date)");
+      $statement->execute();
+      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      $month = array('1' =>'Январь',
+                     '2' =>'Февраль',
+                     '3' =>'Март',
+                     '4' =>'Апрель',
+                     '5' =>'Май',
+                     '6' =>'Июнь',
+                     '7' =>'Июль',
+                     '8' =>'Август',
+                     '9' =>'Сентябрь',
+                     '10' =>'Октябрь',
+                     '11' =>'Ноябрь',
+                     '12' =>'Декабрь'
+                    );
+
+      $itog_array = array();
+      $count = 0;
+      foreach ($data as $key => $value) {
+            if ($count == 0) {
+            $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
+            $itog_array[$key_for_mas] = $value->sum;
+            $last_sum = $value->sum;
+            $count++;
+          } else {
+            $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
+            $last_sum = $value->sum + $last_sum;
+            $itog_array[$key_for_mas] = $last_sum;
+          }
+      }
+
+      if ($itog_array) {
+          return $itog_array;
+          exit;
+      } else {
+          return 0;
+          exit;
+      }
+
+  }
 
 
 
