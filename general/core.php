@@ -2668,51 +2668,64 @@ class Settings {
 
         if ($type_user == 'support') {
 
-              $data_tiket_support = json_decode($this->get_data_tiket($id_support_ticket))->data;
-              $data_user_tiket = json_decode($this->get_user_data_id_boil($data_tiket_support->id_tboil))->data;
-              $data_referer_ticket = json_decode($this->get_data_referer_id($data_tiket_support->id_referer))->data;
+              $get_last_time = $database->prepare("SELECT date_added FROM $this->MAIN_support_ticket_messages WHERE id_support_ticket = :id_support_ticket ORDER BY id DESC LIMIT 2 OFFSET 1");
+              $get_last_time->bindParam(':id_support_ticket', $id_support_ticket, PDO::PARAM_INT);
+              $get_last_time->execute();
+              $last_time_message = $get_last_time->fetch(PDO::FETCH_OBJ);
 
-              $array_status = array('work' => 'в работе',
-                                    'close' => 'закрыта',
-                                    'open' => 'открыта'
-                                  );
+              $time_now = strtotime($date_added);
+              $time_need = strtotime($last_time_message->date_added);
 
-              $content =  $data_user_tiket->name.' '.$data_user_tiket->second_name.', ';
-              $content .= 'на Вашу заявку поступило новое сообщение от технической поддержки.<br>';
-              $content .= 'Посмотреть подробности Вы можете в личном кабинете.';
+              $hours = intval(ceil(($time_now-$time_need)/3600));
 
-              $tema = 'Сообщение по заявке #'.$id_support_ticket;
+              if ($hours >= 3) {
 
-              $today = date("d.m.Y H:i");
+                  $data_tiket_support = json_decode($this->get_data_tiket($id_support_ticket))->data;
+                  $data_user_tiket = json_decode($this->get_user_data_id_boil($data_tiket_support->id_tboil))->data;
+                  $data_referer_ticket = json_decode($this->get_data_referer_id($data_tiket_support->id_referer))->data;
 
-              $maildata =
-                    array(
-                      'title' => $tema,
-                      'description' => $content,
-                      'link_to_server' => 'https://'.$data_referer_ticket->resourse,
-                      'text_button' => 'Личный кабинет',
-                      'link_button' => $data_referer_ticket->link_to_support,
-                      'link_to_logo' => $data_referer_ticket->link_to_logo,
-                      'alt_link_to_logo' => $data_referer_ticket->resourse,
-                      'color_button1' => $data_referer_ticket->color_button1,
-                      'text_color_button1' =>$data_referer_ticket->color_text_button1,
-                      'name_host' => $data_referer_ticket->resourse,
-                      'date' => $today
-                    );
+                  $array_status = array('work' => 'в работе',
+                                        'close' => 'закрыта',
+                                        'open' => 'открыта'
+                                      );
 
-              $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/support_tikcet_status.php');
+                  $content =  $data_user_tiket->name.' '.$data_user_tiket->second_name.', ';
+                  $content .= 'на Вашу заявку поступило новое сообщение от технической поддержки.<br>';
+                  $content .= 'Посмотреть подробности Вы можете в личном кабинете.';
 
-              foreach ($maildata as $key => $value) {
-                    $template_email = str_replace('['.$key.']', $value, $template_email);
+                  $tema = 'Сообщение по заявке #'.$id_support_ticket;
+
+                  $today = date("d.m.Y H:i");
+
+                  $maildata =
+                        array(
+                          'title' => $tema,
+                          'description' => $content,
+                          'link_to_server' => 'https://'.$data_referer_ticket->resourse,
+                          'text_button' => 'Личный кабинет',
+                          'link_button' => $data_referer_ticket->link_to_support,
+                          'link_to_logo' => $data_referer_ticket->link_to_logo,
+                          'alt_link_to_logo' => $data_referer_ticket->resourse,
+                          'color_button1' => $data_referer_ticket->color_button1,
+                          'text_color_button1' =>$data_referer_ticket->color_text_button1,
+                          'name_host' => $data_referer_ticket->resourse,
+                          'date' => $today
+                        );
+
+                  $template_email = file_get_contents($_SERVER['DOCUMENT_ROOT'].'/assets/template/mail/support_tikcet_status.php');
+
+                  foreach ($maildata as $key => $value) {
+                        $template_email = str_replace('['.$key.']', $value, $template_email);
+                  }
+
+                  $check_mail = $this->send_email_user($data_user_tiket->email,$tema,$template_email);
               }
-
-              $check_mail = $this->send_email_user($data_user_tiket->email,$tema,$template_email);
 
         }
         return json_encode(array('response' => true, 'description' => 'Сообщение успешно добавлено', 'data' => (object) array('id' => $id_new_messages)), JSON_UNESCAPED_UNICODE);
       }
 
-    }
+  }
 
   // обновление сообщения в тикете поддержки
   // public function upd_support_messages($id_support_ticket_msg, $message, $links_add_files) {
