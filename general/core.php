@@ -6345,7 +6345,7 @@ class Settings {
 
   public function get_count_all_users() {
       global $database;
-      $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date)");
+      $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) ORDER BY reg_date ASC");
       //$statement = $database->prepare("SELECT count(id) as sum, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY MONTH(reg_date),YEAR(reg_date)");
       $statement->execute();
       $data = $statement->fetchAll(PDO::FETCH_OBJ);
