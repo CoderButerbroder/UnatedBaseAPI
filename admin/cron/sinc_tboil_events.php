@@ -4,6 +4,8 @@ error_reporting(0);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // session_start();
+$start = microtime(true);
+$start_time = date('H:i');
 include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core.php');
 
 ignore_user_abort(true);

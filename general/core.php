@@ -2956,6 +2956,11 @@ class Settings {
 
       foreach ($data_mass_for_cicle as $key => $value) {
 
+              if (trim($value->Company->Inn) == '' || $value->Company->Inn == NULL) {
+                $this->telega_send($this->get_global_settings('telega_chat_error'), '[CORE] sinc_data_entity_ipchain Err Inn TransId = '.$value->TransactionId);
+                continue;
+              }
+
               $Ogrn = $value->Company->Ogrn;
               $Inn = $value->Company->Inn;
 
