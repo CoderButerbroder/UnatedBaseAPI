@@ -20,6 +20,8 @@ $settings = new Settings;
 
     $data_user_tboil = file_get_contents($tboil_site."/api/v2/getUser/?token=".$token_tboil."&userId=81920");
 
+
+
     if (!json_decode($data_user_tboil)->success) {
             $token_tboil = $settings->refresh_token_tboil();
             $token_tboil = json_decode($token_tboil)->token;
@@ -27,10 +29,14 @@ $settings = new Settings;
             // exit;
     }
 
-
     $data_event_tboil = json_decode(file_get_contents($tboil_site."/api/v2/getEventsUsers/?token=".$token_tboil));
 
     $all_id_event_tboil = $data_event_tboil->data;
+
+    //var_dump($data_event_tboil->data);
+
+    //echo "<script> console.log(JSON.parse('".json_encode(array('response' => true, 'data' => $data_event_tboil->data),JSON_UNESCAPED_UNICODE)."')); </script>";
+
 
     foreach ($all_id_event_tboil as $key => $value) {
 
@@ -65,6 +71,7 @@ $settings = new Settings;
         }
 
     }
+    $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] sinc_tboil_events '.$start_time.' '.'Время выполнения скрипта: '.round(microtime(true) - $start, 4).' сек.');
 
     exit;
 

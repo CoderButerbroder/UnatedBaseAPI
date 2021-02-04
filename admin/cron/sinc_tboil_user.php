@@ -1,5 +1,7 @@
 <?php
 error_reporting(0);
+$start = microtime(true);
+$start_time = date('H:i');
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
@@ -133,6 +135,6 @@ $settings = new Settings;
               }
     }
 
-
+    $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] sinc_tboil_user '.$start_time.' '.'Время выполнения скрипта: '.round(microtime(true) - $start, 4).' сек.');
 
 ?>
