@@ -3853,11 +3853,12 @@ class Settings {
                            }
                  }
 
-                 $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,date_pickup)
-                                                       VALUES (:inn,:data_fns,:date_pickup)");
+                 $request = $database->prepare("INSERT INTO $this->MAIN_entity (inn,data_fns,date_pickup,date_register)
+                                                       VALUES (:inn,:data_fns,:date_pickup,:date_register)");
                  $request->bindParam(':inn', $inn, PDO::PARAM_INT);
                  $request->bindParam(':data_fns', $data_fnc, PDO::PARAM_STR);
                  $request->bindParam(':date_pickup', $date_pickup, PDO::PARAM_STR);
+                 $request->bindParam(':date_register', $date_pickup, PDO::PARAM_STR);
                  $check_request = $request->execute();
                  $count_request = $request->rowCount();
 
