@@ -3138,6 +3138,7 @@ class Settings {
       $count = 0;
 
       foreach ($mass_entity_ebd as $key => $value) {
+           // echo date('H:i')."ogrn : ".$value->Ogrn."\n";
 
            $curl = curl_init();
            $data_post = array('ogrn' => $value->Ogrn);
@@ -3159,6 +3160,7 @@ class Settings {
            if (count($out1)) {
 
                 foreach ($out1 as $key => $value2) {
+                  // echo date('H:i')."id_Support : ".$value2->Id."\n";
 
                   $statement = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport WHERE id_Support = :id_Support");
                   $statement->bindParam(':id_Support', $value2->Id, PDO::PARAM_STR);
@@ -3187,33 +3189,31 @@ class Settings {
                             $id_chat_error = $this->get_global_settings('telega_chat_error');
                             $this->telega_send($id_chat_error, $message);
                         }
-
                   }
                   else  {
                         // обновление поддержки из ipchain
-                        $statement = $database->prepare("UPDATE $this->IPCHAIN_StateSupport id_Support = :id_Support, typeId = :typeId, date_support = :date_support, Sum = :Sum WHERE id = :id");
+                        $statement = $database->prepare("UPDATE $this->IPCHAIN_StateSupport SET id_Support = :id_Support, typeId = :typeId, date_support = :date_support, Sum = :Sum WHERE id = :id");
                         $statement->bindValue(':id', $data->id, PDO::PARAM_INT);
                         $statement->bindValue(':id_Support', $id_Support, PDO::PARAM_STR);
                         $statement->bindValue(':typeId', $typeId, PDO::PARAM_STR);
                         $statement->bindValue(':date_support', $date_support, PDO::PARAM_STR);
                         $statement->bindValue(':Sum', $Sum, PDO::PARAM_STR);
-                        $check_new_user = $statement->execute();
+                        try {
+                            $check_new_user = $statement->execute();
+                        } catch (Exception $e) {
+                          $this->telega_send($this->get_global_settings('telega_chat_error'), '[CORE] sinc_data_support_ipchain |3203| '.$e->getMessage());
+                          return 0;
+                        }
                         $count = $statement->rowCount();
-
                         if (!$count && !$check_new_user) {
                             $message = '[CRON] - Поддержка из ipchain (id:'.$data->id.') '.$data->Name.' не был обновлена';
                             $id_chat_error = $this->get_global_settings('telega_chat_error');
                             $this->telega_send($id_chat_error, $message);
                         }
-
                   }
-
                 }
-
            }
-
       }
-
   }
 
   // добавление проектов в компанию из ipchain
