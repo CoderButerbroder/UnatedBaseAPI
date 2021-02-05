@@ -53,7 +53,6 @@ $arr_merge_count_company = array_merge($data_count_company_period, $data_count_c
 usort($arr_merge_count_company, 'period');
 
 
-
 $defaut_value = '-';
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/office/vendor/autoload.php');
@@ -66,6 +65,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 $spreadsheet = new Spreadsheet();
 //$sheet = $spreadsheet->getActiveSheet();
 $actual_row = 1;
+$actual_col = 1;
 $sheet = $spreadsheet->setActiveSheetIndex(0);
 $sheet->setTitle('Пользователи');
 
@@ -77,23 +77,24 @@ $sheet->setTitle('Пользователи');
     $temp_data_arr_foerch = (object) array();
     foreach ($arr_merge_count_company as $key => $value) {
       if($temp_data_foreach != $value->monthd.$value->yeard) {
-        $sheet->setCellValueByColumnAndRow(($key+2), $actual_row,  $arr_select_month[$value->monthd]->name.'.'.$value->yeard);
+        $sheet->setCellValueByColumnAndRow(($actual_col+2), $actual_row,  $arr_select_month[$value->monthd]->name.'.'.$value->yeard);
         $temp_name_to_obj = $value->monthd.$value->yeard;
-        $temp_data_arr_foerch->$temp_name_to_obj = $key+2;
+        $temp_data_arr_foerch->$temp_name_to_obj = ($actual_col+2);
       }
       if($temp_data_foreach == $value->monthd.$value->yeard) {
         continue;
       }
       $temp_data_foreach = $value->monthd.$value->yeard;
 
-      $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), 0);
-      $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+2), 0);
-      $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+3), 0);
-      $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+4), 0);
+      $sheet->setCellValueByColumnAndRow(($actual_col+2), ($actual_row+1), 0);
+      $sheet->setCellValueByColumnAndRow(($actual_col+2), ($actual_row+2), 0);
+      $sheet->setCellValueByColumnAndRow(($actual_col+2), ($actual_row+3), 0);
+      $sheet->setCellValueByColumnAndRow(($actual_col+2), ($actual_row+4), 0);
 
       if(isset($value->entity_groupby)){
-        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), $value->sum);
+        $sheet->setCellValueByColumnAndRow(($actual_col+2), ($actual_row+1), $value->sum);
       }
+      $actual_col++;
     }
     $actual_row++;
     $actual_row++;
@@ -122,7 +123,7 @@ $sheet->setTitle('Пользователи');
     $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количество новых участников ФСИ:');
     $actual_row++;
     $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количество новых осуществляющих экспорт:');
-
+    
 $writer = new Xlsx($spreadsheet);
 
 // Redirect output to a client’s web browser (Xlsx)
