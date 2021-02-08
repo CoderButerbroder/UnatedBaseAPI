@@ -32,14 +32,14 @@ $today = date("Y-m-d H:i:s");
     // }
 
 
-
               // Кому отправляем
-              $email = 'web@kt-segment.ru,dimos-eskimos2014@yandex.ru';
+              $email = 'web@kt-segment.ru';
 
               // $email = 'starkovskii@lpmtech.ru,web@kt-segment.ru';
 
-              $message .= 'Всего юридических лиц зарегистрировано на сайте Технопарка: <b>'.$count_company.'</b><br/><br/>';
-              $message .= 'За текущий месяц юридических лиц зарегистрировано: <b>'.$count_company_mounth_now.'</b><br/><br/>';
+              $content .= 'Всего юридических лиц зарегистрировано: <b>'.$data_all_company.'</b><br/><br/>';
+              $content .= 'За текущий месяц юридических лиц зарегистрировано: <b>'.$data_all_company_current_month.'</b><br/><br/>';
+
 
               $today2 = date("d.m.Y H:i");
               $today = date("H:i:s");
@@ -53,7 +53,7 @@ $today = date("Y-m-d H:i:s");
                       'title' => $tema,
                       'description' => $content,
                       'link_to_server' => 'https://'.$_SERVER['SERVER_NAME'],
-                      'text_button' => 'Скачать отчет',
+                      'text_button' => 'Сгенерировать отчет',
                       'link_button' => 'https://'.$_SERVER['SERVER_NAME'].'/panel/data/reports/actions/report_count_month',
                       'name_host' => $_SERVER['SERVER_NAME'],
                       'date' => $today2
@@ -65,18 +65,18 @@ $today = date("Y-m-d H:i:s");
                 $template_email = str_replace('['.$key.']', $value, $template_email);
               }
 
-              echo $template_email;
+              // echo $template_email;
 
-              // $check_mail = $settings->send_email_user($email,$tema,$template_email);
-              //
-              // if (json_decode($check_mail)->response) {
-              //       return json_encode(array('response' => true, 'description' => 'Пользователь успешно зарегистрирован письмо было выслано на адрес '.$email),JSON_UNESCAPED_UNICODE);
-              //       exit;
-              // }
-              // else {
-              //
-              //       exit;
-              // }
+              $check_mail = $settings->send_email_user($email,$tema,$template_email);
+
+              if (json_decode($check_mail)->response) {
+                    echo json_encode(array('response' => true, 'description' => 'Письмо успешно отправлено'),JSON_UNESCAPED_UNICODE);
+                    exit;
+              }
+              else {
+                    echo $check_mail;
+                    exit;
+              }
 
 
 

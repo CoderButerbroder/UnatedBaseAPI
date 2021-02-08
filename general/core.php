@@ -144,7 +144,6 @@ class Settings {
 
   }
 
-
   // получение глобального парметра настройки
   public function get_global_settings($meta_key) {
       global $database;
