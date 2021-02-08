@@ -6,8 +6,11 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$date_added = date("Y-m-d H:i:s");
-$last_time_message = '2020-12-29 20:34:45';
+$data = $settings->count_main_support_ticket_groupby_category_referer_current_mounth();
+var_dump($data);
+
+// $date_added = date("Y-m-d H:i:s");
+// $last_time_message = '2020-12-29 20:34:45';
 
 // $start_date = new DateTime($date_added);
 // $since_start = $start_date->diff(new DateTime($last_time_message));
@@ -126,8 +129,6 @@ $last_time_message = '2020-12-29 20:34:45';
 // var_dump($data);
 
 
-$data = $settings->get_count_all_users();
-var_dump($data);
 
 
 

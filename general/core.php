@@ -94,6 +94,57 @@ class Settings {
 
   }
 
+  // Отправка email любому пользователю с любой темой и текстом из системы c вложенными документом
+  public function send_email_user_attach($user_email,$tema,$content,$array_attach) {
+      global $database;
+
+          $mail = new PHPMailer\PHPMailer\PHPMailer();
+          try {
+              $msg = "OK";
+              $mail->isSMTP();
+              $mail->CharSet = "UTF-8";
+              $mail->SMTPAuth   = true;
+
+              $email_host2 = $this->get_global_settings('email_host');
+              $email_username2 = $this->get_global_settings('email_username');
+              $email_pass2 = $this->get_global_settings('email_pass');
+              $email_secure2 = $this->get_global_settings('email_secure');
+              $email_port2 = $this->get_global_settings('email_port');
+              $email_name2 = $this->get_global_settings('email_name');
+
+              $mail->Host       = $email_host2;
+              $mail->Username   = $email_username2;
+              $mail->Password   = $email_pass2;
+              $mail->SMTPSecure = $email_secure2;
+              $mail->Port       = $email_port2;
+              $mail->setFrom($email_username2,$email_name2);
+
+              foreach( $array_attach as $value) {
+                $mail->addAttachment($value);
+              }
+
+              // Получатель письма
+              $mail->addAddress($user_email);
+
+                  $mail->isHTML(true);
+
+                  $mail->Subject = $tema;
+                  $mail->Body    = $content;
+                  $mail->IsHTML(true);
+
+                if ($mail->send()) {
+                      return json_encode(array('response' => true, 'description' => 'Письмо успешно отправлено на адрес '.$user_email),JSON_UNESCAPED_UNICODE);
+                } else {
+                     return json_encode(array('response' => false, 'description' => 'Ошибка отправки письма на адрес '.$user_email.', пожалуйста, попробуйте позже'),JSON_UNESCAPED_UNICODE);
+                }
+
+          } catch (Exception $e) {
+                return json_encode(array('response' => false, 'description' => 'Системная ошибка отправки письма, пожалуйста попробуйте позже'),JSON_UNESCAPED_UNICODE);
+          }
+
+  }
+
+
   // получение глобального парметра настройки
   public function get_global_settings($meta_key) {
       global $database;
@@ -6340,9 +6391,115 @@ class Settings {
 
   }
 
+  // подсчет компаний за текущий месяц
+  public function count_main_entity_current_month() {
+    global $database;
 
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_entity WHERE MONTH(`date_register`) = MONTH(NOW()) AND YEAR(`date_register`) = YEAR(NOW())");
+          $statement->execute();
+          $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
+          $count_data = count($data);
 
+          if ($count_data > 0) {
+              return $count_data;
+              exit;
+          } else {
+              return 0;
+              exit;
+          }
+
+  }
+
+  // подсчет общего количества заявок поддержки ЛПМТЕХ
+  public function count_main_support_ticket($status='all') {
+    global $database;
+
+        if ($status == 'all') {
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket");
+        }
+        else {
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE status = :status");
+          $statement->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        $count_data = count($data);
+
+        if ($count_data > 0) {
+          return $count_data;
+          exit;
+        } else {
+          return 0;
+          exit;
+        }
+  }
+
+  // подсчет общего количества заявок поддержки ЛПМТЕХ
+  public function count_main_support_ticket_current_mounth($status='all') {
+    global $database;
+
+        if ($status == 'all') {
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE MONTH(`date_added`) = MONTH(NOW()) AND YEAR(`date_added`) = YEAR(NOW())");
+        }
+        else {
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_support_ticket WHERE MONTH(`date_added`) = MONTH(NOW()) AND YEAR(`date_added`) = YEAR(NOW()) AND status = :status");
+          $statement->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        $count_data = count($data);
+
+        if ($count_data > 0) {
+          return $count_data;
+          exit;
+        } else {
+          return 0;
+          exit;
+        }
+  }
+
+  // подсчет колиичества заявок  ЛПМТЕХ с группировкой по сайтам и категориям заявок
+  public function count_main_support_ticket_groupby_category_referer() {
+    global $database;
+
+        $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` GROUP BY `type_support`,`id_referer`");
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if ($data > 0) {
+          return $data;
+          exit;
+        } else {
+          return 0;
+          exit;
+        }
+
+  }
+
+  // подсчет колиичества заявок ЛПМТЕХ с группировкой по сайтам и категориям заявок за текущий месяц
+  public function count_main_support_ticket_groupby_category_referer_current_mounth() {
+    global $database;
+
+        $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` WHERE MONTH($this->MAIN_support_ticket.`date_added`) = MONTH(NOW()) AND YEAR($this->MAIN_support_ticket.`date_added`) = YEAR(NOW()) GROUP BY `type_support`,`id_referer`");
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if ($data > 0) {
+          return $data;
+          exit;
+        } else {
+          return 0;
+          exit;
+        }
+
+  }
+
+  // $count_company_mounth_now = $wpdb->get_var( "SELECT COUNT(*) FROM `25Ved_users` WHERE MONTH(`user_registered`) = MONTH(NOW()) AND YEAR(`user_registered`) = YEAR(NOW())");
 
 
 
