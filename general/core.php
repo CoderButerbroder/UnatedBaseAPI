@@ -6463,10 +6463,17 @@ class Settings {
   }
 
   // подсчет колиичества заявок  ЛПМТЕХ с группировкой по сайтам и категориям заявок
-  public function count_main_support_ticket_groupby_category_referer() {
+  public function count_main_support_ticket_groupby_category_referer($status='all') {
     global $database;
 
-        $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` GROUP BY `type_support`,`id_referer`");
+        if ($status == 'all') {
+          $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` GROUP BY `type_support`,`id_referer`");
+        }
+        else {
+          $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` WHERE $this->MAIN_support_ticket.`status` = :status GROUP BY `type_support`,`id_referer`");
+          $statement->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
@@ -6481,10 +6488,18 @@ class Settings {
   }
 
   // подсчет колиичества заявок ЛПМТЕХ с группировкой по сайтам и категориям заявок за текущий месяц
-  public function count_main_support_ticket_groupby_category_referer_current_mounth() {
+  public function count_main_support_ticket_groupby_category_referer_current_mounth($status='all') {
     global $database;
 
-        $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` WHERE MONTH($this->MAIN_support_ticket.`date_added`) = MONTH(NOW()) AND YEAR($this->MAIN_support_ticket.`date_added`) = YEAR(NOW()) GROUP BY `type_support`,`id_referer`");
+        if ($status == 'all') {
+          $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` WHERE MONTH($this->MAIN_support_ticket.`date_added`) = MONTH(NOW()) AND YEAR($this->MAIN_support_ticket.`date_added`) = YEAR(NOW()) GROUP BY `type_support`,`id_referer`");
+        }
+        else {
+          $statement = $database->prepare("SELECT COUNT($this->MAIN_support_ticket.`id`) as count_ticket,`type_support`,`id_referer`,`resourse` FROM $this->MAIN_support_ticket INNER JOIN $this->api_referer ON $this->MAIN_support_ticket.`id_referer` = $this->api_referer.`id` WHERE $this->MAIN_support_ticket.`status` = :status AND MONTH($this->MAIN_support_ticket.`date_added`) = MONTH(NOW()) AND YEAR($this->MAIN_support_ticket.`date_added`) = YEAR(NOW()) GROUP BY `type_support`,`id_referer`");
+          $statement->bindParam(':status', $status, PDO::PARAM_STR);
+        }
+
+
         $statement->execute();
         $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
@@ -6498,7 +6513,6 @@ class Settings {
 
   }
 
-  // $count_company_mounth_now = $wpdb->get_var( "SELECT COUNT(*) FROM `25Ved_users` WHERE MONTH(`user_registered`) = MONTH(NOW()) AND YEAR(`user_registered`) = YEAR(NOW())");
 
 
 
