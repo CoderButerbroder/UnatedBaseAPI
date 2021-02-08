@@ -2334,9 +2334,9 @@ class Settings {
 
         $date_update = date("Y-m-d H:i:s");
 
-        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status, date_added = :date_added  WHERE id =:id");
+        $update_status_ticket = $database->prepare("UPDATE $this->MAIN_support_ticket SET status = :status, date_update_status = :date_update_status  WHERE id =:id");
         $update_status_ticket->bindParam(':id', $id_ticket, PDO::PARAM_INT);
-        $update_status_ticket->bindParam(':date_added', $date_update, PDO::PARAM_STR);
+        $update_status_ticket->bindParam(':date_update_status', $date_update, PDO::PARAM_STR);
         $update_status_ticket->bindParam(':status', $new_status, PDO::PARAM_STR);
         $temp = $update_status_ticket->execute();
         $check = $update_status_ticket->rowCount();
