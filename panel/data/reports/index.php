@@ -50,11 +50,8 @@
                       <div class="card-body">
                         <ul class="list-group list-group-flush">
                           <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users" download><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
-
-
                         </ul>
                       </div>
-
                     </div>
                   </div>
                 </div>
