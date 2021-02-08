@@ -119,8 +119,8 @@ class Settings {
               $mail->Port       = $email_port2;
               $mail->setFrom($email_username2,$email_name2);
 
-              foreach( $array_attach as $value) {
-                $mail->addAttachment($value);
+              foreach( $array_attach as $key => $value) {
+                $mail->addAttachment($value->file, $value->name);
               }
 
               // Получатель письма
