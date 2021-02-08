@@ -13,8 +13,11 @@
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$arr_data_request = $settings->count_main_support_ticket_groupby_category_referer();
-$arr_data_request_month = $settings->count_main_support_ticket_groupby_category_referer_current_mounth();
+$arr_data_request = $settings->count_main_support_ticket_groupby_category_referer('all');
+$arr_data_request_month = $settings->count_main_support_ticket_groupby_category_referer_current_mounth('all');
+
+$arr_data_request_close = $settings->count_main_support_ticket_groupby_category_referer('close');
+$arr_data_request_month_close = $settings->count_main_support_ticket_groupby_category_referer_current_mounth('close');
 
 //подсчет количества заявок
 $data_count_request_all = 0;
@@ -138,6 +141,26 @@ foreach ($arr_result_data as $key => $value) {
       //если есть такой ключ то присваиваем значение количества заявок
       if( array_key_exists( $value_request->type_support, $value->data ) ) {
         $value->data[$value_request->type_support]->mon_count = $value_request->count_ticket;
+      }
+    }
+  }
+
+  foreach ($arr_data_request_close as $key_request => $value_request) {
+    //если рефер площадки == площадке по которой проходим 1й фор
+    if($value_request->resourse == $value->refer) {
+      //если есть такой ключ то присваиваем значение количества заявок
+      if( array_key_exists( $value_request->type_support, $value->data ) ) {
+        $value->data[$value_request->type_support]->completed = $value_request->count_ticket;
+      }
+    }
+  }
+
+  foreach ($arr_data_request_month_close as $key_request => $value_request) {
+    //если рефер площадки == площадке по которой проходим 1й фор
+    if($value_request->resourse == $value->refer) {
+      //если есть такой ключ то присваиваем значение количества заявок
+      if( array_key_exists( $value_request->type_support, $value->data ) ) {
+        $value->data[$value_request->type_support]->increment = $value_request->count_ticket;
       }
     }
   }
