@@ -501,7 +501,7 @@
                                             style="word-break: break-word; -webkit-hyphens: none; -moz-hyphens: none; hyphens: none; border-collapse: collapse !important; vertical-align: top; text-align: left; width: 100%; color: #222222; font-family: Helvetica, Arial, sans-serif; font-weight: normal; font-size: 14px; line-height: 1.3; background: transparent repeat center center; margin: 0; padding: 10px 10px 0px;"
                                             align="left" bgcolor="transparent" valign="top">
                                             <p style="text-align: center; color: #222222; font-family: Helvetica, Arial, sans-serif; font-weight: normal; font-size: 14px; line-height: 1.3; margin: 0 0 10px; padding: 0;" align="center"><span
-                                                style="font-size: 9pt;">Данное сообщение сформировано и отправлено автоматически, из панели администратора Технопарка. </span><span style="font-size: 9pt;">Система каждый день в 7:00 будет оповещать Вас
+                                                style="font-size: 9pt;">Данное сообщение сформировано и отправлено автоматически, из панели администратора FULLDATA ЛЕНПОЛИГРАФМАШ. </span><span style="font-size: 9pt;">Система каждый день в 7:00 будет оповещать Вас
                                                 о состоянии регистрации компаний, а так же заявок.</span></p>
                                           </td>
                                         </tr>

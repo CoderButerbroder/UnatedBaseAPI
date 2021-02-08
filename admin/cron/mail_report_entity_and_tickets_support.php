@@ -3,7 +3,7 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
-require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+include('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core.php');
 $settings = new Settings;
 
 $data_all_company = $settings->count_main_entity();
@@ -11,10 +11,16 @@ $data_all_company_current_month = $settings->count_main_entity_current_month();
 $count_main_support_ticket_all  = $settings->count_main_support_ticket('all');
 $count_main_support_ticket_close = $settings->count_main_support_ticket('close');
 
-var_dump($data_all_company);
-var_dump($data_all_company_current_month);
-var_dump($count_main_support_ticket_all);
-var_dump($count_main_support_ticket_close);
+$file_report = file_get_contents('https://'.$_SERVER["SERVER_NAME"].'/panel/data/reports/actions/report_count_month.php');
+
+$temp = tempnam(sys_get_temp_dir(), 'report.xlsx');
+
+file_put_contents($temp, $file_report);
+
+// var_dump($data_all_company);
+// var_dump($data_all_company_current_month);
+// var_dump($count_main_support_ticket_all);
+// var_dump($count_main_support_ticket_close);
 
 
 $today = date("Y-m-d H:i:s");
@@ -37,23 +43,26 @@ $today = date("Y-m-d H:i:s");
 
               // $email = 'starkovskii@lpmtech.ru,web@kt-segment.ru';
 
-              $content .= 'Всего юридических лиц зарегистрировано: <b>'.$data_all_company.'</b><br/><br/>';
+              $content = 'Всего юридических лиц зарегистрировано: <b>'.$data_all_company.'</b><br/><br/>';
               $content .= 'За текущий месяц юридических лиц зарегистрировано: <b>'.$data_all_company_current_month.'</b><br/><br/>';
+              $content .= 'За текущий месяц юридических лиц зарегистрировано: <b>'.$data_all_company_current_month.'</b><br/><br/>';
+              $content .= 'За текущий месяц юридических лиц зарегистрировано: <b>'.$data_all_company_current_month.'</b><br/><br/>';  
 
 
               $today2 = date("d.m.Y H:i");
               $today = date("H:i:s");
               $date_otchet = date("d.m.Y");
 
-              $tema = 'Отчет от '.$date_otchet.' г. '.$today.' с сайта Технопарк о регистрации юридических лиц';
+              $tema = 'Отчет от '.$date_otchet.' г. '.$today.' о регистрации юридических лиц';
               $tema_for_msg = 'Отчет от '.$date_otchet.' г. '.$today;
+
 
               $maildata =
                     array(
                       'title' => $tema,
                       'description' => $content,
                       'link_to_server' => 'https://'.$_SERVER['SERVER_NAME'],
-                      'text_button' => 'Сгенерировать отчет',
+                      'text_button' => 'Сгенерировать свежий отчет',
                       'link_button' => 'https://'.$_SERVER['SERVER_NAME'].'/panel/data/reports/actions/report_count_month',
                       'name_host' => $_SERVER['SERVER_NAME'],
                       'date' => $today2
@@ -65,20 +74,12 @@ $today = date("Y-m-d H:i:s");
                 $template_email = str_replace('['.$key.']', $value, $template_email);
               }
 
-              // echo $template_email;
+              $check_mail = $settings->send_email_user_attach($email,$tema,$template_email,(object) array(0 => (object) array('file' => $temp, 'name' => 'report.xlsx')));
 
-              $check_mail = $settings->send_email_user($email,$tema,$template_email);
-
-              if (json_decode($check_mail)->response) {
-                    echo json_encode(array('response' => true, 'description' => 'Письмо успешно отправлено'),JSON_UNESCAPED_UNICODE);
-                    exit;
+              if (!json_decode($check_mail)->response) {
+                  $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] /admin/cron/mail_report_entity_and_tickets_support Ошибка отправки отчета '.$check_mail);
+                  exit;
               }
-              else {
-                    echo $check_mail;
-                    exit;
-              }
-
-
 
 
 
