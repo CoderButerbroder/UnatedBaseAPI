@@ -6558,8 +6558,84 @@ class Settings {
         return $data;
   }
 
+  // функция вывода данных о физических пользователях имеющих юридическое лицо по периодам год/месяц/неделя/день и промежутку времени, а так же общее суммирование польователей по периодам и промежутку времени
+  public function get_count_users_entity_groupby_time_reg($period='data',$start=NULL,$end=NULL) {
+    global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT reg_date FROM $this->main_users WHERE id_entity > 0 ORDER BY reg_date ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT reg_date FROM $this->main_users WHERE id_entity > 0 ORDER BY reg_date DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        if ($period == 'year') {
+          $statement = $database->prepare("SELECT count(id) as sum,YEAR(reg_date) as yeard, count(id) as users_entity_groupby FROM $this->main_users WHERE id_entity > 0 AND reg_date BETWEEN :starting AND :ending GROUP BY YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date) ASC");
+        }
+        if ($period == 'month') {
+          $statement = $database->prepare("SELECT count(id) as sum,MONTH(reg_date) as monthd,YEAR(reg_date) as yeard, count(id) as users_entity_groupby FROM $this->main_users WHERE id_entity > 0 AND reg_date BETWEEN :starting AND :ending GROUP BY MONTH(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),MONTH(reg_date) ASC");
+        }
+        if ($period == 'week') {
+          $statement = $database->prepare("SELECT count(id) as sum, WEEK(reg_date) as weekd, YEAR(reg_date) as yeard, count(id) as users_entity_groupby FROM $this->main_users WHERE id_entity > 0 AND reg_date BETWEEN :starting AND :ending GROUP BY WEEK(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),WEEK(reg_date) ASC");
+        }
+        if ($period == 'day') {
+          $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard, count(id) as users_entity_groupby FROM $this->main_users WHERE id_entity > 0 AND reg_date BETWEEN :starting AND :ending GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),MONTH(reg_date),DAY(reg_date) ASC");
+        }
+        if ($period == 'data') {
+          $statement = $database->prepare("SELECT * FROM $this->main_users WHERE id_entity > 0 AND reg_date BETWEEN :starting AND :ending");
+        }
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        $count_all_users = 0;
+        foreach ($data as $key => $value) {
+          $count_all_users = $count_all_users+$value->sum;
+        }
+
+        array_push($data, (object) array('summ_all' => $count_all_users));
+
+        return $data;
+  }
+
+  // получение минимальной и  максимальной даты регистрации пользователей
+  public function get_min_max_users_time_reg($minmax='all') {
+    global $database;
 
 
+    if ($minmax == 'min') {
+        $start_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date ASC LIMIT 1");
+        $start_date->execute();
+        $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        return $start;
+        exit;
+    }
+    if ($minmax == 'max') {
+        $end_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date DESC LIMIT 1");
+        $end_date->execute();
+        $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        return $end;
+        exit;
+    }
+    if ($minmax == 'all') {
+        $start_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date ASC LIMIT 1");
+        $start_date->execute();
+        $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        $end_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date DESC LIMIT 1");
+        $end_date->execute();
+        $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        return array('start' => $start, 'end' => $end);
+        exit;
+    }
+
+  }
+
+  //
 
   /* функции для вывода графиков  */
 
