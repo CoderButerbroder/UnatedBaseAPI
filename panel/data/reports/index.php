@@ -120,6 +120,11 @@
       alerts('warning', 'Укажите временной диапозон', '');
       return false;
     }
+    if($(form).attr('id') == 'modal_report_by_period_user' && $(form.elements["period_1"]).val().length() != 10 && $(form.elements["period_2"]).val().length() != 10) {
+      alerts('warning', 'Укажите Диапозон дат', '');
+      return false;
+    }
+
     $('#spiner').removeClass('d-none');
     $(btn).attr('disabled','disabled');
     $.ajax({
@@ -206,7 +211,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/panel/data/reports/actions/report_users_overall" onsubmit="generate_report(this,'modal_report_fiz_2', 'period'); return false;" method="post" id="form_fiz_2">
+        <form action="/panel/data/reports/actions/report_users_period" onsubmit="generate_report(this,'modal_report_fiz_2', 'select_input_period'); return false;" method="post" id="form_fiz_2">
           <div class="form-group">
             <label for="select_input_period" class="col-form-label">Укажите необходимый результирующий диапозон</label>
             <div class="">
@@ -223,28 +228,20 @@
           <div class="form-group">
             <div class="input-daterange">
               <div class="row ml-0 mr-0">
-                <span class="col-md-2 my-2 text-center"> C </span> <input type="text" name="period_1" class="form-control col-md-4 text-center" >
+                <span class="col-md-2 my-2 text-center"> C </span>
+                <input type="text" name="period_1" id="data_period_1" class="form-control col-md-4 text-center" >
                 <div class="input-group-addon"> </div> <span class="col-md-2 my-2 text-center"> По </span>
-                <input type="text" name="period_2" class="form-control col-md-4 text-center">
+                <input type="text" name="period_2" id="data_period_2" class="form-control col-md-4 text-center">
               </div>
             </div>
           </div>
 
-
-          <!-- <label for="period_1" class="col-form-label">От</label>
-          <div class="input-group date datepicker">
-						<input type="text" name="period_1" class="form-control" id="period_1"><span class="input-group-addon"><i data-feather="calendar"></i></span>
-					</div>
-          <label for="period_1" class="col-form-label">До</label>
-          <div class="input-group date datepicker">
-						<input type="text" name="period_1" class="form-control" id="period_2"><span class="input-group-addon"><i data-feather="calendar"></i></span>
-					</div> -->
           <button style="display:none;" type="submit" name="button"></button>
         </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-        <!-- <button type="button" class="btn btn-primary" onclick="$('#form_fiz_2')[0].elements['button'].click()">Сгенерировать</button> -->
+        <button type="button" class="btn btn-primary" onclick="$('#form_fiz_2')[0].elements['button'].click()">Сгенерировать</button>
       </div>
     </div>
   </div>
@@ -357,14 +354,32 @@ $(document).ready(function() {
   $('.input-daterange input').each(function() {
       // $(this).datepicker('clearDates');
       var date = new Date();
-      var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      <?php
+       $js_timepicker = date('m/d/Y', strtotime($settings->get_min_max_users_time_reg('min') ));
+       $arr_js_timepicker = explode('/', $js_timepicker);
+       echo "var startDate = new Date('".$arr_js_timepicker[2]."', '".($arr_js_timepicker[0]-1)."', '".$arr_js_timepicker[1]."');";
+       echo "var startDate2 = new Date('".$arr_js_timepicker[2]."', '".($arr_js_timepicker[0]-1)."', '".($arr_js_timepicker[1]+1)."');";
+       echo "var endDate = new Date('".date('Y')."', '".(date('m')-1)."', '".(date('d')-1)."');";
+       echo "var endDate2 = new Date('".date('Y')."', '".(date('m')-1)."', '".date('d')."');";
+
+      ?>
+      // var startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
       $(this).datepicker({
-          format: "mm.dd.yyyy",
+          format: "dd.mm.yyyy",
           todayHighlight: true,
           autoclose: true,
           language: "ru-RU",
           zIndexOffset: 1051
         });
+      if($(this).attr('id') == 'data_period_2'){
+        $(this).datepicker('setStartDate', startDate2);
+        $(this).datepicker('setEndDate', endDate2);
+      }
+      if($(this).attr('id') == 'data_period_1'){
+        $(this).datepicker('setStartDate', startDate);
+        $(this).datepicker('setEndDate', endDate);
+      }
       // $(this).datepicker('setDate', today);
   });
 });

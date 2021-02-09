@@ -50,7 +50,7 @@ $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
 
 // тут твориться магия сюда не лезть, пожалуйста..
 $arr_merge_count_company = array_merge($data_count_company_period, $data_count_company_SK_period, $data_count_company_FSI_period, $data_count_company_EXPORT_period);
-usort($arr_merge_count_company, 'period');
+uasort($arr_merge_count_company, 'period');
 
 
 $defaut_value = '-';
