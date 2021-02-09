@@ -6,7 +6,7 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$data = $settings->get_count_users_groupby_time_reg('month','2020.01.01','2021.02.09');
+$data = $settings->get_count_users_groupby_time_reg('year','2020.01.01','2021.02.09');
 var_dump($data);
 
 // $date_added = date("Y-m-d H:i:s");
