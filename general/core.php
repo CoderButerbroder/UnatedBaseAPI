@@ -6513,6 +6513,50 @@ class Settings {
 
   }
 
+  // функция вывода данных о физических пользователях по периодам год/месяц/неделя/день и промежутку времени, а так же общее суммирование польователей по периодам и промежутку времени
+  public function get_count_users_groupby_time_reg($period='data',$start=NULL,$end=NULL) {
+    global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        if ($period == 'year') {
+          $statement = $database->prepare("SELECT count(id) as sum,YEAR(reg_date) as yeard, count(id) as users_groupby FROM $this->main_users WHERE reg_date BETWEEN :starting AND :ending GROUP BY YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date) ASC");
+        }
+        if ($period == 'month') {
+          $statement = $database->prepare("SELECT count(id) as sum,MONTH(reg_date) as monthd,YEAR(reg_date) as yeard, count(id) as users_groupby FROM $this->main_users WHERE reg_date BETWEEN :starting AND :ending GROUP BY MONTH(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),MONTH(reg_date) ASC");
+        }
+        if ($period == 'week') {
+          $statement = $database->prepare("SELECT count(id) as sum, WEEK(reg_date) as weekd, YEAR(reg_date) as yeard, count(id) as users_groupby FROM $this->main_users WHERE reg_date BETWEEN :starting AND :ending GROUP BY WEEK(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),WEEK(reg_date) ASC");
+        }
+        if ($period == 'day') {
+          $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard, count(id) as users_groupby FROM $this->main_users WHERE reg_date BETWEEN :starting AND :ending GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) having SUM(id_tboil) > 0 ORDER BY YEAR(reg_date),MONTH(reg_date),DAY(reg_date) ASC");
+        }
+        if ($period == 'data') {
+          $statement = $database->prepare("SELECT * FROM $this->main_users WHERE reg_date BETWEEN :starting AND :ending");
+        }
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        $count_all_users = 0;
+        foreach ($data as $key => $value) {
+          $count_all_users = $count_all_users+$value->sum;
+        }
+
+        array_push($data, (object) array('summ_all' => $count_all_users));
+
+        return $data;
+  }
 
 
 
