@@ -49,10 +49,13 @@
                     <div id="collapse_report_fiz" class="collapse" role="tabpanel" aria-labelledby="heading_report_fiz" data-parent="#acc_teport_fiz">
                       <div class="card-body">
                         <ul class="list-group list-group-flush">
-                          <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users" download><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
+                          <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users')" ><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
+                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_period_user').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !Тест! Выгрузка по периоду</li>
+
                         </ul>
                       </div>
                     </div>
+
                   </div>
                 </div>
           </div>
@@ -193,6 +196,60 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_report_by_period_user" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Количественные показатели</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/panel/data/reports/actions/report_users_overall" onsubmit="generate_report(this,'modal_report_fiz_2', 'period'); return false;" method="post" id="form_fiz_2">
+          <div class="form-group">
+            <label for="select_input_period" class="col-form-label">Укажите необходимый результирующий диапозон</label>
+            <div class="">
+              <select class="js-example-basic-single" name="period" id="select_input_period">
+                <option default disabled selected value="false">Не выбрана</option>
+                <option value="day">День</option>
+                <option value="week">Неделя</option>
+                <option value="month">Месяц</option>
+                <option value="year">Год</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-daterange">
+              <div class="row ml-0 mr-0">
+                <span class="col-md-2 my-2 text-center"> C </span> <input type="text" name="period_1" class="form-control col-md-4 text-center" >
+                <div class="input-group-addon"> </div> <span class="col-md-2 my-2 text-center"> По </span>
+                <input type="text" name="period_2" class="form-control col-md-4 text-center">
+              </div>
+            </div>
+          </div>
+
+
+          <!-- <label for="period_1" class="col-form-label">От</label>
+          <div class="input-group date datepicker">
+						<input type="text" name="period_1" class="form-control" id="period_1"><span class="input-group-addon"><i data-feather="calendar"></i></span>
+					</div>
+          <label for="period_1" class="col-form-label">До</label>
+          <div class="input-group date datepicker">
+						<input type="text" name="period_1" class="form-control" id="period_2"><span class="input-group-addon"><i data-feather="calendar"></i></span>
+					</div> -->
+          <button style="display:none;" type="submit" name="button"></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <!-- <button type="button" class="btn btn-primary" onclick="$('#form_fiz_2')[0].elements['button'].click()">Сгенерировать</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="modal_report_by_category" tabindex="-1" role="dialog"  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered " role="document">
     <div class="modal-content">
@@ -281,6 +338,38 @@
   </div>
 </div>
 
+<script type="text/javascript">
+$(document).ready(function() {
+  // $('.datepicker').datetimepicker({
+  //   format: 'LT'
+  // });
+  // if($('.datepicker').length) {
+  //   var date = new Date();
+  //   var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  //   $('.datepicker').datepicker({
+  //     language: "ru",
+  //     format: "mm/dd/yyyy",
+  //     todayHighlight: true,
+  //     autoclose: true
+  //   });
+  //   $('.datepicker').datepicker('setDate', today);
+  // }
+  $('.input-daterange input').each(function() {
+      // $(this).datepicker('clearDates');
+      var date = new Date();
+      var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+      $(this).datepicker({
+          format: "mm.dd.yyyy",
+          todayHighlight: true,
+          autoclose: true,
+          language: "ru-RU",
+          zIndexOffset: 1051
+        });
+      // $(this).datepicker('setDate', today);
+  });
+});
+
+</script>
 
 
 

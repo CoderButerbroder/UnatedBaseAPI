@@ -29,7 +29,12 @@
 <script src="/assets/vendors/dropzone/dropzone.min.js"></script>
 <script src="/assets/vendors/dropify/dist/dropify.min.js"></script>
 <script src="/assets/vendors/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
-<script src="/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<!-- <script src="/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+<script src="/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.ru.min.js"></script> -->
+<link  href="/assets/vendors/datepicker/datepicker.css" rel="stylesheet">
+<script src="/assets/vendors/datepicker/datepicker.js"></script>
+<script src="/assets/vendors/datepicker/datepicker.ru-RU.js"></script>
+
 <script src="/assets/vendors/apexcharts/apexcharts.min.js"></script>
 <script src="/assets/vendors/moment/moment.min.js"></script>
 <script src="/assets/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js"></script>

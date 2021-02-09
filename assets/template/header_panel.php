@@ -20,6 +20,7 @@ else {
 <!-- core:css -->
 <link rel="stylesheet" href="/assets/vendors/core/core.css">
 <script src="/assets/js/jquery-3.5.1.min.js"></script>
+
 <!-- endinject -->
 <!-- plugin css for this page -->
 <!-- end plugin css for this page -->
