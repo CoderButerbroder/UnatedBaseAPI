@@ -50,8 +50,7 @@
                       <div class="card-body">
                         <ul class="list-group list-group-flush">
                           <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users')" ><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
-                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_period_user').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !Тест! Выгрузка по периоду</li>
-
+                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_period_user').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>Количественные показатели по периоду</li>
                         </ul>
                       </div>
                     </div>
@@ -353,7 +352,6 @@ $(document).ready(function() {
   // }
   $('.input-daterange input').each(function() {
       // $(this).datepicker('clearDates');
-      var date = new Date();
       <?php
        $js_timepicker = date('m/d/Y', strtotime($settings->get_min_max_users_time_reg('min') ));
        $arr_js_timepicker = explode('/', $js_timepicker);
@@ -361,10 +359,7 @@ $(document).ready(function() {
        echo "var startDate2 = new Date('".$arr_js_timepicker[2]."', '".($arr_js_timepicker[0]-1)."', '".($arr_js_timepicker[1]+1)."');";
        echo "var endDate = new Date('".date('Y')."', '".(date('m')-1)."', '".(date('d')-1)."');";
        echo "var endDate2 = new Date('".date('Y')."', '".(date('m')-1)."', '".date('d')."');";
-
       ?>
-      // var startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
       $(this).datepicker({
           format: "dd.mm.yyyy",
           todayHighlight: true,
@@ -375,12 +370,13 @@ $(document).ready(function() {
       if($(this).attr('id') == 'data_period_2'){
         $(this).datepicker('setStartDate', startDate2);
         $(this).datepicker('setEndDate', endDate2);
+        $(this).datepicker('setDate', endDate2);
       }
       if($(this).attr('id') == 'data_period_1'){
         $(this).datepicker('setStartDate', startDate);
         $(this).datepicker('setEndDate', endDate);
+        $(this).datepicker('setDate', startDate);
       }
-      // $(this).datepicker('setDate', today);
   });
 });
 
