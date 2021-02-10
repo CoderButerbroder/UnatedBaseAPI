@@ -2199,6 +2199,29 @@ class Settings {
 
   }
 
+  //получение пользователей посетивших мероприятие
+  public function get_users_event($value_s) {
+    global $database;
+    if (trim($value_s) == '') {
+      return json_encode(array('response' => false, 'description' => 'Отстутсвует (id события) параметр для поиска'), JSON_UNESCAPED_UNICODE);
+    }
+
+    $response = $database->prepare("SELECT * FROM $this->main_users
+                                    WHERE id_tboil IN (SELECT MEU.id_tboil FROM $this->MAIN_events AS ME, $this->MAIN_users_events AS MEU
+                                      WHERE MEU.id_event_on_referer = ME.id_event_on_referer AND ME.id =:value_search)");
+    $response->bindParam(':value_search', $value_s, PDO::PARAM_INT);
+    $response->execute();
+    $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+    if ($data) {
+      return json_encode(array('response' => true, 'data' => $data), JSON_UNESCAPED_UNICODE);
+    }
+    else {
+      return json_encode(array('response' => false, 'description' => 'Ошибка поиска данных или пустой результат'), JSON_UNESCAPED_UNICODE);
+    }
+  }
+
+
   // получение мероприятий отдельного пользователя по id_tboil
   public function get_user_event($id_user_tboil) {
       global $database;

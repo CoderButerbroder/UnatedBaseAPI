@@ -106,7 +106,7 @@
                       <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_event.php')"><i
                             class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Статистка по мероприятиям в неком периоде</a></li>
                       <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_event').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
-                        !TEST! Данные по мероприятию</li>
+                        Данные по мероприятию</li>
                     </ul>
                   </div>
                 </div>
@@ -137,7 +137,7 @@
 
   $(document).ready(function() {
 
-    
+
 
     $('#select_specific_category2').on('select2:select', function (e) {
       var val = $(e.currentTarget).val();
@@ -187,6 +187,10 @@
     var btn = form.elements["button"];
     var select = form.elements[select_name];
     if (!$(select).val()) {
+      if (select_name == 'select_input_event') {
+        alerts('warning', 'Укажите мероприятие', '');
+        return false;
+      }
       alerts('warning', 'Укажите временной диапозон', '');
       return false;
     }
@@ -416,15 +420,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/panel/data/reports/actions/" onsubmit="generate_report(this,'modal_report_event', 'select_input_event'); return false;" method="post" id="modal_report_event">
+        <form action="/panel/data/reports/actions/report_select_event" onsubmit="generate_report(this,'modal_report_event', 'select_input_event'); return false;" method="post" id="form_report_event">
           <div class="form-group">
             <label for="select_input_evevnt" class="col-form-label">Выберите мероприятие</label>
             <div class="">
-              <select class="js-example-basic-single" name="period" id="select_input_event">
+              <select class="js-example-basic-single" name="event" id="select_input_event">
                 <option default disabled selected value="false">-</option>
-                <option value="1234">цифры</option>
-                <option value="1234">789</option>
-                <option value="1234"><span style="visibility:hidden">Чек</span>Тут</option>
               </select>
             </div>
           </div>
@@ -434,7 +435,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-primary" onclick="$('#modal_report_event')[0].elements['button'].click()">Сгенерировать</button>
+        <button type="button" class="btn btn-primary" onclick="$('#form_report_event')[0].elements['button'].click()">Сгенерировать</button>
       </div>
     </div>
   </div>
@@ -443,6 +444,10 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+
+  // select_input_event
+  $('#select_input_event').load('actions/get_parament_event');
+
   // $('.datepicker').datetimepicker({
   //   format: 'LT'
   // });
