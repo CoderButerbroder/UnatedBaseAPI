@@ -6635,7 +6635,132 @@ class Settings {
 
   }
 
-  //
+  // получение количества юридических лиц - участников программ ФСИ на платформе (нараст.итог)
+  public function get_count_main_entity_fci_groupby_time_reg($increment=true,$period='data',$start=NULL,$end=NULL) {
+        global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        $array_document_fsi = array(
+          'У' => 'Умник',
+          'Соц' => 'Социум Цифровые технологии',
+          'С1ЦТ' => 'Старт-1 Цифровые технологии',
+          'С2ЦТ' => 'Старт-2 Цифровые технологии',
+          'С2ЦТ' => 'Старт-3 Цифровые технологии',
+          'С1' => 'Старт-1',
+          'С2' => 'Старт-2',
+          'СЦТ' => 'Старт Цифровые технологии',
+          'Комм' => 'Коммерциализация',
+          'КЭ' => 'Коммерциализация Экспорт',
+          'Разв' => 'Развитие',
+          'ЦТ' => 'Цифровые технологии',
+          'НТИ' => 'Развитие НТИ',
+          'ЦП' => 'Развитие-Цифровые платформы',
+          'ДП' => 'Дежурный по планете',
+          'Мол' => 'Вовлечение молодежи в инновационную деятельность',
+          'С1ЦП' => 'Старт-Цифровые платформы',
+          'С1Н' => 'Старт-1',
+          'Агро' => 'АГРОНТИ',
+          'Kor' => 'Российско-корейский конкурс',
+          'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
+        );
+
+        $array_prefix = array_keys($array_document_fsi);
+        $count_prefix = count($array_prefix);
+        $string_temp_sql_new = '';
+
+        foreach ($array_prefix as $key => $value) {
+              $string_temp_sql_new .= " id_Support LIKE '".$value."%' OR";
+        }
+        $string_temp_sql_new = substr($string_temp_sql_new, 0, -2);
+
+        $strokaSQL = "SELECT ";
+
+        if ($period == 'year') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+        }
+        if ($period == 'month') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+        }
+        if ($period == 'week') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              WEEK($this->MAIN_entity.`date_register`) as weekd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+        }
+        if ($period == 'day') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              DAY($this->MAIN_entity.`date_register`) as dayd,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+        }
+        if ($period == 'data') {
+              $strokaSQL .= " * ";
+        }
+
+        $strokaSQL .= " FROM $this->IPCHAIN_StateSupport
+                        INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id`
+                        INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn`
+                        WHERE ( $string_temp_sql_new ) AND $this->MAIN_entity.`date_register` BETWEEN :starting AND :ending ";
+
+        if ($period == 'year') {
+            $strokaSQL .= " GROUP BY YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register) ASC";
+        }
+        if ($period == 'month') {
+            $strokaSQL .= " GROUP BY MONTH(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), MONTH(date_register) ASC";
+        }
+        if ($period == 'week') {
+            $strokaSQL .= " GROUP BY WEEK(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), WEEK(date_register) ASC";
+        }
+        if ($period == 'day') {
+            $strokaSQL .= " GROUP BY DAY(date_register),MONTH(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), MONTH(date_register),DAY(date_register) ASC";
+        }
+        if ($period == 'data') {
+            $strokaSQL .= " ";
+        }
+
+        $statement = $database->prepare($strokaSQL);
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+        $count_sum = 0;
+        if ($increment == true) {
+          foreach ($data_users as $key => $value) {
+            $value->sum = $value->sum + $count_sum;
+            $count_sum = $value->sum;
+          }
+        }
+
+        return $data_users;
+        exit;
+
+  }
+
 
   /* функции для вывода графиков  */
 
