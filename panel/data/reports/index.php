@@ -16,47 +16,117 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
           <div class="card-body">
-
-            <div id="acc_teport_fiz" class="accordion" role="tablist">
-                  <div class="card">
-                    <div class="card-header" role="tab" id="heading_report_fiz">
-                      <h6 class="mb-0">
-                        <a data-toggle="collapse" href="#collapse_report_ur" aria-expanded="true" aria-controls="collapse_report_ur">
-                          Отчет по Юр. лицам
-                        </a>
-                      </h6>
-                    </div>
-                    <div id="collapse_report_ur" class="collapse" role="tabpanel" aria-labelledby="heading_report_fiz" data-parent="#acc_teport_fiz">
-                      <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_fiz_1').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общие показатели</li>
-                          <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users_count_period')" ><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка с разделением на месяцы</a></li>
-                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_category').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Выгрузка по критерию</li>
-                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_specific_category').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Выгрузка по определенному критерию</li>
-                        </ul>
-                      </div>
-
-                    </div>
-                  </div>
-                  <div class="card">
-                    <div class="card-header" role="tab" id="heading_report_fiz">
-                      <h6 class="mb-0">
-                        <a data-toggle="collapse" href="#collapse_report_fiz" aria-expanded="true" aria-controls="collapse_report_fiz">
-                          Отчет по Физ. лицам
-                        </a>
-                      </h6>
-                    </div>
-                    <div id="collapse_report_fiz" class="collapse" role="tabpanel" aria-labelledby="heading_report_fiz" data-parent="#acc_teport_fiz">
-                      <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                          <li style="cursor:pointer;" class="list-group-item" ><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users')" ><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
-                          <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_period_user').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>Количественные показатели по периоду</li>
-                        </ul>
-                      </div>
-                    </div>
-
+            <div id="acc_report" class="accordion" role="tablist">
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_ur">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_ur" aria-expanded="true" aria-controls="collapse_report_ur">
+                      Отчет по Юр. лицам
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_ur" class="collapse" role="tabpanel" aria-labelledby="heading_report_ur" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_fiz_1').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общие показатели</li>
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users_count_period')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка с разделением на месяцы</a></li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_category').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Выгрузка по критерию
+                      </li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_specific_category').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Выгрузка по
+                        определенному критерию</li>
+                    </ul>
                   </div>
                 </div>
+              </div>
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_fiz">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_fiz" aria-expanded="true" aria-controls="collapse_report_fiz">
+                      Отчет по Физ. лицам
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_fiz" class="collapse" role="tabpanel" aria-labelledby="heading_report_fiz" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_users')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> Общая выгрузка Пользователей</a></li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_period_user').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>Количественные
+                        показатели по периоду</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_fsi">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_fsi" aria-expanded="true" aria-controls="collapse_report_fsi">
+                      Отчет по ФСИ
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_fsi" class="collapse" role="tabpanel" aria-labelledby="heading_report_fsi" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_FSI.php')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Фонды, Институты развития</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_cervices">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_cervices" aria-expanded="true" aria-controls="collapse_report_cervices">
+                      Отчет по Сервисам
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_cervices" class="collapse" role="tabpanel" aria-labelledby="heading_report_cervices" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_cervices.php')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Количественные показатели сервисов</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_event">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_event" aria-expanded="true" aria-controls="collapse_report_event">
+                      Мероприятия
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_event" class="collapse" role="tabpanel" aria-labelledby="heading_report_event" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_event.php')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Статистка по мероприятиям в неком периоде</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_tboil">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_tboil" aria-expanded="true" aria-controls="collapse_report_tboil">
+                      Точка Кипения
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_tboil" class="collapse" role="tabpanel" aria-labelledby="heading_report_tboil" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_point_boil.php')"><i
+                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Показатель работы ТК СПб</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
     </div>
