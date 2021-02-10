@@ -105,6 +105,8 @@
                     <ul class="list-group list-group-flush">
                       <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_event.php')"><i
                             class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Статистка по мероприятиям в неком периоде</a></li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_event').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
+                        !TEST! Данные по мероприятию</li>
                     </ul>
                   </div>
                 </div>
@@ -134,9 +136,8 @@
 <script type="text/javascript">
 
   $(document).ready(function() {
-  //    select_specific_category1 action
-  //    div_select_specific_category
-  //    select_specific_category2
+
+    
 
     $('#select_specific_category2').on('select2:select', function (e) {
       var val = $(e.currentTarget).val();
@@ -403,6 +404,42 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="modal_report_event" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Данные по мероприятияю</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/panel/data/reports/actions/" onsubmit="generate_report(this,'modal_report_event', 'select_input_event'); return false;" method="post" id="modal_report_event">
+          <div class="form-group">
+            <label for="select_input_evevnt" class="col-form-label">Выберите мероприятие</label>
+            <div class="">
+              <select class="js-example-basic-single" name="period" id="select_input_event">
+                <option default disabled selected value="false">-</option>
+                <option value="1234">цифры</option>
+                <option value="1234">789</option>
+                <option value="1234"><span style="visibility:hidden">Чек</span>Тут</option>
+              </select>
+            </div>
+          </div>
+
+          <button style="display:none;" type="submit" name="button"></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="$('#modal_report_event')[0].elements['button'].click()">Сгенерировать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
