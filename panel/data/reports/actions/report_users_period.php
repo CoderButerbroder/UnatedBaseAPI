@@ -1,4 +1,5 @@
 <?php
+/* Отчет по  пользователям системы за выбранный период (дата) */
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
@@ -289,7 +290,7 @@ $now = trim($now);
 
 // Redirect output to a client’s web browser (Xlsx)
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="report_FULLDATA_users'.$now.'.xlsx"');
+header('Content-Disposition: attachment;filename="report_users_FULLDATA'.$now.'.xlsx"');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');

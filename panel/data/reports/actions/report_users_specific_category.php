@@ -1,4 +1,5 @@
 <?php
+/* отчет выгрузка компаний по критерию */
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
@@ -63,7 +64,7 @@ $writer = new Xlsx($spreadsheet);
 
 // Redirect output to a client’s web browser (Xlsx)
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="report_FULLDATA'.date("_H_i_d_m_Y").'.xlsx"');
+header('Content-Disposition: attachment;filename="report_company_FULLDATA'.date("_H_i_d_m_Y").'.xlsx"');
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');

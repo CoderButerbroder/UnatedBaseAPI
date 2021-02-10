@@ -24,6 +24,7 @@
 <script src="/assets/vendors/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
 <script src="/assets/vendors/inputmask/jquery.inputmask.min.js"></script>
 <script src="/assets/vendors/select2/select2.min.js"></script>
+<script src="/assets/vendors/select2/select2.ru.min.js"></script>
 <script src="/assets/vendors/typeahead.js/typeahead.bundle.min.js"></script>
 <script src="/assets/vendors/jquery-tags-input/jquery.tagsinput.min.js"></script>
 <script src="/assets/vendors/dropzone/dropzone.min.js"></script>
