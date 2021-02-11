@@ -55,7 +55,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 $styleArray = [
     'alignment' => [
-        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
     ],
     'borders' => [
         'allBorders' => [
@@ -89,6 +89,7 @@ for ($i=1; $i < 6; $i++) {
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Актуальные данные на момент '.date('H:i d.m.Y'));
 $actual_row++;
+$sheet->mergeCells("A2:C2");
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Общие показетели');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
 for ($i=1; $i < 4; $i++) {
@@ -96,6 +97,7 @@ for ($i=1; $i < 4; $i++) {
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('8af28f');
 }
+
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '#');
@@ -116,8 +118,10 @@ $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Выполненные зая
 $sheet->setCellValueByColumnAndRow(2,$actual_row, $settings->count_main_support_ticket('close'));
 $sheet->setCellValueByColumnAndRow(3,$actual_row, $settings->count_main_support_ticket_current_mounth($status='close'));
 $actual_row++;
+$sheet->getStyle('A2:C6')->applyFromArray($styleArray);
 
 $actual_row++;
+$sheet->mergeCells("A8:E8");
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количественные показатели по площакам');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
 for ($i=1; $i < 6; $i++) {
@@ -126,6 +130,7 @@ for ($i=1; $i < 6; $i++) {
       ->getStartColor()->setARGB('8af28f');
 }
 $actual_row++;
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Наименование');
 $sheet->setCellValueByColumnAndRow(2,$actual_row, 'Общее количество');
 $sheet->setCellValueByColumnAndRow(3,$actual_row, 'Прирост '.$arr_select_month[date("n")]->name);
 $sheet->setCellValueByColumnAndRow(4,$actual_row, 'Количество выполненных');
@@ -204,7 +209,11 @@ foreach ($arr_result_data as $key => $value) {
 
 
 foreach ($arr_result_data as $key => $value) {
-  $sheet->setCellValueByColumnAndRow(1,$actual_row, $value->refer);
+  $actual_row++;
+  $sheet->mergeCells("A".($actual_row-1).":E".$actual_row);
+  $sheet->setCellValueByColumnAndRow(1,($actual_row-1), $value->refer);
+  $sheet->getCellByColumnAndRow(1,($actual_row-1))->getStyle()->getFont()->setBold(true);
+
   $actual_row++;
   foreach ($value->data as $key_type => $value_type) {
     $sheet->setCellValueByColumnAndRow(1,$actual_row, $key_type);
@@ -214,51 +223,64 @@ foreach ($arr_result_data as $key => $value) {
     $sheet->setCellValueByColumnAndRow(5,$actual_row, $value_type->increment);
     $actual_row++;
   }
-  $actual_row++;
+
 }
 
-// // var_dump();
-// exit();
+$sheet->getStyle('A8:E'.($actual_row-1))->applyFromArray($styleArray);
+$actual_row++;
 
 
-/*
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Технологический запрос крупной компании:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+// $arr_data_summ_all = $settings->get_count_users_groupby_time_reg('all');
+$arr_data_summ_day = $settings->get_count_users_groupby_time_reg('day');
+$arr_data_summ_month = $settings->get_count_users_groupby_time_reg('month');
+
+// date('t', time())
+$arr_data_event_all = $settings->get_count_main_events_groupby_time_add(true,'month');
+$arr_data_event_month = $settings->get_count_main_events_groupby_time_add(false,'month',(date("Y-m-").'01 '.date("H:i:s")),date("Y-m-d H:i:s"));
+$arr_data_event_day = $settings->get_count_main_events_groupby_time_add(false,'day',(date("Y-m-").'01 '.date("H:i:s")),date("Y-m-d H:i:s"));
+
+$summ_data_summ_all = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->summ_all : 'Err';
+$summ_data_summ_month = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->sum : 'Err';
+$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : 'Err';
+$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : 'Err';
+
+$summ_data_event_summ_all = (is_array($arr_data_event_all)) ? (array_pop($arr_data_event_all))->summ_all : 'Err';
+$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : 'Err';
+$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : 'Err';
+$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : 'Err';
+$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : 'Err';
+
+
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Запрос письма о поддержке проекта:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Запрос информационной поддержки проекта:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+$sheet->getStyle('A'.($actual_row).':D'.($actual_row+3))->applyFromArray($styleArray);
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Получение услуги центра коллективного пользования (производство):');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+
+$sheet->mergeCells("A".($actual_row-1).":D".$actual_row);
+$sheet->setCellValueByColumnAndRow(1,($actual_row-1), 'Tboil SPb');
+$sheet->getCellByColumnAndRow(1,($actual_row-1))->getStyle()->getFont()->setBold(true);
+$sheet->setCellValueByColumnAndRow(2,($actual_row-2), 'Всего');
+$sheet->setCellValueByColumnAndRow(3,($actual_row-2), 'За месяц ('.$arr_select_month[date("n")]->name.')');
+$sheet->setCellValueByColumnAndRow(4,($actual_row-2), 'За день');
+$sheet->getStyle('B'.($actual_row-2).':D'.($actual_row-2))->applyFromArray($styleArray);
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Получение услуги конструкторского бюро:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+$sheet->setCellValueByColumnAndRow(1, $actual_row, 'Физические лица');
+$sheet->setCellValueByColumnAndRow(2, $actual_row, $summ_data_summ_all);
+$sheet->setCellValueByColumnAndRow(3, $actual_row, $summ_data_summ_month);
+$sheet->setCellValueByColumnAndRow(4, $actual_row, $summ_data_summ_day);
+
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Запрос на консультацию проекта при подаче заявки в ФСИ:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+$sheet->setCellValueByColumnAndRow(1, $actual_row, 'Мероприятия');
+$sheet->setCellValueByColumnAndRow(2, $actual_row, $summ_data_event_summ_all);
+$sheet->setCellValueByColumnAndRow(3, $actual_row, $summ_data_event_summ_month);
+$sheet->setCellValueByColumnAndRow(4, $actual_row, $summ_data_event_summ_day);
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Запрос на консультацию компании при подаче заявки на статус "Участник Сколково":');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Подача предложения в каталог производственных возможностей:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
+
+
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Подбор стартапов под тех.запрос.:');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, '0');
-$sheet->setCellValueByColumnAndRow(3,$actual_row, '0');
-$actual_row++;
-*/
+
+
 
 $writer = new Xlsx($spreadsheet);
 
