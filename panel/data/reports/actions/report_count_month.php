@@ -5,11 +5,10 @@
 // ini_set('display_startup_errors', 1);
 // session_start();
 //
-// if (!isset($_SESSION["key_user"])) {
-//   //echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
-//   exit();
-// }
-
+if (!isset($_SESSION["key_user"]) && trim($_GET["code"]) != 'Y1pVV7llgEeXbavAIWHjljMtj72fM9OR' ) {
+  //echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
+  exit();
+}
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
