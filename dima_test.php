@@ -8,7 +8,7 @@ $settings = new Settings;
 
 
 
-$data = $settings->get_count_main_entity_fci_groupby_time_reg(true,'month');
+$data = $settings->get_count_main_events_groupby_time_add(true,'day');
 var_dump($data);
 
 // $data = $settings->get_count_users_groupby_time_reg('year','2020.01.01','2021.02.09');

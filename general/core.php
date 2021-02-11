@@ -6710,23 +6710,27 @@ class Settings {
 
         if ($period == 'year') {
               $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
-                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_groupby";
         }
         if ($period == 'month') {
               $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
                               MONTH($this->MAIN_entity.`date_register`) as monthd,
-                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_groupby";
         }
         if ($period == 'week') {
               $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
                               WEEK($this->MAIN_entity.`date_register`) as weekd,
-                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_groupby";
         }
         if ($period == 'day') {
               $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
                               DAY($this->MAIN_entity.`date_register`) as dayd,
                               MONTH($this->MAIN_entity.`date_register`) as monthd,
-                              YEAR($this->MAIN_entity.`date_register`) as yeard";
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_groupby";
         }
         if ($period == 'data') {
               $strokaSQL .= " * ";
@@ -6784,9 +6788,409 @@ class Settings {
 
   }
 
+  // количеcтво физ. лиц участников программ ФСИ на платформе (нараст.итог)
+  public function get_count_main_entity_fci_program_groupby_time_reg($increment=true,$prefix_program='all',$period='data',$start=NULL,$end=NULL) {
+        global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        if ($prefix_program != 'all') {
+          $array_document_fsi = array($prefix_program => 'тут не нужный текст, просто так');
+        }
+        else {
+          $array_document_fsi = array(
+            'У' => 'Умник',
+            'Соц' => 'Социум Цифровые технологии',
+            'С1ЦТ' => 'Старт-1 Цифровые технологии',
+            'С2ЦТ' => 'Старт-2 Цифровые технологии',
+            'С2ЦТ' => 'Старт-3 Цифровые технологии',
+            'С1' => 'Старт-1',
+            'С2' => 'Старт-2',
+            'СЦТ' => 'Старт Цифровые технологии',
+            'Комм' => 'Коммерциализация',
+            'КЭ' => 'Коммерциализация Экспорт',
+            'Разв' => 'Развитие',
+            'ЦТ' => 'Цифровые технологии',
+            'НТИ' => 'Развитие НТИ',
+            'ЦП' => 'Развитие-Цифровые платформы',
+            'ДП' => 'Дежурный по планете',
+            'Мол' => 'Вовлечение молодежи в инновационную деятельность',
+            'С1ЦП' => 'Старт-Цифровые платформы',
+            'С1Н' => 'Старт-1',
+            'Агро' => 'АГРОНТИ',
+            'Kor' => 'Российско-корейский конкурс',
+            'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
+          );
+        }
+        $array_prefix = array_keys($array_document_fsi);
+        $count_prefix = count($array_prefix);
+        $string_temp_sql_new = '';
+
+        foreach ($array_prefix as $key => $value) {
+              $string_temp_sql_new .= " id_Support LIKE '".$value."%' OR";
+        }
+        $string_temp_sql_new = substr($string_temp_sql_new, 0, -2);
+
+        $strokaSQL = "SELECT ";
+
+        if ($period == 'year') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+        }
+        if ($period == 'month') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+        }
+        if ($period == 'week') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              WEEK($this->MAIN_entity.`date_register`) as weekd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+        }
+        if ($period == 'day') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              DAY($this->MAIN_entity.`date_register`) as dayd,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+        }
+        if ($period == 'data') {
+              $strokaSQL .= " * ";
+        }
+
+        $strokaSQL .= " FROM $this->IPCHAIN_StateSupport
+                        INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id`
+                        INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn`
+                        INNER JOIN $this->main_users ON $this->main_users.`id_entity` = $this->MAIN_entity.`id`
+                        WHERE ( $string_temp_sql_new ) AND $this->MAIN_entity.`date_register` BETWEEN :starting AND :ending ";
+
+        if ($period == 'year') {
+            $strokaSQL .= " GROUP BY YEAR(reg_date)
+                            HAVING SUM($this->main_users.`id_tboil`) > 0
+                            ORDER BY YEAR(reg_date) ASC";
+        }
+        if ($period == 'month') {
+            $strokaSQL .= " GROUP BY MONTH(reg_date), YEAR(reg_date)
+                            HAVING SUM($this->main_users.`id_tboil`) > 0
+                            ORDER BY YEAR(reg_date), MONTH(reg_date) ASC";
+        }
+        if ($period == 'week') {
+            $strokaSQL .= " GROUP BY WEEK(reg_date), YEAR(reg_date)
+                            HAVING SUM($this->main_users.`id_tboil`) > 0
+                            ORDER BY YEAR(reg_date), WEEK(reg_date) ASC";
+        }
+        if ($period == 'day') {
+            $strokaSQL .= " GROUP BY DAY(reg_date),MONTH(reg_date), YEAR(reg_date)
+                            HAVING SUM($this->main_users.`id_tboil`) > 0
+                            ORDER BY YEAR(reg_date), MONTH(reg_date),DAY(reg_date) ASC";
+        }
+        if ($period == 'data') {
+            $strokaSQL .= " ";
+        }
+
+        $statement = $database->prepare($strokaSQL);
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+        $count_sum = 0;
+        if ($increment == true) {
+          foreach ($data_users as $key => $value) {
+            $value->sum = $value->sum + $count_sum;
+            $count_sum = $value->sum;
+          }
+        }
+
+        return $data_users;
+        exit;
+
+  }
+
+  // Количество юр. лиц - участников Сколково на платформе (нараст.итог) + прирост к предыдщему месяцу в процентах
+  public function get_count_main_entity_skolkovo_groupby_time_reg($increment=true,$period='data',$start=NULL,$end=NULL) {
+        global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT date_register FROM $this->MAIN_entity ORDER BY date_register DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        $strokaSQL = "SELECT ";
+
+        if ($period == 'year') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as skolkovo_groupby";
+        }
+        if ($period == 'month') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as skolkovo_groupby";
+        }
+        if ($period == 'week') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              WEEK($this->MAIN_entity.`date_register`) as weekd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as skolkovo_groupby";
+        }
+        if ($period == 'day') {
+              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                              DAY($this->MAIN_entity.`date_register`) as dayd,
+                              MONTH($this->MAIN_entity.`date_register`) as monthd,
+                              YEAR($this->MAIN_entity.`date_register`) as yeard,
+                              count(DISTINCT($this->MAIN_entity.`inn`)) as skolkovo_groupby";
+        }
+        if ($period == 'data') {
+              $strokaSQL .= " * ";
+        }
+
+        $strokaSQL .= " FROM $this->IPCHAIN_StateSupport
+                        INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id`
+                        INNER JOIN $this->MAIN_entity ON $this->MAIN_entity.`inn` = $this->IPCHAIN_entity.`inn`
+                        WHERE  $this->IPCHAIN_StateSupport.`typeId` NOT LIKE ' ' AND $this->MAIN_entity.`date_register` BETWEEN :starting AND :ending ";
+
+        if ($period == 'year') {
+            $strokaSQL .= " GROUP BY YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register) ASC";
+        }
+        if ($period == 'month') {
+            $strokaSQL .= " GROUP BY MONTH(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), MONTH(date_register) ASC";
+        }
+        if ($period == 'week') {
+            $strokaSQL .= " GROUP BY WEEK(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), WEEK(date_register) ASC";
+        }
+        if ($period == 'day') {
+            $strokaSQL .= " GROUP BY DAY(date_register),MONTH(date_register), YEAR(date_register)
+                            HAVING SUM($this->MAIN_entity.`inn`) > 0
+                            ORDER BY YEAR(date_register), MONTH(date_register),DAY(date_register) ASC";
+        }
+        if ($period == 'data') {
+            $strokaSQL .= " ";
+        }
+
+        $statement = $database->prepare($strokaSQL);
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+        $count_sum = 0;
+        if ($increment == true) {
+          foreach ($data_users as $key => $value) {
+            if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+            else {$value->percent = 0;}
+            $value->sum = $value->sum + $count_sum;
+            $count_sum = $value->sum;
+          }
+        }
+
+        return $data_users;
+        exit;
+
+  }
+
+  // Функция получения количества заявок по сервисам поданых в ЛК технопарка
+  public function get_count_main_support_ticket_groupby_time_add($increment=true,$type_support='all',$period='data',$start=NULL,$end=NULL) {
+        global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT date_added FROM $this->MAIN_support_ticket ORDER BY date_added ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT date_added FROM $this->MAIN_support_ticket ORDER BY date_added DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        $strokaSQL = "SELECT ";
+
+        if ($period == 'year') {
+              $strokaSQL .= " count(type_support) as sum,
+                              YEAR(date_added) as yeard,
+                              count(type_support) as support_ticket_groupby";
+        }
+        if ($period == 'month') {
+              $strokaSQL .= " count(type_support) as sum,
+                              MONTH(date_added) as monthd,
+                              YEAR(date_added) as yeard,
+                              count(type_support) as support_ticket_groupby";
+        }
+        if ($period == 'week') {
+              $strokaSQL .= " count(type_support) as sum,
+                              WEEK(date_added) as weekd,
+                              YEAR(date_added) as yeard,
+                              count(type_support) as support_ticket_groupby";
+        }
+        if ($period == 'day') {
+              $strokaSQL .= " count(type_support) as sum,
+                              DAY(date_added) as dayd,
+                              MONTH(date_added) as monthd,
+                              YEAR(date_added) as yeard,
+                              count(type_support) as support_ticket_groupby";
+        }
+        if ($period == 'data') {
+              $strokaSQL .= " * ";
+        }
+
+          if ($type_support != 'all') {
+            $strokaSQL .= " FROM $this->MAIN_support_ticket
+                            WHERE `type_support` = :type_support AND `date_added` BETWEEN :starting AND :ending ";
+          }
+          else {
+            $strokaSQL .= " FROM $this->MAIN_support_ticket
+                            WHERE `date_added` BETWEEN :starting AND :ending ";
+          }
+
+        if ($period == 'year') {
+            $strokaSQL .= " GROUP BY YEAR(date_added)
+                            HAVING SUM(id_tboil) > 0
+                            ORDER BY YEAR(date_added) ASC";
+        }
+        if ($period == 'month') {
+            $strokaSQL .= " GROUP BY MONTH(date_added), YEAR(date_added)
+                            HAVING SUM(id_tboil) > 0
+                            ORDER BY YEAR(date_added), MONTH(date_added) ASC";
+        }
+        if ($period == 'week') {
+            $strokaSQL .= " GROUP BY WEEK(date_added), YEAR(date_added)
+                            HAVING SUM(id_tboil) > 0
+                            ORDER BY YEAR(date_added), WEEK(date_added) ASC";
+        }
+        if ($period == 'day') {
+            $strokaSQL .= " GROUP BY DAY(date_added),MONTH(date_added), YEAR(date_added)
+                            HAVING SUM(id_tboil) > 0
+                            ORDER BY YEAR(date_added), MONTH(date_added),DAY(date_added) ASC";
+        }
+        if ($period == 'data') {
+            $strokaSQL .= " ";
+        }
+
+        $statement = $database->prepare($strokaSQL);
+        if ($type_support != 'all') {
+          $statement->bindParam(':type_support', $type_support, PDO::PARAM_STR);
+        }
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+        $count_sum = 0;
+        if ($increment == true) {
+          foreach ($data_users as $key => $value) {
+            if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+            else {$value->percent = 0;}
+            $value->sum = $value->sum + $count_sum;
+            $count_sum = $value->sum;
+          }
+        }
+
+        return $data_users;
+        exit;
+
+  }
+
+  // Получение количества мероприятий по периодам год/месяц/неделя/день и промежутку времени, а так же общее суммирование мероприятий по периодам и промежутку времени
+  public function get_count_main_events_groupby_time_add($increment=true,$period='data',$start=NULL,$end=NULL) {
+        global $database;
+
+        if (!$start) {
+          $start_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event ASC LIMIT 1");
+          $start_date->execute();
+          $start = $start_date->fetch(PDO::FETCH_COLUMN);
+        }
+        if (!$end) {
+          $end_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event DESC LIMIT 1");
+          $end_date->execute();
+          $end = $end_date->fetch(PDO::FETCH_COLUMN);
+        }
+
+        if ($period == 'year') {
+          $statement = $database->prepare("SELECT count(id) as sum,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event) ASC");
+        }
+        if ($period == 'month') {
+          $statement = $database->prepare("SELECT count(id) as sum,MONTH(start_datetime_event) as monthd,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event) ASC");
+        }
+        if ($period == 'week') {
+          $statement = $database->prepare("SELECT count(id) as sum, WEEK(start_datetime_event) as weekd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY WEEK(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),WEEK(start_datetime_event) ASC");
+        }
+        if ($period == 'day') {
+          $statement = $database->prepare("SELECT count(id) as sum, DAY(start_datetime_event) as dayd, MONTH(start_datetime_event) as monthd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY DAY(start_datetime_event),MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event),DAY(start_datetime_event) ASC");
+        }
+        if ($period == 'data') {
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending");
+        }
+        $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+        $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+        $statement->execute();
+        $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+        if (!$data_users) {
+            return 0;
+            exit;
+        }
+        $count_all_users = 0;
+          foreach ($data_users as $key => $value) {
+            $count_all_users = $count_all_users+$value->sum;
+          }
+
+        $count_sum = 0;
+        if ($increment == true) {
+          foreach ($data_users as $key => $value) {
+            $value->sum = $value->sum + $count_sum;
+            $count_sum = $value->sum;
+          }
+        }
+
+        array_push($data_users, (object) array('summ_all' => $count_all_users));
+
+        return $data_users;
+        exit;
+
+  }
+
+
+
 
   /* функции для вывода графиков  */
-
   public function get_count_all_users() {
       global $database;
       $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) ORDER BY reg_date ASC");
