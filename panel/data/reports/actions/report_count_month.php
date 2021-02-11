@@ -53,20 +53,49 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
+$styleArray = [
+    'alignment' => [
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT,
+    ],
+    'borders' => [
+        'allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'color' => ['argb' => '00000000'],
+        ]
+    ]
+];
+
 $spreadsheet = new Spreadsheet();
+$spreadsheet->getProperties()->setTitle("Ежедневные показатели");
+$spreadsheet->getProperties()->setSubject("Ежедневные показатели");
+$spreadsheet->getProperties()->setCreator("Fulldata");
+$spreadsheet->getProperties()->setManager("Fulldata");
+$spreadsheet->getProperties()->setCompany("ОАО Ленполиграфмаш");
+$spreadsheet->getProperties()->setCategory("Работа");
+$spreadsheet->getProperties()->setKeywords("Отчет, Fulldata, Фуллдата, ЛПМ, E-Spb, Сервисы, Показатели, Данные");
+$spreadsheet->getProperties()->setDescription("Ежедневный автоматический сгенерированный отчет");
+$spreadsheet->getProperties()->setLastModifiedBy("Fulldata");
+$spreadsheet->getProperties()->setCreated(date("d.m.Y"));
 //$sheet = $spreadsheet->getActiveSheet();
 $actual_row = 1;
 $sheet = $spreadsheet->setActiveSheetIndex(0);
 $sheet->setTitle('Сводные показатели');
 
-$sheet->getColumnDimension('A')->setWidth(40);
-$sheet->getColumnDimension('B')->setWidth(15);
-$sheet->getColumnDimension('C')->setWidth(15);
-$sheet->getColumnDimension('D')->setWidth(15);
-$sheet->getColumnDimension('E')->setWidth(15);
-$sheet->getColumnDimension('F')->setWidth(15);
 
+for ($i=1; $i < 6; $i++) {
+  $sheet->getcolumndimensionbycolumn($i)->setAutoSize(true);
+}
+
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Актуальные данные на момент '.date('H:i d.m.Y'));
+$actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Общие показетели');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
+for ($i=1; $i < 4; $i++) {
+  $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
+      ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+      ->getStartColor()->setARGB('8af28f');
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '#');
@@ -86,15 +115,21 @@ $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Выполненные заявки:');
 $sheet->setCellValueByColumnAndRow(2,$actual_row, $settings->count_main_support_ticket('close'));
 $sheet->setCellValueByColumnAndRow(3,$actual_row, $settings->count_main_support_ticket_current_mounth($status='close'));
-
 $actual_row++;
 
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количественные показатели по площакам');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
+for ($i=1; $i < 6; $i++) {
+  $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
+      ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+      ->getStartColor()->setARGB('8af28f');
+}
 $actual_row++;
-
+$sheet->setCellValueByColumnAndRow(2,$actual_row, 'Общее количество');
+$sheet->setCellValueByColumnAndRow(3,$actual_row, 'Прирост '.$arr_select_month[date("n")]->name);
 $sheet->setCellValueByColumnAndRow(4,$actual_row, 'Количество выполненных');
-$sheet->setCellValueByColumnAndRow(5,$actual_row, 'Прирост '.$arr_select_month[date("n")]->name);
+$sheet->setCellValueByColumnAndRow(5,$actual_row, 'Прирост выполненных за '.$arr_select_month[date("n")]->name);
 $actual_row++;
 
 
@@ -164,8 +199,6 @@ foreach ($arr_result_data as $key => $value) {
       }
     }
   }
-
-
 }
 
 
