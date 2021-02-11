@@ -14,7 +14,7 @@ $count_main_support_ticket_all  = $settings->count_main_support_ticket('all');
 $count_main_support_ticket_close = $settings->count_main_support_ticket('close');
 $count_main_support_ticket_current_mounth = $settings->count_main_support_ticket_current_mounth('close');
 
-$file_report = file_get_contents('https://'.$host.'/panel/data/reports/actions/report_count_month.php');
+$file_report = file_get_contents('https://'.$host.'/panel/data/reports/actions/report_count_month?code=Y1pVV7llgEeXbavAIWHjljMtj72fM9OR');
 
 $temp = tempnam(sys_get_temp_dir(), 'report.xlsx');
 
@@ -34,7 +34,7 @@ $secure_code_check = 'd41d8cd98f00b204e9800998ecf8427e';
         exit;
     }
               // Кому отправляем
-              //$massiv_email = array('web@kt-segment.ru','dimos-eskimos2014@yandex.ru');
+              // $massiv_email = array('web@kt-segment.ru','dimos-eskimos2014@yandex.ru','vi9905@yandex.ru');
 
               //$massiv_email = array('web@kt-segment.ru','starkovskii@lpmtech.ru');
 
@@ -65,7 +65,7 @@ $secure_code_check = 'd41d8cd98f00b204e9800998ecf8427e';
                       'link_to_server' => 'https://'.$host,
                       'text_button' => 'СГЕНЕРИРОВАТЬ СВЕЖИЙ ОТЧЕТ',
                       'link_button' => 'https://'.$host.'/panel/data/reports/actions/report_count_month',
-                      'name_host' => $_SERVER['SERVER_NAME'],
+                      'name_host' => $host,
                       'date' => $today2
                     );
 

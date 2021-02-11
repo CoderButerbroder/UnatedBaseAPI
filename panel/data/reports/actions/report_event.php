@@ -15,6 +15,19 @@ if (!isset($_SESSION["key_user"])) {
   exit();
 }
 
+// $period_select = (object) [];
+// $period_select->period = $_POST["period"];
+// $period_select->data1 =  date('Y-m-d H:i:s', strtotime(trim($_POST["period_1"])));
+// $period_select->data2 =  date('Y-m-d H:i:s', strtotime(trim($_POST["period_2"])));
+//
+// if ($period_select->data1 && $period_select->data2 && $period_select->period != 'year' && $period_select->period != 'month' && $period_select->period != 'week') {
+//   exit();
+// }
+
+if ( $period_select->period == 'year' ) $period_select->name = 'Год';
+if ( $period_select->period == 'month' ) $period_select->name = 'Месяц';
+if ( $period_select->period == 'week' ) $period_select->name = 'Неделя';
+
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
@@ -56,6 +69,14 @@ $sheet->getColumnDimension('B')->setAutoSize(true);
 $sheet->getColumnDimension('C')->setAutoSize(true);
 $sheet->getColumnDimension('D')->setAutoSize(true);
 
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Выбранный Перииод');
+$sheet->setCellValueByColumnAndRow(2,$actual_row, $period_select->name);
+$sheet->setCellValueByColumnAndRow(3,$actual_row, 'С '.date('H:i d.m.Y', strtotime( $period_select->data1 )) );
+$sheet->setCellValueByColumnAndRow(4,$actual_row, 'по '.date('H:i d.m.Y', strtotime( $period_select->data2 )) );
+$actual_row++;
+
+
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Общие данные:');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFill()
@@ -81,10 +102,6 @@ $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(tru
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFill()
     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
     ->getStartColor()->setARGB('8af28f');
-$actual_row++;
-
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Выбранный Перииод');
-$sheet->setCellValueByColumnAndRow(2,$actual_row, 'Некий период');
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1, $actual_row, 'Наименование');

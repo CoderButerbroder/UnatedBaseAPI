@@ -10,9 +10,82 @@ if (!isset($_SESSION["key_user"])) {
   exit();
 }
 
+$period_select = (object) [];
+$period_select->period = $_POST["period"];
+$period_select->data1 =  date('Y-m-d H:i:s', strtotime(trim($_POST["start"])));
+$period_select->data2 =  date('Y-m-d H:i:s', strtotime(trim($_POST["end"])));
+
+$period_select->period = 'month';
+$period_select->start =  date('Y-m-d H:i:s', strtotime('01.01.2020'));
+$period_select->end =  date('Y-m-d H:i:s', strtotime('30.02.2021'));
+
+if ($period_select->start && $period_select->end && $period_select->period != 'year' && $period_select->period != 'month' && $period_select->period != 'week') {
+  exit();
+}
+
+if ( $period_select->period == 'year' ) $period_select->name = 'Год';
+if ( $period_select->period == 'month' ) $period_select->name = 'Месяц';
+if ( $period_select->period == 'week' ) $period_select->name = 'Неделя';
+
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
+
+$arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select->period , $period_select->start , $period_select->end );
+$arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period , $period_select->start , $period_select->end );
+
+$arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select->period , $period_select->start , $period_select->end );
+
+$arr_data_period = [];
+
+
+function get_list_date_arr( $arr_in ) {
+  global $period_select, $arr_data_period;
+  foreach ($arr_in as $key => $value) {
+    if ( $period_select->period == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+    if ( $period_select->period == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
+    if ( $period_select->period == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+    if (!in_array($data_i, $arr_data_period)) {
+        array_push($arr_data_period, $data_i);
+    }
+  }
+}
+
+function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in) {
+  global $period_select;
+  if(is_Array($arr_in)) {
+    foreach ($arr_in as $key2 => $value2) {
+      // echo $value2->sum.' '.$value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd."</br>";
+
+      if($period_select->period == 'day'){
+        $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+      }
+      if($period_select->period == 'week'){
+        $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+      }
+      if($period_select->period == 'month'){
+        $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+      }
+      if($period_select->period == 'year'){
+        $date1 = strtotime('01.01.'.$value2->yeard);
+      }
+
+      if($data_in == $date1) {
+        $sheet_in->setCellValueByColumnAndRow(($key+2), $row, $value2->sum );
+        return 0;
+      } else {
+        $sheet_in->setCellValueByColumnAndRow(($key+2), $row, 0);
+      }
+    }
+  } else {
+    $sheet_in->setCellValueByColumnAndRow(($key+2), ($row), 0);
+  }
+}
+
+if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0 ) get_list_date_arr($arr_FSI_count);
+if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
+if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
+
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '2' => (object) array('name' => 'Февраль', ),
@@ -27,10 +100,6 @@ $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '11' => (object) array('name' => 'Ноябрь', ),
                           '12' => (object) array('name' => 'Декабрь' ) );
 
-$defaut_value = '-';
-
-// echo  json_encode($arr_merge_count,JSON_UNESCAPED_UNICODE);
-// exit();
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/office/vendor/autoload.php');
 
@@ -40,20 +109,24 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 $spreadsheet = new Spreadsheet();
-//$sheet = $spreadsheet->getActiveSheet();
 $actual_row = 1;
 $sheet = $spreadsheet->setActiveSheetIndex(0);
 $sheet->setTitle('Фонды, Институты развития');
 
-// var_dump($sheet->getCell('A1'));
-
-
-// $sheet->getColumnDimension('A')->setWidth(40);
-// $sheet->getColumnDimensionByColumn(5)->setWidth(20);
-
 $sheet->getColumnDimension('A')->setAutoSize(true);
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатель');
+foreach ($arr_data_period as $key => $value) {
+  if($period_select->period == 'year'){
+      $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row),  date('Y',  $value) );
+  }
+  if ( $period_select->period == 'month' ) {
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row),  $arr_select_month[date('n',  $value)]->name.' '.date('Y',  $value)  );
+  }
+  if ( $period_select->period == 'week' ) {
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row),  date('W',  $value)." неделя ".$arr_select_month[date('n',  $value)]->name.' '.date('Y',  $value)  );
+  }
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Наименование направления работы -');
@@ -73,7 +146,12 @@ for ($i=1; $i < 8; $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников программ ФСИ на платформе (нараст.итог)');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count);
+  set_cell_value($sheet, $key, ($actual_row+1), $value, $arr_FSI_YMNIK_count);
+}
 $actual_row++;
+
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. количеcтво физ лиц участников программы Умник на платформе (нараст.итог)');
 $actual_row++;
@@ -129,6 +207,38 @@ for ($i=1; $i < 8; $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников Сколково на платформе (нараст.итог)');
+foreach ($arr_data_period as $key => $value) {
+  if(is_Array($arr_SK_count)) {
+    foreach ($arr_SK_count as $key2 => $value2) {
+      if($period_select->period == 'day'){
+        $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+      }
+      if($period_select->period == 'week'){
+        $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+      }
+      if($period_select->period == 'month'){
+        $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+      }
+      if($period_select->period == 'year'){
+        $date1 = strtotime('01.01.'.$value2->yeard);
+      }
+
+      if($value == $date1) {
+        $sheet->setCellValueByColumnAndRow(($key+2), $actual_row, $value2->sum);
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), $value2->percent."%");
+        break;
+      } else {
+        $sheet->setCellValueByColumnAndRow(($key+2), $actual_row, 0);
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), "0%");
+      }
+    }
+  } else {
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), 0);
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), "0%");
+  }
+}
+
+
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'прирост к предыдщему месяцу в процентах');
