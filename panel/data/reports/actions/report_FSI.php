@@ -238,15 +238,17 @@ for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников программ ФСИ на платформе (нараст.итог)');
-$temp_fsi_summ = $temp_fsi_um = 0;
+$temp_value_iter = 0;
 foreach ($arr_data_period as $key => $value) {
-  $temp_fsi_summ = set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count, $temp_fsi_summ);
-  $temp_fsi_um = set_cell_value($sheet, $key, ($actual_row+1), $value, $arr_FSI_YMNIK_count, $temp_fsi_um);
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count, $temp_value_iter);
 }
 $actual_row++;
 
-
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. количеcтво физ лиц участников программы Умник на платформе (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, ($actual_row), $value, $arr_FSI_YMNIK_count, $temp_value_iter);
+}
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '3. прирост к предыдущему месяцу в процентах');
 foreach ($arr_data_period as $key => $value) {
@@ -327,9 +329,9 @@ for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников Сколково на платформе (нараст.итог)');
-$temp_val_suym_sk = 0;
+$temp_value_iter = 0;
 foreach ($arr_data_period as $key => $value) {
-  $temp_val_suym_sk = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count, $temp_val_suym_sk);
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count, $temp_value_iter);
 }
 $actual_row++;
 
@@ -373,14 +375,16 @@ for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Организация встречи с проектным менеджером Сколково (нараст.итог)');
+$temp_value_iter = 0;
 foreach ($arr_data_period as $key => $value) {
-  set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count_event);
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count_event, $temp_value_iter);
 }
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. Консультации по услугам ЦКП  (нараст.итог)');
+$temp_value_iter = 0;
 foreach ($arr_data_period as $key => $value) {
-  set_cell_value($sheet, $key, $actual_row, $value, $arr_CKP_count);
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_CKP_count, $temp_value_iter);
 }
 $actual_row++;
 
