@@ -6778,6 +6778,8 @@ class Settings {
         $count_sum = 0;
         if ($increment == true) {
           foreach ($data_users as $key => $value) {
+            if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+            else {$value->percent = 0;}
             $value->sum = $value->sum + $count_sum;
             $count_sum = $value->sum;
           }
