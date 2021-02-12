@@ -231,13 +231,19 @@ $actual_row++;
 
 
 // $arr_data_summ_all = $settings->get_count_users_groupby_time_reg('all');
-$arr_data_summ_day = $settings->get_count_users_groupby_time_reg('day');
+
+$data_str_generate_report = date('07:00:00 d.m.Y');
+$mark_data_str_generate_report = strtotime($data_str_generate_report);
+//предположительно отчет должен быть сформирован за день до
+$mark_data_str_generate_report -= (25200+1);
+
+$arr_data_summ_day = $settings->get_count_users_groupby_time_reg('day',null, date("Y-m-d H:i:s", $mark_data_str_generate_report));
 $arr_data_summ_month = $settings->get_count_users_groupby_time_reg('month');
 
 // date('t', time())
 $arr_data_event_all = $settings->get_count_main_events_groupby_time_add(true,'month');
 $arr_data_event_month = $settings->get_count_main_events_groupby_time_add(false,'month',(date("Y-m-").'01 '.date("H:i:s")),date("Y-m-d H:i:s"));
-$arr_data_event_day = $settings->get_count_main_events_groupby_time_add(false,'day',(date("Y-m-").'01 '.date("H:i:s")),date("Y-m-d H:i:s"));
+$arr_data_event_day = $settings->get_count_main_events_groupby_time_add(false,'day',(date("Y-m-").'01 '.date("H:i:s")), date("Y-m-d H:i:s", $mark_data_str_generate_report));
 
 $summ_data_summ_all = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->summ_all : 'Err';
 $summ_data_summ_month = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->sum : 'Err';
@@ -261,7 +267,7 @@ $sheet->setCellValueByColumnAndRow(1,($actual_row-1), 'Tboil SPb');
 $sheet->getCellByColumnAndRow(1,($actual_row-1))->getStyle()->getFont()->setBold(true);
 $sheet->setCellValueByColumnAndRow(2,($actual_row-2), 'Всего');
 $sheet->setCellValueByColumnAndRow(3,($actual_row-2), 'За месяц ('.$arr_select_month[date("n")]->name.')');
-$sheet->setCellValueByColumnAndRow(4,($actual_row-2), 'За день');
+$sheet->setCellValueByColumnAndRow(4,($actual_row-2), 'За день ('.date("H:i d.m.Y", $mark_data_str_generate_report).')');
 $sheet->getStyle('B'.($actual_row-2).':D'.($actual_row-2))->applyFromArray($styleArray);
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1, $actual_row, 'Физические лица');
