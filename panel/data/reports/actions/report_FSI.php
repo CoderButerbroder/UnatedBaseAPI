@@ -15,9 +15,9 @@ $period_select->period = $_POST["period"];
 $period_select->data1 =  date('Y-m-d H:i:s', strtotime(trim($_POST["start"])));
 $period_select->data2 =  date('Y-m-d H:i:s', strtotime(trim($_POST["end"])));
 
-$period_select->period = 'month';
-$period_select->start =  date('Y-m-d H:i:s', strtotime('01.01.2020'));
-$period_select->end =  date('Y-m-d H:i:s', strtotime('30.02.2021'));
+// $period_select->period = 'month';
+// $period_select->start =  date('Y-m-d H:i:s', strtotime('01.01.2020'));
+// $period_select->end =  date('Y-m-d H:i:s', strtotime('30.02.2021'));
 
 if ($period_select->start && $period_select->end && $period_select->period != 'year' && $period_select->period != 'month' && $period_select->period != 'week') {
   exit();
@@ -35,12 +35,38 @@ $arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $pe
 $arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period , $period_select->start , $period_select->end );
 
 $arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select->period , $period_select->start , $period_select->end );
+$arr_SK_count_event =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Запрос на консультацию компании - Фонд Сколково', $period_select->period , $period_select->start , $period_select->end );
+
+$arr_CKP_count =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
+
+$arr_service_FSI = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Запрос на консультацию проекта при подаче заявки в ФСИ', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_organization_meeting = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Организация встречи с инвестором/индустриальным партнером и т.д.', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_CKP = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_sturtup_organization_meeting = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Организация участия стартапа в мероприятиях', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_translate = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Перевод материалов на английский язык', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_event = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Организация встречи с проектным менеджером Сколково', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_SK = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Запрос на консультацию компании - Фонд Сколково', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_support = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Запрос информационной поддержки проекта', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_preparation_application = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Консультация по подготовке заявки на статус участника', $period_select->period , $period_select->start , $period_select->end );
+$arr_service_support_IS = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Консультация по регистрации объектов ИС', $period_select->period , $period_select->start , $period_select->end );
+//
+//
+// echo json_encode($arr_FSI_count, JSON_UNESCAPED_UNICODE);
+// exit();
 
 $arr_data_period = [];
 
+function add_null_in_data_week( $arr_in ) {
+  foreach( $arr_in as $key => $value ) {
+    if($value->weekd >= 1 && $value->weekd <= 9 ){
+      $value->weekd = '0'.$value->weekd;
+    }
+  }
+}
 
 function get_list_date_arr( $arr_in ) {
-  global $period_select, $arr_data_period;
+  global $period_select;
+  global $arr_data_period;
   foreach ($arr_in as $key => $value) {
     if ( $period_select->period == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
     if ( $period_select->period == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
@@ -51,8 +77,13 @@ function get_list_date_arr( $arr_in ) {
   }
 }
 
-function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in) {
+function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in, $iter = -1) {
   global $period_select;
+  if ($iter != -1) {
+    $sheet_in->setCellValueByColumnAndRow(($key+2), $row, $iter);
+  } else {
+    $sheet_in->setCellValueByColumnAndRow(($key+2), $row, 0);
+  }
   if(is_Array($arr_in)) {
     foreach ($arr_in as $key2 => $value2) {
       // echo $value2->sum.' '.$value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd."</br>";
@@ -72,19 +103,55 @@ function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in) {
 
       if($data_in == $date1) {
         $sheet_in->setCellValueByColumnAndRow(($key+2), $row, $value2->sum );
-        return 0;
+        $iter=$value2->sum;
+        return $iter;
       } else {
-        $sheet_in->setCellValueByColumnAndRow(($key+2), $row, 0);
+        if ($iter == -1) {
+          $sheet_in->setCellValueByColumnAndRow(($key+2), $row, 0);
+        }
       }
     }
   } else {
     $sheet_in->setCellValueByColumnAndRow(($key+2), ($row), 0);
   }
+
+  return $iter;
+}
+
+if ($period_select->period == 'week') {
+  add_null_in_data_week($arr_FSI_count);
+  add_null_in_data_week($arr_FSI_YMNIK_count);
+  add_null_in_data_week($arr_SK_count);
+  add_null_in_data_week($arr_SK_count_event);
+  add_null_in_data_week($arr_CKP_count);
+  add_null_in_data_week($arr_service_FSI);
+  add_null_in_data_week($arr_service_organization_meeting);
+  add_null_in_data_week($arr_service_CKP);
+  add_null_in_data_week($arr_service_sturtup_organization_meeting);
+  add_null_in_data_week($arr_service_translate);
+  add_null_in_data_week($arr_service_event);
+  add_null_in_data_week($arr_service_SK);
+  add_null_in_data_week($arr_service_support);
+  add_null_in_data_week($arr_service_preparation_application);
+  add_null_in_data_week($arr_service_support_IS);
 }
 
 if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0 ) get_list_date_arr($arr_FSI_count);
 if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
 if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
+if (is_array($arr_SK_count_event) && count($arr_SK_count_event) > 0 && $arr_SK_count_event != 0 ) get_list_date_arr($arr_SK_count_event);
+if (is_array($arr_CKP_count) && count($arr_CKP_count) > 0 && $arr_CKP_count != 0 ) get_list_date_arr($arr_CKP_count);
+
+if (is_array($arr_service_FSI) && count($arr_service_FSI) > 0 && $arr_service_FSI != 0 ) get_list_date_arr($arr_service_FSI);
+if (is_array($arr_service_organization_meeting) && count($arr_service_organization_meeting) > 0 && $arr_service_organization_meeting != 0 ) get_list_date_arr($arr_service_organization_meeting);
+if (is_array($arr_service_CKP) && count($arr_service_CKP) > 0 && $arr_service_CKP != 0 ) get_list_date_arr($arr_service_CKP);
+if (is_array($arr_service_sturtup_organization_meeting) && count($arr_service_sturtup_organization_meeting) > 0 && $arr_service_sturtup_organization_meeting != 0 ) get_list_date_arr($arr_service_sturtup_organization_meeting);
+if (is_array($arr_service_translate) && count($arr_service_translate) > 0 && $arr_service_translate != 0 ) get_list_date_arr($arr_service_translate);
+if (is_array($arr_service_event) && count($arr_service_event) > 0 && $arr_service_event != 0 ) get_list_date_arr($arr_service_event);
+if (is_array($arr_service_SK) && count($arr_service_SK) > 0 && $arr_service_SK != 0 ) get_list_date_arr($arr_service_SK);
+if (is_array($arr_service_support) && count($arr_service_support) > 0 && $arr_service_support != 0 ) get_list_date_arr($arr_service_support);
+if (is_array($arr_service_preparation_application) && count($arr_service_preparation_application) > 0 && $arr_service_preparation_application != 0 ) get_list_date_arr($arr_service_preparation_application);
+if (is_array($arr_service_support_IS) && count($arr_service_support_IS) > 0 && $arr_service_support_IS != 0 ) get_list_date_arr($arr_service_support_IS);
 
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
@@ -107,13 +174,38 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
+$styleArray = [
+    'alignment' => [
+        'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
+    ],
+    'borders' => [
+        'allBorders' => [
+            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+            'color' => ['argb' => '00000000'],
+        ]
+    ]
+];
 
 $spreadsheet = new Spreadsheet();
+$spreadsheet->getProperties()->setTitle("Показетели Фонды, Институты развития");
+$spreadsheet->getProperties()->setSubject("Показетели Фонды, Институты развития");
+$spreadsheet->getProperties()->setCreator("Fulldata");
+$spreadsheet->getProperties()->setManager("Fulldata");
+$spreadsheet->getProperties()->setCompany("ОАО Ленполиграфмаш");
+$spreadsheet->getProperties()->setCategory("Работа");
+$spreadsheet->getProperties()->setKeywords("Отчет, Fulldata, Фуллдата, ЛПМ, Сервисы, Показатели, Данные");
+$spreadsheet->getProperties()->setDescription("Сгенерированный отчет");
+$spreadsheet->getProperties()->setLastModifiedBy("Fulldata");
+$spreadsheet->getProperties()->setCreated(date("d.m.Y"));
+
 $actual_row = 1;
 $sheet = $spreadsheet->setActiveSheetIndex(0);
 $sheet->setTitle('Фонды, Институты развития');
 
 $sheet->getColumnDimension('A')->setAutoSize(true);
+foreach ($arr_data_period as $key => $value) {
+  $sheet->getcolumndimensionbycolumn(($key+2))->setAutoSize(true);
+}
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатель');
 foreach ($arr_data_period as $key => $value) {
@@ -138,7 +230,7 @@ $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатели платформы (регистрации. количество)');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -146,21 +238,51 @@ for ($i=1; $i < 8; $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников программ ФСИ на платформе (нараст.итог)');
+$temp_value_iter = 0;
 foreach ($arr_data_period as $key => $value) {
-  set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count);
-  set_cell_value($sheet, $key, ($actual_row+1), $value, $arr_FSI_YMNIK_count);
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count, $temp_value_iter);
 }
 $actual_row++;
 
-
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. количеcтво физ лиц участников программы Умник на платформе (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, ($actual_row), $value, $arr_FSI_YMNIK_count, $temp_value_iter);
+}
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '3. прирост к предыдущему месяцу в процентах');
+foreach ($arr_data_period as $key => $value) {
+  if(is_Array($arr_FSI_count)) {
+    foreach ($arr_FSI_count as $key2 => $value2) {
+      if($period_select->period == 'day'){
+        $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+      }
+      if($period_select->period == 'week'){
+        $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+      }
+      if($period_select->period == 'month'){
+        $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+      }
+      if($period_select->period == 'year'){
+        $date1 = strtotime('01.01.'.$value2->yeard);
+      }
+
+      if($value == $date1) {
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), $value2->percent."%");
+        break;
+      } else {
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
+      }
+    }
+  } else {
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
+  }
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатели платформы (процессы, количество)');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -178,7 +300,7 @@ $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Измерение');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -199,7 +321,7 @@ $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатели платформы (регистрации. количество)');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -207,6 +329,13 @@ for ($i=1; $i < 8; $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр. лиц - участников Сколково на платформе (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count, $temp_value_iter);
+}
+$actual_row++;
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'прирост к предыдщему месяцу в процентах');
 foreach ($arr_data_period as $key => $value) {
   if(is_Array($arr_SK_count)) {
     foreach ($arr_SK_count as $key2 => $value2) {
@@ -224,29 +353,21 @@ foreach ($arr_data_period as $key => $value) {
       }
 
       if($value == $date1) {
-        $sheet->setCellValueByColumnAndRow(($key+2), $actual_row, $value2->sum);
-        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), $value2->percent."%");
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), $value2->percent."%");
         break;
       } else {
-        $sheet->setCellValueByColumnAndRow(($key+2), $actual_row, 0);
-        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), "0%");
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
       }
     }
   } else {
-    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), 0);
-    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row+1), "0%");
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
   }
 }
-
-
-$actual_row++;
-
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'прирост к предыдщему месяцу в процентах');
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатели платформы (процессы, количество)');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -254,9 +375,17 @@ for ($i=1; $i < 8; $i++) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Организация встречи с проектным менеджером Сколково (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count_event, $temp_value_iter);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. Консультации по услугам ЦКП  (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_CKP_count, $temp_value_iter);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '3. Участие в мероприятиях и выставках (нараст.итог)');
@@ -264,7 +393,7 @@ $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Измерение');
 $sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
@@ -277,53 +406,97 @@ $sheet->setCellValueByColumnAndRow(1,$actual_row, 'количество услу
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количество заявок по сервисам ');
-for ($i=1; $i < 8; $i++) {
+for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
   $sheet->getCellByColumnAndRow($i,$actual_row)->getStyle()->getFill()
       ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
       ->getStartColor()->setARGB('e6e6e6');
 }
+
+
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Информационное сопровождение проекта (консультации по сервисам, юридическим вопросам, отчетам и т.п.)');
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Консультация компании (консультации по сервисам, юридическим вопросам, отчетам и т.п.)');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_FSI);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Организация встречи с инвестором/индустриальным партнером и т.д.');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_organization_meeting);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Маркетинговые услуги');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Консультация в части услуги ЦКП');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_CKP);
+}
 $actual_row++;
+
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Организация участия стартапа в мероприятиях');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_sturtup_organization_meeting);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Консультация по заполнению заявки на грант');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Перевод материалов на английский язык');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_translate);
+}
 $actual_row++;
+
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Организация встречи с проектным менеджером Сколково');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_SK);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Подготовка заявок к внешним конкурсам институтов развития');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Организация встречи с департаментом международных отношений Сколково');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Подготовка и размещение информации в СМИ/интернет');
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Информационное сопровождение проекта');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_support);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Помощь в подготовке продуктовой презентации');
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 $actual_row++;
 
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Помощь в подготовке заявки на статус участника');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Консультация по подготовке заявки на статус участника');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_preparation_application);
+}
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Помощь в регистрации объектов ИС');
+
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Консультация по регистрации объектов ИС');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_service_support_IS);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Предоставление юридического адреса');
-$actual_row++;
+$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setStrikethrough(true);
 
+for ( $i = 1; $i <= $actual_row; $i++) {
+  for ($j=1; $j <= (count($arr_data_period)+1); $j++) {
+    $sheet->getCellByColumnAndRow($j,$i)->getStyle()->applyFromArray($styleArray);
+  }
+}
 
 
 $writer = new Xlsx($spreadsheet);
