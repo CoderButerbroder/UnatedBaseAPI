@@ -33,9 +33,16 @@ $settings = new Settings;
 $arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
 $arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period, $period_select->start , $period_select->end );
 
+$arr_FSI_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
+                                      ['Запрос на консультацию проекта при подаче заявки в ФСИ','Информационное сопровождение проекта ФСИ'],
+                                      $period_select->period, $period_select->start , $period_select->end );
+
 $arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
 $arr_SK_count_event =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Запрос на консультацию компании - Фонд Сколково', $period_select->period , $period_select->start , $period_select->end );
 $arr_SK_count_event_incr =  $settings->get_count_main_entity_skolkovo_visit_event_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
+$arr_SK_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
+                                      ['Запрос на консультацию компании - Фонд Сколково','Информационное сопровождение проекта Сколково'],
+                                      $period_select->period, $period_select->start , $period_select->end );
 
 $arr_CKP_count =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
 
@@ -121,9 +128,12 @@ function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in, $iter = -1) {
 if ($period_select->period == 'week') {
   add_null_in_data_week($arr_FSI_count);
   add_null_in_data_week($arr_FSI_YMNIK_count);
+  add_null_in_data_week($arr_FSI_count_service);
+
   add_null_in_data_week($arr_SK_count);
   add_null_in_data_week($arr_SK_count_event);
   add_null_in_data_week($arr_SK_count_event_incr);
+  add_null_in_data_week($arr_SK_count_service);
   add_null_in_data_week($arr_CKP_count);
   add_null_in_data_week($arr_service_FSI);
   add_null_in_data_week($arr_service_organization_meeting);
@@ -139,9 +149,12 @@ if ($period_select->period == 'week') {
 
 if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0 ) get_list_date_arr($arr_FSI_count);
 if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
+if (is_array($arr_FSI_count_service) && count($arr_FSI_count_service) > 0 && $arr_FSI_count_service != 0 ) get_list_date_arr($arr_FSI_count_service);
 if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
 if (is_array($arr_SK_count_event) && count($arr_SK_count_event) > 0 && $arr_SK_count_event != 0 ) get_list_date_arr($arr_SK_count_event);
 if (is_array($arr_SK_count_event_incr) && count($arr_SK_count_event_incr) > 0 && $arr_SK_count_event_incr != 0 ) get_list_date_arr($arr_SK_count_event_incr);
+if (is_array($arr_SK_count_service) && count($arr_SK_count_service) > 0 && $arr_SK_count_service != 0 ) get_list_date_arr($arr_SK_count_service);
+
 if (is_array($arr_CKP_count) && count($arr_CKP_count) > 0 && $arr_CKP_count != 0 ) get_list_date_arr($arr_CKP_count);
 
 if (is_array($arr_service_FSI) && count($arr_service_FSI) > 0 && $arr_service_FSI != 0 ) get_list_date_arr($arr_service_FSI);
@@ -312,10 +325,13 @@ for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
 }
 $actual_row++;
 
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'кол-во новых проектов (поданных) (ед. в мес)');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'кол-во новых проектов (поданных) (ед. в '.$period_select->name.')');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count_service);
+}
 $actual_row++;
 
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'объем привлеченного финансирования, млн.руб, в мес');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'объем привлеченного финансирования, млн.руб, в '.$period_select->name);
 $actual_row++;
 $actual_row++;
 $actual_row++;
@@ -409,9 +425,12 @@ for ($i=1; $i <= (count($arr_data_period)+1); $i++) {
 }
 $actual_row++;
 
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'количество новых резидентов в месяц (Сколково)');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'количество новых резидентов в '.$period_select->name.' (Сколково)');
 $actual_row++;
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'количество услуг в месяц (Сколково)');
+$sheet->setCellValueByColumnAndRow(1,$actual_row, 'количество услуг в '.$period_select->name.' (Сколково)');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count_service);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Количество заявок по сервисам ');

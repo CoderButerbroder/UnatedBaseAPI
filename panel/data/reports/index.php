@@ -104,8 +104,10 @@
                 <div id="collapse_report_event" class="collapse" role="tabpanel" aria-labelledby="heading_report_event" data-parent="#acc_report">
                   <div class="card-body">
                     <ul class="list-group list-group-flush">
-                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_event.php')"><i
-                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Статистка по мероприятиям в неком периоде</a></li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_event').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
+                        Общие показатели</li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_events').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
+                        Выгрузка мероприятий</li>
                       <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_event').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
                         Данные по мероприятию</li>
                     </ul>
@@ -452,7 +454,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="/panel/data/reports/actions/report_FSI" onsubmit="generate_report(this,'modal_report_by_FSI', 'select_period'); return false;" method="post" id="form_FSI">
+        <form action="/panel/data/reports/actions/report_FSI" onsubmit="generate_report(this,'modal_report_by_FSI', 'period'); return false;" method="post" id="form_FSI">
           <div class="form-group">
             <label for="select_input_period" class="col-form-label">Укажите необходимый результирующий диапозон</label>
             <div class="">
@@ -487,6 +489,85 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_report_by_events" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Количественные показатели</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/panel/data/reports/actions/report_events_period" onsubmit="generate_report(this,'modal_report_by_events', 'start'); return false;" method="post" id="form_events">
+
+          <div class="form-group">
+            <div class="input-daterange">
+              <div class="row ml-0 mr-0">
+                <span class="col-md-2 my-2 text-center"> C </span>
+                <input type="text" name="start" id="data_period_7" class="form-control col-md-4 text-center" >
+                <div class="input-group-addon"> </div> <span class="col-md-2 my-2 text-center"> По </span>
+                <input type="text" name="end" id="data_period_8" class="form-control col-md-4 text-center">
+              </div>
+            </div>
+          </div>
+
+          <button style="display:none;" type="submit" name="button"></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="$('#form_events')[0].elements['button'].click()">Сгенерировать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_report_by_event" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Количественные показатели</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/panel/data/reports/actions/report_event" onsubmit="generate_report(this,'modal_report_by_event', 'period'); return false;" method="post" id="form_event">
+          <div class="form-group">
+            <label for="select_input_period" class="col-form-label">Укажите необходимый результирующий диапозон</label>
+            <div class="">
+              <select class="js-example-basic-single" name="period" >
+                <option default disabled selected value="false">Не выбрана</option>
+                <option value="week">Неделя</option>
+                <option value="month">Месяц</option>
+                <option value="year">Год</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-daterange">
+              <div class="row ml-0 mr-0">
+                <span class="col-md-2 my-2 text-center"> C </span>
+                <input type="text" name="start" id="data_period_5" class="form-control col-md-4 text-center" >
+                <div class="input-group-addon"> </div> <span class="col-md-2 my-2 text-center"> По </span>
+                <input type="text" name="end" id="data_period_6" class="form-control col-md-4 text-center">
+              </div>
+            </div>
+          </div>
+
+          <button style="display:none;" type="submit" name="button"></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="$('#form_event')[0].elements['button'].click()">Сгенерировать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -512,11 +593,15 @@ $(document).ready(function() {
       // $(this).datepicker('clearDates');
       <?php
        $js_timepicker = date('m/d/Y', strtotime($settings->get_min_max_users_time_reg('min') ));
+       $arr_start_end_events = $settings->get_min_max_events_time_reg();
        $arr_js_timepicker = explode('/', $js_timepicker);
+       // var_dump($arr_start_end_events);
        echo "var startDate = new Date('".$arr_js_timepicker[2]."', '".($arr_js_timepicker[0]-1)."', '".$arr_js_timepicker[1]."');";
        echo "var startDate2 = new Date('".$arr_js_timepicker[2]."', '".($arr_js_timepicker[0]-1)."', '".($arr_js_timepicker[1]+1)."');";
        echo "var endDate = new Date('".date('Y')."', '".(date('m')-1)."', '".(date('d')-1)."');";
        echo "var endDate2 = new Date('".date('Y')."', '".(date('m')-1)."', '".date('d')."');";
+       echo "var start_event_date = new Date('".date('Y', strtotime(strtotime($arr_start_end_events->start)))."','".(date('m', strtotime($arr_start_end_events->start))-1)."','".(date('d', strtotime($arr_start_end_events->start))-1)."');";
+       echo "var end_event_date = new Date('".date('Y', strtotime($arr_start_end_events->end))."','".(date('m', strtotime($arr_start_end_events->end))-1)."','".(date('d', strtotime($arr_start_end_events->end))-1)."');";
       ?>
       $(this).datepicker({
           format: "dd.mm.yyyy",
@@ -534,6 +619,16 @@ $(document).ready(function() {
         $(this).datepicker('setStartDate', startDate);
         $(this).datepicker('setEndDate', endDate);
         $(this).datepicker('setDate', startDate);
+      }
+      if($(this).attr('id') == 'data_period_5' || $(this).attr('id') == 'data_period_7'){
+        $(this).datepicker('setStartDate', start_event_date);
+        $(this).datepicker('setEndDate', end_event_date);
+        $(this).datepicker('setDate', start_event_date);
+      }
+      if($(this).attr('id') == 'data_period_6' || $(this).attr('id') == 'data_period_8'){
+        $(this).datepicker('setStartDate', start_event_date);
+        $(this).datepicker('setEndDate', end_event_date);
+        $(this).datepicker('setDate', end_event_date);
       }
   });
 });
