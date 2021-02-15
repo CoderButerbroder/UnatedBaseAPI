@@ -27,7 +27,6 @@ if ( $period_select->period == 'year' ) $period_select->name = 'Год';
 if ( $period_select->period == 'month' ) $period_select->name = 'Месяц';
 if ( $period_select->period == 'week' ) $period_select->name = 'Неделя';
 
-
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
