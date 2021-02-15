@@ -7189,8 +7189,107 @@ class Settings {
 
   }
 
+  // Участие участников Сколково на платформе в мероприятиях и выставках (нараст.итог)
+  public function get_count_main_entity_skolkovo_visit_event_groupby_time_reg($increment=true,$period='data',$start=NULL,$end=NULL) {
+      global $database;
 
+      if (!$start) {
+        $start_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event ASC LIMIT 1");
+        $start_date->execute();
+        $start = $start_date->fetch(PDO::FETCH_COLUMN);
+      }
+      if (!$end) {
+        $end_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event DESC LIMIT 1");
+        $end_date->execute();
+        $end = $end_date->fetch(PDO::FETCH_COLUMN);
+      }
 
+      $strokaSQL = "SELECT ";
+
+      if ($period == 'year') {
+            $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                            YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                            count(DISTINCT($this->MAIN_entity.`inn`)) as visit_event_groupby";
+      }
+      if ($period == 'month') {
+            $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                            MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
+                            YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                            count(DISTINCT($this->MAIN_entity.`inn`)) as visit_event_groupby";
+      }
+      if ($period == 'week') {
+            $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                            WEEK($this->MAIN_events.`start_datetime_event`) as weekd,
+                            YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                            count(DISTINCT($this->MAIN_entity.`inn`)) as visit_event_groupby";
+      }
+      if ($period == 'day') {
+            $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+                            DAY($this->MAIN_events.`start_datetime_event`) as dayd,
+                            MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
+                            YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                            count(DISTINCT($this->MAIN_entity.`inn`)) as visit_event_groupby";
+      }
+      if ($period == 'data') {
+            $strokaSQL .= " * ";
+      }
+
+      $strokaSQL .= " FROM $this->MAIN_entity
+                      INNER JOIN $this->main_users ON $this->main_users.`id_entity` = $this->MAIN_entity.`id`
+                      INNER JOIN $this->MAIN_users_events ON $this->MAIN_users_events.`id_tboil` = $this->main_users.`id_tboil`
+                      INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_entity.`inn` = $this->MAIN_entity.`inn`
+                      INNER JOIN $this->IPCHAIN_StateSupport ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id`
+                      INNER JOIN $this->MAIN_events ON $this->MAIN_users_events.`id_event_on_referer` = $this->MAIN_events.`id_event_on_referer`
+                      WHERE $this->IPCHAIN_StateSupport.`typeId` NOT LIKE ' ' AND $this->MAIN_users_events.`id_referer` = $this->MAIN_events.`id_referer` AND $this->MAIN_events.`start_datetime_event` BETWEEN :starting AND :ending ";
+
+      if ($period == 'year') {
+          $strokaSQL .= " GROUP BY YEAR(start_datetime_event)
+                          HAVING SUM($this->MAIN_entity.`inn`) > 0
+                          ORDER BY YEAR(start_datetime_event) ASC";
+      }
+      if ($period == 'month') {
+          $strokaSQL .= " GROUP BY MONTH(start_datetime_event), YEAR(start_datetime_event)
+                          HAVING SUM($this->MAIN_entity.`inn`) > 0
+                          ORDER BY YEAR(start_datetime_event), MONTH(start_datetime_event) ASC";
+      }
+      if ($period == 'week') {
+          $strokaSQL .= " GROUP BY WEEK(start_datetime_event), YEAR(start_datetime_event)
+                          HAVING SUM($this->MAIN_entity.`inn`) > 0
+                          ORDER BY YEAR(start_datetime_event), WEEK(start_datetime_event) ASC";
+      }
+      if ($period == 'day') {
+          $strokaSQL .= " GROUP BY DAY(start_datetime_event),MONTH(start_datetime_event), YEAR(start_datetime_event)
+                          HAVING SUM($this->MAIN_entity.`inn`) > 0
+                          ORDER BY YEAR(start_datetime_event), MONTH(start_datetime_event),DAY(start_datetime_event) ASC";
+      }
+      if ($period == 'data') {
+          $strokaSQL .= " ";
+      }
+
+      $statement = $database->prepare($strokaSQL);
+      $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+      $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (!$data_users) {
+          return 0;
+          exit;
+      }
+      $count_sum = 0;
+      if ($increment == true) {
+        foreach ($data_users as $key => $value) {
+          if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+          else {$value->percent = 0;}
+          $value->sum = $value->sum + $count_sum;
+          $count_sum = $value->sum;
+        }
+      }
+
+      return $data_users;
+      exit;
+
+  }
 
   /* функции для вывода графиков  */
   public function get_count_all_users() {
