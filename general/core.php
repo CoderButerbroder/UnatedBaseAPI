@@ -7440,6 +7440,105 @@ class Settings {
 
 
 
+  // получение количества мероприятий
+  public function get_count_main_events_groupby_time_reg($increment=false,$period='data',$start=NULL,$end=NULL) {
+          global $database;
+
+
+          if (!$start) {
+            $start_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event ASC LIMIT 1");
+            $start_date->execute();
+            $start = $start_date->fetch(PDO::FETCH_COLUMN);
+          }
+          if (!$end) {
+            $end_date = $database->prepare("SELECT start_datetime_event FROM $this->MAIN_events ORDER BY start_datetime_event DESC LIMIT 1");
+            $end_date->execute();
+            $end = $end_date->fetch(PDO::FETCH_COLUMN);
+          }
+
+          $strokaSQL = "SELECT ";
+
+          if ($period == 'year') {
+                $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
+                                YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                                count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
+          }
+          if ($period == 'month') {
+                $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
+                                MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
+                                YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                                count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
+          }
+          if ($period == 'week') {
+                $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
+                                WEEK($this->MAIN_events.`start_datetime_event`) as weekd,
+                                YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                                count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
+          }
+          if ($period == 'day') {
+                $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
+                                DAY($this->MAIN_events.`start_datetime_event`) as dayd,
+                                MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
+                                YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
+                                count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
+          }
+          if ($period == 'data') {
+                $strokaSQL .= " * ";
+          }
+
+          $strokaSQL .= " FROM $this->MAIN_events
+                          WHERE start_datetime_event BETWEEN :starting AND :ending ";
+
+          if ($period == 'year') {
+              $strokaSQL .= " GROUP BY YEAR(start_datetime_event)
+                              HAVING SUM($this->MAIN_events.`id`) > 0
+                              ORDER BY YEAR(start_datetime_event) ASC";
+          }
+          if ($period == 'month') {
+              $strokaSQL .= " GROUP BY MONTH(start_datetime_event), YEAR(start_datetime_event)
+                              HAVING SUM($this->MAIN_events.`id`) > 0
+                              ORDER BY YEAR(start_datetime_event), MONTH(start_datetime_event) ASC";
+          }
+          if ($period == 'week') {
+              $strokaSQL .= " GROUP BY WEEK(start_datetime_event), YEAR(start_datetime_event)
+                              HAVING SUM($this->MAIN_events.`id`) > 0
+                              ORDER BY YEAR(start_datetime_event), WEEK(start_datetime_event) ASC";
+          }
+          if ($period == 'day') {
+              $strokaSQL .= " GROUP BY DAY(start_datetime_event),MONTH(start_datetime_event), YEAR(start_datetime_event)
+                              HAVING SUM($this->MAIN_events.`id`) > 0
+                              ORDER BY YEAR(start_datetime_event), MONTH(start_datetime_event),DAY(start_datetime_event) ASC";
+          }
+          if ($period == 'data') {
+              $strokaSQL .= " ";
+          }
+
+          $statement = $database->prepare($strokaSQL);
+          $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+          $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+          $statement->execute();
+          $data_events = $statement->fetchAll(PDO::FETCH_OBJ);
+
+          if (!$data_events) {
+              return 0;
+              exit;
+          }
+
+          if ($increment == true) {
+            foreach ($data_events as $key => $value) {
+              if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+              else {$value->percent = 0;}
+              $value->sum = $value->sum + $count_sum;
+              $count_sum = $value->sum;
+            }
+          }
+
+          return $data_events;
+          exit;
+  }
+
+
+
 }
 
 ?>
