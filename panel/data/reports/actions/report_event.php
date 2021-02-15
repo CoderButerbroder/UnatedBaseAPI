@@ -16,13 +16,9 @@ if (!isset($_SESSION["key_user"])) {
 }
 
 $period_select = (object) [];
-// $period_select->period = $_POST["period"];
-// $period_select->data1 =  date('Y-m-d H:i:s', strtotime(trim($_POST["period_1"])));
-// $period_select->data2 =  date('Y-m-d H:i:s', strtotime(trim($_POST["period_2"])));
-
-$period_select->period = 'month';
-$period_select->start =  date('Y-m-d H:i:s', strtotime( '01.11.2020' ));
-$period_select->end =  date('Y-m-d H:i:s', strtotime( '15.02.2021' ));
+$period_select->period = $_POST["period"];
+$period_select->start =  date('Y-m-d H:i:s', strtotime(trim($_POST["start"])));
+$period_select->end =  date('Y-m-d H:i:s', strtotime(trim($_POST["end"])));
 
 if ($period_select->start && $period_select->end && $period_select->period != 'year' && $period_select->period != 'month' && $period_select->period != 'week') {
   exit();
@@ -38,12 +34,9 @@ $settings = new Settings;
 
 /* получаем данные */
 
-$arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(true, $period_select->period, $period_select->start, $period_select->end);
-
-
-
-
-
+$arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
+$arr_data_users_event_summ = $settings->get_count_users_main_events_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
+$arr_data_users_event_incr = $settings->get_count_users_main_events_groupby_time_reg(true, $period_select->period, $period_select->start, $period_select->end);
 
 
 /* сортируем */
@@ -114,22 +107,17 @@ function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in, $iter = -1) {
 }
 
 if ($period_select->period == 'week') {
-  // add_null_in_data_week($arr_data_event_summ);
+  add_null_in_data_week($arr_data_event_summ);
+  add_null_in_data_week($arr_data_users_event_summ);
+  add_null_in_data_week($arr_data_users_event_incr);
+
 }
 
 if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
-
+if (is_array($arr_data_users_event_summ) && count($arr_data_users_event_summ) > 0 && $arr_data_users_event_summ != 0 ) get_list_date_arr($arr_data_users_event_summ);
+if (is_array($arr_data_users_event_incr) && count($arr_data_users_event_incr) > 0 && $arr_data_users_event_incr != 0 ) get_list_date_arr($arr_data_users_event_incr);
 
 sort($arr_data_period);
-
-
-
-
-
-
-
-
-
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '2' => (object) array('name' => 'Февраль', ),
@@ -145,9 +133,6 @@ $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '12' => (object) array('name' => 'Декабрь' ) );
 
 $defaut_value = '-';
-
-// echo  json_encode($arr_merge_count,JSON_UNESCAPED_UNICODE);
-// exit();
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/plugins/office/vendor/autoload.php');
 
@@ -171,6 +156,12 @@ $sheet->getColumnDimension('D')->setAutoSize(true);
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Выбранный Перииод');
 $sheet->setCellValueByColumnAndRow(2,$actual_row, $period_select->name);
+$sheet->setCellValueByColumnAndRow(3,$actual_row, 'C '.date('d.m.Y', strtotime($period_select->start)));
+$sheet->setCellValueByColumnAndRow(4,$actual_row, 'по '.date('d.m.Y', strtotime($period_select->end)));
+$actual_row++;
+
+$sheet->setCellValueByColumnAndRow(2,$actual_row, 'Сумма');
+
 foreach ($arr_data_period as $key => $value) {
   if($period_select->period == 'year'){
       $sheet->setCellValueByColumnAndRow(($key+3), ($actual_row),  date('Y',  $value) );
@@ -182,31 +173,41 @@ foreach ($arr_data_period as $key => $value) {
     $sheet->setCellValueByColumnAndRow(($key+3), ($actual_row),  date('W',  $value)." неделя ".$arr_select_month[date('n',  $value)]->name.' '.date('Y',  $value)  );
   }
 }
-$actual_row++;
 
 
+for ( $i = 1 ; $i < count($arr_data_period)+3 ; $i++) {
+  $sheet->getcolumndimensionbycolumn($i)->setAutoSize(true);
+}
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Общие данные:');
-$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFill()
+$sheet->getStyle('A'.$actual_row.':'.($sheet->getcolumndimensionbycolumn(count($arr_data_period)+2)->getcolumnIndex()).$actual_row)->getFont()->setBold(true);
+$sheet->getStyle('A'.$actual_row.':'.($sheet->getcolumndimensionbycolumn(count($arr_data_period)+2)->getcolumnIndex()).$actual_row)->getFill()
     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
     ->getStartColor()->setARGB('8af28f');
 $actual_row++;
 
+//получение индекса столбца старт для формулы
+$start_col = $sheet->getcolumndimensionbycolumn(3)->getcolumnIndex();
+$end_col = $sheet->getcolumndimensionbycolumn(count($arr_data_period)+3)->getcolumnIndex();
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Кол-во мероприятий (год/месяц/неделя)');
-$temp_value_iter = 0;
+
 foreach ($arr_data_period as $key => $value) {
-  $temp_value_iter = set_cell_value($sheet, ($key+1), $actual_row, $value, $arr_data_event_summ, $temp_value_iter);
+  set_cell_value($sheet, ($key+1), $actual_row, $value, $arr_data_event_summ);
 }
+$sheet->setCellValueByColumnAndRow(2,$actual_row, '=SUM('.$start_col.'3:'.$end_col.'3)');
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Кол-во участников мероприятий (год/месяц/неделя)');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, ($key+1), $actual_row, $value, $arr_data_users_event_summ);
+}
+$sheet->setCellValueByColumnAndRow(2,$actual_row, '=SUM('.$start_col.$actual_row.':'.$end_col.''.$actual_row.')');
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Прирост участников мероприятий в % по отношению к аналогичному предыдущему периоду');
 foreach ($arr_data_period as $key => $value) {
-  if(is_Array($arr_data_event_summ)) {
-    foreach ($arr_data_event_summ as $key2 => $value2) {
+  if(is_Array($arr_data_users_event_incr)) {
+    foreach ($arr_data_users_event_incr as $key2 => $value2) {
       if($period_select->period == 'day'){
         $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
       }
@@ -231,19 +232,6 @@ foreach ($arr_data_period as $key => $value) {
     $sheet->setCellValueByColumnAndRow(($key+3), ($actual_row), "0%");
   }
 }
-$actual_row++;
-$actual_row++;
-$actual_row++;
-
-
-$sheet->setCellValueByColumnAndRow(1,$actual_row, 'Мероприятия');
-$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFont()->setBold(true);
-$sheet->getCellByColumnAndRow(1,$actual_row)->getStyle()->getFill()
-    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-    ->getStartColor()->setARGB('8af28f');
-$actual_row++;
-
-
 
 
 $writer = new Xlsx($spreadsheet);
