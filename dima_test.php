@@ -8,7 +8,7 @@ $settings = new Settings;
 
 
 
-$data = $settings->get_count_main_entity_skolkovo_visit_event_groupby_time_reg(true,'week');
+$data = $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(true,NULL,'data');
 var_dump($data);
 
 // $data = $settings->get_count_users_groupby_time_reg('year','2020.01.01','2021.02.09');

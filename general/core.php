@@ -7306,8 +7306,30 @@ class Settings {
             $end = $end_date->fetch(PDO::FETCH_COLUMN);
           }
 
-          $comma_separated = implode("', '", $array_uslug);
-          $string_temp_sql_new = substr($comma_separated, 0, -3);
+          if($array_uslug) {
+              $comma_separated = implode("', '", $array_uslug);
+              $string_temp_sql_new = "'".substr($comma_separated, 0, -2);
+          }
+          else {
+              $array_uslug=array('Запрос письма о поддержке проекта',
+              'Запрос информационной поддержки проекта',
+              'Запрос на консультацию проекта при подаче заявки в ФСИ',
+              'Запрос на консультацию компании - Фонд Сколково',
+              'Информационное сопровождение проекта ФСИ',
+              'Информационное сопровождение проекта Сколково',
+              'Консультация по подготовке заявки на статус участника',
+              'Консультация по регистрации объектов ИС',
+              'Организация встречи с инвестором/индустриальным партнером и т.д.',
+              'Организация участия стартапа в мероприятиях',
+              'Получение услуги центра коллективного пользования (производство)',
+              'Получение услуги конструкторского бюро',
+              'Подача предложения в каталог производственных возможностей',
+              'Подбор стартапов под тех.запрос.',
+              'Перевод материалов на английский язык',
+              'Технологический запрос крупной компании');
+              $comma_separated = implode("', '", $array_uslug);
+              $string_temp_sql_new = substr($comma_separated, 0, -3);
+          }
           $strokaSQL = "SELECT ";
 
           if ($period == 'year') {
@@ -7339,7 +7361,7 @@ class Settings {
           }
 
           $strokaSQL .= " FROM $this->MAIN_support_ticket
-                          WHERE type_support IN ( $string_temp_sql_new ) AND $this->MAIN_support_ticket.`date_added` BETWEEN :starting AND :ending ";
+                          WHERE type_support IN ( '$string_temp_sql_new' ) AND $this->MAIN_support_ticket.`date_added` BETWEEN :starting AND :ending ";
 
           if ($period == 'year') {
               $strokaSQL .= " GROUP BY YEAR(reg_date)
@@ -7364,6 +7386,9 @@ class Settings {
           if ($period == 'data') {
               $strokaSQL .= " ";
           }
+
+          return $strokaSQL;
+          exit;
 
           $statement = $database->prepare($strokaSQL);
           $statement->bindParam(':starting', $start, PDO::PARAM_STR);
