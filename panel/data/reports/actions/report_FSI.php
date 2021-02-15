@@ -31,11 +31,12 @@ if ( $period_select->period == 'week' ) $period_select->name = 'Неделя';
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select->period , $period_select->start , $period_select->end );
-$arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period , $period_select->start , $period_select->end );
+$arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
+$arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period, $period_select->start , $period_select->end );
 
-$arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select->period , $period_select->start , $period_select->end );
+$arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
 $arr_SK_count_event =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Запрос на консультацию компании - Фонд Сколково', $period_select->period , $period_select->start , $period_select->end );
+$arr_SK_count_event_incr =  $settings->get_count_main_entity_skolkovo_visit_event_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
 
 $arr_CKP_count =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
 
@@ -123,6 +124,7 @@ if ($period_select->period == 'week') {
   add_null_in_data_week($arr_FSI_YMNIK_count);
   add_null_in_data_week($arr_SK_count);
   add_null_in_data_week($arr_SK_count_event);
+  add_null_in_data_week($arr_SK_count_event_incr);
   add_null_in_data_week($arr_CKP_count);
   add_null_in_data_week($arr_service_FSI);
   add_null_in_data_week($arr_service_organization_meeting);
@@ -140,6 +142,7 @@ if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0
 if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
 if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
 if (is_array($arr_SK_count_event) && count($arr_SK_count_event) > 0 && $arr_SK_count_event != 0 ) get_list_date_arr($arr_SK_count_event);
+if (is_array($arr_SK_count_event_incr) && count($arr_SK_count_event_incr) > 0 && $arr_SK_count_event_incr != 0 ) get_list_date_arr($arr_SK_count_event_incr);
 if (is_array($arr_CKP_count) && count($arr_CKP_count) > 0 && $arr_CKP_count != 0 ) get_list_date_arr($arr_CKP_count);
 
 if (is_array($arr_service_FSI) && count($arr_service_FSI) > 0 && $arr_service_FSI != 0 ) get_list_date_arr($arr_service_FSI);
@@ -152,6 +155,8 @@ if (is_array($arr_service_SK) && count($arr_service_SK) > 0 && $arr_service_SK !
 if (is_array($arr_service_support) && count($arr_service_support) > 0 && $arr_service_support != 0 ) get_list_date_arr($arr_service_support);
 if (is_array($arr_service_preparation_application) && count($arr_service_preparation_application) > 0 && $arr_service_preparation_application != 0 ) get_list_date_arr($arr_service_preparation_application);
 if (is_array($arr_service_support_IS) && count($arr_service_support_IS) > 0 && $arr_service_support_IS != 0 ) get_list_date_arr($arr_service_support_IS);
+
+sort($arr_data_period);
 
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
@@ -208,6 +213,7 @@ foreach ($arr_data_period as $key => $value) {
 }
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатель');
+
 foreach ($arr_data_period as $key => $value) {
   if($period_select->period == 'year'){
       $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row),  date('Y',  $value) );
@@ -389,6 +395,10 @@ foreach ($arr_data_period as $key => $value) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '3. Участие в мероприятиях и выставках (нараст.итог)');
+$temp_value_iter = 0;
+foreach ($arr_data_period as $key => $value) {
+  $temp_value_iter = set_cell_value($sheet, $key, $actual_row, $value, $arr_SK_count_event_incr, $temp_value_iter);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Измерение');
