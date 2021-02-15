@@ -6,9 +6,9 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
+$data_array = array('Запрос на консультацию компании - Фонд Сколково','Информационное сопровождение проекта Сколково');
 
-
-$data = $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(true,NULL,'data');
+$data = $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(true,$data_array,'month');
 var_dump($data);
 
 // $data = $settings->get_count_users_groupby_time_reg('year','2020.01.01','2021.02.09');
