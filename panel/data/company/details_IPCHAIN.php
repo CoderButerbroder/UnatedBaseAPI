@@ -15,8 +15,16 @@ if (!$arr_data_local_ipchain->response) {
   exit();
 }
 
-echo $data_local_ipchain;
+// echo $data_local_ipchain;
 
+//патенты
+$data_ipchain_IpObjects = json_decode($settings->get_EBD_IPCHAIN_IpObjects(true, $arr_data_local_ipchain->data->id));
+//statesupport - поддержка
+$data_ipchain_StateSupport = json_decode($settings->get_EBD_IPCHAIN_StateSupport(true, $arr_data_local_ipchain->data->id));
+//project - проекты
+$data_ipchain_Project = json_decode($settings->get_EBD_IPCHAIN_Project(true, $arr_data_local_ipchain->data->id));
+
+$data_type_support = $settings->get_state_support_types_ipchain();
 
 ?>
 
@@ -395,6 +403,175 @@ echo $data_local_ipchain;
         </div>
     </div>
 </div>
+
+<div id="accordion2" class="accordion" role="tablist">
+  <div class="card">
+    <div class="card-header" role="tab" id="heading_card_ip_data">
+      <h6 class="mb-0">
+        <a data-toggle="collapse" href="#card_ip_data" aria-expanded="false" aria-controls="card_ip_data">
+          Данные Юр. лица из IPChain
+        </a>
+      </h6>
+    </div>
+    <div id="card_ip_data" class="collapse" role="tabpanel" data-parent="#accordion2">
+      <div class="card-body">
+        <div class="row">
+
+          <?php if($data_ipchain_IpObjects->response == false && $data_ipchain_Project->response == false && $data_ipchain_StateSupport->response == false){
+                    echo '<div class="col-md-12"><div class="alert alert-primary" role="alert">
+                            Сведения о Патентах, Проектах и Мерах поддержки отсутствуют
+                          </div></div>';
+                  }
+          ?>
+
+
+          <?php if($data_ipchain_IpObjects->response) { ?>
+            <div class="col-md-12">
+              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+              <div class="row pl-1 ">
+                <div class="col-sm-5 "><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о Патентах:</b></text></div>
+                <div class="col-sm-7"></div>
+              </div>
+            </div>
+            <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none; width: 100%;">
+              <div class="col-md-12 mt-3 pl-3 pr-3">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Наименование</th>
+                          <th scope="col">Тип Патента</th>
+                          <th scope="col">Страна регистрации</th>
+                          <th scope="col">Дата регистрации</th>
+                          <th scope="col">Номер РИДа</th>
+                          <th scope="col">Ссылка на патент</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach($data_ipchain_IpObjects->data as $key => $value)  {?>
+                          <tr>
+                           <td scope="row"><?php echo ($key+1); ?></td>
+                           <td class="text-wrap"><?php echo $value->Name; ?></td>
+                           <td class=""><?php echo $value->Type; ?></td>
+                           <td class=""><?php echo $value->Country; ?></td>
+                           <td><?php echo date('d.m.Y', strtotime($value->RegistrationDate)); ?></td>
+                           <td class="text-wrap"><?php echo $value->Number_Objects; ?></td>
+                           <td class="text-wrap"><button type="button" href="javascript:void(0)" onclick="window.open('<?php echo $value->Url; ?>')" class="btn btn-link">URl</button></td>
+                         </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+              </div>
+            </div>
+          <?php } ?>
+          <?php if($data_ipchain_Project->response) { ?>
+            <div class="col-md-12">
+              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+              <div class="row pl-1">
+                <div class="col-sm-5 "><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о Проектах:</b></text></div>
+                <div class="col-sm-7"></div>
+              </div>
+            </div>
+            <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none; width: 100%;">
+              <div class="col-md-12 mt-3 pl-3 pr-3">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Наименование</th>
+                          <th scope="col">Описаие</th>
+                          <th scope="col">Дата Старт</th>
+                          <th scope="col">Дата Конец</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach($data_ipchain_Project->data as $key => $value)  {?>
+                          <tr>
+                           <td scope="row"><?php echo ($key+1); ?></td>
+                           <td class="text-wrap"><?php echo $value->Name; ?></td>
+                           <td class="overflow-auto text-wrap"><?php echo $value->Description; ?></td>
+                           <td><?php echo $settings->date_time_rus($value->StartDate); ?></td>
+                           <td><?php echo $settings->date_time_rus($value->EndDate); ?></td>
+                         </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+              </div>
+            </div>
+          <?php } ?>
+          <?php if($data_ipchain_StateSupport->response) { ?>
+            <div class="col-md-12">
+              <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+              <div class="row pl-1 ">
+                <div class="col-sm-5 "><text class="list_fns" list="<?php echo $count_list_fns;?>"><b>Сведения о Мерах поддержки:</b></text></div>
+                <div class="col-sm-7"></div>
+              </div>
+            </div>
+            <div class="row" id="list_li_fns_<?php echo $count_list_fns; $count_list_fns++ ?>" style="display:none; width: 100%;">
+              <div class="col-md-12 mt-3 pl-3 pr-3">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Номер Документа</th>
+                          <th scope="col">Направления поддержки</th>
+                          <th scope="col">Дата Поддержки</th>
+                          <th scope="col">Сумма</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach($data_ipchain_StateSupport->data as $key => $value)  {?>
+                          <tr>
+                           <td scope="row"><?php echo ($key+1); ?></td>
+                           <td><?php echo $value->id_Support; ?></td>
+                           <td><?php $temp_str_type_support = $value->typeId; echo $data_type_support->$temp_str_type_support; ?></td>
+                           <td><?php echo $settings->date_time_rus($value->date_support); ?></td>
+                           <td><?php echo $value->Sum; ?> ₽</td>
+                         </tr>
+                        <?php } ?>
+                      </tbody>
+                    </table>
+              </div>
+            </div>
+          <?php }  ?>
+        </div>
+        <hr style="border: none; color: #727cf5; background-color: #727cf5; height: 1px; ">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    var icon_min = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+    var icon_plus = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>';
+
+    var arr_list = $('.list_fns');
+    for (var i = 0; i<arr_list.length; i++) {
+      var temp_str = $(arr_list[i]).html();
+      $(arr_list[i]).attr('state', 'false');
+      $(arr_list[i]).html(icon_plus+temp_str);
+    }
+
+    $('.list_fns').on('click', function(){
+      var element = event.path[1];
+      var list_num = $(element).attr('list');
+      var el_li = $('#list_li_fns_'+list_num);
+      var el_b = $(element).children()[1].outerHTML;
+      if( $(element).is(':visible') ) {
+        if( $(el_li).is(':visible') ) {
+           $(el_li).slideUp();
+           $(element).html(icon_plus+el_b);
+        } else {
+          $(el_li).slideDown();
+          $(element).html(icon_min+el_b);
+        }
+      }
+    });
+  });
+
+</script>
 
 
 
