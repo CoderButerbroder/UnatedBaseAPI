@@ -7311,28 +7311,28 @@ class Settings {
           $strokaSQL = "SELECT ";
 
           if ($period == 'year') {
-                $strokaSQL .= " count(DISTINCT(id) as sum,
-                                YEAR($this->MAIN_support_ticket.`date_register`) as yeard,
-                                count(DISTINCT($this->MAIN_support_ticket.`inn`)) as fci_program_groupby";
+                $strokaSQL .= " count(id) as sum,
+                                YEAR($this->MAIN_support_ticket.`date_added`) as yeard,
+                                count(id) as fci_program_groupby";
           }
           if ($period == 'month') {
-                $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
-                                MONTH($this->MAIN_entity.`date_register`) as monthd,
-                                YEAR($this->MAIN_entity.`date_register`) as yeard,
-                                count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                $strokaSQL .= " count(id) as sum,
+                                MONTH($this->MAIN_support_ticket.`date_added`) as monthd,
+                                YEAR($this->MAIN_support_ticket.`date_added`) as yeard,
+                                count(id) as fci_program_groupby";
           }
           if ($period == 'week') {
-                $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
-                                WEEK($this->MAIN_entity.`date_register`) as weekd,
-                                YEAR($this->MAIN_entity.`date_register`) as yeard,
+                $strokaSQL .= " count(id) as sum,
+                                WEEK($this->MAIN_support_ticket.`date_added`) as weekd,
+                                YEAR($this->MAIN_support_ticket.`date_added`) as yeard,
                                 count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
           }
           if ($period == 'day') {
-                $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
-                                DAY($this->MAIN_entity.`date_register`) as dayd,
-                                MONTH($this->MAIN_entity.`date_register`) as monthd,
-                                YEAR($this->MAIN_entity.`date_register`) as yeard,
-                                count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                $strokaSQL .= " count(id) as sum,
+                                DAY($this->MAIN_support_ticket.`date_added`) as dayd,
+                                MONTH($this->MAIN_support_ticket.`date_added`) as monthd,
+                                YEAR($this->MAIN_support_ticket.`date_added`) as yeard,
+                                count(id) as fci_program_groupby";
           }
           if ($period == 'data') {
                 $strokaSQL .= " * ";
