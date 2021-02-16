@@ -1,8 +1,8 @@
 <?php
 /* Отчет по показателям Tboil */
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 session_start();
 
 if (!isset($_SESSION["key_user"])) {
@@ -13,8 +13,8 @@ if (!isset($_SESSION["key_user"])) {
 
 $period_select = (object) [];
 $period_select->period = (isset($_POST["period"])) ? trim($_POST["period"]) : 'month';
-$period_select->start =  date('Y-m-d 00:00:00', (strtotime(trim($_POST["start"]))-86400) );
-$period_select->end =  date('Y-m-d 23:59:59', strtotime(trim($_POST["end"])));
+// $period_select->start =  date('Y-m-d 00:00:00', (strtotime(trim($_POST["start"]))-86400) );
+// $period_select->end =  date('Y-m-d 23:59:59', strtotime(trim($_POST["end"])));
 
 $period_select->start =  '2020-11-01 00:00:00';
 $period_select->end = '2021-02-16 23:59:59';

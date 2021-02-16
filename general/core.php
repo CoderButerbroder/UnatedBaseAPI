@@ -7951,7 +7951,7 @@ class Settings {
             }
           }
 
-          return $data_events;
+          return $data_users;
           exit;
   }
 
