@@ -125,8 +125,8 @@
                 <div id="collapse_report_tboil" class="collapse" role="tabpanel" aria-labelledby="heading_report_tboil" data-parent="#acc_report">
                   <div class="card-body">
                     <ul class="list-group list-group-flush">
-                      <li style="cursor:pointer;" class="list-group-item"><a style="color:black" href="javascript:void(0)" onclick="window.open('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/data/reports/actions/report_point_boil.php')"><i
-                            class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i> !TEST! Показатель работы ТК СПб</a></li>
+                      <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_tboil').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
+                         Показатель работы ТК СПб</li>
                     </ul>
                   </div>
                 </div>
@@ -568,6 +568,50 @@
   </div>
 </div>
 
+<div class="modal fade" id="modal_report_by_tboil" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered " role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Количественные показатели</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/panel/data/reports/actions/report_point_boil" onsubmit="generate_report(this,'modal_report_by_tboil', 'period'); return false;" method="post" id="form_tboil">
+          <div class="form-group">
+            <label for="select_input_period" class="col-form-label">Укажите необходимый результирующий диапозон</label>
+            <div class="">
+              <select class="js-example-basic-single" name="period" >
+                <option value="week">Неделя</option>
+                <option selected value="month">Месяц</option>
+                <option value="year">Год</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-daterange">
+              <div class="row ml-0 mr-0">
+                <span class="col-md-2 my-2 text-center"> C </span>
+                <input type="text" name="start" id="data_period_9" class="form-control col-md-4 text-center" >
+                <div class="input-group-addon"> </div> <span class="col-md-2 my-2 text-center"> По </span>
+                <input type="text" name="end" id="data_period_10" class="form-control col-md-4 text-center">
+              </div>
+            </div>
+          </div>
+
+          <button style="display:none;" type="submit" name="button"></button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="$('#form_tboil')[0].elements['button'].click()">Сгенерировать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -610,12 +654,12 @@ $(document).ready(function() {
           language: "ru-RU",
           zIndexOffset: 1051
         });
-      if($(this).attr('id') == 'data_period_2' || $(this).attr('id') == 'data_period_4'){
+      if($(this).attr('id') == 'data_period_2' || $(this).attr('id') == 'data_period_4' || $(this).attr('id') == 'data_period_10'){
         $(this).datepicker('setStartDate', startDate2);
         $(this).datepicker('setEndDate', endDate2);
         $(this).datepicker('setDate', endDate2);
       }
-      if($(this).attr('id') == 'data_period_1' || $(this).attr('id') == 'data_period_3'){
+      if($(this).attr('id') == 'data_period_1' || $(this).attr('id') == 'data_period_3' || $(this).attr('id') == 'data_period_9'){
         $(this).datepicker('setStartDate', startDate);
         $(this).datepicker('setEndDate', endDate);
         $(this).datepicker('setDate', startDate);

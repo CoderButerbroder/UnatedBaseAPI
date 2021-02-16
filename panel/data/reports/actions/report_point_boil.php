@@ -1,8 +1,8 @@
 <?php
 /* Отчет по показателям Tboil */
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 session_start();
 
 if (!isset($_SESSION["key_user"])) {
@@ -13,11 +13,11 @@ if (!isset($_SESSION["key_user"])) {
 
 $period_select = (object) [];
 $period_select->period = (isset($_POST["period"])) ? trim($_POST["period"]) : 'month';
-// $period_select->start =  date('Y-m-d 00:00:00', (strtotime(trim($_POST["start"]))-86400) );
-// $period_select->end =  date('Y-m-d 23:59:59', strtotime(trim($_POST["end"])));
+$period_select->start =  date('Y-m-d 00:00:00', (strtotime(trim($_POST["start"]))-86400) );
+$period_select->end =  date('Y-m-d 23:59:59', strtotime(trim($_POST["end"])));
 
-$period_select->start =  '2020-11-01 00:00:00';
-$period_select->end = '2021-02-16 23:59:59';
+// $period_select->start =  '2020-11-01 00:00:00';
+// $period_select->end = '2021-02-16 23:59:59';
 
 if ($period_select->start && $period_select->end && $period_select->period != 'year' && $period_select->period != 'month' && $period_select->period != 'week') {
   exit();
@@ -32,20 +32,12 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 $arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
-$arr_data_users = $settings->get_count_main_users_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
-
-foreach ($arr_data_users as $key => $value) {
-  if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
-  else {$value->percent = 0;}
-  $value->sum = $value->sum + $count_sum;
-  $count_sum = $value->sum;
-}
-
-echo json_encode($arr_data_users, JSON_UNESCAPED_UNICODE);
-exit();
+$arr_data_users = $settings->get_count_main_users_groupby_time_reg(true, $period_select->period, $period_select->start, $period_select->end);
+$arr_data_users_new = $settings->get_count_main_users_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
 
 $arr_data_period = [];
 
+/* сортировки */
 function add_null_in_data_week( $arr_in ) {
   foreach( $arr_in as $key => $value ) {
     if($value->weekd >= 1 && $value->weekd <= 9 ){
@@ -111,13 +103,14 @@ function set_cell_value($sheet_in, $key, $row, $data_in, $arr_in, $iter = -1) {
 if ($period_select->period == 'week') {
   add_null_in_data_week($arr_data_event_summ);
   add_null_in_data_week($arr_data_users);
+  add_null_in_data_week($arr_data_users_new);
 }
 
 if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
 if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) get_list_date_arr($arr_data_users);
+if (is_array($arr_data_users_new) && count($arr_data_users_new) > 0 && $arr_data_users_new != 0 ) get_list_date_arr($arr_data_users_new);
 
 sort($arr_data_period);
-
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '2' => (object) array('name' => 'Февраль', ),
@@ -191,10 +184,41 @@ foreach ($arr_data_period as $key => $value) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Прирост к предыдщему месяцу, %');
+foreach ($arr_data_period as $key => $value) {
+  if(is_Array($arr_data_users)) {
+    foreach ($arr_data_users as $key2 => $value2) {
+      if($period_select->period == 'day'){
+        $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+      }
+      if($period_select->period == 'week'){
+        $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+      }
+      if($period_select->period == 'month'){
+        $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+      }
+      if($period_select->period == 'year'){
+        $date1 = strtotime('01.01.'.$value2->yeard);
+      }
+
+      if($value == $date1) {
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), $value2->percent."%");
+        break;
+      } else {
+        $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
+      }
+    }
+  } else {
+    $sheet->setCellValueByColumnAndRow(($key+2), ($actual_row), "0%");
+  }
+}
+
 
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Новые пользователи за месяц, акк-в');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, ($key), $actual_row, $value, $arr_data_users_new);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'в т.ч. активные');
