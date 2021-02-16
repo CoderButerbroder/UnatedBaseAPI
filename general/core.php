@@ -7447,7 +7447,7 @@ class Settings {
     }
 
   // объем привлеченного финансирования, млн.руб, в мес фси
-  public function get_count_sum_support_ipchain_groupby_time_reg($increment=true,$prefix_program='all',$period='data',$start=NULL,$end=NULL) {
+  public function get_count_sum_support_fci_groupby_time_reg($increment=true,$period='data',$start=NULL,$end=NULL) {
         global $database;
 
         if (!$start) {
@@ -7461,10 +7461,7 @@ class Settings {
           $end = $end_date->fetch(PDO::FETCH_COLUMN);
         }
 
-        if ($prefix_program != 'all') {
-          $array_document_fsi = array($prefix_program => 'тут не нужный текст, просто так');
-        }
-        else {
+
           $array_document_fsi = array(
             'У' => 'Умник',
             'Соц' => 'Социум Цифровые технологии',
@@ -7488,7 +7485,7 @@ class Settings {
             'Kor' => 'Российско-корейский конкурс',
             'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
           );
-        }
+
         $array_prefix = array_keys($array_document_fsi);
         $count_prefix = count($array_prefix);
         $string_temp_sql_new = '';
@@ -7501,28 +7498,28 @@ class Settings {
         $strokaSQL = "SELECT ";
 
         if ($period == 'year') {
-              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+              $strokaSQL .= " sum($this->IPCHAIN_StateSupport.`Sum`) as sum,
                               YEAR($this->MAIN_entity.`date_register`) as yeard,
-                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                              sum($this->IPCHAIN_StateSupport.`Sum`) as fci_sum_groupby";
         }
         if ($period == 'month') {
-              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+              $strokaSQL .= " sum($this->IPCHAIN_StateSupport.`Sum`) as sum,
                               MONTH($this->MAIN_entity.`date_register`) as monthd,
                               YEAR($this->MAIN_entity.`date_register`) as yeard,
-                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                              sum($this->IPCHAIN_StateSupport.`Sum`) as fci_sum_groupby";
         }
         if ($period == 'week') {
-              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+              $strokaSQL .= " sum($this->IPCHAIN_StateSupport.`Sum`) as sum,
                               WEEK($this->MAIN_entity.`date_register`) as weekd,
                               YEAR($this->MAIN_entity.`date_register`) as yeard,
-                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                              sum($this->IPCHAIN_StateSupport.`Sum`) as fci_sum_groupby";
         }
         if ($period == 'day') {
-              $strokaSQL .= " count(DISTINCT($this->MAIN_entity.`inn`)) as sum,
+              $strokaSQL .= " sum($this->IPCHAIN_StateSupport.`Sum`) as sum,
                               DAY($this->MAIN_entity.`date_register`) as dayd,
                               MONTH($this->MAIN_entity.`date_register`) as monthd,
                               YEAR($this->MAIN_entity.`date_register`) as yeard,
-                              count(DISTINCT($this->MAIN_entity.`inn`)) as fci_program_groupby";
+                              sum($this->IPCHAIN_StateSupport.`Sum`) as fci_sum_groupby";
         }
         if ($period == 'data') {
               $strokaSQL .= " * ";
@@ -7535,28 +7532,30 @@ class Settings {
                         WHERE ( $string_temp_sql_new ) AND $this->MAIN_entity.`date_register` BETWEEN :starting AND :ending ";
 
         if ($period == 'year') {
-            $strokaSQL .= " GROUP BY YEAR(reg_date)
-                            HAVING SUM($this->main_users.`id_tboil`) > 0
-                            ORDER BY YEAR(reg_date) ASC";
+            $strokaSQL .= " GROUP BY YEAR($this->MAIN_entity.`date_register`)
+                            HAVING SUM($this->IPCHAIN_StateSupport.`id`) > 0
+                            ORDER BY YEAR($this->MAIN_entity.`date_register`) ASC";
         }
         if ($period == 'month') {
-            $strokaSQL .= " GROUP BY MONTH(reg_date), YEAR(reg_date)
-                            HAVING SUM($this->main_users.`id_tboil`) > 0
-                            ORDER BY YEAR(reg_date), MONTH(reg_date) ASC";
+            $strokaSQL .= " GROUP BY MONTH($this->MAIN_entity.`date_register`), YEAR($this->MAIN_entity.`date_register`)
+                            HAVING SUM($this->IPCHAIN_StateSupport.`id`) > 0
+                            ORDER BY YEAR($this->MAIN_entity.`date_register`), MONTH($this->MAIN_entity.`date_register`) ASC";
         }
         if ($period == 'week') {
-            $strokaSQL .= " GROUP BY WEEK(reg_date), YEAR(reg_date)
-                            HAVING SUM($this->main_users.`id_tboil`) > 0
-                            ORDER BY YEAR(reg_date), WEEK(reg_date) ASC";
+            $strokaSQL .= " GROUP BY WEEK($this->MAIN_entity.`date_register`), YEAR($this->MAIN_entity.`date_register`)
+                            HAVING SUM($this->IPCHAIN_StateSupport.`id`) > 0
+                            ORDER BY YEAR($this->MAIN_entity.`date_register`), WEEK($this->MAIN_entity.`date_register`) ASC";
         }
         if ($period == 'day') {
-            $strokaSQL .= " GROUP BY DAY(reg_date),MONTH(reg_date), YEAR(reg_date)
-                            HAVING SUM($this->main_users.`id_tboil`) > 0
-                            ORDER BY YEAR(reg_date), MONTH(reg_date),DAY(reg_date) ASC";
+            $strokaSQL .= " GROUP BY DAY($this->MAIN_entity.`date_register`),MONTH($this->MAIN_entity.`date_register`), YEAR($this->MAIN_entity.`date_register`)
+                            HAVING SUM($this->IPCHAIN_StateSupport.`id`) > 0
+                            ORDER BY YEAR($this->MAIN_entity.`date_register`), MONTH($this->MAIN_entity.`date_register`),DAY($this->MAIN_entity.`date_register`) ASC";
         }
         if ($period == 'data') {
             $strokaSQL .= " ";
         }
+
+
 
         $statement = $database->prepare($strokaSQL);
         $statement->bindParam(':starting', $start, PDO::PARAM_STR);
@@ -7568,18 +7567,12 @@ class Settings {
             return 0;
             exit;
         }
-        $count_sum = 0;
-        if ($increment == true) {
-          foreach ($data_users as $key => $value) {
-            $value->sum = $value->sum + $count_sum;
-            $count_sum = $value->sum;
-          }
-        }
 
         return $data_users;
         exit;
 
   }
+
 
 
   /* функции для вывода графиков  */
