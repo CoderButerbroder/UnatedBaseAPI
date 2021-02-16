@@ -8,8 +8,11 @@ $settings = new Settings;
 
 // $data_array = array('Запрос на консультацию компании - Фонд Сколково','Информационное сопровождение проекта Сколково');
 
-$data = $settings->get_count_sum_support_fci_groupby_time_reg(true,'day','2020-11-22 00:00:00','2021-02-16 00:00:00');
+$data = $settings->get_sum_all_services_lpmtech();
 var_dump($data);
+
+// $data = $settings->get_count_sum_support_fci_groupby_time_reg(true,'day','2020-11-22 00:00:00','2021-02-16 00:00:00');
+// var_dump($data);
 
 // $data = $settings->get_count_users_groupby_time_reg('year','2020.01.01','2021.02.09');
 // var_dump($data);

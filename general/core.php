@@ -7573,7 +7573,23 @@ class Settings {
 
   }
 
+  // Количество юр лиц, воспользовавшихся сервисом (за все время):
+  public function get_sum_all_services_lpmtech() {
+    global $database;
 
+    $data = $database->prepare("SELECT type_support as support, count(DISTINCT(id_tboil)) as sum FROM $this->MAIN_support_ticket GROUP BY type_support");
+    $data->execute();
+    $data_ticket = $data->fetchAll(PDO::FETCH_OBJ);
+    $new_array = array();
+    foreach ($data_ticket as $key => $value) {
+        $new_array[$value->support] = $value->sum;
+    }
+
+    return $new_array;
+    exit;
+  }
+
+  // количество юридических лиц вопсользовавшихся сервисом 
 
   /* функции для вывода графиков  */
   public function get_count_all_users() {
