@@ -12,8 +12,16 @@ if (!isset($_SESSION["key_user"])) {
 
 $period_select = (object) [];
 $period_select->period = $_POST["period"];
-$period_select->data1 =  date('Y-m-d H:i:s', strtotime(trim($_POST["start"])));
-$period_select->data2 =  date('Y-m-d H:i:s', strtotime(trim($_POST["end"])));
+$period_select->start =  date('Y-m-d 00:00:00', (strtotime(trim($_POST["start"]))-86400) );
+$period_select->end =  date('Y-m-d 23:59:59', strtotime(trim($_POST["end"])));
+
+// $period_select->start =  NULL;
+// $period_select->end =  NULL;
+
+// var_dump($period_select->start);
+// echo "</br>";
+// var_dump($period_select->end);
+// exit();
 
 // $period_select->period = 'month';
 // $period_select->start =  date('Y-m-d H:i:s', strtotime('01.01.2020'));
@@ -33,6 +41,9 @@ $settings = new Settings;
 $arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select->period, $period_select->start , $period_select->end );
 $arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select->period, $period_select->start , $period_select->end );
 
+$arr_FSI_count_financing = $settings->get_count_sum_support_fci_groupby_time_reg(false, $period_select->period, $period_select->start , $period_select->end );
+
+
 $arr_FSI_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
                                       ['Запрос на консультацию проекта при подаче заявки в ФСИ','Информационное сопровождение проекта ФСИ'],
                                       $period_select->period, $period_select->start , $period_select->end );
@@ -43,6 +54,8 @@ $arr_SK_count_event_incr =  $settings->get_count_main_entity_skolkovo_visit_even
 $arr_SK_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
                                       ['Запрос на консультацию компании - Фонд Сколково','Информационное сопровождение проекта Сколково'],
                                       $period_select->period, $period_select->start , $period_select->end );
+
+
 
 $arr_CKP_count =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
 
@@ -129,7 +142,7 @@ if ($period_select->period == 'week') {
   add_null_in_data_week($arr_FSI_count);
   add_null_in_data_week($arr_FSI_YMNIK_count);
   add_null_in_data_week($arr_FSI_count_service);
-
+  add_null_in_data_week($arr_FSI_count_financing);
   add_null_in_data_week($arr_SK_count);
   add_null_in_data_week($arr_SK_count_event);
   add_null_in_data_week($arr_SK_count_event_incr);
@@ -149,6 +162,8 @@ if ($period_select->period == 'week') {
 
 if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0 ) get_list_date_arr($arr_FSI_count);
 if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
+if (is_array($arr_FSI_count_financing) && count($arr_FSI_count_financing) > 0 && $arr_FSI_count_financing != 0 ) get_list_date_arr($arr_FSI_count_financing);
+
 if (is_array($arr_FSI_count_service) && count($arr_FSI_count_service) > 0 && $arr_FSI_count_service != 0 ) get_list_date_arr($arr_FSI_count_service);
 if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
 if (is_array($arr_SK_count_event) && count($arr_SK_count_event) > 0 && $arr_SK_count_event != 0 ) get_list_date_arr($arr_SK_count_event);
@@ -170,6 +185,65 @@ if (is_array($arr_service_support_IS) && count($arr_service_support_IS) > 0 && $
 
 sort($arr_data_period);
 
+// var_dump($arr_FSI_count);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_FSI_YMNIK_count);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_FSI_count_service);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_FSI_count_financing);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_SK_count);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_SK_count_event);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_SK_count_event_incr);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_SK_count_service);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_CKP_count);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_FSI);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_organization_meeting);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_CKP);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_sturtup_organization_meeting);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_translate);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_event);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_SK);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_support);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_preparation_application);
+// echo "</br>";
+// echo "</br>";
+// var_dump($arr_service_support_IS);
+// echo "</br>";
+// echo "</br>";
+//
+// exit();
 
 $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
                           '2' => (object) array('name' => 'Февраль', ),
@@ -332,6 +406,9 @@ foreach ($arr_data_period as $key => $value) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'объем привлеченного финансирования, млн.руб, в '.$period_select->name);
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_FSI_count_financing);
+}
 $actual_row++;
 $actual_row++;
 $actual_row++;
