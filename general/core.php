@@ -3850,7 +3850,25 @@ class Settings {
 
   }
 
+  // обновление статуса командообразования
+  public function update_mass_main_users_comand($array_id_tboil_users,$set_value=0) {
+            $comma_separated = implode(",", $array_id_tboil_users);
+            $strokaSQL = "UPDATE $this->main_users SET team_build = :set_value WHERE id_tboil in( $comma_separated )";
 
+            $statement = $database->prepare($strokaSQL);
+            $statement->bindParam(':set_value', $set_value, PDO::PARAM_INT);
+            $check_exec = $statement->execute();
+            $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+            $count = $statement->rowCount();
+
+        if ($check_exec) {
+              return json_encode(array('response' => true, 'description' => 'Данные по командобразованию пользователей успешно обновлены, обновлено: '.$count),JSON_UNESCAPED_UNICODE);
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка обновления командобразования пользователей'),JSON_UNESCAPED_UNICODE);
+        }
+
+
+  }
 
 
 
@@ -7589,7 +7607,6 @@ class Settings {
     exit;
   }
 
-  // количество юридических лиц вопсользовавшихся сервисом 
 
   /* функции для вывода графиков  */
   public function get_count_all_users() {
