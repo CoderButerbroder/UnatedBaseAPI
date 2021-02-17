@@ -6,7 +6,7 @@ header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
-$data_array = array(104120);
+$data_array = array(104120,81920);
 
 $data = $settings->update_mass_main_users_comand($data_array,1);
 var_dump($data);
