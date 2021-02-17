@@ -684,8 +684,9 @@ class Settings {
                 $default_int = 0;
                 $role = 'user';
                 $leaderId = (isset($data_user->data->leaderId)) ? $data_user->data->leaderId : 0;
+                $team_build = (isset($data_user->data->UF_COMMAND)) ? $data_user->data->UF_COMMAND : 0;
 
-                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role)");
                 $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
                 $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
                 $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -702,6 +703,7 @@ class Settings {
                 $new_user->bindParam(':company', $company, PDO::PARAM_STR);
                 $new_user->bindParam(':position', $position, PDO::PARAM_STR);
                 $new_user->bindParam(':profession', $default, PDO::PARAM_STR);
+                $new_user->bindParam(':team_build', $team_build, PDO::PARAM_INT);
                 $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
                 $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
                 $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
@@ -762,6 +764,7 @@ class Settings {
                       if (!$data_user->company) {$company = '-';} else {$company = $data_user->company;}
                       if (!$data_user->position) {$position = '-';} else {$position = $data_user->position;}
                       if (!$data_user->profession) {$profession = '-';} else {$profession = $data_user->profession;}
+                      if (!$data_user->UF_COMMAND) {$team_build = 0;} else {$team_build = $data_user->UF_COMMAND;}
 
                       $userId = $data_user->userId;
                       $email = $data_user->email;
@@ -769,8 +772,8 @@ class Settings {
                       $lastName = $data_user->lastName;
 
 
-                      $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,hash,first_referer,reg_date,role)
-                                                                             VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:hash,:first_referer,:reg_date,:role)");
+                      $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role)
+                                                                             VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role)");
                       $new_user->bindParam(':id_tboil', $userId, PDO::PARAM_INT);
                       $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
                       $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -787,6 +790,7 @@ class Settings {
                       $new_user->bindParam(':company', $company, PDO::PARAM_STR);
                       $new_user->bindParam(':position', $position, PDO::PARAM_STR);
                       $new_user->bindParam(':profession', $profession, PDO::PARAM_STR);
+                      $new_user->bindParam(':team_build', $team_build, PDO::PARAM_INT);
                       $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
                       $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
                       $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
@@ -954,7 +958,8 @@ class Settings {
                       'passport_id' => 'int',
                       'company' => 'str',
                       'position' => 'str',
-                      'profession' => 'str');
+                      'profession' => 'str',
+                      'team_build' => 'int');
 
       $statement = $database->prepare("UPDATE $this->main_users SET {$field} = :value WHERE id_tboil = :id_tboil");
       if ($field_integer[$field] == 'int') { $statement->bindParam(':value', $value_field, PDO::PARAM_INT);}

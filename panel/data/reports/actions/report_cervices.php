@@ -110,6 +110,13 @@ $settings = new Settings;
 $arr_count_all_time_cervices = $settings->get_sum_all_services_lpmtech();
 
 
+/*Технологические запросы */
+//2. Подбор стартапа под технологический запрос
+$arr_startup_podbor_count = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Подбор стартапов под тех.запрос.', $period_select->period , $period_select->start , $period_select->end );
+//3. Технологических запросов крупных компаний
+$arr_tech_request_count = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Технологический запрос крупной компании', $period_select->period , $period_select->start , $period_select->end );
+
+
 /* опытное производство, протоптип, инжинеринг */
 //1. Количество обращений по сервису "Получение услуги ЦКП"
 $arr_CKP_count = $settings->get_count_main_support_ticket_groupby_time_add(false, 'Получение услуги центра коллективного пользования (производство)', $period_select->period , $period_select->start , $period_select->end );
@@ -127,12 +134,17 @@ if ($period_select->period == 'week') {
   add_null_in_data_week($arr_design_bureau_count);
   add_null_in_data_week($arr_supp_project_count);
   add_null_in_data_week($arr_request_katalog_count);
+  add_null_in_data_week($arr_startup_podbor_count);
+  add_null_in_data_week($arr_tech_request_count);
 }
 
 if (is_array($arr_CKP_count) && count($arr_CKP_count) > 0 && $arr_CKP_count != 0 ) get_list_date_arr($arr_CKP_count);
 if (is_array($arr_design_bureau_count) && count($arr_design_bureau_count) > 0 && $arr_design_bureau_count != 0 ) get_list_date_arr($arr_design_bureau_count);
 if (is_array($arr_supp_project_count) && count($arr_supp_project_count) > 0 && $arr_supp_project_count != 0 ) get_list_date_arr($arr_supp_project_count);
 if (is_array($arr_request_katalog_count) && count($arr_request_katalog_count) > 0 && $arr_request_katalog_count != 0 ) get_list_date_arr($arr_request_katalog_count);
+if (is_array($arr_startup_podbor_count) && count($arr_startup_podbor_count) > 0 && $arr_startup_podbor_count != 0 ) get_list_date_arr($arr_startup_podbor_count);
+if (is_array($arr_tech_request_count) && count($arr_tech_request_count) > 0 && $arr_tech_request_count != 0 ) get_list_date_arr($arr_tech_request_count);
+
 
 sort($arr_data_period);
 
@@ -255,10 +267,21 @@ for ($i = 1; $i <= (count($arr_data_period)+1) ; $i++) {
 }
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '1. Количество юр лиц, воспользовавшихся сервисом');
+
+foreach ($arr_data_period as $key => $value) {
+  $temp_char_index = $sheet->getcolumndimensionbycolumn( ($key+2) )->getcolumnIndex();
+  $sheet->setCellValueByColumnAndRow(2,$actual_row, '=SUM('.$temp_char_index.($actual_row+1).':'.$temp_char_index.($actual_row+2).')');
+}
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '2. Подбор стартапа под технологический запрос (мэтчинг) - количество встреч');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_startup_podbor_count);
+}
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '3. Технологических запросов крупных компаний (заведение в ЛК на платформе) - количество запросов');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, $key, $actual_row, $value, $arr_tech_request_count);
+}
 $actual_row++;
 $sheet->setCellValueByColumnAndRow(1,$actual_row, '4. Количество юр.лиц, привлеченных с внешних платформ/событий');
 $actual_row++;
