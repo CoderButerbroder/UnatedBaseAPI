@@ -86,7 +86,14 @@ $settings = new Settings;
 
                       $data_user_tboil_cicle = json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=".$value));
 
+                      if(!is_object($data_user_tboil_cicle) ) {
+                        $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR] sinc_tboil_user_team_build '.$value);
+                      }
+
                       $data_user_tboil_one = $data_user_tboil_cicle->data;
+
+                      echo "count = ".$count." id_tboil = ".$data_user_tboil_one->userId."\n";
+                      $count++;
 
                       if (!$data_user_tboil_one->UF_COMMAND || $data_user_tboil_one->UF_COMMAND != 1) {
                           array_push($array_no,$data_user_tboil_one->userId);
