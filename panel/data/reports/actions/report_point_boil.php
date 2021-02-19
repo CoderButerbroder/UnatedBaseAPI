@@ -35,6 +35,8 @@ $arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, 
 $arr_data_users = $settings->get_count_main_users_groupby_time_reg(true, $period_select->period, $period_select->start, $period_select->end);
 $arr_data_users_new = $settings->get_count_main_users_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
 
+$arr_data_users_act = $settings->get_count_users_main_events_groupby_time_reg(false, $period_select->period, $period_select->start, $period_select->end);
+
 $arr_data_period = [];
 
 /* сортировки */
@@ -104,11 +106,13 @@ if ($period_select->period == 'week') {
   add_null_in_data_week($arr_data_event_summ);
   add_null_in_data_week($arr_data_users);
   add_null_in_data_week($arr_data_users_new);
+  add_null_in_data_week($arr_data_users_act);
 }
 
 if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
 if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) get_list_date_arr($arr_data_users);
 if (is_array($arr_data_users_new) && count($arr_data_users_new) > 0 && $arr_data_users_new != 0 ) get_list_date_arr($arr_data_users_new);
+if (is_array($arr_data_users_act) && count($arr_data_users_act) > 0 && $arr_data_users_act != 0 ) get_list_date_arr($arr_data_users_act);
 
 sort($arr_data_period);
 
@@ -222,6 +226,9 @@ foreach ($arr_data_period as $key => $value) {
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'в т.ч. активные');
+foreach ($arr_data_period as $key => $value) {
+  set_cell_value($sheet, ($key), $actual_row, $value, $arr_data_users_act);
+}
 $actual_row++;
 
 $sheet->setCellValueByColumnAndRow(1,$actual_row, 'Показатели платформы (процессы, количество)');
