@@ -2226,7 +2226,6 @@ class Settings {
     }
   }
 
-
   // получение мероприятий отдельного пользователя по id_tboil
   public function get_user_event($id_user_tboil) {
       global $database;
@@ -2507,7 +2506,6 @@ class Settings {
           exit;
       }
   }
-
 
   // Функция
   public function entity_additionally($id_entity) {
@@ -4626,7 +4624,7 @@ class Settings {
 
 
 
-
+  
 
 
 
@@ -7660,7 +7658,6 @@ class Settings {
     exit;
   }
 
-
   /* функции для вывода графиков  */
   public function get_count_all_users() {
       global $database;
@@ -8040,6 +8037,8 @@ class Settings {
           return $data_users;
           exit;
   }
+
+
 
 
 
