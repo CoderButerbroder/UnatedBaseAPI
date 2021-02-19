@@ -3745,6 +3745,54 @@ class Settings {
 
   }
 
+  // проверка на ниличие компании в ФСИ через IPCHAIN
+  public function check_entity_fci_ipchain($inn) {
+      global $database;
+
+      $array_document_fsi = array(
+        'У' => 'Умник',
+        'Соц' => 'Социум Цифровые технологии',
+        'С1ЦТ' => 'Старт-1 Цифровые технологии',
+        'С2ЦТ' => 'Старт-2 Цифровые технологии',
+        'С2ЦТ' => 'Старт-3 Цифровые технологии',
+        'С1' => 'Старт-1',
+        'С2' => 'Старт-2',
+        'СЦТ' => 'Старт Цифровые технологии',
+        'Комм' => 'Коммерциализация',
+        'КЭ' => 'Коммерциализация Экспорт',
+        'Разв' => 'Развитие',
+        'ЦТ' => 'Цифровые технологии',
+        'НТИ' => 'Развитие НТИ',
+        'ЦП' => 'Развитие-Цифровые платформы',
+        'ДП' => 'Дежурный по планете',
+        'Мол' => 'Вовлечение молодежи в инновационную деятельность',
+        'С1ЦП' => 'Старт-Цифровые платформы',
+        'С1Н' => 'Старт-1',
+        'Агро' => 'АГРОНТИ',
+        'Kor' => 'Российско-корейский конкурс',
+        'ДЦ' => 'Поддержка центров молодежного инновационного творчества'
+      );
+
+      $array_prefix = array_keys($array_document_fsi);
+      $count_prefix = count($array_prefix);
+      $string_temp_sql_new = '';
+
+      foreach ($array_prefix as $key => $value) {
+            $string_temp_sql_new .= " id_Support LIKE '".$value."%' OR";
+      }
+      $string_temp_sql_new = substr($string_temp_sql_new, 0, -2);
+
+      $data_с = $database->prepare("SELECT * FROM $this->IPCHAIN_StateSupport INNER JOIN $this->IPCHAIN_entity ON $this->IPCHAIN_StateSupport.`ipchain_id_entity` = $this->IPCHAIN_entity.`id` WHERE ( $string_temp_sql_new ) $this->IPCHAIN_entity.`inn` = :inn");
+      $data_с->bindParam(':inn', $inn, PDO::PARAM_STR);
+      $data_с->execute();
+      $data_с_result = $data_с->fetchAll(PDO::FETCH_OBJ);
+
+      if($data_с_result){
+        return json_encode(array('response' => true, 'data' => $data_с_result, 'description' => 'Компания с инн '.$inn.' найдена '), JSON_UNESCAPED_UNICODE);
+      } else {
+        return json_encode(array('response' => false, 'description' => 'Компания с данными ИНН не найдена в ФСИ'), JSON_UNESCAPED_UNICODE);
+      }
+  }
 
 
 
