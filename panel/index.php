@@ -194,7 +194,11 @@
             <div class="card-header">
                <h5 class="card-title my-auto">Физ лица</h5>
             </div>
+<<<<<<< HEAD
             <div class="card-body" style="min-height: 420px; /*max-height: 420;*/">
+=======
+            <div class="card-body" style="min-height: 420; /*max-height: 420;*/">
+>>>>>>> 2d6db7a53cf24b3f02fc08a776cb2e0bcddbeb71
               <div class="" id="div_chart_line_user" >
                 <div id="spinner_chart_line_user" class="spinner-border text-primary" style="position: absolute; margin: -25px 0 0 -25px; top: 50%; left: 50%;  width: 3rem; height: 3rem; z-index:99999;" role="status">
                   <span class="sr-only">Loading...</span>
