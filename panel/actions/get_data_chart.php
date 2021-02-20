@@ -9,6 +9,13 @@ if (!isset($_SESSION["key_user"])) {
   exit();
 }
 
+$period_select = trim($_POST["period"]);
+
+if ($period_select != 'year' && $period_select != 'month' && $period_select != 'week' && $period_select != 'day' ) {
+  echo json_encode(array('response' => false, 'description' => 'Ошибка полученного параметра'), JSON_UNESCAPED_UNICODE);
+  exit();
+}
+
 $arr_data_ru_json_chart = json_decode(file_get_contents('https://'.$_SERVER["SERVER_NAME"].'/assets/vendors/apexcharts/ru.json'));
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
@@ -39,10 +46,10 @@ if($_POST["chart"] == 'user') {
 }
 
 if($_POST["chart"] == 'company') {
-  $data_count_company_period = $settings->get_count_entity_groupby_time_reg('month');
-  $data_count_company_SK_period = $settings->get_count_entity_skolkovo_groupby_time_reg('month');
-  $data_count_company_FSI_period = $settings->get_count_entity_fci_groupby_time_reg('month');
-  $data_count_company_EXPORT_period = $settings->get_count_entity_export_groupby_time_reg('month');
+  $data_count_company_period = $settings->get_count_entity_groupby_time_reg($period_select);
+  $data_count_company_SK_period = $settings->get_count_entity_skolkovo_groupby_time_reg($period_select);
+  $data_count_company_FSI_period = $settings->get_count_entity_fci_groupby_time_reg($period_select);
+  $data_count_company_EXPORT_period = $settings->get_count_entity_export_groupby_time_reg($period_select);
 
   function period($a, $b) {
     if(isset($a->dayd)){
