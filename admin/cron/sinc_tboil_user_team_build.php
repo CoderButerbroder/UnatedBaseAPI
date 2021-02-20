@@ -38,6 +38,7 @@ $settings = new Settings;
 
     $count = 0;
     $count_token = 0;
+    $err_count_not_obj = 0;
     $array_no = array();
     $array_yes = array();
 
@@ -49,8 +50,13 @@ $settings = new Settings;
 
         if(!is_object($data_user_tboil_cicle) ) {
           $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR] sinc_tboil_user_team_build '.$data_user_tboil_cicle_str);
+          if ($err_count_not_obj >= 3) {
+            $flag_while = false;
+          }
+          $err_count_not_obj++;
         } else {
-          if (($data_user_tboil_cicle->success == 'false' || $data_user_tboil_cicle->success == false) && ($data_user_tboil_cicle->error == "Неправильный токен" || $data_user_tboil_cicle->error == "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d")) {
+          $err_count_not_obj = 0;
+          if (($data_user_tboil_cicle->success == false) && ($data_user_tboil_cicle->error == "Неправильный токен" || $data_user_tboil_cicle->error == "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d")) {
             $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] token re_get');
             $token_tboil_str = $settings->refresh_token_tboil();
             $token_tboil_obj = json_decode($token_tboil_str);
@@ -61,9 +67,10 @@ $settings = new Settings;
             }
             $count_token++;
           } else {
-            if ($data_user_tboil_cicle->success == 'false' || $data_user_tboil_cicle->success == false || !is_object($data_user_tboil_cicle)) {
+            echo $data_user_tboil_cicle->success."\n";
+            if ($data_user_tboil_cicle->success == false) {
               $flag_while = false;
-              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR NEW] user_id='.$value." message:".$data_user_tboil_cicle_str);
+              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR NEW] user_id='.$all_id_users_tboil[$i]." message:".$data_user_tboil_cicle_str);
             } else {
               $data_user_tboil_one = $data_user_tboil_cicle->data;
               if ( $data_user_tboil_one->userId == $all_id_users_tboil[$i] ){
