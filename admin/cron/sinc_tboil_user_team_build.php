@@ -61,18 +61,23 @@ $settings = new Settings;
             }
             $count_token++;
           } else {
-            $data_user_tboil_one = $data_user_tboil_cicle->data;
-            if ( $data_user_tboil_one->userId == $all_id_users_tboil[$i] ){
+            if ($data_user_tboil_cicle->success == 'false' || $data_user_tboil_cicle->success == false || !is_object($data_user_tboil_cicle)) {
               $flag_while = false;
-              // echo "token ".$count_token." ".$i." count = ".$count." userId = ".$data_user_tboil_one->userId." id_tboil = ".$all_id_users_tboil[$i]." count_no ".count($array_no)." count_yes = ".count($array_yes)."\n";
-              $count++;
-              if ($data_user_tboil_one->UF_COMMAND == 1) {
-                array_push($array_yes,$data_user_tboil_one->userId);
-              } else {
-                array_push($array_no,$data_user_tboil_one->userId);
-              }
+              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR NEW] user_id='.$value." message:".$data_user_tboil_cicle_str);
             } else {
-              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR]'.$data_user_tboil_cicle_str);
+              $data_user_tboil_one = $data_user_tboil_cicle->data;
+              if ( $data_user_tboil_one->userId == $all_id_users_tboil[$i] ){
+                $flag_while = false;
+                // echo "token ".$count_token." ".$i." count = ".$count." userId = ".$data_user_tboil_one->userId." id_tboil = ".$all_id_users_tboil[$i]." count_no ".count($array_no)." count_yes = ".count($array_yes)."\n";
+                $count++;
+                if ($data_user_tboil_one->UF_COMMAND == 1) {
+                  array_push($array_yes,$data_user_tboil_one->userId);
+                } else {
+                  array_push($array_no,$data_user_tboil_one->userId);
+                }
+              } else {
+                $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR]'.$data_user_tboil_cicle_str);
+              }
             }
           }
         }
