@@ -67,7 +67,6 @@ $settings = new Settings;
             }
             $count_token++;
           } else {
-            echo $data_user_tboil_cicle->success."\n";
             if ($data_user_tboil_cicle->success == false) {
               $flag_while = false;
               $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR NEW] user_id='.$all_id_users_tboil[$i]." message:".$data_user_tboil_cicle_str);
