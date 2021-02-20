@@ -42,6 +42,8 @@ class Settings {
   private $MAIN_support_ticket_conclusion = 'MAIN_support_ticket_conclusion';
   private $API_USERS_ROLE = 'API_USERS_ROLE';
   private $MAIN_support_ticket_status_history = 'MAIN_support_ticket_status_history';
+  private $LPM_1С_residents = 'LPM_1С_residents';
+
 
   // проверка json на валидность
   public function isJSON($string) {
@@ -4624,7 +4626,7 @@ class Settings {
 
 
 
-  
+
 
 
 
@@ -5668,6 +5670,171 @@ class Settings {
         }
 
   }
+
+
+
+
+
+
+
+
+
+
+  /* ФУНКЦИИ СВЯЗАННЫЕ С 1С */
+
+  // функция обновления данных по резидентам лпм
+  public function update_residents_lpm($data_json_residents) {
+        global $database;
+
+
+        $massiv_residents = json_decode($data_json_residents);
+
+        $update_array = array(); // массив компаний которые были успешно обновлены
+        $bad_update_array = array(); // массив компаний которые не были обновлены
+
+        $insert_array = array(); // массив компаний которые были успешно добавлены
+        $bad_insert_array = array(); // массив компаний которые не были добавлены
+
+        $all_company = array(); // массив всех компаний загруженных из 1с аренда
+
+        foreach ($massiv_residents as $key => $value) {
+              // поиск уже существующей компании по инн
+                $check = $this->search_resident_lpm($inn);
+
+                array_push($$all_company,$inn);
+
+                if (json_decode($check->response)) {
+
+                      $test = 'тест';
+
+                      // временная заглушка до доработки 1С
+                      $name = isset($test) ? $test : ' ';
+                      $housing = isset($test) ? $test : ' ';
+                      $flour = isset($test) ? $test : ' ';
+                      $work_time = isset($test) ? $test : ' ';
+                      $site = isset($test) ? $test : ' ';
+                      $address = isset($test) ? $test : ' ';
+                      $direction = isset($test) ? $test : ' ';
+
+                      // если компания найдена то обновляем данные по инн
+                      $upd_new_company = $database->prepare("UPDATE $this->LPM_1С_residents SET name = :name, housing = :housing, flour = :flour, work_time = :work_time, site = :site, address = :address, direction = :direction WHERE inn = :inn");
+                      $upd_new_company->bindParam(':name', $name, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':site', $site, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':address', $address, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
+                      $check_add = $upd_new_company->execute();
+                      $count = $upd_new_company->rowCount();
+
+                      if ($count) {
+                          array_push($update_array,$inn);
+                      } else {
+                          array_push($bad_update_array,$inn);
+                      }
+                }
+                else {
+                    // если компания не найдена то добавляем ее в список
+                    $request = $database->prepare("INSERT INTO $this->LPM_1С_residents (inn,name,housing,flour,work_time,site,address,direction)
+                                                          VALUES (:inn,:name,:housing,:flour,:work_time,:site,:address,:direction)");
+
+                    $upd_new_company->bindParam(':name', $name, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':site', $site, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':address', $address, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
+                    $upd_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
+                    $check_request = $request->execute();
+                    //$id_request = $request->rowCount();
+                    $id_request = $database->lastInsertId();
+
+                    if ($id_request) {
+                        array_push($insert_array,$inn);
+                    }
+                    else {
+                        array_push($bad_insert_array,$inn);
+                    }
+                }
+
+        }
+
+        // проверка на действия
+        if (count($bad_update_array)) {
+          $string_update_inn = implode(", ", $bad_update_array);
+          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были обновлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_update_inn);
+        }
+        if (count($bad_insert_array)) {
+          $string_insert_inn = implode(", ", $bad_insert_array);
+          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были добавлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_insert_inn);
+        }
+
+
+        // удаление покинувших ЛПМ резидентов
+
+        $string_all_company_inn = implode(", ", $all_company);
+
+        $sql = "DELETE FROM $this->LPM_1С_residents WHERE NOT IN ($string_all_company_inn)";
+        $stmt = $database->prepare($sql);
+        $stmt->execute();
+        $deleted = $stmt->rowCount();
+
+        if ($deleted) {
+            $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.$deleted.' резиднтов ЛПМ были удалены из единой базы данных');
+        }
+
+        return json_encode(array('response' => true, 'description' => 'Функция закончила свое выполнение успешно ', 'deleted' => $deleted, 'updated' => $update_array, 'inserted' => $insert_array),JSON_UNESCAPED_UNICODE);
+        exit;
+
+  }
+
+  // проверка, поиск и вывод данных по резиентам ЛПМ 1с-аренда
+  public function search_resident_lpm($inn) {
+      global $database;
+
+      $check_inn = $this->is_valid_inn($inn);
+
+      $response = $database->prepare("SELECT * FROM $this->LPM_1С_residents WHERE inn = :inn");
+      $response->bindParam(':inn', $inn, PDO::PARAM_STR);
+      $response->execute();
+      $data = $response->fetch(PDO::FETCH_OBJ);
+
+      if ($data) {
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данное юридическое лицо является резидентом ЛПМ'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Данное юридическое лицо не найдено в списке резиденов ЛПМ'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+  }
+
+  // функция получения данных по всем юридическим лицам являющимся резидентами ЛПМ
+  public function get_all_resident_lpm() {
+      global $database;
+
+      $response = $database->prepare("SELECT * FROM $this->LPM_1С_residents");
+      $response->execute();
+      $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+          return json_encode(array('response' => true, 'data' => $data, 'description' => 'Данные по юридическим лицам являющимся резидентами ЛПМ'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+      else {
+          return json_encode(array('response' => false, 'description' => 'Ошибка получения данных резидентов ЛПМ'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+  }
+
+
+
+
 
 
 
