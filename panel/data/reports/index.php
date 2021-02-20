@@ -88,7 +88,7 @@
                   <div class="card-body">
                     <ul class="list-group list-group-flush">
                       <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_cervices').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
-                        !TEST! Количественные показатели сервисов</li>
+                        Количественные показатели сервисов</li>
                     </ul>
                   </div>
                 </div>
