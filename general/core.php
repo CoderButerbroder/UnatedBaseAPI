@@ -2961,6 +2961,13 @@ class Settings {
 
 
 
+
+
+
+
+
+
+
   /* API функции - ipchain */
 
 
@@ -3798,6 +3805,14 @@ class Settings {
 
 
 
+
+
+
+
+
+
+
+
   /* API ФУНКЦИИ - TBOIL  */
 
   // обновление токена Tboil id
@@ -3922,6 +3937,10 @@ class Settings {
 
 
   }
+
+
+
+
 
 
 
@@ -4278,6 +4297,10 @@ class Settings {
 
 
 
+
+
+
+
   /* API ФУНКЦИИ - DADATA  */
 
 
@@ -4572,6 +4595,10 @@ class Settings {
 
 
 
+
+
+
+
   /* Методы для работы с телеграмм чатами */
 
 
@@ -4621,6 +4648,10 @@ class Settings {
 
         $this->telega_send($this->get_global_settings('telega_chat_error'), '[CRON] '.$type.' '.$id_tboil);
   }
+
+
+
+
 
 
 
@@ -7827,50 +7858,50 @@ class Settings {
 
   /* функции для вывода графиков  */
   public function get_count_all_users() {
-      global $database;
-      $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) ORDER BY reg_date ASC");
-      //$statement = $database->prepare("SELECT count(id) as sum, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY MONTH(reg_date),YEAR(reg_date)");
-      $statement->execute();
-      $data = $statement->fetchAll(PDO::FETCH_OBJ);
+        global $database;
+        $statement = $database->prepare("SELECT count(id) as sum, DAY(reg_date) as dayd, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY DAY(reg_date),MONTH(reg_date),YEAR(reg_date) ORDER BY reg_date ASC");
+        //$statement = $database->prepare("SELECT count(id) as sum, MONTH(reg_date) as monthd, YEAR(reg_date) as yeard FROM $this->main_users GROUP BY MONTH(reg_date),YEAR(reg_date)");
+        $statement->execute();
+        $data = $statement->fetchAll(PDO::FETCH_OBJ);
 
-      $month = array('1' =>'Январь',
-                     '2' =>'Февраль',
-                     '3' =>'Март',
-                     '4' =>'Апрель',
-                     '5' =>'Май',
-                     '6' =>'Июнь',
-                     '7' =>'Июль',
-                     '8' =>'Август',
-                     '9' =>'Сентябрь',
-                     '10' =>'Октябрь',
-                     '11' =>'Ноябрь',
-                     '12' =>'Декабрь'
-                    );
+        $month = array('1' =>'Январь',
+                       '2' =>'Февраль',
+                       '3' =>'Март',
+                       '4' =>'Апрель',
+                       '5' =>'Май',
+                       '6' =>'Июнь',
+                       '7' =>'Июль',
+                       '8' =>'Август',
+                       '9' =>'Сентябрь',
+                       '10' =>'Октябрь',
+                       '11' =>'Ноябрь',
+                       '12' =>'Декабрь'
+                      );
 
-      $itog_array = array();
-      $count = 0;
-      foreach ($data as $key => $value) {
-            if ($count == 0) {
-            $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
-            $itog_array[$key_for_mas] = $value->sum;
-            $last_sum = $value->sum;
-            $count++;
-          } else {
-            $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
-            $last_sum = $value->sum + $last_sum;
-            $itog_array[$key_for_mas] = $last_sum;
-          }
-      }
+        $itog_array = array();
+        $count = 0;
+        foreach ($data as $key => $value) {
+              if ($count == 0) {
+              $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
+              $itog_array[$key_for_mas] = $value->sum;
+              $last_sum = $value->sum;
+              $count++;
+            } else {
+              $key_for_mas =  $value->dayd.' '.$month[$value->monthd].' '.$value->yeard;
+              $last_sum = $value->sum + $last_sum;
+              $itog_array[$key_for_mas] = $last_sum;
+            }
+        }
 
-      if ($itog_array) {
-          return $itog_array;
-          exit;
-      } else {
-          return 0;
-          exit;
-      }
+        if ($itog_array) {
+            return $itog_array;
+            exit;
+        } else {
+            return 0;
+            exit;
+        }
 
-  }
+    }
 
   // получение количества мероприятий
   public function get_count_main_events_groupby_time_reg($increment=false,$period='data',$start=NULL,$end=NULL) {
@@ -8109,7 +8140,7 @@ class Settings {
           exit;
   }
 
-  // получение количества мероприятий
+  // получение количества пользователей
   public function get_count_main_users_groupby_time_reg($increment=true, $period='data', $start=NULL, $end=NULL) {
           global $database;
 
@@ -8204,8 +8235,6 @@ class Settings {
           return $data_users;
           exit;
   }
-
-
 
 
 
