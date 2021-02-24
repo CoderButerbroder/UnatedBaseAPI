@@ -99,7 +99,7 @@ var ru_loc = [];
     $.getJSON('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/assets/vendors/apexcharts/ru.json', function(data) {
       ru_loc = data;
 
-    var arr_chart = ['branch', 'user', 'company', 'FSI', 'SK'];
+    var arr_chart = ['branch', 'user', 'company', 'FSI', 'SK', 'event'];
 
     arr_chart.forEach((element) => {
       var btn_act = $('#btn_period_chart_line_'+element+' [active]')[0];
@@ -197,7 +197,7 @@ function activate_charts(element, period, ru_local) {
           options_chart["series"] = Object.values(ar_data["data"]);
           options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
         }
-        if (element == 'FSI' || element == 'SK') {
+        if (element == 'FSI' || element == 'SK' || element == 'event') {
           var options_chart = options_line_ur;
           options_chart["series"] = Object.values(ar_data["data"]);
           options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);

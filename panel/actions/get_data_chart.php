@@ -188,7 +188,7 @@ if($_POST["chart"] == 'company') {
 
     }
     if($period_select == 'week'){
-      $data_key = "Н. ".intval(date('W', $value))." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+      $data_key = intval(date('W', $value))." Нед. ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
 
     }
     if($period_select == 'month'){
@@ -298,7 +298,7 @@ if($_POST["chart"] == 'FSI') {
 
   array_push($arr_result->data,  set_get_arr_result( 'Юр.лица ФСИ', $arr_FSI_count, 'line' ) );
   array_push($arr_result->data,  set_get_arr_result( 'Физ. лица Умник', $arr_FSI_YMNIK_count, 'line' ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Новые проекты', $arr_FSI_count_service, 'column' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Новые проекты', $arr_FSI_count_service, 'line' ) );
 
   foreach ($arr_data_period as $key => $value) {
     if($period_select == 'day'){
@@ -306,7 +306,7 @@ if($_POST["chart"] == 'FSI') {
 
     }
     if($period_select == 'week'){
-      $data_key = "Н. ".intval(date('W', $value))." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+      $data_key = intval(date('W', $value))." Нед. ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
 
     }
     if($period_select == 'month'){
@@ -424,8 +424,8 @@ if($_POST["chart"] == 'SK') {
   array_push($arr_result->data,  set_get_arr_result( 'Кол-во Юр.лиц - участников', $arr_SK_count, 'line' ) );
   array_push($arr_result->data,  set_get_arr_result( 'Организация встречи с проектным менеджером Сколково', $arr_service_event, 'line' ) );
   array_push($arr_result->data,  set_get_arr_result( 'Консультации по услугам ЦКП', $arr_CKP_count, 'line' ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Новых резидентов', $arr_new_SK_count, 'column' ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Кол-во услуг', $arr_SK_count_service, 'column' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Новых резидентов', $arr_new_SK_count, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Кол-во услуг', $arr_SK_count_service, 'line' ) );
 
   foreach ($arr_data_period as $key => $value) {
     if($period_select == 'day'){
@@ -433,7 +433,122 @@ if($_POST["chart"] == 'SK') {
 
     }
     if($period_select == 'week'){
-      $data_key = "Н. ".intval(date('W', $value))." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+      $data_key = intval(date('W', $value))." Нед. ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'month'){
+      $data_key = $arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'year'){
+      $data_key = date('Y', $value);
+    }
+    array_push( $arr_result->time,  $data_key );
+  }
+
+  echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
+
+}
+
+if($_POST["chart"] == 'event') {
+  $arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, $period_select);
+  $arr_data_users_event_summ = $settings->get_count_users_main_events_groupby_time_reg(false, $period_select);
+
+  $arr_data_period = [];
+
+  function add_null_in_data_week( $arr_in ) {
+    foreach( $arr_in as $key => $value ) {
+      if($value->weekd >= 1 && $value->weekd <= 9 ){
+        $value->weekd = '0'.$value->weekd;
+      }
+    }
+  }
+
+  function get_list_date_arr( $arr_in ) {
+    global $period_select;
+    global $arr_data_period;
+    foreach ($arr_in as $key => $value) {
+      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
+      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
+      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+      if (!in_array($data_i, $arr_data_period)) {
+          array_push($arr_data_period, $data_i);
+      }
+    }
+  }
+
+  if ($period_select == 'week') {
+    add_null_in_data_week($arr_data_event_summ);
+    add_null_in_data_week($arr_data_users_event_summ);
+
+
+  }
+
+  if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
+  if (is_array($arr_data_users_event_summ) && count($arr_data_users_event_summ) > 0 && $arr_data_users_event_summ != 0 ) get_list_date_arr($arr_data_users_event_summ);
+
+  sort($arr_data_period);
+
+  function set_get_arr_result($name, $arr_in, $type){
+    global $period_select;
+    global $arr_data_period;
+
+    $arr_temp = (object) [];
+    $arr_temp->name = $name;
+    $arr_temp->data = [];
+    $arr_temp->type = $type;
+
+
+    foreach ($arr_data_period as $key_data => $value_data) {
+      $flag_value_bool = false;
+      $flag_value_int = 0;
+
+      foreach ($arr_in as $key2 => $value2) {
+        if($period_select == 'day'){
+          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+        }
+        if($period_select == 'week'){
+          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+        }
+        if($period_select == 'month'){
+          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+        }
+        if($period_select == 'year'){
+          $date1 = strtotime('01.01.'.$value2->yeard);
+        }
+
+        if ($value_data == $date1) {
+          $flag_value_bool = true;
+          $flag_value_int = $value2->sum;
+          break;
+        }
+      }
+      if ($flag_value_bool) {
+        array_push($arr_temp->data, $flag_value_int);
+      } else {
+        array_push($arr_temp->data, 0);
+      }
+    }
+
+    return $arr_temp;
+  }
+
+
+  $arr_result = (object) [];
+  $arr_result->data = [];
+  $arr_result->time = [];
+
+  array_push($arr_result->data,  set_get_arr_result( 'Кол-во мероприятий', $arr_data_event_summ, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Кол-во участников', $arr_data_users_event_summ, 'column' ) );
+
+  foreach ($arr_data_period as $key => $value) {
+    if($period_select == 'day'){
+      $data_key = date('d', $value)." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'week'){
+      $data_key = intval(date('W', $value))." Нед. ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
 
     }
     if($period_select == 'month'){
