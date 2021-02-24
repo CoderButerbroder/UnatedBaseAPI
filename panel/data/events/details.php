@@ -166,7 +166,62 @@ $data_user_org = json_decode($settings->get_user_data_id_boil($data_event->data-
 
                   echo $data_description;
 
+
+                  $data_users = json_decode($settings->get_users_event($_GET["event"]))->data;
+
                   ?>
+
+                      <div id="accordion" class="accordion mt-4" role="tablist" style="width: 100%">
+                            <div class="card">
+                                <div class="card-header" role="tab" id="headingusers">
+                                  <h6 class="mb-0">
+                                    <div class="row">
+                                        <div class="col-12 my-auto">
+                                            <a data-toggle="collapse" href="#collapse_users" aria-expanded="false" aria-controls="collapse_users">
+                                                Пользователи записанные на мероприятие (<?php echo count($data_users);?>)
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                  </h6>
+                                </div>
+                                <div id="collapse_users" class="collapse" role="tabpanel" aria-labelledby="headingusers" data-parent="#accordion">
+                                  <div class="card-body">
+
+                                      <?php
+                                      foreach ($data_users as $key => $value) { ?>
+                                        <div class="row pt-1 pb-1" style="border-bottom: 1px solid #8f8f91;">
+
+                                            <div class="col-md-2">
+                                              <a href="https://<? echo $_SERVER['SERVER_NAME']; ?>/panel/data/users/details?tboil=<? echo $value->id_tboil; ?>">Профиль физ. лица</a>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <?php echo $value->email;?>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <?php echo $value->phone;?>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <?php echo $value->name;?>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <?php echo $value->last_name;?>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <?php echo $value->second_name;?>
+                                            </div>
+
+                                        </div>
+
+                                    <? } ?>
+
+
+                                  </div>
+                                </div>
+                            </div>
+                      </div>
+
               </div>
             </div>
           </div>
