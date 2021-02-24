@@ -35,7 +35,7 @@
                   <div class="col-md-7 my-auto">
                     <h5 class="card-title my-auto">Количественные показатели Юр. лиц</h5>
                   </div>
-                  <div class="col-md-5 d-flex justify-content-md-end">
+                  <div class="col-md-5 d-flex justify-content-md-end" style="display:none;">
                     <div class="btn-group mb-3 mb-md-0" name_chart="company" role="group" aria-label="Basic example" id="btn_period_chart_line_company" >
                       <button type="button" class="btn_period_chart btn btn-outline-primary" value="day">День</button>
                       <button type="button" class="btn_period_chart btn btn-outline-primary" value="week">Неделя</button>
@@ -64,14 +64,14 @@
                 <div class="col-md-7 my-auto">
                   <h5 class="card-title my-auto">Физ Лица</h5>
                 </div>
-                <!-- <div class="col-md-5 d-flex justify-content-md-end">
+                <div class="col-md-5 d-flex justify-content-md-end" style="display:none;">
                   <div class="btn-group mb-3 mb-md-0" name_chart="user" role="group" aria-label="Basic example" id="btn_period_chart_line_user" >
                     <button type="button" class="btn_period_chart btn btn-outline-primary" value="day">День</button>
                     <button type="button" class="btn_period_chart btn btn-outline-primary" value="week">Неделя</button>
                     <button type="button" class="btn_period_chart btn btn-primary" value="month" active>Месяц</button>
                     <button type="button" class="btn_period_chart btn btn-outline-primary" value="year">Год</button>
                   </div>
-                </div> -->
+                </div>
               </div>
             </div>
             <div class="card-body" style="min-height: 420px; /*max-height: 420;*/">

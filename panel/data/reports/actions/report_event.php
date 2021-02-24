@@ -110,7 +110,6 @@ if ($period_select->period == 'week') {
   add_null_in_data_week($arr_data_event_summ);
   add_null_in_data_week($arr_data_users_event_summ);
   add_null_in_data_week($arr_data_users_event_incr);
-
 }
 
 if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
