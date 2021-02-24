@@ -32,6 +32,9 @@ $arr_select_month = array('1' => (object) array('name' => 'Январь', ),
 $arr_data_ru_json_chart = json_decode(file_get_contents('https://'.$_SERVER["SERVER_NAME"].'/assets/vendors/apexcharts/ru.json'));
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+// session_destroy();
+session_write_close();
+
 $settings = new Settings;
 
 if($_POST["chart"] == 'branch') {
@@ -201,5 +204,251 @@ if($_POST["chart"] == 'company') {
   echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
 
 }
+
+if($_POST["chart"] == 'FSI') {
+  $arr_FSI_count = $settings->get_count_main_entity_fci_groupby_time_reg(true, $period_select);
+  $arr_FSI_YMNIK_count = $settings->get_count_main_entity_fci_program_groupby_time_reg(true,'У', $period_select);
+  $arr_FSI_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
+                                        ['Запрос на консультацию проекта при подаче заявки в ФСИ','Информационное сопровождение проекта ФСИ'],$period_select);
+
+
+  $arr_data_period = [];
+
+  function add_null_in_data_week( $arr_in ) {
+    foreach( $arr_in as $key => $value ) {
+      if($value->weekd >= 1 && $value->weekd <= 9 ){
+        $value->weekd = '0'.$value->weekd;
+      }
+    }
+  }
+
+  function get_list_date_arr( $arr_in ) {
+    global $period_select;
+    global $arr_data_period;
+    foreach ($arr_in as $key => $value) {
+      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
+      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
+      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+      if (!in_array($data_i, $arr_data_period)) {
+          array_push($arr_data_period, $data_i);
+      }
+    }
+  }
+
+  if ($period_select == 'week') {
+    add_null_in_data_week($arr_FSI_count);
+    add_null_in_data_week($arr_FSI_YMNIK_count);
+    add_null_in_data_week($arr_FSI_count_service);
+  }
+
+  if (is_array($arr_FSI_count) && count($arr_FSI_count) > 0 && $arr_FSI_count != 0 ) get_list_date_arr($arr_FSI_count);
+  if (is_array($arr_FSI_YMNIK_count) && count($arr_FSI_YMNIK_count) > 0 && $arr_FSI_YMNIK_count != 0 ) get_list_date_arr($arr_FSI_YMNIK_count);
+  if (is_array($arr_FSI_count_service) && count($arr_FSI_count_service) > 0 && $arr_FSI_count_service != 0 ) get_list_date_arr($arr_FSI_count_service);
+
+  sort($arr_data_period);
+
+  function set_get_arr_result($name, $arr_in, $type){
+    global $period_select;
+    global $arr_data_period;
+
+    $arr_temp = (object) [];
+    $arr_temp->name = $name;
+    $arr_temp->data = [];
+    $arr_temp->type = $type;
+
+    foreach ($arr_data_period as $key_data => $value_data) {
+      $flag_value_bool = false;
+      $flag_value_int = 0;
+
+      foreach ($arr_in as $key2 => $value2) {
+        if($period_select == 'day'){
+          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+        }
+        if($period_select == 'week'){
+          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+        }
+        if($period_select == 'month'){
+          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+        }
+        if($period_select == 'year'){
+          $date1 = strtotime('01.01.'.$value2->yeard);
+        }
+
+        if ($value_data == $date1) {
+          $flag_value_bool = true;
+          $flag_value_int = $value2->sum;
+          break;
+        }
+      }
+      if ($flag_value_bool) {
+        array_push($arr_temp->data, $flag_value_int);
+      } else {
+        array_push($arr_temp->data, 0);
+      }
+    }
+
+    return $arr_temp;
+  }
+
+
+  $arr_result = (object) [];
+  $arr_result->data = [];
+  $arr_result->time = [];
+
+  array_push($arr_result->data,  set_get_arr_result( 'Юр.лица ФСИ', $arr_FSI_count, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Физ. лица Умник', $arr_FSI_YMNIK_count, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Новые проекты', $arr_FSI_count_service, 'column' ) );
+
+  foreach ($arr_data_period as $key => $value) {
+    if($period_select == 'day'){
+      $data_key = date('d', $value)." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'week'){
+      $data_key = "Н. ".intval(date('W', $value))." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'month'){
+      $data_key = $arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'year'){
+      $data_key = date('Y', $value);
+    }
+    array_push( $arr_result->time,  $data_key );
+  }
+
+  echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
+
+}
+
+if($_POST["chart"] == 'SK') {
+  $arr_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(true, $period_select);
+  $arr_service_event = $settings->get_count_main_support_ticket_groupby_time_add(true, 'Организация встречи с проектным менеджером Сколково', $period_select);
+  $arr_CKP_count =  $settings->get_count_main_support_ticket_groupby_time_add(true, 'Получение услуги центра коллективного пользования (производство)', $period_select);
+  $arr_new_SK_count = $settings->get_count_main_entity_skolkovo_groupby_time_reg(false, $period_select);
+  $arr_SK_count_service =  $settings->get_count_main_entity_skolkovo_programs_groupby_time_reg(false,
+                                        ['Запрос на консультацию компании - Фонд Сколково','Информационное сопровождение проекта Сколково'], $period_select);
+
+
+  $arr_data_period = [];
+
+  function add_null_in_data_week( $arr_in ) {
+    foreach( $arr_in as $key => $value ) {
+      if($value->weekd >= 1 && $value->weekd <= 9 ){
+        $value->weekd = '0'.$value->weekd;
+      }
+    }
+  }
+
+  function get_list_date_arr( $arr_in ) {
+    global $period_select;
+    global $arr_data_period;
+    foreach ($arr_in as $key => $value) {
+      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
+      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
+      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+      if (!in_array($data_i, $arr_data_period)) {
+          array_push($arr_data_period, $data_i);
+      }
+    }
+  }
+
+  if ($period_select == 'week') {
+    add_null_in_data_week($arr_SK_count);
+    add_null_in_data_week($arr_service_event);
+    add_null_in_data_week($arr_CKP_count);
+    add_null_in_data_week($arr_new_SK_count);
+    add_null_in_data_week($arr_SK_count_service);
+  }
+
+  if (is_array($arr_SK_count) && count($arr_SK_count) > 0 && $arr_SK_count != 0 ) get_list_date_arr($arr_SK_count);
+  if (is_array($arr_service_event) && count($arr_service_event) > 0 && $arr_service_event != 0 ) get_list_date_arr($arr_service_event);
+  if (is_array($arr_CKP_count) && count($arr_CKP_count) > 0 && $arr_CKP_count != 0 ) get_list_date_arr($arr_CKP_count);
+  if (is_array($arr_new_SK_count) && count($arr_new_SK_count) > 0 && $arr_new_SK_count != 0 ) get_list_date_arr($arr_new_SK_count);
+  if (is_array($arr_SK_count_service) && count($arr_SK_count_service) > 0 && $arr_SK_count_service != 0 ) get_list_date_arr($arr_SK_count_service);
+
+  sort($arr_data_period);
+
+  function set_get_arr_result($name, $arr_in, $type){
+    global $period_select;
+    global $arr_data_period;
+
+    $arr_temp = (object) [];
+    $arr_temp->name = $name;
+    $arr_temp->data = [];
+    $arr_temp->type = $type;
+
+
+    foreach ($arr_data_period as $key_data => $value_data) {
+      $flag_value_bool = false;
+      $flag_value_int = 0;
+
+      foreach ($arr_in as $key2 => $value2) {
+        if($period_select == 'day'){
+          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+        }
+        if($period_select == 'week'){
+          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+        }
+        if($period_select == 'month'){
+          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+        }
+        if($period_select == 'year'){
+          $date1 = strtotime('01.01.'.$value2->yeard);
+        }
+
+        if ($value_data == $date1) {
+          $flag_value_bool = true;
+          $flag_value_int = $value2->sum;
+          break;
+        }
+      }
+      if ($flag_value_bool) {
+        array_push($arr_temp->data, $flag_value_int);
+      } else {
+        array_push($arr_temp->data, 0);
+      }
+    }
+
+    return $arr_temp;
+  }
+
+
+  $arr_result = (object) [];
+  $arr_result->data = [];
+  $arr_result->time = [];
+
+  array_push($arr_result->data,  set_get_arr_result( 'Кол-во Юр.лиц - участников', $arr_SK_count, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Организация встречи с проектным менеджером Сколково', $arr_service_event, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Консультации по услугам ЦКП', $arr_CKP_count, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Новых резидентов', $arr_new_SK_count, 'column' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Кол-во услуг', $arr_SK_count_service, 'column' ) );
+
+  foreach ($arr_data_period as $key => $value) {
+    if($period_select == 'day'){
+      $data_key = date('d', $value)." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'week'){
+      $data_key = "Н. ".intval(date('W', $value))." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'month'){
+      $data_key = $arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
+    }
+    if($period_select == 'year'){
+      $data_key = date('Y', $value);
+    }
+    array_push( $arr_result->time,  $data_key );
+  }
+
+  echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
+
+}
+
 
 ?>

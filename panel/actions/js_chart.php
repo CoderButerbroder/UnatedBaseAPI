@@ -99,7 +99,7 @@ var ru_loc = [];
     $.getJSON('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/assets/vendors/apexcharts/ru.json', function(data) {
       ru_loc = data;
 
-    var arr_chart = ['branch', 'user', 'company'];
+    var arr_chart = ['branch', 'user', 'company', 'FSI', 'SK'];
 
     arr_chart.forEach((element) => {
       var btn_act = $('#btn_period_chart_line_'+element+' [active]')[0];
@@ -175,6 +175,8 @@ function activate_charts(element, period, ru_local) {
   $('#spinner_chart_line_'+ element).show("fast");
   $('#btn_period_chart_line_'+ element).hide("fast");
   $.ajax({
+    async: true,
+    cache: false,
     type: 'POST',
     url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/actions/get_data_chart',
     data: { "chart" : element, "period" : period },
@@ -191,6 +193,11 @@ function activate_charts(element, period, ru_local) {
           options_chart["labels"] = Object.values(ar_data["name"]);
         }
         if (element == 'company') {
+          var options_chart = options_line_ur;
+          options_chart["series"] = Object.values(ar_data["data"]);
+          options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
+        }
+        if (element == 'FSI' || element == 'SK') {
           var options_chart = options_line_ur;
           options_chart["series"] = Object.values(ar_data["data"]);
           options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
