@@ -3046,7 +3046,7 @@ class Settings {
 
   }
 
-  // 
+  //
 
 
 
@@ -5816,23 +5816,26 @@ class Settings {
         $all_company = array(); // массив всех компаний загруженных из 1с аренда
 
         foreach ($massiv_residents as $key => $value) {
-              // поиск уже существующей компании по инн
+
+                $inn = $value->ИНН;
+
+                // поиск уже существующей компании по инн
                 $check = $this->search_resident_lpm($inn);
 
-                array_push($$all_company,$inn);
+                array_push($all_company,$inn);
 
-                if (json_decode($check->response)) {
+                if (json_decode($check)->response) {
 
                       $test = 'тест';
 
                       // временная заглушка до доработки 1С
-                      $name = isset($test) ? $test : ' ';
-                      $housing = isset($test) ? $test : ' ';
-                      $flour = isset($test) ? $test : ' ';
-                      $work_time = isset($test) ? $test : ' ';
-                      $site = isset($test) ? $test : ' ';
-                      $address = isset($test) ? $test : ' ';
-                      $direction = isset($test) ? $test : ' ';
+                      $name = isset($value->ФирменноеНазвание) ? $value->ФирменноеНазвание : ' ';
+                      $housing = isset($value->Корпус) ? $value->Корпус : ' ';
+                      $flour = isset($value->Этаж) ? $value->Этаж : ' ';
+                      $work_time = isset($value->РежимРаботы) ? $value->РежимРаботы : ' ';
+                      $site = isset($value->Сайт) ? $value->Сайт : ' ';
+                      $address = isset($value->КакДобраться) ? $value->КакДобраться : ' ';
+                      $direction = isset($value->Направление) ? $value->Направление : ' ';
 
                       // если компания найдена то обновляем данные по инн
                       $upd_new_company = $database->prepare("UPDATE $this->LPM_1С_residents SET name = :name, housing = :housing, flour = :flour, work_time = :work_time, site = :site, address = :address, direction = :direction WHERE inn = :inn");
@@ -5855,18 +5858,18 @@ class Settings {
                 }
                 else {
                     // если компания не найдена то добавляем ее в список
-                    $request = $database->prepare("INSERT INTO $this->LPM_1С_residents (inn,name,housing,flour,work_time,site,address,direction)
+                    $insert_new_company = $database->prepare("INSERT INTO $this->LPM_1С_residents (inn,name,housing,flour,work_time,site,address,direction)
                                                           VALUES (:inn,:name,:housing,:flour,:work_time,:site,:address,:direction)");
 
-                    $upd_new_company->bindParam(':name', $name, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':site', $site, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':address', $address, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
-                    $upd_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
-                    $check_request = $request->execute();
+                    $insert_new_company->bindParam(':name', $name, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':site', $site, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':address', $address, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
+                    $check_request = $insert_new_company->execute();
                     //$id_request = $request->rowCount();
                     $id_request = $database->lastInsertId();
 
@@ -5895,7 +5898,7 @@ class Settings {
 
         $string_all_company_inn = implode(", ", $all_company);
 
-        $sql = "DELETE FROM $this->LPM_1С_residents WHERE NOT IN ($string_all_company_inn)";
+        $sql = "DELETE FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
         $stmt = $database->prepare($sql);
         $stmt->execute();
         $deleted = $stmt->rowCount();
