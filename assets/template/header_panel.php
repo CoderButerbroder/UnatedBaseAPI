@@ -178,7 +178,7 @@ else {
               <li class="nav-item">
                 <a href="/panel/data/reports" class="nav-link">Все отчеты</a>
               </li>
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a href="#" class="nav-link">По юр. лицам</a>
               </li>
               <li class="nav-item">
@@ -186,7 +186,7 @@ else {
               </li>
               <li class="nav-item">
                 <a href="#" class="nav-link">По мероприятиям</a>
-              </li>
+              </li> -->
             </ul>
           </div>
         </li>
@@ -235,16 +235,19 @@ else {
           <div class="collapse" id="authPages">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="" class="nav-link">Все настройки</a>
+                <a href="/panel/system/settings" class="nav-link">Все настройки</a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">Нагрузка</a>
+                <a href="/panel/system/load" class="nav-link">Нагрузка</a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">Логи</a>
+                <a href="/panel/system/logs" class="nav-link">Логи</a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">История</a>
+                <a href="/panel/system/history" class="nav-link">История</a>
+              </li>
+              <li class="nav-item">
+                <a href="/panel/system/integration" class="nav-link">Интеграции</a>
               </li>
             </ul>
           </div>
