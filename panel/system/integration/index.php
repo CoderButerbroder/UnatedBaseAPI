@@ -72,7 +72,7 @@
 
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/admin/settings/integration/yandexmap" class="card block_link">
+        <a href="/panel/system/integration/y_maps" class="card block_link">
           <img src="/assets/images/system/integration/yandex_map.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>YANDEX MAP API</strong></center>
