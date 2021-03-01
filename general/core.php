@@ -5819,6 +5819,10 @@ class Settings {
 
                 $inn = $value->ИНН;
 
+                if ($inn == '') {
+                  continue;
+                }
+
                 // поиск уже существующей компании по инн
                 $check = $this->search_resident_lpm($inn);
 
@@ -5896,7 +5900,17 @@ class Settings {
 
         // удаление покинувших ЛПМ резидентов
 
-        $string_all_company_inn = implode(", ", $all_company);
+        $string_all_company_inn = implode("', '", $all_company);
+        //
+        $string_all_company_inn = "'".$string_all_company_inn;
+        // $string_all_company_inn = "'".$string_all_company_inn."'";
+
+        // $string_all_company_inn = "";
+        // foreach ($all_company as $key => $value) {
+        //         $string_all_company_inn .= "'$value',";
+        // }
+        // $string_all_company_inn = substr("'".$string_all_company_inn, 0, -1);
+
 
         $sql = "DELETE FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
         $stmt = $database->prepare($sql);
