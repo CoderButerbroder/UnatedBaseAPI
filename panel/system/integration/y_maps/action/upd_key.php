@@ -13,7 +13,7 @@ require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
 
 $new_api_key_value = trim($_POST["secret_key"]);
-$key_fns = $settings->get_global_settings('api_fns_key');
+$key_fns = $settings->get_global_settings('api_yandex_map_key');
 if ($new_api_key_value == $key_fns) {
   echo json_encode(array('response' => false, 'description' => 'Ошибка, Указанный ключ соответствует установленному. Укажите новый ключ'), JSON_UNESCAPED_UNICODE);
   exit();
@@ -26,7 +26,7 @@ if (!$data_user_rules->sistem->rule->settings->value) {
   echo json_encode(array('response' => false, 'description' => 'Ошибка, Недостаточно прав'), JSON_UNESCAPED_UNICODE);
   exit();
 } else {
-  if($settings->update_global_settings('api_fns_key', $new_api_key_value)){
+  if($settings->update_global_settings('api_yandex_map_key', $new_api_key_value)){
     echo json_encode(array('response' => true, 'description' => 'Ключ обновлен'), JSON_UNESCAPED_UNICODE);
 
   } else {

@@ -1,11 +1,15 @@
 <?php
 
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+
 session_start();
 if (!isset($_SESSION["key_user"])) {
   // echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
   exit();
 }
-if (!isset($_POST["secret_key"])) {
+if (!isset($_POST["query"])) {
   // echo json_encode(array('response' => false, 'description' => 'Ошибка проверки авторизации'), JSON_UNESCAPED_UNICODE);
   exit();
 }
@@ -21,7 +25,7 @@ if (!$data_user_rules->sistem->rule->settings->value) {
   exit();
 }
 
-$api_yandex_map_key = get_global_settings('api_yandex_map_key');
+$api_yandex_map_key = $settings->get_global_settings('api_yandex_map_key');
 
 $format = 'json';
 //$query = urlencode("Санкт-Петербург ".$_POST["query"]);
@@ -32,7 +36,7 @@ $return = file_get_contents('https://geocode-maps.yandex.ru/1.x/?apikey='.$api_y
 $arr_return = json_decode($return);
 if(($arr_return == NULL) || ($arr_return == false)){
   echo NULL;
-  wp_die();
+  exit();
 }
 
 
