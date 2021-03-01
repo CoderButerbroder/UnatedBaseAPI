@@ -137,7 +137,7 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                                       $fns_data_company = array_pop($fns_data->items);
                                       $name_company = (isset($fns_data_company->ЮЛ)) ? $fns_data_company->ЮЛ->НаимСокрЮЛ : $fns_data_company->ИП->ФИОПолн;
                                       ?>
-                                        <span style="cursor:pointer;" class="badge badge-primary" href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/users/details?tboil=<?php echo $company->data->inn; ?>')">
+                                        <span style="cursor:pointer;" class="badge badge-primary" href="javascript:void(0)" onclick="window.open('<?php echo 'https://'.$_SERVER["SERVER_NAME"];?>/panel/data/company/details?inn=<?php echo $company->data->inn; ?>')">
                                           <i class="link-icon mr-1" style="width: 15px; height: 15px;" data-feather="briefcase"></i><?php echo $name_company; ?>
                                         </span>
                                     <?php

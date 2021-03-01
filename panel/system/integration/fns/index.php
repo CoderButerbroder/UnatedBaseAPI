@@ -36,12 +36,12 @@ if (!$nevalid_key) {
         <div class="card">
           <div class="card-body">
             <h5>Секретный ключ <small><a href="https://api-fns.ru/user?cabinet">Где получить?</a></small></h5>
-            <div class="row">
-              <form method="post" action="#" onsubmit="return false;" class="form-inline" style="width: 100%">
+            <div class="row mt-2">
+              <form method="post"  onsubmit="upd_key(this); return false;" class="form-inline" style="width: 100%">
                 <div class="col-md-8">
                     <div class="form-group">
                       <input type="password" name="secret_key" class="form-control " style="width:100%" id="key_api" autocomplete="current-password" value="<?php echo $key_fns;?>" required placeholder="Обязательное поле">
-                      <i style="" class="icon_pass far fa-eye" onclick="change_view_pass(this);"></i>
+                      <i class="icon_pass far fa-eye" onclick="change_view_pass(this);" style="top: 35px; right: 25px;"></i>
                     </div>
                     <?php
                     if ($nevalid_key) { ?>
@@ -58,6 +58,15 @@ if (!$nevalid_key) {
     </div>
     <div class="col-md-6" >
       <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-10 my-auto">
+              Количественные показатели методов
+            </div>
+            <button type="button" onclick="upd_tbl()" class="col-2 btn btn-outline-primary">Обновить</button>
+          </div>
+        </div>
+
         <div class="card-body">
           <div id="spinner_table" class="spinner-border text-primary" style="position: absolute; margin: -25px 0 0 -25px; top: 50%; left: 50%;  width: 3rem; height: 3rem; z-index:99999;" role="status">
             <span class="sr-only">Loading...</span>
@@ -86,6 +95,33 @@ if (!$nevalid_key) {
     $('#div_count_fns_table').html('');
     $('#spinner_table').show('fast');
     get_tbl();
+  }
+
+  function upd_key(form) {
+    $.ajax({
+      async: true,
+      cache: false,
+      type: 'POST',
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/system/integration/fns/action/upd_key',
+      data: $(form).serialize(),
+      success: function(result, status, xhr) {
+        if (IsJsonString(result)) {
+          ar_data = JSON.parse(result);
+          if (ar_data["response"]) {
+            alerts('success', result, '');
+            upd_tbl();
+          } else {
+            alerts('warning', 'Ошибка', result);
+          }
+          alerts('warning', 'Ошибка', result);
+        } else {
+          alerts('warning', 'Ошибка', result);
+        }
+      },
+      error: function(jqXHR, textStatus) {
+        alerts('error', 'Ошибка подключения', 'Попробуйте позже');
+      }
+    });
   }
 
   function change_view_pass(el) {

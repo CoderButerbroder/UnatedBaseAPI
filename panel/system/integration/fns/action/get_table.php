@@ -30,9 +30,6 @@ if ($nevalid_key) {
 
 ?>
 
-<div class="" style="position: absolute; top: 20px; right: 30px; color:blue;" onclick="upd_tbl()">
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-ccw"><polyline points="1 4 1 10 7 10"></polyline><polyline points="23 20 23 14 17 14"></polyline><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path></svg>
-</div>
 <table class="table table-hover">
   <thead>
     <tr>
@@ -44,12 +41,20 @@ if ($nevalid_key) {
   </thead>
   <tbody>
     <?php
-    $array_metods = array('bo','changes','check','egr','innfl','multinfo','search','vyp');
+    $array_metods = (object) ['bo' => 'Бухгалтерская отчетность','changes' => 'Отслеживание изменений',
+                              'check' => 'Проверка контрагента', 'egr' => 'Получение данных о компании',
+                              'fsrar' => 'Лицензии ФСРАР', 'innfl' => 'Узнать ИНН по паспортным данным',
+                              'mon' => 'Мониторинг изменений по списку компаний', 'multinfo' => 'Реквизиты группы компаний',
+                              'mvdpass' => 'Проверка паспорта на недействительность',
+                              'nalogbi' => 'Проверка блокировок счета', 'multcheck' => 'Проверка группы компаний',
+                              'stat' => 'Статистика запросов',
+                              'search' => 'Поиск компаний', 'vyp' => 'Выписка из ЕГРЮЛ'];
+
     $count_metod = 0;
     foreach ($json_check->Методы as $key => $value) {
       ?>
         <tr>
-            <td><?php echo $array_metods[$count_metod]; ?></td>
+            <td><?php echo $array_metods->$key." [ ".$key." ]"; ?></td>
             <td><?php echo $value->Лимит;?></td>
             <td><?php
             $summ = $value->Истрачено-25;
