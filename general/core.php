@@ -2955,11 +2955,98 @@ class Settings {
 
   }
 
+  // получение данных по логам ответов API
+  public function get_log_api_response($period='data', $start=NULL, $end=NULL) {
+      global $database;
+
+      if (!$start) {
+        $start_date = $database->prepare("SELECT date_request FROM $this->history ORDER BY date_request ASC LIMIT 1");
+        $start_date->execute();
+        $start = $start_date->fetch(PDO::FETCH_COLUMN);
+      }
+      if (!$end) {
+        $end_date = $database->prepare("SELECT date_request FROM $this->history ORDER BY date_request DESC LIMIT 1");
+        $end_date->execute();
+        $end = $end_date->fetch(PDO::FETCH_COLUMN);
+      }
+
+
+      $strokaSQL = "SELECT ";
+
+      if ($period == 'year') {
+            $strokaSQL .= " count($this->history.`method`) as sum,
+                            YEAR($this->history.`date_request`) as yeard,
+                            count($this->history.`method`) as api_history";
+      }
+      if ($period == 'month') {
+            $strokaSQL .= " count($this->history.`method`) as sum,
+                            MONTH($this->history.`date_request`) as monthd,
+                            YEAR($this->history.`date_request`) as yeard,
+                            count($this->history.`method`) as api_history";
+      }
+      if ($period == 'week') {
+            $strokaSQL .= " count($this->history.`method`) as sum,
+                            WEEK($this->history.`date_request`) as weekd,
+                            YEAR($this->history.`date_request`) as yeard,
+                            count($this->history.`method`) as api_history";
+      }
+      if ($period == 'day') {
+            $strokaSQL .= " count($this->history.`method`) as sum,
+                            DAY($this->history.`date_request`) as dayd,
+                            MONTH($this->history.`date_request`) as monthd,
+                            YEAR($this->history.`date_request`) as yeard,
+                            count($this->history.`method`) as api_history";
+      }
+      if ($period == 'data') {
+            $strokaSQL .= " * ";
+      }
+
+      $strokaSQL .= " FROM $this->history WHERE $this->history.`date_request` BETWEEN :starting AND :ending ";
+
+      if ($period == 'year') {
+          $strokaSQL .= " GROUP BY YEAR($this->history.`date_request`)
+                          HAVING SUM($this->history.`id`) > 0
+                          ORDER BY YEAR($this->history.`date_request`) ASC";
+      }
+      if ($period == 'month') {
+          $strokaSQL .= " GROUP BY MONTH($this->history.`date_request`), YEAR($this->history.`date_request`)
+                          HAVING SUM($this->history.`id`) > 0
+                          ORDER BY YEAR($this->history.`date_request`), MONTH($this->history.`date_request`) ASC";
+      }
+      if ($period == 'week') {
+          $strokaSQL .= " GROUP BY WEEK($this->history.`date_request`), YEAR($this->history.`date_request`)
+                          HAVING SUM($this->history.`id`) > 0
+                          ORDER BY YEAR($this->history.`date_request`), WEEK($this->history.`date_request`) ASC";
+      }
+      if ($period == 'day') {
+          $strokaSQL .= " GROUP BY DAY($this->history.`date_request`),MONTH($this->history.`date_request`), YEAR($this->history.`date_request`)
+                          HAVING SUM($this->history.`id`) > 0
+                          ORDER BY YEAR($this->history.`date_request`), MONTH($this->history.`date_request`),DAY($this->history.`date_request`) ASC";
+      }
+      if ($period == 'data') {
+          $strokaSQL .= " ";
+      }
 
 
 
+      $statement = $database->prepare($strokaSQL);
+      $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+      $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (!$data_users) {
+          return 0;
+          exit;
+      }
+
+      return $data_users;
+      exit;
 
 
+  }
+
+  //
 
 
 

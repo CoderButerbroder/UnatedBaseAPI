@@ -8,8 +8,13 @@ $settings = new Settings;
 
 $data_array = array(104120,81920);
 
-$data = $settings->update_mass_main_users_comand($data_array,1);
+
+$data = $settings->get_log_api_response('day');
 var_dump($data);
+
+
+// $data = $settings->update_mass_main_users_comand($data_array,1);
+// var_dump($data);
 
 // $data = $settings->get_count_sum_support_fci_groupby_time_reg(true,'day','2020-11-22 00:00:00','2021-02-16 00:00:00');
 // var_dump($data);
