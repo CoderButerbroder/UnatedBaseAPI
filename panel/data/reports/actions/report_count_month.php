@@ -242,19 +242,19 @@ $arr_data_summ_month = $settings->get_count_users_groupby_time_reg('month');
 
 // date('t', time())
 $arr_data_event_all = $settings->get_count_main_events_groupby_time_add(true,'month');
-$arr_data_event_month = $settings->get_count_main_events_groupby_time_add(false,'month',(date("Y-m-").'01 '.date("H:i:s")),date("Y-m-d H:i:s"));
-$arr_data_event_day = $settings->get_count_main_events_groupby_time_add(false,'day',(date("Y-m-").'01 '.date("H:i:s")), date("Y-m-d H:i:s", $mark_data_str_generate_report));
+$arr_data_event_month = $settings->get_count_main_events_groupby_time_add(false,'month',(date("Y-m-").'01 00:00:00'),date("Y-m-d 23:59:59"));
+$arr_data_event_day = $settings->get_count_main_events_groupby_time_add(false,'day',(date("Y-m-d", $mark_data_str_generate_report).' 00:00:00'), date("Y-m-d 23:59:59", $mark_data_str_generate_report));
 
-$summ_data_summ_all = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->summ_all : 'Err';
-$summ_data_summ_month = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->sum : 'Err';
-$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : 'Err';
-$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : 'Err';
+$summ_data_summ_all = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->summ_all : '0';
+$summ_data_summ_month = (is_array($arr_data_summ_month)) ? (array_pop($arr_data_summ_month))->sum : '0';
+$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : '0';
+$summ_data_summ_day = (is_array($arr_data_summ_day)) ? (array_pop($arr_data_summ_day))->sum : '0';
 
-$summ_data_event_summ_all = (is_array($arr_data_event_all)) ? (array_pop($arr_data_event_all))->summ_all : 'Err';
-$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : 'Err';
-$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : 'Err';
-$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : 'Err';
-$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : 'Err';
+$summ_data_event_summ_all = (is_array($arr_data_event_all)) ? (array_pop($arr_data_event_all))->summ_all : '0';
+$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : '0';
+$summ_data_event_summ_month = (is_array($arr_data_event_month)) ? (array_pop($arr_data_event_month))->sum : '0';
+$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : '0';
+$summ_data_event_summ_day = (is_array($arr_data_event_day)) ? (array_pop($arr_data_event_day))->sum : '0';
 
 
 $actual_row++;
