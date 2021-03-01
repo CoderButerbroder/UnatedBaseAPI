@@ -108,12 +108,11 @@ if (!$nevalid_key) {
         if (IsJsonString(result)) {
           ar_data = JSON.parse(result);
           if (ar_data["response"]) {
-            alerts('success', result, '');
+            alerts('success', ar_data["description"], '');
             upd_tbl();
           } else {
-            alerts('warning', 'Ошибка', result);
+            alerts('warning', 'Ошибка', ar_data["description"]);
           }
-          alerts('warning', 'Ошибка', result);
         } else {
           alerts('warning', 'Ошибка', result);
         }

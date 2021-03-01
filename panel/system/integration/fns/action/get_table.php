@@ -15,9 +15,10 @@ $settings = new Settings;
 session_write_close();
 
 $key_fns = $settings->get_global_settings('api_fns_key');
+
 $check_key = file_get_contents("https://api-fns.ru/api/stat?key=".$key_fns);
 
-$nevalid_key = ($check_key == 'Ошибка: Неверный ключ (1)') ? true : false;
+$nevalid_key = ($check_key == 'Ошибка: Неверный ключ (1)' || $check_key == false || json_decode($check_key) == false) ? true : false;
 
 if ($nevalid_key) {
   echo '<div class="alert alert-danger" role="alert">
