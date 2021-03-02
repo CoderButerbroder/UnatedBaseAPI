@@ -35,15 +35,15 @@
           <div class="card-body">
             <form id="email_set" method="post" action="/panel/system/integration/mail/action/upd_field_mail" onsubmit="upd_key(this); return false;" class="form" style="width: 100%">
               <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-2">
                   <label for="exampleInputEmail1">Хост</label>
                   <input type="text" class="form-control" style="width: 100%" name="email_host" placeholder="Обязательное поле" required value="<?php echo $email_host;?>">
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-2">
                   <label for="exampleInputEmail1">Имя пользователя</label>
                   <input type="email" class="form-control" style="width: 100%" name="email_username" placeholder="Обязательное поле" required value="<?php echo $email_username;?>">
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-2">
                   <label for="exampleInputEmail1">Пароль</label>
                   <input type="password" class="form-control" style="width: 100%" name="email_pass" placeholder="Обязательное поле" required value="<?php echo $email_pass;?>">
                   <i class="icon_pass far fa-eye" onclick="change_view_pass(this);" style="right: 25px;"></i>
@@ -82,7 +82,7 @@
       <div class="card">
         <div class="card-body">
           <h5>Тестовое сообщение</h5>
-          <form id="test_email" method="post" action="/panel/system/integration/mail/action/test_email" onsubmit="upd_key(this); return false;" class="form" style="width: 100%">
+          <form id="test_email" method="post" action="/panel/system/integration/mail/action/test_email" onsubmit="upd_key(this); return false;" class="form mt-2" style="width: 100%">
             <div class="row">
               <div class="col-md-8">
                   <input type="email" class="form-control" required placeholder="Введите email" name="email" value="<?php echo $settings->get_cur_user($_SESSION['key_user'])->user->email;?>">
