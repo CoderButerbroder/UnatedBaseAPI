@@ -70,18 +70,6 @@
         </a>
       </div>
 
-
-      <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/panel/system/integration/y_maps" class="card block_link">
-          <img src="/assets/images/system/integration/yandex_map.png" class="card-img-top" alt="YANDEX MAP API">
-          <div class="card-body">
-            <center><strong>YANDEX MAP API</strong></center>
-            <p class="card-text">Сервис для работы с адресами и метками карты</p>
-            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
-          </div>
-        </a>
-      </div>
-
       <div class="col-md-3" style="margin-bottom: 25px;">
         <a href="/panel/system/integration/mail" class="card block_link">
           <img src="/assets/images/system/integration/logo_email.png" class="card-img-top" alt="YANDEX MAP API">
@@ -105,6 +93,39 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
+        <a href="/panel/system/integration/1C" class="card block_link">
+          <img src="/assets/images/system/integration/1C.png" class="card-img-top" alt="1C">
+          <div class="card-body">
+            <center><strong>1C</strong></center>
+            <p class="card-text">API 1C</p>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-3" style="margin-bottom: 25px;">
+        <a href="/panel/system/integration/y_maps" class="card block_link">
+          <img src="/assets/images/system/integration/yandex_map.png" class="card-img-top" alt="YANDEX MAP API">
+          <div class="card-body">
+            <center><strong>YANDEX MAP API</strong></center>
+            <p class="card-text">Сервис для работы с адресами и метками карты</p>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-3" style="margin-bottom: 25px;">
+        <a href="/panel/system/integration/ipchain/" class="card block_link">
+          <img src="/assets/images/system/integration/ipchain" class="card-img-top" alt="API ipchain">
+          <div class="card-body">
+            <center><strong>Печень</strong></center>
+            <p class="card-text">Интеграция с IpChain</p>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-3" style="margin-bottom: 25px;">
         <a href="/panel/system/integration/recaptacha/" class="card block_link">
           <img src="/assets/images/system/integration/google-api.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
@@ -114,6 +135,32 @@
           </div>
         </a>
       </div>
+
+      <div class="col-md-3" style="margin-bottom: 25px;">
+        <a href="/panel/system/integration/yandex_disk" class="card block_link">
+          <img src="/assets/images/system/integration/yandex_disk.png" class="card-img-top" alt="YANDEX DISK API">
+          <div class="card-body">
+            <center><strong>YANDEX DISK API</strong></center>
+            <p class="card-text">Сервис для загрузки бекапов в облако</p>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-3" style="margin-bottom: 25px;">
+        <a href="/panel/system/integration/telegram/" class="card block_link">
+          <img src="/assets/images/system/integration/telegram" class="card-img-top" alt="bot telegram">
+          <div class="card-body">
+            <center><strong>Bot Telegram</strong></center>
+            <p class="card-text">Интеграция с ботом</p>
+            <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
+          </div>
+        </a>
+      </div>
+
+
+
+
 
 
     </div>
