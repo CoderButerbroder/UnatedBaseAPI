@@ -61,11 +61,11 @@ if ($_GET["reget"] == 'true') {
 // '/api/v2/getEvent/id_event/',
 
 $arr_method = ['getUsers' => (object) ['status' => false, 'desc' => 'Получение списка всех пользователей' , 'param' => '?token='.$token_tboil ],
-'getEvents' => (object) ['status' => false, 'desc' => 'Получениe списка всех мероприятий' , 'param' => '?token='.$token_tboil ],
-'getEventsData' => (object) ['status' => false, 'desc' => 'Получениe данных о всех мероприятиях' , 'param' => '?token='.$token_tboil.'&period=weekly' ],
-'getEventsUsers' => (object) ['status' => false, 'desc' => 'Получениe всех пользователей всех мероприятий' , 'param' => '?token='.$token_tboil.'&period=weekly' ],
-'getRequestStatus' => (object) ['status' => false, 'desc' => 'Получениe статуса заявки' , 'param' => '?token='.$token_tboil.'&userId=1&eventId=1'],
-'getEvent' => (object) ['status' => false, 'desc' => 'Получениe данных о мероприятии' , 'param' => '1/?token='.$token_tboil ]];
+'getEvents' => (object) ['status' => false, 'desc' => 'Получение списка всех мероприятий' , 'param' => '?token='.$token_tboil ],
+'getEventsData' => (object) ['status' => false, 'desc' => 'Получение данных о всех мероприятиях' , 'param' => '?token='.$token_tboil.'&period=weekly' ],
+'getEventsUsers' => (object) ['status' => false, 'desc' => 'Получение всех пользователей всех мероприятий' , 'param' => '?token='.$token_tboil.'&period=weekly' ],
+'getRequestStatus' => (object) ['status' => false, 'desc' => 'Получение статуса заявки' , 'param' => '?token='.$token_tboil.'&userId=1&eventId=1'],
+'getEvent' => (object) ['status' => false, 'desc' => 'Получение данных о мероприятии' , 'param' => '1/?token='.$token_tboil ]];
 
 foreach( $arr_method as $key => $value ) {
   $temp_str = file_get_contents('https://'.$domen_tboil.'/api/v2/'.$key."/".$value->param);

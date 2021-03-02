@@ -61,14 +61,7 @@
           <span class="sr-only">Loading...</span>
         </div>
         <div class="form-group" id="div_token_tboil">
-          <label for="InputToken">Token TBOIL</label>
-          <input id="InputToken"  type="password" class="form-control" style="width: 100%" name="tboil_token" disabled  value="<?php echo $token_tboil;?>">
-          <i class="icon_pass far fa-eye" onclick="change_view_pass(this);" style="right: 25px;"></i>
 
-          <div class="form-inline mt-2">
-            <button type="button" onclick="copyToClipboard('<?php echo $token_tboil;?>')" class="btn btn-outline-success col-md-6">Скопировать</button>
-            <button type="button" onclick="upd_token()" class="btn btn-outline-primary col-md-6">Перевыпустить</button>
-          </div>
         </div>
       </div>
     </div>
@@ -110,11 +103,15 @@
     <div class="card">
       <div class="card-header">
         <div class="row">
-          <div class="col-6 my-auto">
+          <div class="col-md-6 my-auto">
             Количественные показатели методов
           </div>
-          <button type="button" onclick="upd_tbl()" class="col-2 btn btn-outline-primary">Обновить</button>
-          <button type="button" onclick="upd_tbl('reget=true')" class="col-4 btn btn-outline-primary">Обновить с перевыпуском токена</button>
+          <div class="col-md-2">
+            <button type="button" onclick="upd_tbl()" class="btn btn-block btn-outline-primary">Обновить</button>
+          </div>
+          <div class="col-md-4">
+            <button type="button" onclick="upd_tbl('reget=true')" class="btn-block btn btn-outline-primary">Обновить с перевыпуском</button>
+         </div>
         </div>
       </div>
 
@@ -137,11 +134,13 @@
 
   $(document).ready(function() {
     get_tbl();
+    upd_token();
   });
 
   function upd_token() {
     $('#spinner_token').show('fast');
-    $('#div_token_tboil').load('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/system/integration/tboil/action/upd_token?', function() {
+    $('#div_token_tboil').html('');
+    $('#div_token_tboil').load('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/system/integration/tboil/action/upd_token', function() {
       $('#spinner_token').hide('fast');
     });
   }

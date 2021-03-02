@@ -56,9 +56,13 @@ $site_id_tboil = $settings->get_global_settings('tboil_site_id');
 
 <label for="InputToken">Token TBOIL</label>
 <input id="InputToken"  type="password" class="form-control" style="width: 100%" name="tboil_token" disabled  value="<?php echo $token_tboil;?>">
-<i class="icon_pass far fa-eye" onclick="change_view_pass(this);" style="right: 25px;"></i>
+<i class="icon_pass far fa-eye" onclick="change_view_pass(this);" style="right: 35px;"></i>
 
-<div class="form-inline mt-2">
-  <button type="button" onclick="copyToClipboard('<?php echo $token_tboil;?>')" class="btn btn-outline-success col-md-6">Скопировать</button>
-  <button type="button" onclick="upd_token()" class="btn btn-outline-primary col-md-6">Перевыпустить</button>
+<div class="row mt-2">
+  <div class="col-md-6">
+    <button type="button" onclick="copyToClipboard('<?php echo $token_tboil;?>')" class="btn btn-block btn-outline-success">Скопировать</button>
+  </div>
+  <div class="col-md-6">
+    <button type="button" onclick="upd_token()" class="btn btn-block btn-outline-primary">Перевыпустить</button>
+  </div>
 </div>
