@@ -47,7 +47,7 @@
     <h5>Интеграции системы</h5>
     <div class="row">
 
-      <div class="col-md-3" style="margin-bottom: 25px;">
+      <!-- <div class="col-md-3" style="margin-bottom: 25px;">
         <a href="/admin/settings/integration/smsru" class="card block_link">
           <img src="/assets/images/system/integration/logo-smsru.png" class="card-img-top" alt="SMS.RU">
           <div class="card-body">
@@ -56,7 +56,7 @@
             <button type="button" class="btn btn-secondary btn-lg btn-block">Настройки</button>
           </div>
         </a>
-      </div>
+      </div> -->
 
 
       <div class="col-md-3" style="margin-bottom: 25px;">
@@ -94,7 +94,7 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/admin/settings/integration/tboil" class="card block_link">
+        <a href="/panel/system/integration/tboil" class="card block_link">
           <img src="/assets/images/system/integration/tboil-api.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>TBOIL API</strong></center>
@@ -105,7 +105,7 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/admin/settings/integration/recaptacha" class="card block_link">
+        <a href="/panel/system/integration/recaptacha/" class="card block_link">
           <img src="/assets/images/system/integration/google-api.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>Google recaptcha</strong></center>

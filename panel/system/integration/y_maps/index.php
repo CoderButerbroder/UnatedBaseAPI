@@ -180,7 +180,6 @@ $(document).ready(function() {
           ar_data = JSON.parse(result);
           if (ar_data["response"]) {
             alerts('success', ar_data["description"], '');
-            upd_tbl();
           } else {
             alerts('warning', 'Ошибка', ar_data["description"]);
           }

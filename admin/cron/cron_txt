@@ -1,5 +1,7 @@
 ++ 0	*/1		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_entity.php
 
+++ 30	  *		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_user.php
+
 ++ 0	*/3		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_project.php
 
 ++ 0	*/3		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_support.php
@@ -7,3 +9,5 @@
 ++ 0	*/5		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_ipobject.php
 
 ++ 0  */2   /home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_user_team_build.php
+
+++ 0	*/2		/home/httpd/vhosts/api.kt-segment.ru/httpdocs/backups/backup.sh
