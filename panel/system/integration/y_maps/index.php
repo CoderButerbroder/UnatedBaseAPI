@@ -136,63 +136,63 @@ $(document).ready(function() {
         }
     });
 
-    // select_check
-    //             .on('select2:open', function(e){
-    //               $('.select2-search__field').val("");
-    //               $('.select2-search__field').val(($("#check_street option:selected").text()).trim() + ' ');
-    //               $('.select2-search__field').trigger('change');
-    //             });
-    //
-    // $("#check_street").on('change', function(){
-    //
-    //             data = $("#check_street option:selected").val();
-    //             if(IsJsonString(data)){
-    //               json_data = JSON.parse(data);
-    //               pieces = json_data["pos"].split(" ");
-    //               if(pieces.length == 2){
-    //                 myGeoObjects = [];
-    //                 myGeoObjects[0] = new ymaps.GeoObject({
-    //                  geometry: { type: "Point", coordinates: [pieces[1], pieces[0]] },
-    //                  properties: {
-    //                      clusterCaption: 'Геокодер',
-    //                      balloonContentBody: 'Проверка работоспособности геокодера yandex'
-    //                    }
-    //                 });
-    //                 clusterer.removeAll();
-    //                 clusterer.add(myGeoObjects);
-    //                 myMap.geoObjects.add(clusterer);
-    //               }
-    //            }
-    //          });
+    select_check
+                .on('select2:open', function(e){
+                  $('.select2-search__field').val("");
+                  $('.select2-search__field').val(($("#check_street option:selected").text()).trim() + ' ');
+                  $('.select2-search__field').trigger('change');
+                });
+
+    $("#check_street").on('change', function(){
+
+                data = $("#check_street option:selected").val();
+                if(IsJsonString(data)){
+                  json_data = JSON.parse(data);
+                  pieces = json_data["pos"].split(" ");
+                  if(pieces.length == 2){
+                    myGeoObjects = [];
+                    myGeoObjects[0] = new ymaps.GeoObject({
+                     geometry: { type: "Point", coordinates: [pieces[1], pieces[0]] },
+                     properties: {
+                         clusterCaption: 'Геокодер',
+                         balloonContentBody: 'Проверка работоспособности геокодера yandex'
+                       }
+                    });
+                    clusterer.removeAll();
+                    clusterer.add(myGeoObjects);
+                    myMap.geoObjects.add(clusterer);
+                  }
+               }
+             });
 
 });
 
 
-  // function upd_key(form) {
-  //   $.ajax({
-  //     async: true,
-  //     cache: false,
-  //     type: 'POST',
-  //     url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/system/integration/fns/action/upd_key',
-  //     data: $(form).serialize(),
-  //     success: function(result, status, xhr) {
-  //       if (IsJsonString(result)) {
-  //         ar_data = JSON.parse(result);
-  //         if (ar_data["response"]) {
-  //           alerts('success', ar_data["description"], '');
-  //           upd_tbl();
-  //         } else {
-  //           alerts('warning', 'Ошибка', ar_data["description"]);
-  //         }
-  //       } else {
-  //         alerts('warning', 'Ошибка', result);
-  //       }
-  //     },
-  //     error: function(jqXHR, textStatus) {
-  //       alerts('error', 'Ошибка подключения', 'Попробуйте позже');
-  //     }
-  //   });
-  // }
+  function upd_key(form) {
+    $.ajax({
+      async: true,
+      cache: false,
+      type: 'POST',
+      url: 'https://<?php echo $_SERVER["SERVER_NAME"]; ?>/panel/system/integration/y_maps/action/upd_key',
+      data: $(form).serialize(),
+      success: function(result, status, xhr) {
+        if (IsJsonString(result)) {
+          ar_data = JSON.parse(result);
+          if (ar_data["response"]) {
+            alerts('success', ar_data["description"], '');
+            upd_tbl();
+          } else {
+            alerts('warning', 'Ошибка', ar_data["description"]);
+          }
+        } else {
+          alerts('warning', 'Ошибка', result);
+        }
+      },
+      error: function(jqXHR, textStatus) {
+        alerts('error', 'Ошибка подключения', 'Попробуйте позже');
+      }
+    });
+  }
 
   function change_view_pass(el) {
       if ($(el.previousElementSibling).attr('type') == 'password'){

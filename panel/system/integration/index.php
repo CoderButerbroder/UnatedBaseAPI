@@ -83,7 +83,7 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/admin/settings/integration/email" class="card block_link">
+        <a href="/panel/system/integration/mail" class="card block_link">
           <img src="/assets/images/system/integration/logo_email.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>EMAIL письма</strong></center>
