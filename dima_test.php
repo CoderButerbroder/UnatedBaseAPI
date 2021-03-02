@@ -5,13 +5,17 @@ ini_set('display_startup_errors', 1);
 header('Content-type:application/json;charset=utf-8');
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 $settings = new Settings;
+//
+// $data_array = array(104120,81920);
+//
+//
+// $data = $settings->get_log_api_response('day');
+// var_dump($data);
 
-$data_array = array(104120,81920);
 
 
-$data = $settings->get_log_api_response('day');
-var_dump($data);
-
+// $data = count(json_decode(file_get_contents('https://tboil.spb.ru/api/v2/getUserscom/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI4MTkyMCIsImV4cCI6MTYxNDY4NzI1OH0.95rnpwtLspd1X5ULcGZfUHq4zsNjtNim8vc2Nn4KPcQ'))->data);
+// var_dump($data);
 
 // $data = $settings->update_mass_main_users_comand($data_array,1);
 // var_dump($data);

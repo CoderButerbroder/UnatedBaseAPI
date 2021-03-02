@@ -5967,7 +5967,133 @@ class Settings {
 
   }
 
+  // ТЕСОВАЯ функция обновления данных по резидентам лпм
+  public function test_update_residents_lpm($data_json_residents) {
+        global $database;
 
+
+        $massiv_residents = json_decode($data_json_residents);
+
+        $update_array = array(); // массив компаний которые были успешно обновлены
+        $bad_update_array = array(); // массив компаний которые не были обновлены
+
+        $insert_array = array(); // массив компаний которые были успешно добавлены
+        $bad_insert_array = array(); // массив компаний которые не были добавлены
+
+        $all_company = array(); // массив всех компаний загруженных из 1с аренда
+
+        foreach ($massiv_residents as $key => $value) {
+
+                $inn = $value->ИНН;
+
+                if ($inn == '') {
+                  continue;
+                }
+
+                // поиск уже существующей компании по инн
+                $check = $this->search_resident_lpm($inn);
+
+                array_push($all_company,$inn);
+
+                if (json_decode($check)->response) {
+
+                      $test = 'тест';
+
+                      // временная заглушка до доработки 1С
+                      $name = isset($value->ФирменноеНазвание) ? $value->ФирменноеНазвание : ' ';
+                      $housing = isset($value->Корпус) ? $value->Корпус : ' ';
+                      $flour = isset($value->Этаж) ? $value->Этаж : ' ';
+                      $work_time = isset($value->РежимРаботы) ? $value->РежимРаботы : ' ';
+                      $site = isset($value->Сайт) ? $value->Сайт : ' ';
+                      $address = isset($value->КакДобраться) ? $value->КакДобраться : ' ';
+                      $direction = isset($value->Направление) ? $value->Направление : ' ';
+
+                      // если компания найдена то обновляем данные по инн
+                      $upd_new_company = $database->prepare("UPDATE $this->LPM_1С_residents SET name = :name, housing = :housing, flour = :flour, work_time = :work_time, site = :site, address = :address, direction = :direction WHERE inn = :inn");
+                      $upd_new_company->bindParam(':name', $name, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':site', $site, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':address', $address, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
+                      $upd_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
+                      $check_add = $upd_new_company->execute();
+                      $count = $upd_new_company->rowCount();
+
+                      if ($count) {
+                          array_push($update_array,$inn);
+                      } else {
+                          array_push($bad_update_array,$inn);
+                      }
+                }
+                else {
+                    // если компания не найдена то добавляем ее в список
+                    $insert_new_company = $database->prepare("INSERT INTO $this->LPM_1С_residents (inn,name,housing,flour,work_time,site,address,direction)
+                                                          VALUES (:inn,:name,:housing,:flour,:work_time,:site,:address,:direction)");
+
+                    $insert_new_company->bindParam(':name', $name, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':site', $site, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':address', $address, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
+                    $insert_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
+                    $check_request = $insert_new_company->execute();
+                    //$id_request = $request->rowCount();
+                    $id_request = $database->lastInsertId();
+
+                    if ($id_request) {
+                        array_push($insert_array,$inn);
+                    }
+                    else {
+                        array_push($bad_insert_array,$inn);
+                    }
+                }
+
+        }
+
+        // проверка на действия
+        if (count($bad_update_array)) {
+          $string_update_inn = implode(", ", $bad_update_array);
+          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были обновлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_update_inn);
+        }
+        if (count($bad_insert_array)) {
+          $string_insert_inn = implode(", ", $bad_insert_array);
+          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были добавлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_insert_inn);
+        }
+
+
+        // удаление покинувших ЛПМ резидентов
+
+        $string_all_company_inn = implode("', '", $all_company);
+        //
+        $string_all_company_inn = "'".$string_all_company_inn;
+        // $string_all_company_inn = "'".$string_all_company_inn."'";
+
+        // $string_all_company_inn = "";
+        // foreach ($all_company as $key => $value) {
+        //         $string_all_company_inn .= "'$value',";
+        // }
+        // $string_all_company_inn = substr("'".$string_all_company_inn, 0, -1);
+
+
+        $sql = "DELETE FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
+        return $sql;
+        exit;
+        $stmt = $database->prepare($sql);
+        $stmt->execute();
+        $deleted = $stmt->rowCount();
+
+        if ($deleted) {
+            $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.$deleted.' резиднтов ЛПМ были удалены из единой базы данных');
+        }
+
+        return json_encode(array('response' => true, 'description' => 'Функция закончила свое выполнение успешно ', 'deleted' => $deleted, 'updated' => $update_array, 'inserted' => $insert_array),JSON_UNESCAPED_UNICODE);
+        exit;
+
+  }
 
 
 
@@ -8339,6 +8465,81 @@ class Settings {
           return $data_users;
           exit;
   }
+
+
+
+
+
+
+
+
+
+
+  /* экстренные функции для исправления ошибок в базе данных */
+
+
+  // УДАЛЕНИЕ дубликатов физических лиц
+  public function get_dubble_users() {
+      global $database;
+
+      $response = $database->prepare("SELECT MIN(`id`) AS `id` FROM $this->main_users GROUP BY `email`");
+      $response->execute();
+      $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+      $response = $database->prepare("SELECT * FROM $this->main_users");
+      $response->execute();
+      $data2 = $response->fetchAll(PDO::FETCH_OBJ);
+
+      $arrayone = array();
+      $arraytwo = array();
+
+      foreach ($data as $key => $value) {
+            array_push($arrayone,$value->id);
+      }
+
+      foreach ($data2 as $key => $value) {
+            array_push($arraytwo,$value->id);
+      }
+
+      $result = array_diff($arraytwo,$arrayone);
+
+      if (count($result) > 0) {
+
+            $masiv_for_delete = implode(',',$result);
+
+            $strokaSQL = "DELETE FROM $this->main_users WHERE id IN ($masiv_for_delete)";
+
+            $response = $database->prepare($strokaSQL);
+            $response->execute();
+            $check = $response->rowCount();
+
+
+            $response = $database->prepare("SELECT * FROM $this->main_users");
+            $response->execute();
+            $count_users_itog = $response->fetchAll(PDO::FETCH_OBJ);
+
+            $data_user_count = count($data2) - count($count_users_itog);
+
+            if (count($result) == $data_user_count) {
+                  return json_encode(array('response' => true,  'description' => 'Все дублирующиеся пользователя были удалены, удалено '.$data_user_count),JSON_UNESCAPED_UNICODE);
+                  exit;
+            }
+            else {
+                  return json_encode(array('response' => false,  'description' => 'Не все дубликаты были удалены, из '.count($result).' удалено '.$data_user_count),JSON_UNESCAPED_UNICODE);
+                  exit;
+            }
+
+      } else {
+          return json_encode(array('response' => false,  'description' => 'Нет дублирующихся пользователей на удаление'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+
+  }
+
+
+
+
 
 
 
