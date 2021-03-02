@@ -94,7 +94,7 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/admin/settings/integration/tboil" class="card block_link">
+        <a href="/panel/system/integration/tboil" class="card block_link">
           <img src="/assets/images/system/integration/tboil-api.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>TBOIL API</strong></center>

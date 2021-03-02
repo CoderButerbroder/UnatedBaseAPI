@@ -61,7 +61,7 @@ if (!$data_user_rules->sistem->rule->settings->value) {
      }
    if ($email_host_check == true ||  $email_username_check == true ||  $email_pass_check == true ||
          $email_secure_check == true ||  $email_port_check == true ||  $email_name_check) {
-           echo json_encode(array('response' => екгу, 'description' => 'Успешное обновление параметров'), JSON_UNESCAPED_UNICODE);
+           echo json_encode(array('response' => true, 'description' => 'Успешное обновление параметров'), JSON_UNESCAPED_UNICODE);
              exit;
       }
 

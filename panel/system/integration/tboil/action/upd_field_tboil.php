@@ -5,13 +5,16 @@ if (!isset($_SESSION["key_user"])) {
   exit();
 }
 
-if(!isset($_POST["google_recaptacha_open"]) && !isset($_POST["google_recaptacha_secret"]) ) {
+
+
+if(!isset($_POST["tboil_admin_login"]) || !isset($_POST["tboil_admin_password"]) || !isset($_POST["tboil_site_id"])) {
       echo json_encode(array('response' => false, 'description' => 'Ошибка, Проверьте правильность заполнения полей'), JSON_UNESCAPED_UNICODE);
       exit();
 }
 
-$google_recaptacha_open = trim($_POST["google_recaptacha_open"]);
-$google_recaptacha_secret = trim($_POST["google_recaptacha_secret"]);
+$tboil_admin_login = trim($_POST["tboil_admin_login"]);
+$tboil_admin_password = trim($_POST["tboil_admin_password"]);
+$tboil_site_id = trim($_POST["tboil_site_id"]);
 
 
 require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
@@ -25,24 +28,26 @@ if (!$data_user_rules->sistem->rule->settings->value || $data_user_rules == fals
   exit();
 } else {
 
-  $google_recaptacha_open2 = $settings->get_global_settings('google_recaptacha_open');
-  $google_recaptacha_secret2 = $settings->get_global_settings('google_recaptacha_secret');
+  $tboil_admin_login2 = $settings->get_global_settings('tboil_admin_login');
+  $tboil_admin_password2 = $settings->get_global_settings('tboil_admin_password');
+  $tboil_site_id2 = $settings->get_global_settings('tboil_site_id');
 
 
-  if ($google_recaptacha_open == $google_recaptacha_open2 &&
-      $google_recaptacha_secret == $google_recaptacha_secret2 ) {
+  if ($tboil_admin_login == $tboil_admin_login2 && $tboil_admin_password == $tboil_admin_password2 &&
+      $tboil_site_id == $tboil_site_id2 ) {
         echo json_encode(array('response' => false, 'description' => 'Ошибка, Переданные параметры не явл. новыми'), JSON_UNESCAPED_UNICODE);
         exit();
   }
 
-  $google_recaptacha_open_check = $settings->update_global_settings('google_recaptacha_open',$google_recaptacha_open);
-  $google_recaptacha_secret_check = $settings->update_global_settings('google_recaptacha_secret',$google_recaptacha_secret);
+  $tboil_admin_login_check = $settings->update_global_settings('tboil_admin_login',$tboil_admin_login);
+  $tboil_admin_password_check = $settings->update_global_settings('tboil_admin_password',$tboil_admin_password);
+  $tboil_site_id_check = $settings->update_global_settings('tboil_site_id',$tboil_site_id);
 
-  if ($google_recaptacha_open_check == false &&  $google_recaptacha_secret_check == false ) {
+  if ($tboil_admin_login_check == false &&  $tboil_admin_password_check == false &&  $tboil_site_id_check == false ) {
           echo json_encode(array('response' => false, 'description' => 'Ошибка, Ошибка обновления данных'), JSON_UNESCAPED_UNICODE);
             exit;
      }
-   if ($google_recaptacha_open_check == true ||  $google_recaptacha_secret_check == true ) {
+   if ($tboil_admin_login_check ||  $tboil_admin_password_check || $tboil_site_id_check) {
            echo json_encode(array('response' => true, 'description' => 'Успешное обновление параметров'), JSON_UNESCAPED_UNICODE);
              exit;
       }
