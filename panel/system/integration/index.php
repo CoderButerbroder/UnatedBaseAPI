@@ -105,7 +105,7 @@
       </div>
 
       <div class="col-md-3" style="margin-bottom: 25px;">
-        <a href="/panel/system/integration/recaptacha" class="card block_link">
+        <a href="/panel/system/integration/recaptacha/" class="card block_link">
           <img src="/assets/images/system/integration/google-api.png" class="card-img-top" alt="YANDEX MAP API">
           <div class="card-body">
             <center><strong>Google recaptcha</strong></center>
