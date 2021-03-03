@@ -5804,6 +5804,11 @@ class Settings {
   public function update_residents_lpm($data_json_residents) {
         global $database;
 
+        if (!$this->isJSON($data_json_residents)) {
+              $this->telega_send($this->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm переданный json не корректен');
+              return json_encode(array('response' => false, 'description' => 'Переданный в функциию json не корректен'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
 
         $massiv_residents = json_decode($data_json_residents);
 
@@ -5813,11 +5818,14 @@ class Settings {
         $insert_array = array(); // массив компаний которые были успешно добавлены
         $bad_insert_array = array(); // массив компаний которые не были добавлены
 
-        $all_company = array(); // массив всех компаний загруженных из 1с аренда
+        $all_company = array(); // массив всех компаний загруженных из 1с аренда с инн
+        $all_company_without = array(); // массив всех компаний загруженных из 1с аренда
 
         foreach ($massiv_residents as $key => $value) {
 
                 $inn = $value->ИНН;
+
+                array_push($all_company_without,1);
 
                 if ($inn == '') {
                   continue;
@@ -5881,7 +5889,9 @@ class Settings {
                         array_push($insert_array,$inn);
                     }
                     else {
-                        array_push($bad_insert_array,$inn);
+                        if (!json_decode($this->search_resident_lpm($inn))->response) {
+                            array_push($bad_insert_array,$inn);
+                        }
                     }
                 }
 
@@ -5890,26 +5900,22 @@ class Settings {
         // проверка на действия
         if (count($bad_update_array)) {
           $string_update_inn = implode(", ", $bad_update_array);
-          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были обновлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_update_inn);
+          // $this->telega_send($this->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были обновлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_update_inn);
         }
         if (count($bad_insert_array)) {
           $string_insert_inn = implode(", ", $bad_insert_array);
-          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были добавлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_insert_inn);
+          $this->telega_send($this->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были добавлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_insert_inn);
         }
 
 
         // удаление покинувших ЛПМ резидентов
-
         $string_all_company_inn = implode("', '", $all_company);
-        //
-        $string_all_company_inn = "'".$string_all_company_inn;
-        // $string_all_company_inn = "'".$string_all_company_inn."'";
+        $string_all_company_inn = "'".$string_all_company_inn."'";
 
-        // $string_all_company_inn = "";
-        // foreach ($all_company as $key => $value) {
-        //         $string_all_company_inn .= "'$value',";
-        // }
-        // $string_all_company_inn = substr("'".$string_all_company_inn, 0, -1);
+        $sql = "SELECT * FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
+        $response = $database->prepare($sql);
+        $response->execute();
+        $data_deleted = $response->fetchAll(PDO::FETCH_OBJ);
 
 
         $sql = "DELETE FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
@@ -5918,10 +5924,18 @@ class Settings {
         $deleted = $stmt->rowCount();
 
         if ($deleted) {
-            $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.$deleted.' резиднтов ЛПМ были удалены из единой базы данных');
+            $this->telega_send($this->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.$deleted.' резиднтов ЛПМ были удалены из единой базы данных');
         }
+        $del = count($data_deleted);
+        $upd = count($update_array);
+        $ins = count($insert_array);
+        $bad_insert = count($bad_insert_array);
+        $all_c = count($all_company);
+        $all_company_without = count($all_company_without) - count($all_company);
+        $bad_update = count($bad_update_array) + $all_company_without;
 
-        return json_encode(array('response' => true, 'description' => 'Функция закончила свое выполнение успешно ', 'deleted' => $deleted, 'updated' => $update_array, 'inserted' => $insert_array),JSON_UNESCAPED_UNICODE);
+        $this->telega_send($this->get_global_settings('telega_chat_error'), "[SCRIPT_1C_RENT] update_residents_lpm функция закончила свое выполнение успешно \nконтрольные суммы: \nУдалено: $del \nОбновлено: $upd \nДобавлено: $ins \nНе обновлено: $bad_update \nНе добавлено: $bad_insert \nВсе юр. лица имеющие ИНН: $all_c \nВсе компании не имеющие ИНН: $all_company_without ");
+        return json_encode(array('response' => true, 'description' => 'Функция закончила свое выполнение успешно ', 'Удалено' => $deleted, 'Обновлено' => $update_array, 'Добавлено' => $insert_array),JSON_UNESCAPED_UNICODE);
         exit;
 
   }
@@ -5967,133 +5981,6 @@ class Settings {
 
   }
 
-  // ТЕСОВАЯ функция обновления данных по резидентам лпм
-  public function test_update_residents_lpm($data_json_residents) {
-        global $database;
-
-
-        $massiv_residents = json_decode($data_json_residents);
-
-        $update_array = array(); // массив компаний которые были успешно обновлены
-        $bad_update_array = array(); // массив компаний которые не были обновлены
-
-        $insert_array = array(); // массив компаний которые были успешно добавлены
-        $bad_insert_array = array(); // массив компаний которые не были добавлены
-
-        $all_company = array(); // массив всех компаний загруженных из 1с аренда
-
-        foreach ($massiv_residents as $key => $value) {
-
-                $inn = $value->ИНН;
-
-                if ($inn == '') {
-                  continue;
-                }
-
-                // поиск уже существующей компании по инн
-                $check = $this->search_resident_lpm($inn);
-
-                array_push($all_company,$inn);
-
-                if (json_decode($check)->response) {
-
-                      $test = 'тест';
-
-                      // временная заглушка до доработки 1С
-                      $name = isset($value->ФирменноеНазвание) ? $value->ФирменноеНазвание : ' ';
-                      $housing = isset($value->Корпус) ? $value->Корпус : ' ';
-                      $flour = isset($value->Этаж) ? $value->Этаж : ' ';
-                      $work_time = isset($value->РежимРаботы) ? $value->РежимРаботы : ' ';
-                      $site = isset($value->Сайт) ? $value->Сайт : ' ';
-                      $address = isset($value->КакДобраться) ? $value->КакДобраться : ' ';
-                      $direction = isset($value->Направление) ? $value->Направление : ' ';
-
-                      // если компания найдена то обновляем данные по инн
-                      $upd_new_company = $database->prepare("UPDATE $this->LPM_1С_residents SET name = :name, housing = :housing, flour = :flour, work_time = :work_time, site = :site, address = :address, direction = :direction WHERE inn = :inn");
-                      $upd_new_company->bindParam(':name', $name, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':site', $site, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':address', $address, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
-                      $upd_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
-                      $check_add = $upd_new_company->execute();
-                      $count = $upd_new_company->rowCount();
-
-                      if ($count) {
-                          array_push($update_array,$inn);
-                      } else {
-                          array_push($bad_update_array,$inn);
-                      }
-                }
-                else {
-                    // если компания не найдена то добавляем ее в список
-                    $insert_new_company = $database->prepare("INSERT INTO $this->LPM_1С_residents (inn,name,housing,flour,work_time,site,address,direction)
-                                                          VALUES (:inn,:name,:housing,:flour,:work_time,:site,:address,:direction)");
-
-                    $insert_new_company->bindParam(':name', $name, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':housing', $housing, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':flour', $flour, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':work_time', $work_time, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':site', $site, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':address', $address, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':direction', $direction, PDO::PARAM_STR);
-                    $insert_new_company->bindParam(':inn', $inn, PDO::PARAM_STR);
-                    $check_request = $insert_new_company->execute();
-                    //$id_request = $request->rowCount();
-                    $id_request = $database->lastInsertId();
-
-                    if ($id_request) {
-                        array_push($insert_array,$inn);
-                    }
-                    else {
-                        array_push($bad_insert_array,$inn);
-                    }
-                }
-
-        }
-
-        // проверка на действия
-        if (count($bad_update_array)) {
-          $string_update_inn = implode(", ", $bad_update_array);
-          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были обновлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_update_inn);
-        }
-        if (count($bad_insert_array)) {
-          $string_insert_inn = implode(", ", $bad_insert_array);
-          $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.count($bad_update_array).' юр. лиц не были добавлены после загрузки файла из 1С-аренда, список инн юр.лиц '.$string_insert_inn);
-        }
-
-
-        // удаление покинувших ЛПМ резидентов
-
-        $string_all_company_inn = implode("', '", $all_company);
-        //
-        $string_all_company_inn = "'".$string_all_company_inn;
-        // $string_all_company_inn = "'".$string_all_company_inn."'";
-
-        // $string_all_company_inn = "";
-        // foreach ($all_company as $key => $value) {
-        //         $string_all_company_inn .= "'$value',";
-        // }
-        // $string_all_company_inn = substr("'".$string_all_company_inn, 0, -1);
-
-
-        $sql = "DELETE FROM $this->LPM_1С_residents WHERE inn NOT IN ($string_all_company_inn)";
-        return $sql;
-        exit;
-        $stmt = $database->prepare($sql);
-        $stmt->execute();
-        $deleted = $stmt->rowCount();
-
-        if ($deleted) {
-            $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT_1C_RENT] update_residents_lpm '.$deleted.' резиднтов ЛПМ были удалены из единой базы данных');
-        }
-
-        return json_encode(array('response' => true, 'description' => 'Функция закончила свое выполнение успешно ', 'deleted' => $deleted, 'updated' => $update_array, 'inserted' => $insert_array),JSON_UNESCAPED_UNICODE);
-        exit;
-
-  }
 
 
 
