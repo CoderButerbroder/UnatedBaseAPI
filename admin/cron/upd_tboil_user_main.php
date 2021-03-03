@@ -95,7 +95,6 @@ $settings = new Settings;
       for ($i = 0; $i  <  $threads; $i++) {
         $str_json = json_encode( $array_part[$i] );
         passthru("(".$path_php." -f ".__DIR__."/upd_tboil_user_main_thread.php ".($i+1)." ".$str_json." & ) >> /dev/null 2>&1");
-
       }
 
     }

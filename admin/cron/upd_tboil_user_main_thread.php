@@ -40,12 +40,12 @@ foreach( $arr_users as $key => $value ) {
       }
       $err_count_not_obj++;
     } else {
-      if ($data_user_tboil_cicle->success == false) {
+      if ($data_user_tboil_cicle_obj->success == false) {
         $flag_while = false;
         $str_err = "[CRON ERR] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: ".$data_user_tboil_cicle_str;
         $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
       } else {
-        $data_user_tboil_one = $data_user_tboil_cicle->data;
+        $data_user_tboil_one = $data_user_tboil_cicle_obj->data;
         $flag_while = false;
         $massiv_field_value = [];
 
@@ -66,12 +66,19 @@ foreach( $arr_users as $key => $value ) {
                               "sfera" => "scope" ];
 
         foreach ($data_user_tboil_one as $key_t => $value_t) {
-          if (trim($value_t) != '' && $value_t != NULL ) {
-            $massiv_field_value[$conformity_tboil[$key_t]] = $value_t;
+          if (array_key_exists($key_t , $conformity_tboil ) ) {
+            if (trim($value_t) != '' && $value_t != NULL ) {
+              $massiv_field_value[$conformity_tboil[$key_t]] = $value_t;
+            }
           }
         }
 
-        $check_upd = json_decode($settings->mass_update_user_field($massiv_field_value, $value));
+        //для дэбага
+        // $str_err = "[CRON] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: ".json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE);
+        // $settings->telega_send($settings->get_global_settings('telega_chat_victor'), $str_err);
+        // exit();
+
+        $check_upd = json_decode($settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), $value));
         if ( !$check_upd ) {
           $str_err = "[CRON ERR] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: внутренняя ошибка обновления";
           $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
