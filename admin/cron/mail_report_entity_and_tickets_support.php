@@ -64,7 +64,7 @@ $secure_code_check = 'd41d8cd98f00b204e9800998ecf8427e';
                       'description' => $content,
                       'link_to_server' => 'https://'.$host,
                       'text_button' => 'СГЕНЕРИРОВАТЬ СВЕЖИЙ ОТЧЕТ',
-                      'link_button' => 'https://'.$host.'/panel/data/reports/actions/report_count_month',
+                      'link_button' => 'https://'.$host.'/panel/data/reports/actions/report_count_month?code=Y1pVV7llgEeXbavAIWHjljMtj72fM9OR',
                       'name_host' => $host,
                       'date' => $today2
                     );
