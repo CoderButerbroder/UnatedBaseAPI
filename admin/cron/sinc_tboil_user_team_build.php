@@ -49,7 +49,11 @@ $settings = new Settings;
         $data_user_tboil_cicle = json_decode($data_user_tboil_cicle_str);
 
         if(!is_object($data_user_tboil_cicle) ) {
-          $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR] sinc_tboil_user_team_build '.$data_user_tboil_cicle_str);
+          $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n message: ".$data_user_tboil_cicle_str;
+          if ($data_user_tboil_cicle_str == false || $data_user_tboil_cicle_str == '') {
+            $str_err .= "\n add info: ".implode ( $http_response_header, "\n" );
+          }
+          $settings->telega_send($settings->get_global_settings('telega_chat_error'), );
           if ($err_count_not_obj >= 3) {
             $flag_while = false;
           }
@@ -57,11 +61,13 @@ $settings = new Settings;
         } else {
           $err_count_not_obj = 0;
           if (($data_user_tboil_cicle->success == false) && ($data_user_tboil_cicle->error == "Неправильный токен" || $data_user_tboil_cicle->error == "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d")) {
-            $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] token re_get');
+            $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n message: token re_get";
+            $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
             $token_tboil_str = $settings->refresh_token_tboil();
             $token_tboil_obj = json_decode($token_tboil_str);
             if(!is_object($token_tboil_obj) || !$token_tboil_obj->response){
-              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] sinc_tboil_user_team_build token re_get error');
+              $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n message: token re_get error";
+              $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
             } else {
               $token_tboil = $token_tboil_obj->token;
             }
@@ -69,7 +75,8 @@ $settings = new Settings;
           } else {
             if ($data_user_tboil_cicle->success == false) {
               $flag_while = false;
-              $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR NEW] user_id='.$all_id_users_tboil[$i]." message:".$data_user_tboil_cicle_str);
+              $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n user_id : ".$all_id_users_tboil[$i]."\n message: ".$data_user_tboil_cicle_str;
+              $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
             } else {
               $data_user_tboil_one = $data_user_tboil_cicle->data;
               if ( $data_user_tboil_one->userId == $all_id_users_tboil[$i] ){
@@ -81,8 +88,6 @@ $settings = new Settings;
                 } else {
                   array_push($array_no,$data_user_tboil_one->userId);
                 }
-              } else {
-                $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON ERR]'.$data_user_tboil_cicle_str);
               }
             }
           }
