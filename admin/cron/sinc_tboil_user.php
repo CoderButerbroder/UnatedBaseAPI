@@ -104,15 +104,15 @@ $settings = new Settings;
     /*
         в теории тут уже имеем масив пользователей которых у нас нету
     */
-    echo count($new_mass);
-    echo "\n";
+    // echo count($new_mass);
+    // echo "\n";
     $err_count_not_obj = 0;
     foreach ($new_mass as $key => $value) {
-      echo "f ".$key." id_user = ".$value."\n";
+      // echo "f ".$key." id_user = ".$value."\n";
       $flag_while = true;
 
       while($flag_while) {
-        echo "   w ".$key." id_user = ".$value."\n";
+        // echo "   w ".$key." id_user = ".$value."\n";
 
         $check_in_EBD = json_decode($settings->get_user_data_id_boil($value));
         //на всякий

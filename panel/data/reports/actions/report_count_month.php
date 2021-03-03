@@ -147,6 +147,8 @@ foreach ($arr_data_request as $key => $value) {
 
 $arr_unique_refer = array_unique($arr_unique_refer);
 
+var_dump($arr_unique_refer);
+
 $arr_result_data = array();
 
 foreach ($arr_unique_refer as $key => $value) {
