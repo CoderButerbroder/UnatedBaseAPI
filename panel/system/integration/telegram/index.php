@@ -14,6 +14,9 @@
 <?php } else {
 
   $telega_token = $settings->get_global_settings('telega_token');
+  $telega_chat_error = $settings->get_global_settings('telega_chat_error');
+  $telega_chat_victor = $settings->get_global_settings('telega_chat_victor');
+  $telega_chat_dmitriy = $settings->get_global_settings('telega_chat_dmitriy');
 
 ?>
 
@@ -27,12 +30,11 @@
 <div class="row">
 
   <div class="col-md-6">
-
     <div class="card">
       <div class="card-body">
         <h5>Секретный ключ <small><a href="#">Где получить?</a></small></h5>
         <div class="row">
-          <form  method="post" action="/panel/system/integration/telega/action/upd_token" onsubmit="upd_key(this); return false;" style="width: 100%">
+          <form  method="post" action="/panel/system/integration/telegram/action/upd_token" onsubmit="upd_key(this); return false;" style="width: 100%">
             <div class="col-md-12 mt-2">
               <div class="form-group">
                 <label for="InputToken">Токен</label>
@@ -44,12 +46,75 @@
                   </div>
                 </div>
               </div>
+
+              <div class="form-group">
+                <label for="InputChatErr">Чат Ошибок</label>
+                <div class="input-group">
+                  <input id="InputChatErr" type="text" class="form-control" name="chat_err" placeholder=" Обязательное поле" required value="<?php echo $telega_chat_error;?>">
+                  <div class="input-group-append">
+                    <span class="input-group-text btn btn-outline-primary" onclick=" copyToClipboard(this)"><i style="height:15; width:15;" data-feather="copy"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="InputChatVictor">Чат Виктор</label>
+                <div class="input-group">
+                  <input id="InputChatVictor" type="text" class="form-control" name="chat_Victor" placeholder=" Обязательное поле" required value="<?php echo $telega_chat_victor;?>">
+                  <div class="input-group-append">
+                    <span class="input-group-text btn btn-outline-primary" onclick=" copyToClipboard(this)"><i style="height:15; width:15;" data-feather="copy"></i></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="InputChatDmitriy">Чат Дмитрий</label>
+                <div class="input-group">
+                  <input id="InputChatDmitriy" type="text" class="form-control" name="Chat_Dmitriy" placeholder=" Обязательное поле" required value="<?php echo $telega_chat_dmitriy;?>">
+                  <div class="input-group-append">
+                    <span class="input-group-text btn btn-outline-primary" onclick=" copyToClipboard(this)"><i style="height:15; width:15;" data-feather="copy"></i></span>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-md-12">
               <button type="submit" name="submit" class="btn btn-success">Сохранить</button>
             </div>
           </form>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <h5>Тестовое сообщение<small></small></h5>
+        <h5><small class="form-text text-danger">Бот не может написать первым, если у Вас небыло с ним диалога</small></h5>
+        <h5><small class="form-text text-primary" onclick="window.open('https://t.me/shadow_server_demon_bot')">Начать Диалог</small></h5>
+        <div class="row">
+          <form method="post" action="/panel/system/integration/telegram/action/test_message" onsubmit="upd_key(this); return false;" style="width: 100%">
+            <div class="col-md-12 mt-2">
+              <div class="form-group">
+                <label for="InputChat">Чат Id</label>
+                <div class="input-group">
+                  <input id="InputChat" type="text" class="form-control" name="chat" placeholder="ChatId Обязательное поле" required value="<?php echo $telega_chat_error;?>">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="InputMessage">Сообщение</label>
+                <div class="input-group">
+                  <textarea id="InputMessage" maxlength="400" minlength="1" class="form-control" name="message" placeholder="message Обязательное поле" required >Test
+                  </textarea>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <button type="submit" name="submit" class="btn btn-primary">Отправить</button>
+              </div>
+            </div>
+        </div>
+        </form>
       </div>
     </div>
   </div>
