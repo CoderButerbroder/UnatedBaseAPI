@@ -1010,7 +1010,7 @@ class Settings {
           exit;
       }
 
-      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job');
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job', 'team_build', 'first_referer');
 
       foreach ($massiv_field_value as $key => $value) {
           if (!in_array($key, $validFields)) {
@@ -1038,7 +1038,13 @@ class Settings {
                       'passport_id' => PDO::PARAM_INT,
                       'company' => PDO::PARAM_STR,
                       'position' => PDO::PARAM_STR,
-                      'profession' => PDO::PARAM_STR);
+                      'profession' => PDO::PARAM_STR,
+                      'team_build' => PDO::PARAM_STR,
+                      'activation' => PDO::PARAM_STR,
+                      'status' => PDO::PARAM_STR,
+                      'scope' => PDO::PARAM_STR,
+                      'job' => PDO::PARAM_STR
+                    );
 
       $sql_string = 'UPDATE '.$this->main_users.' SET ';
 
@@ -1065,6 +1071,7 @@ class Settings {
       $count = $statement->rowCount();
 
       if($count > 0) {
+
             return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
             exit;
       } else {
@@ -1086,7 +1093,7 @@ class Settings {
           exit;
       }
 
-      $validFields = array('email', 'phone', 'name', 'lastname', 'second_name', 'photo', 'role', 'status' );
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job', 'team_build', 'first_referer' );
 
       foreach ($massiv_field_value as $key => $value) {
           if (!in_array($key, $validFields)) {
@@ -1105,11 +1112,22 @@ class Settings {
       $field_type = array('email' => PDO::PARAM_STR,
                           'phone' => PDO::PARAM_STR,
                           'name' => PDO::PARAM_STR,
-                          'lastname' => PDO::PARAM_STR,
+                          'last_name' => PDO::PARAM_STR,
                           'second_name' => PDO::PARAM_STR,
+                          'DOB' => PDO::PARAM_STR,
                           'photo' => PDO::PARAM_STR,
-                          'role' => PDO::PARAM_STR,
-                          'status' => PDO::PARAM_STR);
+                          'adres' => PDO::PARAM_STR,
+                          'inn' => PDO::PARAM_INT,
+                          'passport_id' => PDO::PARAM_INT,
+                          'company' => PDO::PARAM_STR,
+                          'position' => PDO::PARAM_STR,
+                          'profession' => PDO::PARAM_STR,
+                          'team_build' => PDO::PARAM_STR,
+                          'activation' => PDO::PARAM_STR,
+                          'status' => PDO::PARAM_STR,
+                          'scope' => PDO::PARAM_STR,
+                          'job' => PDO::PARAM_STR
+                        );
 
       $sql_string = 'UPDATE '.$this->users.' SET ';
 
@@ -1136,8 +1154,74 @@ class Settings {
       $count = $statement->rowCount();
 
       if($count > 0) {
+
+            // // обновление полей в tboil
+            // $fillable = [
+            //             'NAME' => $massiv_field_value->name,
+            //             'SECOND_NAME' => $massiv_field_value->second_name,
+            //             'LAST_NAME' => $massiv_field_value->last_name,
+            //             'PERSONAL_PROFESSION' => $massiv_field_value->profession,
+            //             'WORK_COMPANY' => $massiv_field_value->company,
+            //             'PERSONAL_PHONE' => $massiv_field_value->phone,
+            //             'UF_URL_LID' => $massiv_field_value->first_referer,
+            //             'PERSONAL_BIRTHDAY' => $massiv_field_value->DOB,
+            //             'PERSONAL_PHOTO' => $massiv_field_value->photo,
+            //             'PERSONAL_CITY' => $massiv_field_value->adres,
+            //             'WORK_PHONE' => '',
+            //             'WORK_CITY' => '',
+            //             'WORK_STATE' => '',
+            //             'WORK_CITY' => '',
+            //             'PERSONAL_WWW' => '',
+            //             'PERSONAL_ICQ' => '',
+            //             'PERSONAL_GENDER' => '',
+            // ];
+            //
+            //
+            // $new_array_for_tboil = array_flip($fillable);
+            //
+            // unset($new_array_for_tboil[null]);
+            //
+            // $fields = array_flip($new_array_for_tboil);
+            //
+            // $data_user_tboil_cicle_str = file_get_contents("https://tboil.spb.ru/api/v2/getUser/?token=".$token_tboil."&userId=".$value);
+            //
+            // $data_user_tboil_cicle_obj = json_decode($data_user_tboil_cicle_str);
+            //
+            //
+            // if(!is_object($data_user_tboil_cicle_obj) ) {
+            //       $settings->telega_send($this->get_global_settings('telega_chat_error'), "[SCRIPT] cron_mass_update_user_field \n ошибка tboil 500?");
+            // } else {
+            //     if (($data_user_tboil_cicle_obj->success == false) && ($data_user_tboil_cicle_obj->error == "Неправильный токен" || $data_user_tboil_cicle_obj->error == "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d")) {
+            //       $token_tboil_check = $this->get_global_settings('tboil_token');
+            //       //смысл в том что соседний крон или еще что могли перевыпустить токен, и надо понять он закончился или его уже перевыпустили
+            //       if ($token_tboil_check == $token_tboil) {
+            //         $this->telega_send($this->get_global_settings('telega_chat_error'), '[SCRIPT] cron_mass_update_user_field token re_get');
+            //         $token_tboil_str = $this->refresh_token_tboil();
+            //         $token_tboil_obj = json_decode($token_tboil_str);
+            //         if(!is_object($token_tboil_obj) || !$token_tboil_obj->response){
+            //           $this->telega_send($settings->get_global_settings('telega_chat_error'), '[SCRIPT] cron_mass_update_user_field token re_get error');
+            //         } else {
+            //           $token_tboil = $token_tboil_obj->token;
+            //         }
+            //       } else {
+            //         $token_tboil = $token_tboil_check;
+            //       }
+            //     }
+            // }
+            //
+            //
+            // $curl = curl_init();
+            // $data_post = array('fields' => $fields);
+            // curl_setopt($curl, CURLOPT_URL, 'https://'.$this->get_global_settings('tboil_domen').'/api/v2/updateUser/'.$id_user_tboil.'/?token='.$token_tboil);
+            // curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
+            // curl_setopt($curl, CURLOPT_POST, true);
+            // curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data_post));
+            // $out4 = curl_exec($curl);
+            // curl_close($curl);
+
             return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
             exit;
+
       } else {
             return json_encode(array('response' => false, 'description' => 'Ошибка обновления полей в единой базе данных.'),JSON_UNESCAPED_UNICODE);
             exit;
@@ -3064,7 +3148,105 @@ class Settings {
 
   }
 
-  //
+
+
+
+
+
+
+
+
+
+
+  /* функции предназначеные для cron */
+
+  // Массовое обноление данных пользователя в единой базе данных
+  public function cron_mass_update_user_field($massiv_field_value2,$id_user_tboil) {
+      global $database;
+
+      $massiv_field_value = json_decode($massiv_field_value2,true);
+
+
+      if (!is_array($massiv_field_value)) {
+          return json_encode(array('response' => false, 'description' => 'Значение не является массивом "ключ" => "значение"'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job', 'team_build', 'first_referer');
+
+      foreach ($massiv_field_value as $key => $value) {
+          if (!in_array($key, $validFields)) {
+              return json_encode(array('response' => false, 'description' => 'Поля '.$key.' нет в единой базе данных'),JSON_UNESCAPED_UNICODE);
+              exit;
+          }
+      }
+
+      $check_user = $this->get_all_data_user_id_tboil($id_user_tboil);
+
+      if (!json_decode($check_user)->response) {
+          return json_encode(array('response' => false, 'description' => 'Пользователь с данным id_tboil не найден в едной базе данных'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+      $field_type = array('email' => PDO::PARAM_STR,
+                      'phone' => PDO::PARAM_STR,
+                      'name' => PDO::PARAM_STR,
+                      'last_name' => PDO::PARAM_STR,
+                      'second_name' => PDO::PARAM_STR,
+                      'DOB' => PDO::PARAM_STR,
+                      'photo' => PDO::PARAM_STR,
+                      'adres' => PDO::PARAM_STR,
+                      'inn' => PDO::PARAM_INT,
+                      'passport_id' => PDO::PARAM_INT,
+                      'company' => PDO::PARAM_STR,
+                      'position' => PDO::PARAM_STR,
+                      'profession' => PDO::PARAM_STR,
+                      'team_build' => PDO::PARAM_STR,
+                      'activation' => PDO::PARAM_STR,
+                      'status' => PDO::PARAM_STR,
+                      'scope' => PDO::PARAM_STR,
+                      'job' => PDO::PARAM_STR
+                    );
+
+      $sql_string = 'UPDATE '.$this->main_users.' SET ';
+
+      $count_zap = 0;
+      foreach ($massiv_field_value as $key => $value) {
+          if ($count_zap == 0) {
+            $sql_string .= $key.' = :'.$key;
+          } else {
+            $sql_string .= ', '.$key.' = :'.$key;
+          }
+          $count_zap++;
+      }
+
+      $sql_string .= ' WHERE id_tboil = :id_tboil';
+
+      $statement = $database->prepare($sql_string);
+
+      foreach($massiv_field_value as $key => $value) {
+                $statement->bindValue(':'.$key, $value, $field_type[$key]);
+      }
+
+      $statement->bindParam(':id_tboil', $id_user_tboil, PDO::PARAM_INT);
+      $statement->execute();
+      $count = $statement->rowCount();
+
+      if($count > 0) {
+
+            return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
+            exit;
+      } else {
+            return json_encode(array('response' => false, 'description' => 'Ошибка обновления полей в единой базе данных.'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+  }
+
+
+
+
+
 
 
 

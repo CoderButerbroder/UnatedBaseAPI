@@ -12,6 +12,41 @@ $settings = new Settings;
 // $data = $settings->get_log_api_response('day');
 // var_dump($data);
 
+
+// обновление полей в tboil
+$fillable = [
+            'NAME' => 'name',
+            'SECOND_NAME' => 'second_name',
+            'LAST_NAME' => 'last_name',
+            'PERSONAL_PROFESSION' => 'profession',
+            'WORK_COMPANY' => 'company',
+            'PERSONAL_PHONE' => 'phone',
+            'UF_URL_LID' => 'first_referer',
+            'PERSONAL_BIRTHDAY' => 'DOB',
+            'PERSONAL_PHOTO' => 'photo',
+            'PERSONAL_CITY' => 'adres',
+            'WORK_PHONE' => '',
+            'WORK_CITY' => '',
+            'WORK_STATE' => '',
+            'WORK_CITY' => '',
+            'PERSONAL_WWW' => '',
+            'PERSONAL_ICQ' => '',
+            'PERSONAL_GENDER' => '',
+];
+
+
+$new_array_for_tboil = array_flip($fillable);
+
+var_dump($fillable);
+var_dump($new_array_for_tboil);
+
+
+unset($new_array_for_tboil[null]);
+
+$fields = array_flip($new_array_for_tboil);
+
+var_dump($fields);
+
 // $data_json_residents = '[
 //                   {
 //                   "ФирменноеНазвание": "ТАЙПТАЙП",
