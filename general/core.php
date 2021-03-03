@@ -687,8 +687,13 @@ class Settings {
                 $role = 'user';
                 $leaderId = (isset($data_user->data->leaderId)) ? $data_user->data->leaderId : 0;
                 $team_build = (isset($data_user->data->UF_COMMAND)) ? $data_user->data->UF_COMMAND : 0;
+                $activation = (isset($data_user->data->ACTIVE)) ? $data_user->data->ACTIVE : N;
+                $statuss = (isset($data_user->data->statuss)) ? $data_user->data->statuss : '';
+                $sfera = (isset($data_user->data->sfera)) ? $data_user->data->sfera : '';
+                $job = (isset($data_user->data->job)) ? $data_user->data->job : '';
+                $first_referer = (isset($data_user->data->UrlLid)) ? $data_user->data->UrlLid : $resource;
 
-                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role)");
+                $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role,activation,status,scope,job) VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role,:activation,:status,:scope,:job)");
                 $new_user->bindParam(':id_tboil', $check_reg_tboil->data->userId, PDO::PARAM_INT);
                 $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
                 $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -707,9 +712,13 @@ class Settings {
                 $new_user->bindParam(':profession', $default, PDO::PARAM_STR);
                 $new_user->bindParam(':team_build', $team_build, PDO::PARAM_INT);
                 $new_user->bindParam(':hash', $hash, PDO::PARAM_STR);
-                $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
+                $new_user->bindParam(':first_referer', $first_referer, PDO::PARAM_STR);
                 $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
                 $new_user->bindParam(':role', $role, PDO::PARAM_STR);
+                $new_user->bindParam(':activation', $activation, PDO::PARAM_STR);
+                $new_user->bindParam(':status', $statuss, PDO::PARAM_STR);
+                $new_user->bindParam(':scope', $sfera, PDO::PARAM_STR);
+                $new_user->bindParam(':job', $job, PDO::PARAM_STR);
 
                 $check_new_user = $new_user->execute();
                 $count = $new_user->rowCount();
@@ -768,14 +777,19 @@ class Settings {
                       if (!$data_user->profession) {$profession = '-';} else {$profession = $data_user->profession;}
                       if (!$data_user->UF_COMMAND) {$team_build = 0;} else {$team_build = $data_user->UF_COMMAND;}
 
+                      if (!$data_user->ACTIVE) {$activation = N;} else {$activation = $data_user->ACTIVE;}
+                      if (!$data_user->statuss) {$statuss = '';} else {$statuss = $data_user->statuss;}
+                      if (!$data_user->sfera) {$sfera = '';} else {$sfera = $data_user->sfera;}
+                      if (!$data_user->job) {$job = '';} else {$job = $data_user->job;}
+
                       $userId = $data_user->userId;
                       $email = $data_user->email;
                       $name = $data_user->name;
                       $lastName = $data_user->lastName;
 
 
-                      $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role)
-                                                                             VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role)");
+                      $new_user = $database->prepare("INSERT INTO $this->main_users (id_tboil,id_leader,email,phone,name,last_name,second_name,DOB,photo,adres,inn,passport_id,id_entity,company,position,profession,team_build,hash,first_referer,reg_date,role,activation,status,scope,job)
+                                                                             VALUES (:id_tboil,:id_leader,:email,:phone,:name,:last_name,:second_name,:DOB,:photo,:adres,:inn,:passport_id,:id_entity,:company,:position,:profession,:team_build,:hash,:first_referer,:reg_date,:role,:activation,:status,:scope,:job)");
                       $new_user->bindParam(':id_tboil', $userId, PDO::PARAM_INT);
                       $new_user->bindParam(':id_leader', $leaderId, PDO::PARAM_INT);
                       $new_user->bindParam(':email', $email, PDO::PARAM_STR);
@@ -797,6 +811,10 @@ class Settings {
                       $new_user->bindParam(':first_referer', $resource, PDO::PARAM_STR);
                       $new_user->bindParam(':reg_date', $today, PDO::PARAM_STR);
                       $new_user->bindParam(':role', $role, PDO::PARAM_STR);
+                      $new_user->bindParam(':activation', $activation, PDO::PARAM_STR);
+                      $new_user->bindParam(':status', $statuss, PDO::PARAM_STR);
+                      $new_user->bindParam(':scope', $sfera, PDO::PARAM_STR);
+                      $new_user->bindParam(':job', $job, PDO::PARAM_STR);
 
                       $check_new_user = $new_user->execute();
                       $count = $database->lastInsertId();
@@ -934,7 +952,7 @@ class Settings {
   public function update_user_field($field,$value_field,$id_user_tboil) {
       global $database;
 
-      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession');
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job');
 
       if (!in_array($field, $validFields)) {
           return json_encode(array('response' => false, 'description' => 'Не верное указанное поле'),JSON_UNESCAPED_UNICODE);
@@ -992,7 +1010,7 @@ class Settings {
           exit;
       }
 
-      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession');
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job');
 
       foreach ($massiv_field_value as $key => $value) {
           if (!in_array($key, $validFields)) {
