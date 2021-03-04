@@ -147,7 +147,7 @@ foreach ($arr_data_request as $key => $value) {
 
 $arr_unique_refer = array_unique($arr_unique_refer);
 
-var_dump($arr_unique_refer);
+// var_dump($arr_unique_refer);
 
 $arr_result_data = array();
 
@@ -158,7 +158,7 @@ foreach ($arr_unique_refer as $key => $value) {
                     'Получение услуги центра коллективного пользования (производство)' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
                     'Получение услуги конструкторского бюро' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
                     'Запрос на консультацию проекта при подаче заявки в ФСИ' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Запрос на консультацию компании при подаче заявки на статус "Участник Сколково"' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+                    'Запрос на консультацию компании - Фонд Сколково' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
                     'Подача предложения в каталог производственных возможностей' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
                     'Подбор стартапов под тех.запрос.' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ] ];
   array_push($arr_result_data, (object) ['refer' => $value, 'data' => $array_reqiest]);
