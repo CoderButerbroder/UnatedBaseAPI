@@ -29,6 +29,7 @@ try{
 $err_count_not_obj = 0;
 foreach( $arr_users as $key => $value ) {
   $flag_while = true;
+  $err_count_not_obj = 0;
   while($flag_while) {
     //получаем данные от Tboil
     $data_user_tboil_cicle_str = file_get_contents("https://".$tboil_domen."/api/v2/getUser/?token=".$token_tboil."&userId=".$value);
@@ -42,6 +43,21 @@ foreach( $arr_users as $key => $value ) {
       }
       $err_count_not_obj++;
     } else {
+      $err_count_not_obj = 0;
+      if (($data_user_tboil_cicle_obj->success == false) && ($data_user_tboil_cicle_obj->error == "Неправильный токен" || $data_user_tboil_cicle_obj->error == "\u041d\u0435\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a\u0435\u043d")) {
+        $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n message: token re_get";
+        $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
+        $token_tboil_str = $settings->refresh_token_tboil();
+        $token_tboil_obj = json_decode($token_tboil_str);
+        if(!is_object($token_tboil_obj) || !$token_tboil_obj->response){
+          $str_err = "[CRON ERR] \n from: sinc_tboil_user_team_build \n message: token re_get error";
+          $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
+        } else {
+          $token_tboil = $token_tboil_obj->token;
+        }
+        $count_token++;
+      } else {
+
       if ($data_user_tboil_cicle_obj->success == false) {
         $flag_while = false;
         $str_err = "[CRON ERR] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: ".$data_user_tboil_cicle_str;
@@ -94,6 +110,7 @@ foreach( $arr_users as $key => $value ) {
       }
     }
   }
+}
 }
 
 

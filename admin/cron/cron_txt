@@ -1,6 +1,8 @@
 ++ 0	*/1		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_entity.php
 
-++ 30	  *		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_user.php
+++ */30	  	/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_user.php
+
+++ 0  */2		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_events.php
 
 ++ 0	*/3		/home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_ipchain_project.php
 
@@ -11,3 +13,5 @@
 ++ 0  */2   /home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/sinc_tboil_user_team_build.php
 
 ++ 0	*/2		/home/httpd/vhosts/api.kt-segment.ru/httpdocs/backups/backup.sh
+
+++ 0    7   /home/httpd/fcgi-bin/a353561_api/php-cli /home/httpd/vhosts/api.kt-segment.ru/httpdocs/admin/cron/mail_report_entity_and_tickets_support.php d41d8cd98f00b204e9800998ecf8427e

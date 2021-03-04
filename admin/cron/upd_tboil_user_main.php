@@ -81,12 +81,14 @@ $settings = new Settings;
       $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON ERR] \n from: upd_tboil_user_main http 500? ");
     } else {
 
+      $data_user_tboil->data = array_reverse($data_user_tboil->data);
+
       // echo count($data_user_tboil->data);
       // echo "\n";
       // $threads = 8;
       // $strs_per_thread = ceil(count($data_user_tboil->data) / $threads);
 
-      $strs_per_thread = 5000;
+      $strs_per_thread = 1000;
       $threads = ceil(count($data_user_tboil->data) / $strs_per_thread);
 
       // echo "Threads: ".$threads."\n";
