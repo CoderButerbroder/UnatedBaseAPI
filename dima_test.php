@@ -1,12 +1,12 @@
 <?php
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// header('Content-type:application/json;charset=utf-8');
-// require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-// $settings = new Settings;
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+header('Content-type:application/json;charset=utf-8');
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$settings = new Settings;
 
-phpinfo();
+// phpinfo();
 //
 // $data_array = array(104120,81920);
 //
@@ -14,6 +14,12 @@ phpinfo();
 // $data = $settings->get_log_api_response('day');
 
 // var_dump($data);
+
+$data = $settings->get_log_api_response_group_by(false,'year');
+
+var_dump($data);
+
+
 
 //
 // $stroka = '{"last_name":"Мальченко","name":"Юлия","second_name":"Анатольевна","email":"malyulya@list.ru","photo":"\t+79111944415","company":"СПбГУ","DOB":"25.01.1985","job":"СПбГУ","status":"аспирант","activation":"y"}';
