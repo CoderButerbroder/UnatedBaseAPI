@@ -24,6 +24,9 @@ if ( $iter == '' || !is_array($arr_users) ){
 $token_tboil = $settings->get_global_settings('tboil_token');
 $tboil_domen = $settings->get_global_settings('tboil_domen');
 
+try{
+
+
 $err_count_not_obj = 0;
 foreach( $arr_users as $key => $value ) {
   $flag_while = true;
@@ -95,5 +98,15 @@ foreach( $arr_users as $key => $value ) {
 
 
 $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON] \nfrom: upd_tboil_user_main_thread \niter:".$iter." \ncount:".count($arr_users)."\none_id:".$arr_users[0]."\nstart: ".$start_time."\nEnd: ".round(microtime(true) - $start, 4)." сек.");
+
+}
+//Перехватываем (catch) исключение, если что-то идет не так.
+catch (Exception $ex) {
+    //Выводим сообщение об исключении.
+    // echo $ex->getMessage();
+    $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON] \nfrom: upd_tboil_user_main_thread \n Error Message:".$ex->getMessage());
+
+}
+
 
 ?>
