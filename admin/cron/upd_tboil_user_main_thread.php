@@ -26,7 +26,6 @@ $tboil_domen = $settings->get_global_settings('tboil_domen');
 
 try{
 
-
 $err_count_not_obj = 0;
 foreach( $arr_users as $key => $value ) {
   $flag_while = true;
@@ -81,9 +80,10 @@ foreach( $arr_users as $key => $value ) {
         // $settings->telega_send($settings->get_global_settings('telega_chat_victor'), $str_err);
         // exit();
 
-        $check_upd = json_decode($settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), $value));
-        if ( !$check_upd ) {
-          $str_err = "[CRON ERR] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: внутренняя ошибка обновления";
+        $check_upd_str = $settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), $value);
+        $check_upd = json_decode($check_upd_str);
+        if ( $check_upd == false ) {
+          $str_err = "[CRON ERR] \n from: upd_tboil_user_main_thread \nuser_id : ".$value."\nmessage: внутренняя ошибка обновления\nadd:".$check_upd_str;
           $settings->telega_send($settings->get_global_settings('telega_chat_error'), $str_err);
         } else {
           if ( $check_upd->response == false  ) {

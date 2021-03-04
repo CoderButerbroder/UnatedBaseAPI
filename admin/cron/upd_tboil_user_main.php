@@ -81,12 +81,16 @@ $settings = new Settings;
       $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON ERR] \n from: upd_tboil_user_main http 500? ");
     } else {
 
-      echo count($data_user_tboil->data);
-      echo "\n";
-      $threads = 4;
-      $strs_per_thread = ceil(count($data_user_tboil->data) / $threads);
-      echo "Threads: ".$threads."\n";
-      echo "Items per thread: ".$strs_per_thread."\n";
+      // echo count($data_user_tboil->data);
+      // echo "\n";
+      // $threads = 8;
+      // $strs_per_thread = ceil(count($data_user_tboil->data) / $threads);
+
+      $strs_per_thread = 5000;
+      $threads = ceil(count($data_user_tboil->data) / $strs_per_thread);
+
+      // echo "Threads: ".$threads."\n";
+      // echo "Items per thread: ".$strs_per_thread."\n";
 
       $path_php = '/home/httpd/fcgi-bin/a353561_api/php-cli';
 
@@ -94,6 +98,7 @@ $settings = new Settings;
 
       for ($i = 0; $i  <  $threads; $i++) {
         $str_json = json_encode( $array_part[$i] );
+        $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON] \n from: upd_tboil_user_main \n start: ".$start_time."\npotok:".$i."\ncount arr users:".count($array_part[$i]));
         passthru("(".$path_php." -f ".__DIR__."/upd_tboil_user_main_thread.php ".($i+1)." ".$str_json." & ) >> /dev/null 2>&1");
       }
 
