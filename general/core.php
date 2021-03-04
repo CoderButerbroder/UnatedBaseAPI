@@ -3233,11 +3233,7 @@ class Settings {
       $count = $statement->rowCount();
 
       if($count > 0) {
-
             return json_encode(array('response' => true, 'description' => 'Все поля были успешно было обновлены у пользователя в единой базе данных'),JSON_UNESCAPED_UNICODE);
-            exit;
-      } else {
-            return json_encode(array('response' => false, 'description' => 'Ошибка обновления полей в единой базе данных.'),JSON_UNESCAPED_UNICODE);
             exit;
       }
 
