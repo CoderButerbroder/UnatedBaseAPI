@@ -197,16 +197,16 @@ function activate_charts(element, period, ru_local) {
           options_chart["series"] = Object.values(ar_data["data"]);
           options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
         }
-        if (element == 'FSI' || element == 'SK' || element == 'event') {
+        if (element == 'FSI' || element == 'SK' || element == 'event' || element == 'user') {
           var options_chart = options_line_ur;
           options_chart["series"] = Object.values(ar_data["data"]);
           options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
         }
-        if (element == 'user') {
-          var options_chart = options_line_user;
-          options_chart["series"][0]["data"] = Object.values(ar_data["data"]);
-          options_chart["xaxis"]["categories"] = Object.values(ar_data["name"]);
-        }
+        // if (element == 'user') {
+        //   var options_chart = options_line_user;
+        //   options_chart["series"][0]["data"] = Object.values(ar_data["data"]);
+        //   options_chart["xaxis"]["categories"] = Object.values(ar_data["name"]);
+        // }
         options_chart["chart"]["locales"] = [ru_local];
         var chart = new ApexCharts(document.querySelector('#div_chart_line_'+element), options_chart);
         chart.render();
