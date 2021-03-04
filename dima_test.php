@@ -13,7 +13,13 @@ $settings = new Settings;
 
 // var_dump($data);
 
-// 
+$data = $settings->get_null_activated_main_users();
+
+var_dump(count(json_decode($data)->data));
+
+
+
+//
 // $stroka = '{"last_name":"Мальченко","name":"Юлия","second_name":"Анатольевна","email":"malyulya@list.ru","photo":"\t+79111944415","company":"СПбГУ","DOB":"25.01.1985","job":"СПбГУ","status":"аспирант","activation":"y"}';
 //
 // $id = 49129;

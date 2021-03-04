@@ -3148,7 +3148,7 @@ class Settings {
 
   }
 
-
+  // Получение
 
 
 
@@ -8552,7 +8552,111 @@ class Settings {
           exit;
   }
 
+  // получение пользователей которые не активировали свой акканут
+  public function get_main_users_activation_group_by_time_reg($activation='all' $increment=true, $period='data', $start=NULL, $end=NULL) {
+          global $database;
 
+          if (!$start) {
+            $start_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date ASC LIMIT 1");
+            $start_date->execute();
+            $start = $start_date->fetch(PDO::FETCH_COLUMN);
+          }
+          if (!$end) {
+            $end_date = $database->prepare("SELECT reg_date FROM $this->main_users ORDER BY reg_date DESC LIMIT 1");
+            $end_date->execute();
+            $end = $end_date->fetch(PDO::FETCH_COLUMN);
+          }
+
+          $strokaSQL = "SELECT ";
+
+          if ($period == 'year') {
+                $strokaSQL .= " count(DISTINCT($this->main_users.`id`)) as sum,
+                                YEAR($this->main_users.`reg_date`) as yeard,
+                                count(DISTINCT($this->main_users.`id`)) as user_groupby";
+          }
+          if ($period == 'month') {
+                $strokaSQL .= " count(DISTINCT($this->main_users.`id`)) as sum,
+                                MONTH($this->main_users.`reg_date`) as monthd,
+                                YEAR($this->main_users.`reg_date`) as yeard,
+                                count(DISTINCT($this->main_users.`id`)) as user_groupby";
+          }
+          if ($period == 'week') {
+                $strokaSQL .= " count(DISTINCT($this->main_users.`id`)) as sum,
+                                WEEK($this->main_users.`reg_date`) as weekd,
+                                YEAR($this->main_users.`reg_date`) as yeard,
+                                count(DISTINCT($this->main_users.`id`)) as user_groupby";
+          }
+          if ($period == 'day') {
+                $strokaSQL .= " count(DISTINCT($this->main_users.`id`)) as sum,
+                                DAY($this->main_users.`reg_date`) as dayd,
+                                MONTH($this->main_users.`reg_date`) as monthd,
+                                YEAR($this->main_users.`reg_date`) as yeard,
+                                count(DISTINCT($this->main_users.`id`)) as user_groupby";
+          }
+          if ($period == 'data') {
+                $strokaSQL .= " * ";
+          }
+
+          if ($activation == 'all') {
+            $strokaSQL .= " FROM $this->main_users
+                            WHERE reg_date BETWEEN :starting AND :ending ";
+          } else {
+            $strokaSQL .= " FROM $this->main_users
+                            WHERE activation = :activation AND reg_date BETWEEN :starting AND :ending ";
+          }
+
+          if ($period == 'year') {
+              $strokaSQL .= " GROUP BY YEAR(reg_date)
+                              HAVING SUM($this->main_users.`id`) > 0
+                              ORDER BY YEAR(reg_date) ASC";
+          }
+          if ($period == 'month') {
+              $strokaSQL .= " GROUP BY MONTH(reg_date), YEAR(reg_date)
+                              HAVING SUM($this->main_users.`id`) > 0
+                              ORDER BY YEAR(reg_date), MONTH(reg_date) ASC";
+          }
+          if ($period == 'week') {
+              $strokaSQL .= " GROUP BY WEEK(reg_date), YEAR(reg_date)
+                              HAVING SUM($this->main_users.`id`) > 0
+                              ORDER BY YEAR(reg_date), WEEK(reg_date) ASC";
+          }
+          if ($period == 'day') {
+              $strokaSQL .= " GROUP BY DAY(reg_date),MONTH(reg_date), YEAR(reg_date)
+                              HAVING SUM($this->main_users.`id`) > 0
+                              ORDER BY YEAR(reg_date), MONTH(reg_date),DAY(reg_date) ASC";
+          }
+          if ($period == 'data') {
+              $strokaSQL .= " ";
+          }
+
+          $statement = $database->prepare($strokaSQL);
+          $statement->bindParam(':starting', $start, PDO::PARAM_STR);
+          $statement->bindParam(':ending', $end, PDO::PARAM_STR);
+          if ($activation != 'all') {
+            $statement->bindParam(':activation', $activation, PDO::PARAM_STR);
+          }
+          $statement->execute();
+          $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+          if (!$data_users) {
+              return 0;
+              exit;
+          }
+
+          if ($increment == true) {
+            foreach ($data_users as $key => $value) {
+              if ($count_sum != 0) {$value->percent = $value->sum * 100 / $count_sum;}
+              else {$value->percent = 0;}
+              $value->sum = $value->sum + $count_sum;
+              $count_sum = $value->sum;
+            }
+          }
+
+          return $data_users;
+          exit;
+
+
+  }
 
 
 
@@ -8623,6 +8727,24 @@ class Settings {
 
   }
 
+  // Выдача пользователей которые не имеют никаккого статтуса активации
+  public function get_null_activated_main_users() {
+      global $database;
+
+      $response = $database->prepare("SELECT * FROM $this->main_users WHERE `activation` IS NULL ORDER BY `id` DESC");
+      $response->execute();
+      $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+      if ($data) {
+          return json_encode(array('response' => true, 'data' => $data,  'description' => 'Данные по пользователей'),JSON_UNESCAPED_UNICODE);
+          exit;
+      } else {
+          return json_encode(array('response' => false, 'description' => 'Нет пользователей без активации'),JSON_UNESCAPED_UNICODE);
+          exit;
+      }
+
+
+  }
 
 
 
