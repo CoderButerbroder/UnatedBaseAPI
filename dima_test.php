@@ -1,12 +1,12 @@
 <?php
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// header('Content-type:application/json;charset=utf-8');
-// require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
-// $settings = new Settings;
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+header('Content-type:application/json;charset=utf-8');
+require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+$settings = new Settings;
 
-phpinfo();
+// phpinfo();
 //
 // $data_array = array(104120,81920);
 //
@@ -15,9 +15,9 @@ phpinfo();
 
 // var_dump($data);
 
-$data = $settings->get_null_activated_main_users();
+$data = $settings->get_log_api_response_group_by(false,'year');
 
-var_dump(count(json_decode($data)->data));
+var_dump($data);
 
 
 
