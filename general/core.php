@@ -3237,6 +3237,9 @@ class Settings {
             exit;
       }
 
+      return json_encode(array('response' => true, 'description' => 'Функция завершена'),JSON_UNESCAPED_UNICODE);
+      exit;
+
   }
 
 
