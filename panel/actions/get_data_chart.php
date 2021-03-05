@@ -37,6 +37,72 @@ session_write_close();
 
 $settings = new Settings;
 
+function add_null_in_data_week( $arr_in ) {
+  foreach( $arr_in as $key => $value ) {
+    if($value->weekd >= 1 && $value->weekd <= 9 ){
+      $value->weekd = '0'.$value->weekd;
+    }
+  }
+}
+
+function get_list_date_arr( $arr_in ) {
+  global $period_select;
+  global $arr_data_period;
+  foreach ($arr_in as $key => $value) {
+    if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
+    if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+    if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
+    if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+    if (!in_array($data_i, $arr_data_period)) {
+        array_push($arr_data_period, $data_i);
+    }
+  }
+}
+
+function set_get_arr_result($name, $arr_in, $type){
+  global $period_select;
+  global $arr_data_period;
+
+  $arr_temp = (object) [];
+  $arr_temp->name = $name;
+  $arr_temp->data = [];
+  $arr_temp->type = $type;
+
+  foreach ($arr_data_period as $key_data => $value_data) {
+    $flag_value_bool = false;
+    $flag_value_int = 0;
+
+    foreach ($arr_in as $key2 => $value2) {
+      if($period_select == 'day'){
+        $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
+      }
+      if($period_select == 'week'){
+        $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
+      }
+      if($period_select == 'month'){
+        $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
+      }
+      if($period_select == 'year'){
+        $date1 = strtotime('01.01.'.$value2->yeard);
+      }
+
+      if ($value_data == $date1) {
+        $flag_value_bool = true;
+        $flag_value_int = $value2->sum;
+        break;
+      }
+    }
+    if ($flag_value_bool) {
+      array_push($arr_temp->data, $flag_value_int);
+    } else {
+      array_push($arr_temp->data, 0);
+    }
+  }
+
+  return $arr_temp;
+}
+
+
 if($_POST["chart"] == 'branch') {
 
   $arr_data_branch = $settings->get_count_entity_branch();
@@ -53,34 +119,81 @@ if($_POST["chart"] == 'branch') {
 if($_POST["chart"] == 'user') {
 
   $arr_data_users = $settings->get_count_main_users_groupby_time_reg(true, $period_select);
-  $arr_begin_users = [];
 
-  foreach($arr_data_users as $key => $value) {
+  $arr_data_users_active = $settings->get_main_users_activation_group_by_time_reg('Y', true, $period_select);
+  $arr_data_users_no_active = $settings->get_main_users_activation_group_by_time_reg('N', true, $period_select);
+
+  // $arr_begin_users = [];
+  $arr_data_period = [];
+
+  if ($period_select == 'week') {
+    add_null_in_data_week($arr_data_users);
+    add_null_in_data_week($arr_data_users_active);
+    add_null_in_data_week($arr_data_users_no_active);
+  }
+
+  if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) get_list_date_arr($arr_data_users);
+  if (is_array($arr_data_users_active) && count($arr_data_users_active) > 0 && $arr_data_users_active != 0 ) get_list_date_arr($arr_data_users_active);
+  if (is_array($arr_data_users_no_active) && count($arr_data_users_no_active) > 0 && $arr_data_users_no_active != 0 ) get_list_date_arr($arr_data_users_no_active);
+
+  sort($arr_data_period);
+
+  $arr_result = (object) [];
+  $arr_result->data = [];
+  $arr_result->time = [];
+
+  array_push($arr_result->data,  set_get_arr_result( 'Все', $arr_data_users, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Активированные', $arr_data_users_active, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Не активированные', $arr_data_users_no_active, 'line' ) );
+
+  foreach ($arr_data_period as $key => $value) {
     if($period_select == 'day'){
-      $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
-      $data_key = $value->dayd." ".$arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+      $data_key = date('d', $value)." ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
     }
-    if ( $period_select == 'week' )  {
-      $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
-      $data_key = $value->weekd." ".$arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+    if($period_select == 'week'){
+      $data_key = intval(date('W', $value))." Нед. ".$arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
     }
-    if ( $period_select == 'month' ){
-      $data_i = strtotime('01.'.$value->monthd.'.'.$value->yeard);
-      $data_key = $arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+    if($period_select == 'month'){
+      $data_key = $arr_select_month[date('n', $value)]->name." ".date('Y', $value);
+
     }
     if($period_select == 'year'){
-      $data_key = $value->yeard;
+      $data_key = date('Y', $value);
     }
-    $arr_begin_users[$data_key] = $value->sum;
+    array_push( $arr_result->time,  $data_key );
   }
 
-  $arr_result_users = (object) [];
-  $arr_result_users->name = array_keys($arr_begin_users);
-  $arr_result_users->data = (array) $arr_result_users->data;
-  foreach($arr_begin_users as $key => $value){
-    array_push($arr_result_users->data, $value);
-  }
-  echo json_encode($arr_result_users, JSON_UNESCAPED_UNICODE);
+  echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
+
+  //
+  // foreach($arr_data_users as $key => $value) {
+  //   if($period_select == 'day'){
+  //     $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
+  //     $data_key = $value->dayd." ".$arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+  //   }
+  //   if ( $period_select == 'week' )  {
+  //     $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
+  //     $data_key = $value->weekd." ".$arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+  //   }
+  //   if ( $period_select == 'month' ){
+  //     $data_i = strtotime('01.'.$value->monthd.'.'.$value->yeard);
+  //     $data_key = $arr_select_month[date('n', $data_i)]->name." ".$value->yeard;
+  //   }
+  //   if($period_select == 'year'){
+  //     $data_key = $value->yeard;
+  //   }
+  //   $arr_begin_users[$data_key] = $value->sum;
+  // }
+  //
+  // $arr_result_users = (object) [];
+  // $arr_result_users->name = array_keys($arr_begin_users);
+  // $arr_result_users->data = (array) $arr_result_users->data;
+  // foreach($arr_begin_users as $key => $value){
+  //   array_push($arr_result_users->data, $value);
+  // }
+  // echo json_encode($arr_result_users, JSON_UNESCAPED_UNICODE);
 
 }
 
@@ -92,28 +205,6 @@ if($_POST["chart"] == 'company') {
 
 
   $arr_data_period = [];
-
-  function add_null_in_data_week( $arr_in ) {
-    foreach( $arr_in as $key => $value ) {
-      if($value->weekd >= 1 && $value->weekd <= 9 ){
-        $value->weekd = '0'.$value->weekd;
-      }
-    }
-  }
-
-  function get_list_date_arr( $arr_in ) {
-    global $period_select;
-    global $arr_data_period;
-    foreach ($arr_in as $key => $value) {
-      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
-      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
-      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
-      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
-      if (!in_array($data_i, $arr_data_period)) {
-          array_push($arr_data_period, $data_i);
-      }
-    }
-  }
 
   if ($period_select == 'week') {
     add_null_in_data_week($data_count_company_period);
@@ -129,58 +220,15 @@ if($_POST["chart"] == 'company') {
 
   sort($arr_data_period);
 
-  function set_get_arr_result($name, $arr_in){
-    global $period_select;
-    global $arr_data_period;
-
-    $arr_temp = (object) [];
-    $arr_temp->name = $name;
-    $arr_temp->data = [];
-
-
-    foreach ($arr_data_period as $key_data => $value_data) {
-      $flag_value_bool = false;
-      $flag_value_int = 0;
-
-      foreach ($arr_in as $key2 => $value2) {
-        if($period_select == 'day'){
-          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
-        }
-        if($period_select == 'week'){
-          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
-        }
-        if($period_select == 'month'){
-          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
-        }
-        if($period_select == 'year'){
-          $date1 = strtotime('01.01.'.$value2->yeard);
-        }
-
-        if ($value_data == $date1) {
-          $flag_value_bool = true;
-          $flag_value_int = $value2->sum;
-          break;
-        }
-      }
-      if ($flag_value_bool) {
-        array_push($arr_temp->data, $flag_value_int);
-      } else {
-        array_push($arr_temp->data, 0);
-      }
-    }
-
-    return $arr_temp;
-  }
-
 
   $arr_result = (object) [];
   $arr_result->data = [];
   $arr_result->time = [];
 
-  array_push($arr_result->data,  set_get_arr_result( 'Компании', $data_count_company_period ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Компании Сколково', $data_count_company_SK_period ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Компании ФСИ', $data_count_company_FSI_period ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Компании Экспорт', $data_count_company_EXPORT_period ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Компании', $data_count_company_period, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Компании Сколково', $data_count_company_SK_period, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Компании ФСИ', $data_count_company_FSI_period, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Компании Экспорт', $data_count_company_EXPORT_period, 'line' ) );
 
   foreach ($arr_data_period as $key => $value) {
     if($period_select == 'day'){
@@ -214,28 +262,6 @@ if($_POST["chart"] == 'FSI') {
 
   $arr_data_period = [];
 
-  function add_null_in_data_week( $arr_in ) {
-    foreach( $arr_in as $key => $value ) {
-      if($value->weekd >= 1 && $value->weekd <= 9 ){
-        $value->weekd = '0'.$value->weekd;
-      }
-    }
-  }
-
-  function get_list_date_arr( $arr_in ) {
-    global $period_select;
-    global $arr_data_period;
-    foreach ($arr_in as $key => $value) {
-      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
-      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
-      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
-      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
-      if (!in_array($data_i, $arr_data_period)) {
-          array_push($arr_data_period, $data_i);
-      }
-    }
-  }
-
   if ($period_select == 'week') {
     add_null_in_data_week($arr_FSI_count);
     add_null_in_data_week($arr_FSI_YMNIK_count);
@@ -247,50 +273,6 @@ if($_POST["chart"] == 'FSI') {
   if (is_array($arr_FSI_count_service) && count($arr_FSI_count_service) > 0 && $arr_FSI_count_service != 0 ) get_list_date_arr($arr_FSI_count_service);
 
   sort($arr_data_period);
-
-  function set_get_arr_result($name, $arr_in, $type){
-    global $period_select;
-    global $arr_data_period;
-
-    $arr_temp = (object) [];
-    $arr_temp->name = $name;
-    $arr_temp->data = [];
-    $arr_temp->type = $type;
-
-    foreach ($arr_data_period as $key_data => $value_data) {
-      $flag_value_bool = false;
-      $flag_value_int = 0;
-
-      foreach ($arr_in as $key2 => $value2) {
-        if($period_select == 'day'){
-          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
-        }
-        if($period_select == 'week'){
-          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
-        }
-        if($period_select == 'month'){
-          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
-        }
-        if($period_select == 'year'){
-          $date1 = strtotime('01.01.'.$value2->yeard);
-        }
-
-        if ($value_data == $date1) {
-          $flag_value_bool = true;
-          $flag_value_int = $value2->sum;
-          break;
-        }
-      }
-      if ($flag_value_bool) {
-        array_push($arr_temp->data, $flag_value_int);
-      } else {
-        array_push($arr_temp->data, 0);
-      }
-    }
-
-    return $arr_temp;
-  }
-
 
   $arr_result = (object) [];
   $arr_result->data = [];
@@ -334,28 +316,6 @@ if($_POST["chart"] == 'SK') {
 
   $arr_data_period = [];
 
-  function add_null_in_data_week( $arr_in ) {
-    foreach( $arr_in as $key => $value ) {
-      if($value->weekd >= 1 && $value->weekd <= 9 ){
-        $value->weekd = '0'.$value->weekd;
-      }
-    }
-  }
-
-  function get_list_date_arr( $arr_in ) {
-    global $period_select;
-    global $arr_data_period;
-    foreach ($arr_in as $key => $value) {
-      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
-      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
-      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
-      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
-      if (!in_array($data_i, $arr_data_period)) {
-          array_push($arr_data_period, $data_i);
-      }
-    }
-  }
-
   if ($period_select == 'week') {
     add_null_in_data_week($arr_SK_count);
     add_null_in_data_week($arr_service_event);
@@ -371,51 +331,6 @@ if($_POST["chart"] == 'SK') {
   if (is_array($arr_SK_count_service) && count($arr_SK_count_service) > 0 && $arr_SK_count_service != 0 ) get_list_date_arr($arr_SK_count_service);
 
   sort($arr_data_period);
-
-  function set_get_arr_result($name, $arr_in, $type){
-    global $period_select;
-    global $arr_data_period;
-
-    $arr_temp = (object) [];
-    $arr_temp->name = $name;
-    $arr_temp->data = [];
-    $arr_temp->type = $type;
-
-
-    foreach ($arr_data_period as $key_data => $value_data) {
-      $flag_value_bool = false;
-      $flag_value_int = 0;
-
-      foreach ($arr_in as $key2 => $value2) {
-        if($period_select == 'day'){
-          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
-        }
-        if($period_select == 'week'){
-          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
-        }
-        if($period_select == 'month'){
-          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
-        }
-        if($period_select == 'year'){
-          $date1 = strtotime('01.01.'.$value2->yeard);
-        }
-
-        if ($value_data == $date1) {
-          $flag_value_bool = true;
-          $flag_value_int = $value2->sum;
-          break;
-        }
-      }
-      if ($flag_value_bool) {
-        array_push($arr_temp->data, $flag_value_int);
-      } else {
-        array_push($arr_temp->data, 0);
-      }
-    }
-
-    return $arr_temp;
-  }
-
 
   $arr_result = (object) [];
   $arr_result->data = [];
@@ -456,28 +371,6 @@ if($_POST["chart"] == 'event') {
 
   $arr_data_period = [];
 
-  function add_null_in_data_week( $arr_in ) {
-    foreach( $arr_in as $key => $value ) {
-      if($value->weekd >= 1 && $value->weekd <= 9 ){
-        $value->weekd = '0'.$value->weekd;
-      }
-    }
-  }
-
-  function get_list_date_arr( $arr_in ) {
-    global $period_select;
-    global $arr_data_period;
-    foreach ($arr_in as $key => $value) {
-      if ( $period_select == 'day' )   $data_i = strtotime($value->yeard.'-'.$value->monthd.'-'.$value->dayd);
-      if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
-      if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
-      if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
-      if (!in_array($data_i, $arr_data_period)) {
-          array_push($arr_data_period, $data_i);
-      }
-    }
-  }
-
   if ($period_select == 'week') {
     add_null_in_data_week($arr_data_event_summ);
     add_null_in_data_week($arr_data_users_event_summ);
@@ -489,50 +382,6 @@ if($_POST["chart"] == 'event') {
   if (is_array($arr_data_users_event_summ) && count($arr_data_users_event_summ) > 0 && $arr_data_users_event_summ != 0 ) get_list_date_arr($arr_data_users_event_summ);
 
   sort($arr_data_period);
-
-  function set_get_arr_result($name, $arr_in, $type){
-    global $period_select;
-    global $arr_data_period;
-
-    $arr_temp = (object) [];
-    $arr_temp->name = $name;
-    $arr_temp->data = [];
-    $arr_temp->type = $type;
-
-
-    foreach ($arr_data_period as $key_data => $value_data) {
-      $flag_value_bool = false;
-      $flag_value_int = 0;
-
-      foreach ($arr_in as $key2 => $value2) {
-        if($period_select == 'day'){
-          $date1 = strtotime($value2->yeard.'-'.$value2->monthd.'-'.$value2->dayd);
-        }
-        if($period_select == 'week'){
-          $date1 = strtotime($value2->yeard.'W'.$value2->weekd);
-        }
-        if($period_select == 'month'){
-          $date1 = strtotime('01.'.$value2->monthd.'.'.$value2->yeard);
-        }
-        if($period_select == 'year'){
-          $date1 = strtotime('01.01.'.$value2->yeard);
-        }
-
-        if ($value_data == $date1) {
-          $flag_value_bool = true;
-          $flag_value_int = $value2->sum;
-          break;
-        }
-      }
-      if ($flag_value_bool) {
-        array_push($arr_temp->data, $flag_value_int);
-      } else {
-        array_push($arr_temp->data, 0);
-      }
-    }
-
-    return $arr_temp;
-  }
 
 
   $arr_result = (object) [];
