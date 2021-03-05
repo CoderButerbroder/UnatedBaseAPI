@@ -38,7 +38,7 @@ $secure_code_check = 'd41d8cd98f00b204e9800998ecf8427e';
 
               // $massiv_email = array('web@kt-segment.ru','starkovskii@lpmtech.ru');
 
-              $massiv_email = array('kirill.soloveychik@gmail.com','sashmeleva8@gmail.com','starkovskii@lpmtech.ru','dvg@kt-segment.ru','web@kt-segment.ru');
+              $massiv_email = array('kirill.soloveychik@gmail.com','sashmeleva8@gmail.com','starkovskii@lpmtech.ru','dvg@kt-segment.ru','web@kt-segment.ru','anastasiia.proklina@gmail.com','vkul@kt-segment.ru');
 
 
               $today2 = date("d.m.Y H:i");

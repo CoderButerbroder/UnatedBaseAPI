@@ -3256,7 +3256,31 @@ class Settings {
 
   }
 
+  // получение всех сервисов заявок, которые есть в фуллдата
+  public function get_all_support_service_tickets() {
+    global $database;
 
+    $count_users = $database->prepare("SELECT * FROM $this->MAIN_support_ticket GROUP BY type_support");
+    $count_users->execute();
+    $data_count_users = $count_users->fetchAll(PDO::FETCH_OBJ);
+
+    $new_array = array();
+
+    foreach ($data_count_users as $key => $value) {
+          array_push($new_array,$value->type_support);
+    }
+
+
+    if ($data_count_users) {
+        return json_encode(array('response' => true, 'data'=> $new_array, 'description' => 'Перечень всех типов сервисов'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    else {
+        return json_encode(array('response' => false, 'description' => 'Типов сервисов не найдено'),JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+  }
 
 
 
