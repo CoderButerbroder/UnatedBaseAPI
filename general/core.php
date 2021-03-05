@@ -3154,7 +3154,7 @@ class Settings {
 
   }
 
-  // получение данных по логам ответов API c группировкой по методам
+  // получение данных по логам ответов API c группировкой по методам и периодам
   public function get_log_api_response_group_by($increment=true,$period='data', $start=NULL, $end=NULL) {
       global $database;
 
@@ -3256,6 +3256,31 @@ class Settings {
 
   }
 
+  // получение данных по логам ответов API c группировкой по методам за все время
+  public function get_log_api_response_group_by_method() {
+      global $database;
+
+      $strokaSQL = "SELECT count($this->history.`method`) as sum,
+                      $this->history.`method` as method,
+                      count($this->history.`method`) as api_history_method";
+
+      $strokaSQL .= " FROM $this->history  GROUP BY $this->history.`method` ORDER BY count($this->history.`method`)";
+
+      $statement = $database->prepare($strokaSQL);
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (!$data_users) {
+          return 0;
+          exit;
+      }
+
+      return $data_users;
+      exit;
+
+
+  }
+
   // получение всех сервисов заявок, которые есть в фуллдата
   public function get_all_support_service_tickets() {
     global $database;
@@ -3281,6 +3306,10 @@ class Settings {
     }
 
   }
+
+
+
+
 
 
 
