@@ -118,7 +118,7 @@
                 <div class="card-header" role="tab" id="heading_report_tboil">
                   <h6 class="mb-0">
                     <a data-toggle="collapse" href="#collapse_report_tboil" aria-expanded="true" aria-controls="collapse_report_tboil">
-                      Точка Кипения
+                      Точка Кипения (ТК СПБ)
                     </a>
                   </h6>
                 </div>
@@ -127,6 +127,25 @@
                     <ul class="list-group list-group-flush">
                       <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_tboil').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
                          Показатель работы ТК СПб</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="card-header" role="tab" id="heading_report_tboil_prom">
+                  <h6 class="mb-0">
+                    <a data-toggle="collapse" href="#collapse_report_tboil_prom" aria-expanded="true" aria-controls="collapse_report_tboil_prom">
+                      Промышленная Точка Кипения (ПТК)
+                    </a>
+                  </h6>
+                </div>
+                <div id="collapse_report_tboil_prom" class="collapse" role="tabpanel" aria-labelledby="heading_report_tboil_prom" data-parent="#acc_report">
+                  <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                      <div class="alert alert-info" role="alert">Отчеты по промышленной точке кипения, уже скоро!</div>
+                      <!-- <li style="cursor:pointer;" class="list-group-item" onclick="$('#modal_report_by_tboil').modal('show');"><i class="link-icon mr-1 text-primary" style="width: 25px; height: 25px;" data-feather="chevron-right"></i>
+                         Показатель работы ТК СПб</li> -->
                     </ul>
                   </div>
                 </div>

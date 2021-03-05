@@ -3176,21 +3176,21 @@ class Settings {
             $strokaSQL .= " count($this->history.`method`) as sum,
                             $this->history.`method` as method,
                             YEAR($this->history.`date_request`) as yeard,
-                            count($this->history.`method`) as api_history_method";
+                            $this->history.`method` as api_history_method";
       }
       if ($period == 'month') {
             $strokaSQL .= " count($this->history.`method`) as sum,
                             $this->history.`method` as method,
                             MONTH($this->history.`date_request`) as monthd,
                             YEAR($this->history.`date_request`) as yeard,
-                            count($this->history.`method`) as api_history_method";
+                            $this->history.`method` as api_history_method";
       }
       if ($period == 'week') {
             $strokaSQL .= " count($this->history.`method`) as sum,
                             $this->history.`method` as method,
                             WEEK($this->history.`date_request`) as weekd,
                             YEAR($this->history.`date_request`) as yeard,
-                            count($this->history.`method`) as api_history_method";
+                            $this->history.`method` as api_history_method";
       }
       if ($period == 'day') {
             $strokaSQL .= " count($this->history.`method`) as sum,
@@ -3198,7 +3198,7 @@ class Settings {
                             DAY($this->history.`date_request`) as dayd,
                             MONTH($this->history.`date_request`) as monthd,
                             YEAR($this->history.`date_request`) as yeard,
-                            count($this->history.`method`) as api_history_method";
+                            $this->history.`method` as api_history_method";
       }
       if ($period == 'data') {
             $strokaSQL .= " * ";
@@ -3261,10 +3261,9 @@ class Settings {
       global $database;
 
       $strokaSQL = "SELECT count($this->history.`method`) as sum,
-                      $this->history.`method` as method,
-                      count($this->history.`method`) as api_history_method";
+                      $this->history.`method` as method";
 
-      $strokaSQL .= " FROM $this->history  GROUP BY $this->history.`method` ORDER BY count($this->history.`method`)";
+      $strokaSQL .= " FROM $this->history  GROUP BY $this->history.`method` ORDER BY count($this->history.`method`) DESC";
 
       $statement = $database->prepare($strokaSQL);
       $statement->execute();
@@ -3307,7 +3306,13 @@ class Settings {
 
   }
 
+  // добавление истории действия пользователя FULLDATA
+  public function add_history_users_fulldata($action,$type_of_message,$data='') {
+    global $database;
 
+
+
+  }
 
 
 
