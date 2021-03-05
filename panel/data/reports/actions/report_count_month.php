@@ -19,6 +19,8 @@ $arr_data_request_month = $settings->count_main_support_ticket_groupby_category_
 $arr_data_request_close = $settings->count_main_support_ticket_groupby_category_referer('close');
 $arr_data_request_month_close = $settings->count_main_support_ticket_groupby_category_referer_current_mounth('close');
 
+$arr_data_all_services = json_decode($settings->get_all_support_service_tickets())->data;
+
 //подсчет количества заявок
 $data_count_request_all = 0;
 foreach ($arr_data_request as $key => $value) {
@@ -151,18 +153,32 @@ $arr_unique_refer = array_unique($arr_unique_refer);
 
 $arr_result_data = array();
 
+
+$properties_services = (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ];
+$array_reqiest = [];
+
+foreach ($arr_data_all_services as $key => $value) {
+  $array_reqiest[$value] = clone $properties_services;
+}
+
 foreach ($arr_unique_refer as $key => $value) {
-  $array_reqiest = ['Технологический запрос крупной компании' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Запрос письма о поддержке проекта' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Запрос информационной поддержки проекта' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Получение услуги центра коллективного пользования (производство)' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Получение услуги конструкторского бюро' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Запрос на консультацию проекта при подаче заявки в ФСИ' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Запрос на консультацию компании - Фонд Сколково' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Подача предложения в каталог производственных возможностей' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
-                    'Подбор стартапов под тех.запрос.' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ] ];
   array_push($arr_result_data, (object) ['refer' => $value, 'data' => $array_reqiest]);
 }
+
+
+// foreach ($arr_unique_refer as $key => $value) {
+//
+//   $array_reqiest = ['Технологический запрос крупной компании' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Запрос письма о поддержке проекта' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Запрос информационной поддержки проекта' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Получение услуги центра коллективного пользования (производство)' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Получение услуги конструкторского бюро' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Запрос на консультацию проекта при подаче заявки в ФСИ' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Запрос на консультацию компании - Фонд Сколково' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Подача предложения в каталог производственных возможностей' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ],
+//                     'Подбор стартапов под тех.запрос.' => (object) [ 'mon_count' => 0, 'all_count' => 0, 'completed' => 0, 'increment' => 0 ] ];
+//   array_push($arr_result_data, (object) ['refer' => $value, 'data' => $array_reqiest]);
+// }
 
 //проходим по площадкам которые есть в заявках
 foreach ($arr_result_data as $key => $value) {
