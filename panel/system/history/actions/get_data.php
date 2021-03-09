@@ -37,7 +37,7 @@ if(intval($_POST["length"])){
 if(intval($_POST["order"][0]["column"])){
   $order_num_request = intval($_POST["order"][0]["column"]);
 } else if($_POST["order"][0]["column"] == '0') { $order_num_request = 0; } else $flag_error = true;
-if($order_num_request < 0 || $order_num_request > 2) $flag_error = true;
+if($order_num_request < 0 || $order_num_request > 6) $flag_error = true;
 $searh_value = $_POST["search"]["value"];
 
 $order_request = $array_table_colump[$order_num_request];
