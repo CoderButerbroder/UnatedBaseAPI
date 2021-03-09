@@ -6133,6 +6133,34 @@ class Settings {
       return (object) array('recordsTotal' => $data_count_users->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_users);
   }
 
+  // Получение компаний постраничено с поискоим и без для datatable
+  public function get_history_apiusers_datatable($order_request, $type_order_request, $limit_start, $limit_count, $searh_value = '') {
+      global $database;
+
+      $count_users = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->API_USERS_HISTORY ");
+      $count_users->execute();
+      $data_count_history = $count_users->fetch(PDO::FETCH_OBJ);
+      if('' == $searh_value){
+        $data_history = $database->prepare("SELECT * FROM $this->API_USERS_HISTORY ORDER BY {$order_request} {$type_order_request} LIMIT {$limit_start}, {$limit_count} ");
+      } else {
+        $data_history_count = $database->prepare("SELECT COUNT(*) AS COUNT FROM $this->API_USERS_HISTORY WHERE id LIKE '%{$searh_value}%' OR id_user LIKE '%{$searh_value}%'");
+        $data_history_count->execute();
+        $data_history_count_result = $data_history_count->fetch(PDO::FETCH_OBJ);
+        $data_history = $database->prepare("SELECT * FROM $this->API_USERS_HISTORY WHERE id LIKE '%{$searh_value}%' OR id_user LIKE '%{$searh_value}%'  ");
+      }
+
+      $data_history->execute();
+      $data_history = $data_history->fetchAll(PDO::FETCH_OBJ);
+
+      if('' == $searh_value){
+        $recordsFiltered = $data_count_history->COUNT;
+      } else {
+        $recordsFiltered = $data_history_count->COUNT;
+      }
+
+      return (object) array('recordsTotal' => $data_count_history->COUNT, 'recordsFiltered' => $recordsFiltered, 'data' => $data_history);
+  }
+
   // обновление прав роли
   public function update_rules_role($name_role,$json_string) {
         global $database;
