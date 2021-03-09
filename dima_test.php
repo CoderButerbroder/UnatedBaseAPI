@@ -17,9 +17,10 @@ $settings = new Settings;
 
 // $action = 'проверка действий';
 // $type_of_message = 'text';
-//
-// $data = $settings->add_history_users_fulldata($action,$type_of_message);
-//
-// var_dump($data);
 
-$stroka = 'D5841495i';
+$data2 = $settings->add_history_users_fulldata('действие','тип','тут какая то дата');
+//
+$data = $settings->get_log_api_response_group_by_referer(false,'day');
+
+var_dump($data);
+var_dump($data2);
