@@ -272,12 +272,14 @@
             var options_chart = options_line_ur;
             options_chart["series"] = Object.values(ar_data["data"]);
             options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
+            // options_chart["colors"] = Object.values(ar_data["colors"]);
           }
           if (element == 'date_method_Scatter') {
             var options_chart = options_scatter;
             options_chart["series"] = Object.values(ar_data["data"]);
             options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
-            // options_chart["dataLabels"]["style"]["colors"] = Object.values(ar_data["colors"]);
+            // options_chart["colors"] = Object.values(ar_data["colors"]);
+
           }
 
           options_chart["chart"]["locales"] = [ru_local];

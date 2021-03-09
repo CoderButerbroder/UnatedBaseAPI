@@ -140,6 +140,7 @@ if($_POST["chart"] == 'date_method') {
   $arr_result = (object) [];
   $arr_result->data = [];
   $arr_result->time = [];
+  $arr_result->colors = [];
 
 
   $arr_name_method = [];
@@ -148,6 +149,11 @@ if($_POST["chart"] == 'date_method') {
   }
 
   $arr_name_method = array_unique($arr_name_method);
+
+  while(count($arr_result->colors) < count($arr_name_method)) {
+    array_push( $arr_result->colors,  '#' . dechex(rand(0,10000000)) );
+    $arr_result->colors = array_unique($arr_result->colors);
+  }
 
   foreach ($arr_name_method as $key_name_m => $value_name_m) {
     $flag_break = false;
@@ -236,9 +242,11 @@ if($_POST["chart"] == 'date_method_Scatter') {
 
   $arr_name_method = array_unique($arr_name_method);
 
-  foreach ($arr_name_method as $key => $value) {
+  while(count($arr_result->colors) < count($arr_name_method)) {
     array_push( $arr_result->colors,  '#' . dechex(rand(0,10000000)) );
+    $arr_result->colors = array_unique($arr_result->colors);
   }
+
 
   foreach ($arr_name_method as $key_name_m => $value_name_m) {
     $flag_break = false;
