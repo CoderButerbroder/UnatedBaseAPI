@@ -3346,6 +3346,35 @@ class Settings {
 
   }
 
+  // получение всей истории всех или по конткретному пользователю
+  public function get_users_history($id_user_or_nothing='all') {
+    global $database;
+
+        if (!is_int($id_user_or_nothing)) {
+              $request = $database->prepare("SELECT * FROM $this->API_USERS_HISTORY");
+              $request->execute();
+        }
+        else {
+              $request = $database->prepare("SELECT * FROM $this->API_USERS_HISTORY WHERE id_user = :id_user");
+              $request->bindParam(':id_user', $id_user_or_nothing, PDO::PARAM_INT);
+              $request->execute();
+        }
+
+        $data_request = $request->fetchAll(PDO::FETCH_OBJ);
+
+        if($data_request) {
+              return json_encode(array('response' => true, 'data' => $data_request, 'description' => 'Записи успешно получены'),JSON_UNESCAPED_UNICODE);
+              exit;
+        } else {
+              return json_encode(array('response' => false, 'description' => 'Ошибка получения записей'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+
+  }
+
+
+
+
 
 
 
