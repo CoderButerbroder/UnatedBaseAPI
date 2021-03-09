@@ -120,6 +120,7 @@ if($_POST["chart"] == 'load_method') {
 
 }
 
+
 if($_POST["chart"] == 'date_method') {
 
   $arr_data_method_load = $settings->get_log_api_response_group_by(false, $period_select);
@@ -212,6 +213,29 @@ if($_POST["chart"] == 'date_method') {
   echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
 
 }
+
+
+
+if($_POST["chart"] == 'load_refer') {
+
+  $arr_data_load = $settings->get_log_api_response_group_by_referer2();
+  // echo json_encode($arr_data_load, JSON_UNESCAPED_UNICODE);
+
+  $arr_result = (object) [];
+  $arr_result->data = [];
+  $arr_result->xaxis = [];
+
+  foreach($arr_data_load as $key => $value){
+   $refer_data = json_decode($settings->get_data_referer_id($value->referer));
+   $temp_name = ($refer_data->data->resourse == '' || $refer_data->data->resourse == NULL) ? 'Err' : $refer_data->data->resourse;
+    array_push($arr_result->data, $value->sum);
+    array_push($arr_result->xaxis, $temp_name);
+  }
+
+  echo json_encode($arr_result, JSON_UNESCAPED_UNICODE);
+
+}
+
 
 if($_POST["chart"] == 'date_method_Scatter') {
 

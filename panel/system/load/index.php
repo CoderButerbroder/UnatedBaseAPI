@@ -1,3 +1,9 @@
+<?php
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+
+?>
 <?php include($_SERVER['DOCUMENT_ROOT'].'/assets/template/gen_header.php');?>
 <?php /*тут метатеги*/?>
 <title>Настройки нагрузка - FULLDATA ЛЕНПОЛИГРАФМАШ</title>
@@ -48,7 +54,7 @@
     </div>
   </div>
 
-  <div class="row mt-3 mb-3">
+  <!-- <div class="row mt-3 mb-3">
     <div class="col-md-12 stretch-card">
         <div class="card">
           <div class="card-header">
@@ -75,7 +81,9 @@
           </div>
         </div>
     </div>
-  </div>
+  </div> -->
+
+
 
   <div class="row">
 
@@ -91,6 +99,33 @@
           <div class="card-body" style="min-height: 420px; max-height: 420px;">
             <div class="" id="div_chart_line_load_method" >
               <div id="spinner_chart_line_load_method" class="spinner-border text-primary" style="position: absolute; margin: -25px 0 0 -25px; top: 50%; left: 50%;  width: 3rem; height: 3rem; z-index:99999;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+             <div class="row align-items-start mb-2 my-auto">
+              <div class="col-md-7 my-auto">
+                <h5 class="card-title my-auto">НАГРУЗКА ПО РЕФЕРАМ </h5>
+              </div>
+              <!-- <div class="col-md-5 d-flex justify-content-md-end" style="display:none;">
+                <div class="btn-group mb-3 mb-md-0" name_chart="load_refer" role="group" aria-label="Basic example" id="btn_period_chart_line_load_refer" >
+                  <button type="button" class="btn_period_chart btn btn-outline-primary" value="day">День</button>
+                  <button type="button" class="btn_period_chart btn btn-outline-primary" value="week">Неделя</button>
+                  <button type="button" class="btn_period_chart btn btn-primary" value="month" active>Месяц</button>
+                  <button type="button" class="btn_period_chart btn btn-outline-primary" value="year">Год</button>
+                </div>
+              </div> -->
+            </div>
+          </div>
+          <div class="card-body" style="min-height: 420px; /*max-height: 420;*/">
+            <div class="" id="div_chart_line_load_refer" >
+              <div id="spinner_chart_line_load_refer" class="spinner-border text-primary" style="position: absolute; margin: -25px 0 0 -25px; top: 50%; left: 50%;  width: 3rem; height: 3rem; z-index:99999;" role="status">
                 <span class="sr-only">Loading...</span>
               </div>
             </div>
@@ -189,10 +224,29 @@
     },
   };
 
+  var options_load_refer = {
+          series: [],
+          chart: {
+          type: 'rangeBar',
+          height: 350,
+          locales: [],
+          defaultLocale: 'ru',
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false
+          }
+        },
+        dataLabels: {
+          enabled: true
+        }
+        };
+
+
   $(document).ready(function() {
     $.getJSON('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/assets/vendors/apexcharts/ru.json', function(data) {
 
-      var arr_chart = ['load_method', 'date_method', 'date_method_Scatter'];
+      var arr_chart = ['load_method', 'date_method', 'load_refer'];
 
       arr_chart.forEach((element) => {
         var btn_act = $('#btn_period_chart_line_'+element+' [active]')[0];
@@ -231,18 +285,6 @@
         activate_charts(name_chart, $(this).val(), data);
       });
 
-      // if (IsJsonString(data_method_str)){
-      //   var data_method = JSON.parse(data_method_str);
-      //   opt_chart_load["series"][0]["data"] = Object.values(data_method["data"]);
-      //   opt_chart_load["xaxis"]["categories"] = Object.values(data_method["xaxis"]);
-      //   opt_chart_load["locales"] = [data];
-      //   var chart = new ApexCharts(document.querySelector('#apexBar'), opt_chart_load);
-      //   chart.render();
-      //   $('#spinner_apexBar').hide('fast');
-      // } else {
-      //   alerts('warning', 'Ошибка', 'Попробуйте позже');
-      // }
-
     });
   });
 
@@ -263,23 +305,28 @@
             alerts('warning', ar_data["description"], 'Попробуйте позже');
           } else {
           $('#spinner_chart_line_'+ element).hide("fast");
-          if (element == 'load_method') {
+          if ( element == 'load_method' ) {
             var options_chart = opt_chart_load;
               options_chart["series"][0]["data"] = Object.values(ar_data["data"]);
               options_chart["xaxis"]["categories"] = Object.values(ar_data["xaxis"]);
           }
-          if (element == 'date_method') {
+          if (element == 'date_method' ) {
             var options_chart = options_line_ur;
             options_chart["series"] = Object.values(ar_data["data"]);
             options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
             // options_chart["colors"] = Object.values(ar_data["colors"]);
           }
+          if ( element == 'load_refer' ) {
+            var options_chart = opt_chart_load;
+              options_chart["series"][0]["data"] = Object.values(ar_data["data"]);
+              options_chart["xaxis"]["categories"] = Object.values(ar_data["xaxis"]);
+          }
+
           if (element == 'date_method_Scatter') {
             var options_chart = options_scatter;
             options_chart["series"] = Object.values(ar_data["data"]);
             options_chart["xaxis"]["categories"] = Object.values(ar_data["time"]);
             // options_chart["colors"] = Object.values(ar_data["colors"]);
-
           }
 
           options_chart["chart"]["locales"] = [ru_local];
