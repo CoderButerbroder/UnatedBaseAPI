@@ -18,9 +18,9 @@ $settings = new Settings;
 // $action = 'проверка действий';
 // $type_of_message = 'text';
 
-$data2 = $settings->add_history_users_fulldata('действие','тип','тут какая то дата');
+// $data2 = $settings->add_history_users_fulldata('действие','тип','тут какая то дата');
 //
-$data = $settings->get_log_api_response_group_by_referer(false,'day');
+$data = $settings->get_log_api_response_group_by_referer(false,'year');
 
 var_dump($data);
 var_dump($data2);

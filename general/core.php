@@ -3278,27 +3278,28 @@ class Settings {
 
       if ($period == 'year') {
             $strokaSQL .= " count($this->history.`id_referer`) as sum,
+                            $this->api_referer.`resourse` as resourse,
                             $this->history.`id_referer` as id_referer,
                             YEAR($this->history.`date_request`) as yeard,
                             $this->history.`id_referer` as api_history_referer";
       }
       if ($period == 'month') {
             $strokaSQL .= " count($this->history.`id_referer`) as sum,
-                            $this->history.`id_referer` as id_referer,
+                            $this->api_referer.`resourse` as resourse,
                             MONTH($this->history.`date_request`) as monthd,
                             YEAR($this->history.`date_request`) as yeard,
                             $this->history.`id_referer` as api_history_referer";
       }
       if ($period == 'week') {
             $strokaSQL .= " count($this->history.`id_referer`) as sum,
-                            $this->history.`id_referer` as id_referer,
+                            $this->api_referer.`resourse` as resourse,
                             WEEK($this->history.`date_request`) as weekd,
                             YEAR($this->history.`date_request`) as yeard,
                             $this->history.`id_referer` as api_history_referer";
       }
       if ($period == 'day') {
             $strokaSQL .= " count($this->history.`id_referer`) as sum,
-                            $this->history.`id_referer` as id_referer,
+                            $this->api_referer.`resourse` as resourse,
                             DAY($this->history.`date_request`) as dayd,
                             MONTH($this->history.`date_request`) as monthd,
                             YEAR($this->history.`date_request`) as yeard,
@@ -3308,7 +3309,7 @@ class Settings {
             $strokaSQL .= " * ";
       }
 
-      $strokaSQL .= " FROM $this->history LEFT JOIN $this->api_referer WHERE $this->history.`date_request` BETWEEN :starting AND :ending ";
+      $strokaSQL .= " FROM $this->history LEFT JOIN $this->api_referer ON $this->api_referer.`id` = $this->history.`id_referer` WHERE $this->history.`date_request` BETWEEN :starting AND :ending ";
 
       if ($period == 'year') {
           $strokaSQL .= " GROUP BY $this->history.`id_referer`, YEAR($this->history.`date_request`)
