@@ -3383,6 +3383,28 @@ class Settings {
       return $data_users;
       exit;
 
+  }
+
+  // получение данных по логам ответов API с группировкой по реферарам за все время
+  public function get_log_api_response_group_by_referer() {
+      global $database;
+
+      $strokaSQL = "SELECT count($this->history.`id`) as sum,
+                      $this->history.`id_referer` as referer";
+
+      $strokaSQL .= " FROM $this->history  GROUP BY $this->history.`id_referer` ORDER BY count($this->history.`id_referer`) DESC";
+
+      $statement = $database->prepare($strokaSQL);
+      $statement->execute();
+      $data_users = $statement->fetchAll(PDO::FETCH_OBJ);
+
+      if (!$data_users) {
+          return 0;
+          exit;
+      }
+
+      return $data_users;
+      exit;
 
   }
 
