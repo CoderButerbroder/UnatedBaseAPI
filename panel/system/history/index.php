@@ -64,6 +64,7 @@
             "serverSide": true,
             "keys": true,
             "cache": false,
+            "order": [[ 6, "desc" ]],
             "ajax": {
                       url: "/panel/system/history/actions/get_data",
                       type: "POST",
@@ -82,7 +83,7 @@
               { "data": "action", "width": "10%", "orderable": true },
               { "data": "type", "width": "10%", "orderable": true , "class":"text-center" },
               { "data": "content", "width": "10%", "orderable": true , "orderable": false , "class":"text-center" },
-              { "data": "d_time", "width": "10%", "orderable": false , "class":"text-center" },
+              { "data": "d_time", "width": "10%", "orderable": true , "class":"text-center" },
             ]
       });
     });
