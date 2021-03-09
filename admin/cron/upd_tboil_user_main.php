@@ -131,7 +131,7 @@ try{
                                     "name"=> "name",
                                     "secondName" => "second_name",
                                     "email" => "email",
-                                    "phone" => "photo",
+                                    "phone" => "phone",
                                     "company" => "company",
                                     "position" => "profession",
                                     "birthday" => "DOB",

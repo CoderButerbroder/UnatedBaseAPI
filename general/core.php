@@ -43,6 +43,7 @@ class Settings {
   private $API_USERS_ROLE = 'API_USERS_ROLE';
   private $MAIN_support_ticket_status_history = 'MAIN_support_ticket_status_history';
   private $LPM_1С_residents = 'LPM_1С_residents';
+  private $API_USERS_HISTORY = 'API_USERS_HISTORY';
 
 
   // проверка json на валидность
@@ -3308,9 +3309,40 @@ class Settings {
 
   // добавление истории действия пользователя FULLDATA
   public function add_history_users_fulldata($action,$type_of_message,$data='') {
-    global $database;
+      global $database;
 
+        $data_user = (json_decode($this->get_cur_user($_SESSION["key_user"]))->response) ? json_decode($this->get_cur_user($_SESSION["key_user"]))->data : 0 ;
+        if (!is_object($data_user)) {
+              return json_encode(array('response' => false, 'description' => 'Вы не авторизованы, пожалуйста авторизуйтесь'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
 
+        $id_user = $data_user->id;
+        $action = isset($action) ? $action : '';
+        $type_of_message = isset($type_of_message) ? $type_of_message : 'text';
+        $data = isset($data) ? $data : '';
+        $today = date("Y-m-d H:i:s");
+        $hash = md5($id_user.$action.$type_of_message.$data.$today);
+
+        $request = $database->prepare("INSERT INTO $this->API_USERS_HISTORY (id_user,action,type_message,data,date_time,hash)
+                                              VALUES (:id_user,:action,:type_message,:data,:date_time,:hash)");
+        $request->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+        $request->bindParam(':action', $action, PDO::PARAM_STR);
+        $request->bindParam(':type_message', $type_of_message, PDO::PARAM_STR);
+        $request->bindParam(':data', $data, PDO::PARAM_STR);
+        $request->bindParam(':date_time',$today, PDO::PARAM_STR);
+        $request->bindParam(':hash',$hash, PDO::PARAM_STR);
+        $check_new_user = $request->execute();
+        $count = $request->rowCount();
+
+        if($count > 0) {
+              return json_encode(array('response' => true, 'description' => 'Запись действия пользователя успешно добавлена в историю'),JSON_UNESCAPED_UNICODE);
+              exit;
+        } else {
+
+              return json_encode(array('response' => false, 'description' => 'Ошибка добавления записи в историю'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
 
   }
 

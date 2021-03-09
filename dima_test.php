@@ -15,7 +15,10 @@ $settings = new Settings;
 
 // var_dump($data);
 
-$data = $settings->get_log_api_response_group_by(false,'year');
+$action = 'проверка действий';
+$type_of_message = 'text';
+
+$data = $settings->add_history_users_fulldata($action,$type_of_message);
 
 var_dump($data);
 
