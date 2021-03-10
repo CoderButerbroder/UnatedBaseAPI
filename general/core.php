@@ -3524,7 +3524,7 @@ class Settings {
           exit;
       }
 
-      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job', 'team_build', 'first_referer');
+      $validFields = array('email', 'phone', 'name', 'last_name', 'second_name', 'DOB', 'photo', 'adres', 'inn', 'passport_id', 'company', 'position', 'profession', 'activation', 'status', 'scope', 'job', 'team_build', 'first_referer', 'reg_date');
 
       foreach ($massiv_field_value as $key => $value) {
           if (!in_array($key, $validFields)) {
@@ -3554,6 +3554,7 @@ class Settings {
                       'position' => PDO::PARAM_STR,
                       'profession' => PDO::PARAM_STR,
                       'team_build' => PDO::PARAM_STR,
+                      'reg_date' => PDO::PARAM_STR,
                       'activation' => PDO::PARAM_STR,
                       'status' => PDO::PARAM_STR,
                       'scope' => PDO::PARAM_STR,

@@ -1,4 +1,19 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<?php
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+
+$settings = new Settings;
+
+$massiv_field_value = [ 'reg_date' => '06.12.2018 10:17:19'  ];
+$massiv_field_value["reg_date"] = date('Y-m-d H:i:s', strtotime( $massiv_field_value["reg_date"] ));
+
+var_dump($settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), 110312));
+
+?>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
@@ -143,4 +158,4 @@ $(document).ready(function() {
   });
 });
 
-</script>
+</script> -->
