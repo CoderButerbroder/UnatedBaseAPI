@@ -138,6 +138,7 @@ try{
                                     "city" => "adres",
                                     "job" => "job",
                                     "status" => "status",
+                                    "DATE_REGISTER" => "reg_date",
                                     "UF_COMMAND" => "team_build",
                                     "ACTIVE" => "activation",
                                     "statuss" => "position",
@@ -146,7 +147,11 @@ try{
               foreach ($data_user_tboil_one as $key_t => $value_t) {
                 if (array_key_exists($key_t , $conformity_tboil ) ) {
                   if (trim($value_t) != '' && $value_t != NULL ) {
-                    $massiv_field_value[$conformity_tboil[$key_t]] = $value_t;
+                    if ($key_t == "DATE_REGISTER") {
+                      $massiv_field_value[$conformity_tboil[$key_t]] = date('Y-m-d H:i:s', strtotime($value_t));
+                    } else {
+                      $massiv_field_value[$conformity_tboil[$key_t]] = $value_t;
+                    }
                   }
                 }
               }

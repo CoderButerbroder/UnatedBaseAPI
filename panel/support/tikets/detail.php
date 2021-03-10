@@ -286,9 +286,9 @@ $history_status_ticket = json_decode($settings->get_ticket_status_history($data_
                     </div>
                   </div>
                   <div class="chat-body" id="div_messages">
-                    <ul class="messages" id="messages">
-                      <div class="alert alert-light" role="alert">
-                        Нет истории переписки
+                    <ul class="messages" id="messages" style="min-height: 50px;">
+                      <div class="spinner-border text-primary" role="status" style="position: absolute; /*margin: -25px 0 0 -25px;*/ top: 50%; left: 47%; z-index:99999;">
+                        <span class="sr-only">Loading...</span>
                       </div>
                     </ul>
                   </div>
