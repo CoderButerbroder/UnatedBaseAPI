@@ -59,9 +59,11 @@ function get_list_date_arr( $arr_in ) {
   }
 }
 
-function set_get_arr_result($name, $arr_in, $type){
+function set_get_arr_result($name, $arr_in, $type, $flag_ink = false){
   global $period_select;
   global $arr_data_period;
+
+  $incr = 0;
 
   $arr_temp = (object) [];
   $arr_temp->name = $name;
@@ -88,18 +90,38 @@ function set_get_arr_result($name, $arr_in, $type){
 
       if ($value_data == $date1) {
         $flag_value_bool = true;
-        $flag_value_int = $value2->sum;
+        if ($flag_ink) {
+          if ($value2->sum > 0) {
+            $incr = $value2->sum;
+          }
+          $flag_value_int = $incr;
+        } else {
+          $flag_value_int = $value2->sum;
+        }
         break;
       }
     }
     if ($flag_value_bool) {
       array_push($arr_temp->data, $flag_value_int);
     } else {
-      array_push($arr_temp->data, 0);
+      array_push($arr_temp->data, $incr);
     }
   }
 
   return $arr_temp;
+}
+
+function crop_el_arr(&$arr){
+  global $period_select;
+
+  foreach ($arr as $key => $value) {
+    if ( ( $period_select == 'day' && $value->yeard == 0 && $value->monthd == 0 && $value->dayd )
+        || ( $period_select == 'week' && $value->yeard == 0 && $value->weekd == 0)
+        || ( $period_select == 'month' && $value->yeard == 0 && $value->monthd == 0)
+        || ( $period_select == 'year' && $value->yeard == 0 ) ) {
+          unset( $arr[$key] );
+    }
+  }
 }
 
 
@@ -123,6 +145,30 @@ if($_POST["chart"] == 'user') {
   $arr_data_users_active = $settings->get_main_users_activation_group_by_time_reg('Y', true, $period_select);
   $arr_data_users_no_active = $settings->get_main_users_activation_group_by_time_reg('N', true, $period_select);
 
+  // var_dump( $arr_data_users_no_active );
+  // echo "</br>";
+  // echo "</br>";
+
+  // foreach($arr_data_users as $key => $value){
+  //   echo 'key:'.$key.' '.date('d.m.Y', strtotime('01.'.$value->monthd.'.'.$value->yeard) );
+  //   echo "</br>";
+  // }
+  // echo "</br>";
+  // echo "</br>";
+  //
+  // foreach($arr_data_users_active as $key => $value){
+  //   echo 'key:'.$key.' '.date('d.m.Y', strtotime('01.'.$value->monthd.'.'.$value->yeard) );
+  //   echo "</br>";
+  // }
+  // echo "</br>";
+  // echo "</br>";
+  //
+  // foreach($arr_data_users_no_active as $key => $value){
+  //   echo 'key:'.$key.' '.date('d.m.Y', strtotime('01.'.$value->monthd.'.'.$value->yeard) );
+  //   echo "</br>";
+  // }
+
+
   // $arr_begin_users = [];
   $arr_data_period = [];
 
@@ -132,9 +178,15 @@ if($_POST["chart"] == 'user') {
     add_null_in_data_week($arr_data_users_no_active);
   }
 
+  if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) crop_el_arr($arr_data_users);
+  if (is_array($arr_data_users_active) && count($arr_data_users_active) > 0 && $arr_data_users_active != 0 ) crop_el_arr($arr_data_users_active);
+  if (is_array($arr_data_users_no_active) && count($arr_data_users_no_active) > 0 && $arr_data_users_no_active != 0 ) crop_el_arr($arr_data_users_no_active);
+
   if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) get_list_date_arr($arr_data_users);
   if (is_array($arr_data_users_active) && count($arr_data_users_active) > 0 && $arr_data_users_active != 0 ) get_list_date_arr($arr_data_users_active);
   if (is_array($arr_data_users_no_active) && count($arr_data_users_no_active) > 0 && $arr_data_users_no_active != 0 ) get_list_date_arr($arr_data_users_no_active);
+
+  $arr_data_period = array_unique( $arr_data_period );
 
   sort($arr_data_period);
 
@@ -142,9 +194,9 @@ if($_POST["chart"] == 'user') {
   $arr_result->data = [];
   $arr_result->time = [];
 
-  array_push($arr_result->data,  set_get_arr_result( 'Все', $arr_data_users, 'line' ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Активированные', $arr_data_users_active, 'line' ) );
-  array_push($arr_result->data,  set_get_arr_result( 'Не активированные', $arr_data_users_no_active, 'line' ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Все', $arr_data_users, 'line', true ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Активированные', $arr_data_users_active, 'line', true ) );
+  array_push($arr_result->data,  set_get_arr_result( 'Не активированные', $arr_data_users_no_active, 'line', true ) );
 
   foreach ($arr_data_period as $key => $value) {
     if($period_select == 'day'){
