@@ -3386,7 +3386,7 @@ class Settings {
   }
 
   // получение данных по логам ответов API с группировкой по реферарам за все время
-  public function get_log_api_response_group_by_referer() {
+  public function get_log_api_response_group_by_referer2() {
       global $database;
 
       $strokaSQL = "SELECT count($this->history.`id`) as sum,
