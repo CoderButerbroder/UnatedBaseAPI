@@ -51,6 +51,25 @@
 
   }
 
+  $arr_items = $obj_app->_embedded->items;
+
+  function cmp($a, $b) {
+    $data1 = strtotime($a->created);
+    $data2 = strtotime($b->created);
+        if ($data1 == $data2) {
+            return 0;
+        }
+        return ($data1 < $data2) ? -1 : 1;
+  }
+
+  usort($arr_items, "cmp");
+
+  // var_dump($arr_items[0]);
+  // echo json_encode($arr_items[0], JSON_UNESCAPED_UNICODE);
+  // foreach ($arr_items[0] as $key => $value) {
+  //   echo "key: $key => value: $value </br>";
+  // }
+
 ?>
 
 <nav class="page-breadcrumb">
@@ -99,18 +118,20 @@
                         <th scope="col">Имя</th>
                         <th scope="col">Размер</th>
                         <th scope="col">Дата</th>
+                        <th scope="col">#</th>
                       </tr>
                     </thead>
                     <tbody>
                       <?php
                       $temp_count = 0;
-                        foreach ($obj_app->_embedded->items as $key => $value) {
+                        foreach ($arr_items as $key => $value) {
                           $temp_count++;
                           echo "<tr>";
                             echo "<td>".$temp_count."</td>";
                             echo "<td>".$value->name."</td>";
                             echo "<td>".((round($value->size / 1024 / 1024, 2)) )." Мб.</td>";
                             echo "<td>".date('H:i d.m.Y', strtotime($value->created))."</td>";
+                            echo "<td style=\"color:blue; cursor:pointer;\" onclick=\"window.open('https://".$_SERVER["SERVER_NAME"]."/panel/system/integration/yandex_disk/action/get_file?data=".base64_encode($value->file)."')\"> <i data-feather='download'></i></td>";
                           echo "</tr>";
                         }
                       ?>
@@ -182,6 +203,21 @@
 
 
   $(document).ready(function() {
+
+
+    var tab = $('.table').DataTable({
+          "language": { "url": "/assets/vendors/datatables.net/Russian.json" },
+          "responsive": true,
+          "keys": true,
+          "columns": [
+            { "data": "Row", "width": "5%", "searchable": true, visible : false},
+            { "data": "Name", "class" : "text-wrap", "width": "30%", "orderable": true },
+            { "data": "Size", "class" : "text-wrap", "width": "30%", "orderable": true },
+            { "data": "D_time", "class" : "text-wrap", "width": "30%", "orderable": false },
+            { "data": "download", "class" : "text-wrap", "width": "30%", "searchable": false, "orderable": false },
+          ]
+    });
+
 
     $.getJSON('https://<?php echo $_SERVER["SERVER_NAME"]; ?>/assets/vendors/apexcharts/ru.json', function(data) {
       options_donut["chart"]["locales"] = [data];
