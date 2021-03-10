@@ -419,6 +419,7 @@ if($_POST["chart"] == 'SK') {
 
 if($_POST["chart"] == 'event') {
   $arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, $period_select);
+  // $arr_data_event_summ_confirm = $settings->get_count_main_events_groupby_time_reg(false, $period_select);
   $arr_data_users_event_summ = $settings->get_count_users_main_events_groupby_time_reg(false, $period_select);
 
   $arr_data_period = [];
@@ -426,21 +427,22 @@ if($_POST["chart"] == 'event') {
   if ($period_select == 'week') {
     add_null_in_data_week($arr_data_event_summ);
     add_null_in_data_week($arr_data_users_event_summ);
-
-
+    // add_null_in_data_week($arr_data_event_summ_confirm);
   }
 
   if (is_array($arr_data_event_summ) && count($arr_data_event_summ) > 0 && $arr_data_event_summ != 0 ) get_list_date_arr($arr_data_event_summ);
   if (is_array($arr_data_users_event_summ) && count($arr_data_users_event_summ) > 0 && $arr_data_users_event_summ != 0 ) get_list_date_arr($arr_data_users_event_summ);
+  // if (is_array($arr_data_event_summ_confirm) && count($arr_data_event_summ_confirm) > 0 && $arr_data_event_summ_confirm != 0 ) get_list_date_arr($arr_data_event_summ_confirm);
 
+  $arr_data_period = array_unique( $arr_data_period );
   sort($arr_data_period);
-
 
   $arr_result = (object) [];
   $arr_result->data = [];
   $arr_result->time = [];
 
   array_push($arr_result->data,  set_get_arr_result( 'Кол-во мероприятий', $arr_data_event_summ, 'line' ) );
+  // array_push($arr_result->data,  set_get_arr_result( 'Кол-во одобренных мероприятий', $arr_data_event_summ_confirm, 'line' ) );
   array_push($arr_result->data,  set_get_arr_result( 'Кол-во участников', $arr_data_users_event_summ, 'column' ) );
 
   foreach ($arr_data_period as $key => $value) {
