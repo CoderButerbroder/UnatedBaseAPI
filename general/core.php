@@ -2878,13 +2878,15 @@ class Settings {
 
                   $today = date("d.m.Y H:i");
 
+                  $link_to_detail = str_replace('{id_ticket}', $hash_tiket, $data_referer_ticket->link_to_support_detail);
+
                   $maildata =
                         array(
                           'title' => $tema,
                           'description' => $content,
                           'link_to_server' => 'https://'.$data_referer_ticket->resourse,
                           'text_button' => 'Личный кабинет',
-                          'link_button' => $data_referer_ticket->link_to_support,
+                          'link_button' => $link_to_detail,
                           'link_to_logo' => $data_referer_ticket->link_to_logo,
                           'alt_link_to_logo' => $data_referer_ticket->resourse,
                           'color_button1' => $data_referer_ticket->color_button1,
@@ -3499,7 +3501,7 @@ class Settings {
 
   }
 
-  // 
+  //
 
 
 
