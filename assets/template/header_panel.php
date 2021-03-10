@@ -227,15 +227,15 @@ else {
         <?php } ?>
         <?php if ($data_user_rules->sistem->rule->settings->value) {?>
         <li class="nav-item">
-          <a class="nav-link" data-toggle="collapse" href="#authPages" role="button" aria-expanded="false" aria-controls="authPages">
+          <a class="nav-link" data-toggle="collapse" href="#sistem-pages" role="button" aria-expanded="false" aria-controls="sistem-pages">
             <i class="link-icon" data-feather="unlock"></i>
             <span class="link-title">Система</span>
             <i class="link-arrow" data-feather="chevron-down"></i>
           </a>
-          <div class="collapse" id="authPages">
+          <div class="collapse" id="sistem-pages">
             <ul class="nav sub-menu">
               <li class="nav-item">
-                <a href="/panel/system/settings" class="nav-link">Все настройки</a>
+                <a href="/panel/system/settings/" class="nav-link">Все настройки</a>
               </li>
               <li class="nav-item">
                 <a href="/panel/system/load" class="nav-link">Нагрузка</a>
