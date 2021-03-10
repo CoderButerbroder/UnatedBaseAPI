@@ -8,7 +8,7 @@
 // $domen_auth_yandex = 'oauth.yandex.ru';
 // $id_app_yndex = '';
 // echo 'https://'.$domen_auth_yandex.'/authorize?response_type=token&client_id='.$id_app_yndex;
-// $wtf = 'https://api.kt-segment.ru/#access_token=AgAAAAAZ6KK_AAblMpwDfcrt8k-TudQhWr8VL8g&token_type=bearer&expires_in=31536000';
+// $wtf = 'https://api.kt-segment.ru/#access_token= &token_type=bearer&expires_in=31536000';
 // require_once('/home/httpd/vhosts/api.kt-segment.ru/httpdocs/general/core.php');
 // /backups
 
@@ -31,6 +31,9 @@ if(!file_exists($path.$backup_name)){
 
   // Путь и имя файла на нашем сервере.
   $file = $path.$backup_name;
+
+  ZipArchive::setEncryptionName ( $file , ZipArchive::EM_AES_256 , 'D5841495i' );
+
 
   // Папка на Яндекс Диске (уже должна быть создана).
   $path = '/backup_FULLDATA/';
