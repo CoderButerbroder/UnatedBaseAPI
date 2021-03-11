@@ -148,7 +148,11 @@ try{
                 if (array_key_exists($key_t , $conformity_tboil ) ) {
                   if (trim($value_t) != '' && $value_t != NULL ) {
                     if ($key_t == "DATE_REGISTER") {
-                      $massiv_field_value[$conformity_tboil[$key_t]] = date('Y-m-d H:i:s', strtotime($value_t));
+                      if ( strtotime($value_t) == -62169993079 ) {
+                        $massiv_field_value[$conformity_tboil[$key_t]] = '2019-12-10 00:00:00';
+                      } else {
+                        $massiv_field_value[$conformity_tboil[$key_t]] = date('Y-m-d H:i:s', strtotime($value_t));
+                      }
                     } else {
                       $massiv_field_value[$conformity_tboil[$key_t]] = $value_t;
                     }

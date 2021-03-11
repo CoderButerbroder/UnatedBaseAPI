@@ -2,14 +2,17 @@
 // ini_set('error_reporting', E_ALL);
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
-include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+// include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+//
+// $settings = new Settings;
+//
+// $massiv_field_value = [ 'reg_date' => '06.12.2018 10:17:19'  ];
+// $massiv_field_value["reg_date"] = date('Y-m-d H:i:s', strtotime( $massiv_field_value["reg_date"] ));
+//
+// var_dump($settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), 110312));
 
-$settings = new Settings;
+// echo strtotime('0000-00-00 00:00:00');
 
-$massiv_field_value = [ 'reg_date' => '06.12.2018 10:17:19'  ];
-$massiv_field_value["reg_date"] = date('Y-m-d H:i:s', strtotime( $massiv_field_value["reg_date"] ));
-
-var_dump($settings->cron_mass_update_user_field(json_encode($massiv_field_value, JSON_UNESCAPED_UNICODE), 110312));
 
 ?>
 
