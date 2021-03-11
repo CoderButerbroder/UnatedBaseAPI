@@ -2174,13 +2174,14 @@ class Settings {
       }
       else {
 
-          $statement = $database->prepare("UPDATE $this->MAIN_events SET type_event = :type_event, name = :name, description = :description, id_tboil_organizer = :id_tboil_organizer, status = :status, start_datetime_event = :start_datetime_event, end_datetime_event = :end_datetime_event, place = :place, interest = :interest, date_update = :date_update  WHERE id_referer = :id_referer AND id_event_on_referer = :id_event_on_referer");
+          $statement = $database->prepare("UPDATE $this->MAIN_events SET type_event = :type_event, name = :name, description = :description, id_tboil_organizer = :id_tboil_organizer, status = :status, activation = :activation, start_datetime_event = :start_datetime_event, end_datetime_event = :end_datetime_event, place = :place, interest = :interest, date_update = :date_update  WHERE id_referer = :id_referer AND id_event_on_referer = :id_event_on_referer");
           $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
           $statement->bindParam(':type_event', $type_event, PDO::PARAM_STR);
           $statement->bindParam(':name', $name, PDO::PARAM_STR);
           $statement->bindParam(':description', $description, PDO::PARAM_STR);
           $statement->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_INT);
           $statement->bindParam(':status', $status, PDO::PARAM_STR);
+          $statement->bindParam(':activation', $activation, PDO::PARAM_STR);
           $statement->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
           $statement->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
           $statement->bindParam(':place', $place, PDO::PARAM_STR);
