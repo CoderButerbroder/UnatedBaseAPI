@@ -20,7 +20,6 @@ $settings = new Settings;
 
 // $data2 = $settings->add_history_users_fulldata('действие','тип','тут какая то дата');
 //
-$data = $settings->get_log_api_response_group_by_referer(false,'year');
+$data = $settings->delete_events_mister_proper();
 
 var_dump($data);
-var_dump($data2);

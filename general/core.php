@@ -4579,7 +4579,14 @@ class Settings {
 
   }
 
+  // получение всех пользователей tboil
+  public function get_all_users_tboil() {
+    global $database;
 
+
+
+
+  }
 
 
 
@@ -9129,9 +9136,128 @@ class Settings {
 
   }
 
+  // Удаление физических лиц из ЕБД, которых нет на tboil, но есть в ЕБД (недействительность)
+  public function delete_users_mister_proper() {
+    global $database;
+
+      $token_tboil = $this->get_global_settings('tboil_token');
+
+      $token_domen = $this->get_global_settings('tboil_domen');
+
+      $response = $database->prepare("SELECT * FROM $this->main_users");
+      $response->execute();
+      $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+      $mass_ebd_users = array();
+      foreach ($data as $key => $value) {
+          array_push($mass_ebd_users,$value->id_tboil);
+      }
+
+      $data_user_tboil = json_decode(file_get_contents("https://".$token_domen."/api/v2/getUsers/?token=".$token_tboil));
+
+      $mass_tboil_users = $data_user_tboil->data;
 
 
+      $diferenc = array_diff($mass_ebd_users,$mass_tboil_users);
 
+      if (count($diferenc) == 0) {
+            return json_encode(array('response' => true, 'description' => 'Нет пользователей расходящихся с tboil'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+
+      $sql_stroka = "DELETE FROM $this->main_users WHERE ";
+
+      foreach ($diferenc as $key => $value) {
+            $sql_stroka .= " id_tboil = ".$value." OR ";
+      }
+
+      $rest = substr($sql_stroka, 0, -3);
+
+      $response = $database->prepare($rest);
+      $response->execute();
+      $check = $response->rowCount();
+
+
+      $response2 = $database->prepare("SELECT * FROM $this->main_users");
+      $response2->execute();
+      $data2 = $response2->fetchAll(PDO::FETCH_OBJ);
+
+      $result = (count($data) - count($data2)) - count($rest);
+
+      if ($result == 0) {
+            return json_encode(array('response' => true, 'description' => 'Все пользователи с несуществующими аккаунтами tboil удалены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+      else {
+            return json_encode(array('response' => false, 'description' => 'Не все пользователи с несуществующими аккаунтами tboil удалены'),JSON_UNESCAPED_UNICODE);
+            exit;
+      }
+
+
+  }
+
+  // Удаление меропритий из ЕБД, которых нет на tboil, но есть в ЕБД (недействительность)
+  public function delete_events_mister_proper() {
+    global $database;
+
+        $token_tboil = $this->get_global_settings('tboil_token');
+
+        $token_domen = $this->get_global_settings('tboil_domen');
+
+        $response = $database->prepare("SELECT * FROM $this->MAIN_events");
+        $response->execute();
+        $data = $response->fetchAll(PDO::FETCH_OBJ);
+
+        $mass_ebd_events = array();
+        foreach ($data as $key => $value) {
+            array_push($mass_ebd_events,$value->id_event_on_referer);
+        }
+
+        $data_user_tboil = json_decode(file_get_contents("https://".$token_domen."/api/v2/getEvents/?token=".$token_tboil));
+
+        $mass_tboil_events = $data_user_tboil->data;
+
+
+        $diferenc = array_diff($mass_ebd_events,$mass_tboil_events);
+
+        if (count($diferenc) == 0) {
+              return json_encode(array('response' => true, 'description' => 'Нет мероприятий расходящихся с tboil'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+
+        $sql_stroka = "DELETE FROM $this->MAIN_events WHERE ";
+
+        foreach ($diferenc as $key => $value) {
+              $sql_stroka .= " id_event_on_referer = ".$value." OR ";
+        }
+
+        $rest = substr($sql_stroka, 0, -3);
+
+        // return $rest;
+        // exit;
+
+        $response = $database->prepare($rest);
+        $response->execute();
+        $check = $response->rowCount();
+
+
+        $response2 = $database->prepare("SELECT * FROM $this->MAIN_events");
+        $response2->execute();
+        $data2 = $response2->fetchAll(PDO::FETCH_OBJ);
+
+        $result = (count($data) - count($data2)) - count($rest);
+
+        if ($result == 0) {
+              return json_encode(array('response' => true, 'description' => 'Все пользователи с несуществующими аккаунтами tboil удалены'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+        else {
+              return json_encode(array('response' => false, 'description' => 'Не все пользователи с несуществующими аккаунтами tboil удалены'),JSON_UNESCAPED_UNICODE);
+              exit;
+        }
+
+  }
 
 
 }
