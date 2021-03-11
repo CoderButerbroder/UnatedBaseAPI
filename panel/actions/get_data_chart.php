@@ -39,6 +39,10 @@ $settings = new Settings;
 
 function add_null_in_data_week( $arr_in ) {
   foreach( $arr_in as $key => $value ) {
+    if ($value->weekd == 0) {
+      $value->weekd = 53;
+      $value->yeard--;
+    }
     if($value->weekd >= 1 && $value->weekd <= 9 ){
       $value->weekd = '0'.$value->weekd;
     }
@@ -53,6 +57,19 @@ function get_list_date_arr( $arr_in ) {
     if ( $period_select == 'week' )  $data_i = strtotime(  $value->yeard.'W'.$value->weekd );
     if ( $period_select == 'month')  $data_i = strtotime( '01.'.$value->monthd.'.'.$value->yeard );
     if ( $period_select == 'year' )  $data_i = strtotime( '01.01.'.$value->yeard );
+
+    // if ($data_i == false) {
+    //   echo "error";
+    //   echo "</br>";
+    //   echo $key;
+    //   echo "</br>";
+    //   echo json_encode($value, JSON_UNESCAPED_UNICODE);
+    //   echo "</br>";
+    //
+    //   echo json_encode($arr_in, JSON_UNESCAPED_UNICODE);
+    //
+    // }
+
     if (!in_array($data_i, $arr_data_period)) {
         array_push($arr_data_period, $data_i);
     }
@@ -141,13 +158,14 @@ if($_POST["chart"] == 'branch') {
 if($_POST["chart"] == 'user') {
 
   $arr_data_users = $settings->get_count_main_users_groupby_time_reg(true, $period_select);
-
   $arr_data_users_active = $settings->get_main_users_activation_group_by_time_reg('Y', true, $period_select);
   $arr_data_users_no_active = $settings->get_main_users_activation_group_by_time_reg('N', true, $period_select);
 
-  // var_dump( $arr_data_users_no_active );
+  // echo json_encode($arr_data_users, JSON_UNESCAPED_UNICODE);
+  // // var_dump( $arr_data_users );
   // echo "</br>";
   // echo "</br>";
+  // exit();
 
   // foreach($arr_data_users as $key => $value){
   //   echo 'key:'.$key.' '.date('d.m.Y', strtotime('01.'.$value->monthd.'.'.$value->yeard) );
@@ -178,6 +196,8 @@ if($_POST["chart"] == 'user') {
     add_null_in_data_week($arr_data_users_no_active);
   }
 
+
+
   if (is_array($arr_data_users) && count($arr_data_users) > 0 && $arr_data_users != 0 ) crop_el_arr($arr_data_users);
   if (is_array($arr_data_users_active) && count($arr_data_users_active) > 0 && $arr_data_users_active != 0 ) crop_el_arr($arr_data_users_active);
   if (is_array($arr_data_users_no_active) && count($arr_data_users_no_active) > 0 && $arr_data_users_no_active != 0 ) crop_el_arr($arr_data_users_no_active);
@@ -187,8 +207,13 @@ if($_POST["chart"] == 'user') {
   if (is_array($arr_data_users_no_active) && count($arr_data_users_no_active) > 0 && $arr_data_users_no_active != 0 ) get_list_date_arr($arr_data_users_no_active);
 
   $arr_data_period = array_unique( $arr_data_period );
-
   sort($arr_data_period);
+
+  // echo json_encode($arr_data_period, JSON_UNESCAPED_UNICODE);
+  // // var_dump( $arr_data_users );
+  // echo "</br>";
+  // echo "</br>";
+  // exit();
 
   $arr_result = (object) [];
   $arr_result->data = [];

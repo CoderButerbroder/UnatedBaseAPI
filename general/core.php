@@ -2146,7 +2146,7 @@ class Settings {
       $date_update = date("Y-m-d H:i:s");
       if (!$data) {
 
-            $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_events (id_event_on_referer,type_event,name,description,id_tboil_organizer,status,start_datetime_event,end_datetime_event,place,interest,date_update,id_referer) VALUES (:id_event_on_referer,:type_event,:name,:description,:id_tboil_organizer,:status,:start_datetime_event,:end_datetime_event,:place,:interest,:date_update,:id_referer)");
+            $add_user_accs = $database->prepare("INSERT INTO $this->MAIN_events (id_event_on_referer,type_event,name,description,id_tboil_organizer,status,activation,start_datetime_event,end_datetime_event,place,interest,date_update,id_referer) VALUES (:id_event_on_referer,:type_event,:name,:description,:id_tboil_organizer,:status,:activation,:start_datetime_event,:end_datetime_event,:place,:interest,:date_update,:id_referer)");
             $add_user_accs->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
             $add_user_accs->bindParam(':type_event', $type_event, PDO::PARAM_STR);
             $add_user_accs->bindParam(':name', $name, PDO::PARAM_STR);
@@ -9051,7 +9051,7 @@ class Settings {
   }
 
 
- 
+
 
 
 

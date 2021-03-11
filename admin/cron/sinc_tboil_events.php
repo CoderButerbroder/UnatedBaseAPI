@@ -1,8 +1,8 @@
 <?php
 error_reporting(0);
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 // session_start();
 $start = microtime(true);
 $start_time = date('H:i');
@@ -42,9 +42,11 @@ $settings = new Settings;
     //echo "<script> console.log(JSON.parse('".json_encode(array('response' => true, 'data' => $data_event_tboil->data),JSON_UNESCAPED_UNICODE)."')); </script>";
 
     $check_id_referer = $settings->get_data_referer($tboil_site);
+    $count_check_events = 0;
+    $count_check = 0;
 
     foreach ($all_id_event_tboil as $key => $value) {
-
+      $count_check_events++;
         $data_one_event = json_decode(file_get_contents($tboil_site."/api/v2/getEvent/".$key."/?token=".$token_tboil));
 
         $massiv_data_one_event = $data_one_event->data;
@@ -68,7 +70,7 @@ $settings = new Settings;
           $place = isset($massiv_data_one_event->place) ? $massiv_data_one_event->place : NULL;
           $interest = isset($massiv_data_one_event->interest) ? $massiv_data_one_event->interest : NULL;
         }
-        if ($massiv_data_one_event == NULL) {
+        if ($massiv_data_one_event == NULL || $massiv_data_one_event == null || $massiv_data_one_event == 'NULL' || $massiv_data_one_event == 'null') {
           $start_datetime_event = NULL;
           $end_datetime_event = NULL;
           $name = NULL;
@@ -82,16 +84,19 @@ $settings = new Settings;
           $interest = NULL;
         }
 
-        $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource);
+        $response = json_decode($settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource));
 
-        if (json_decode($response)->response) {
+        if ($response->response) {
+          $count_check++;
             for ($i=0; $i < count($value); $i++) {
                 $settings->add_user_visit_events($key,$value[$i],'1',$resource);
             }
+        } else {
+          $settings->telega_send($settings->get_global_settings('telega_chat_error'), "[CRON] \nfrom: sinc_tboil_events \nid_event: ".$key."\nError:".$response->description);
         }
 
     }
-    $settings->telega_send($settings->get_global_settings('telega_chat_error'), '[CRON] sinc_tboil_events '.$start_time.' '.'Время выполнения скрипта: '.round(microtime(true) - $start, 4).' сек.');
+    $settings->telega_send($settings->get_global_settings("telega_chat_error"), "[CRON] \nfrom: sinc_tboil_events\ncount events: ".$count_check_events."\n count upd events:".$count_check."\nstart: ".$start_time."\nВремя выполнения скрипта: ".round(microtime(true) - $start, 4)." сек.");
 
     exit;
 
