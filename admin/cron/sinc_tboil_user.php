@@ -111,7 +111,7 @@ $settings = new Settings;
       // echo "f ".$key." id_user = ".$value."\n";
       $flag_while = true;
       $err_count_not_obj = 0;
-      
+
 
       while($flag_while) {
         // echo "   w ".$key." id_user = ".$value."\n";
@@ -188,7 +188,7 @@ $settings = new Settings;
                           $data_post = array('login' => $log,
                                              'password' => $pas,
                                              'referer' => 'https://'.$hosting_name.'/'
-                                           );
+                                            );
                           curl_setopt($curl, CURLOPT_URL, 'https://'.$hosting_name.'/v.1.0/method/getMeToken');
                           curl_setopt($curl, CURLOPT_RETURNTRANSFER,true);
                           curl_setopt($curl, CURLOPT_POST, true);
