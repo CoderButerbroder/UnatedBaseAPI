@@ -8153,19 +8153,19 @@ class Settings {
         }
 
         if ($period == 'year') {
-          $statement = $database->prepare("SELECT count(id) as sum,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event) ASC");
+          $statement = $database->prepare("SELECT count(id) as sum,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE status = 'одобрено' AND start_datetime_event BETWEEN :starting AND :ending GROUP BY YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event) ASC");
         }
         if ($period == 'month') {
-          $statement = $database->prepare("SELECT count(id) as sum,MONTH(start_datetime_event) as monthd,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event) ASC");
+          $statement = $database->prepare("SELECT count(id) as sum,MONTH(start_datetime_event) as monthd,YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE status = 'одобрено' AND start_datetime_event BETWEEN :starting AND :ending GROUP BY MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event) ASC");
         }
         if ($period == 'week') {
-          $statement = $database->prepare("SELECT count(id) as sum, WEEK(start_datetime_event) as weekd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY WEEK(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),WEEK(start_datetime_event) ASC");
+          $statement = $database->prepare("SELECT count(id) as sum, WEEK(start_datetime_event) as weekd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE status = 'одобрено' AND start_datetime_event BETWEEN :starting AND :ending GROUP BY WEEK(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),WEEK(start_datetime_event) ASC");
         }
         if ($period == 'day') {
-          $statement = $database->prepare("SELECT count(id) as sum, DAY(start_datetime_event) as dayd, MONTH(start_datetime_event) as monthd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending GROUP BY DAY(start_datetime_event),MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event),DAY(start_datetime_event) ASC");
+          $statement = $database->prepare("SELECT count(id) as sum, DAY(start_datetime_event) as dayd, MONTH(start_datetime_event) as monthd, YEAR(start_datetime_event) as yeard, count(id) as events_groupby FROM $this->MAIN_events WHERE status = 'одобрено' AND start_datetime_event BETWEEN :starting AND :ending GROUP BY DAY(start_datetime_event),MONTH(start_datetime_event),YEAR(start_datetime_event) having SUM(id) > 0 ORDER BY YEAR(start_datetime_event),MONTH(start_datetime_event),DAY(start_datetime_event) ASC");
         }
         if ($period == 'data') {
-          $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE start_datetime_event BETWEEN :starting AND :ending");
+          $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE status = 'одобрено' AND start_datetime_event BETWEEN :starting AND :ending");
         }
         $statement->bindParam(':starting', $start, PDO::PARAM_STR);
         $statement->bindParam(':ending', $end, PDO::PARAM_STR);
@@ -9261,7 +9261,7 @@ class Settings {
 
   }
 
-  
+
 
 }
 
