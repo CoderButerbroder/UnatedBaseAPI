@@ -2135,7 +2135,7 @@ class Settings {
   }
 
   // добавление мероприятия в единую базу данных
-  public function add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,$resource) {
+  public function add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource) {
       global $database;
 
       $statement = $database->prepare("SELECT * FROM $this->MAIN_events WHERE id_event_on_referer = :id_event_on_referer AND id_referer = :id_referer");
@@ -2153,6 +2153,7 @@ class Settings {
             $add_user_accs->bindParam(':description', $description, PDO::PARAM_STR);
             $add_user_accs->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_INT);
             $add_user_accs->bindParam(':status', $status, PDO::PARAM_STR);
+            $add_user_accs->bindParam(':activation', $activation, PDO::PARAM_STR);
             $add_user_accs->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
             $add_user_accs->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
             $add_user_accs->bindParam(':place', $place, PDO::PARAM_STR);
@@ -2173,13 +2174,14 @@ class Settings {
       }
       else {
 
-          $statement = $database->prepare("UPDATE $this->MAIN_events SET type_event = :type_event, name = :name, description = :description, id_tboil_organizer = :id_tboil_organizer, status = :status, start_datetime_event = :start_datetime_event, end_datetime_event = :end_datetime_event, place = :place, interest = :interest, date_update = :date_update  WHERE id_referer = :id_referer AND id_event_on_referer = :id_event_on_referer");
+          $statement = $database->prepare("UPDATE $this->MAIN_events SET type_event = :type_event, name = :name, description = :description, id_tboil_organizer = :id_tboil_organizer, status = :status, activation = :activation, start_datetime_event = :start_datetime_event, end_datetime_event = :end_datetime_event, place = :place, interest = :interest, date_update = :date_update  WHERE id_referer = :id_referer AND id_event_on_referer = :id_event_on_referer");
           $statement->bindParam(':id_event_on_referer', $id_event_on_referer, PDO::PARAM_INT);
           $statement->bindParam(':type_event', $type_event, PDO::PARAM_STR);
           $statement->bindParam(':name', $name, PDO::PARAM_STR);
           $statement->bindParam(':description', $description, PDO::PARAM_STR);
           $statement->bindParam(':id_tboil_organizer', $organizer, PDO::PARAM_INT);
           $statement->bindParam(':status', $status, PDO::PARAM_STR);
+          $statement->bindParam(':activation', $activation, PDO::PARAM_STR);
           $statement->bindParam(':start_datetime_event', $start_datetime_event, PDO::PARAM_STR);
           $statement->bindParam(':end_datetime_event', $end_datetime_event, PDO::PARAM_STR);
           $statement->bindParam(':place', $place, PDO::PARAM_STR);
@@ -8631,26 +8633,26 @@ class Settings {
                 $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
                                 YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
                                 count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
-          }
+                                }
           if ($period == 'month') {
                 $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
                                 MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
                                 YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
                                 count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
-          }
+                                }
           if ($period == 'week') {
                 $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
                                 WEEK($this->MAIN_events.`start_datetime_event`) as weekd,
                                 YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
                                 count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
-          }
+                                }
           if ($period == 'day') {
                 $strokaSQL .= " count(DISTINCT($this->MAIN_events.`id`)) as sum,
                                 DAY($this->MAIN_events.`start_datetime_event`) as dayd,
                                 MONTH($this->MAIN_events.`start_datetime_event`) as monthd,
                                 YEAR($this->MAIN_events.`start_datetime_event`) as yeard,
                                 count(DISTINCT($this->MAIN_events.`id`)) as event_groupby";
-          }
+                                }
           if ($period == 'data') {
                 $strokaSQL .= " * ";
           }
