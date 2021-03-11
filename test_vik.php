@@ -1,10 +1,55 @@
 <?php
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
+// //
+$settings = new Settings;
+
+global $database;
+
+$tboil_token = $settings->get_global_settings('tboil_token');
+
+// $data_user_tboil = json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getUsers/?token=".$tboil_token))->data;
 //
-// $settings = new Settings;
+// // echo "users count:";
+//
+// foreach ($data_user_tboil as $key => $value) {
+//   echo " ".$value."</br>";
+// }
+
+
+
+
+//
+// echo file_get_contents("https://tboil.spb.ru/api/v2/getEvent/1544/?token=".$tboil_token);
+// echo "</br>";
+// echo "</br>";
+// echo "</br>";
+// echo file_get_contents($tboil_site."/api/v2/getEvents/?token=".$tboil_token);
+//
+
+//
+// $arr_data_event_summ = $settings->get_count_main_events_groupby_time_reg(false, 'data');
+
+// echo json_encode($arr_data_event_summ, JSON_UNESCAPED_UNICODE);
+
+// echo count($arr_data_event_summ);
+
+// foreach($arr_data_event_summ as $key => $value ){
+//   echo "status: ".$value->status_event."</br>";
+// }
+
+// $status_event = array_column($arr_data_event_summ, 'status_event');
+// var_dump($status_event);
+// foreach($status_event as $key => $value ){
+//   echo "status: ".$value."</br>";
+// }
+//
+// var_dump(array_unique($status_event));
+// echo "</br>";
+// echo "</br>";
+// echo "</br>";
 //
 // $massiv_field_value = [ 'reg_date' => '06.12.2018 10:17:19'  ];
 // $massiv_field_value["reg_date"] = date('Y-m-d H:i:s', strtotime( $massiv_field_value["reg_date"] ));

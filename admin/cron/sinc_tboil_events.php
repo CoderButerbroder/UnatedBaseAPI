@@ -54,17 +54,18 @@ $settings = new Settings;
 
         $id_event_on_referer = isset($key) ? $key : ' ';
         $type_event = 'individ';
-        $name = isset($massiv_data_one_event->name) ? $massiv_data_one_event->name : ' ';
-        $description = isset($massiv_data_one_event->description) ? $massiv_data_one_event->description : ' ';
+        $name = isset($massiv_data_one_event->name) ? $massiv_data_one_event->name : NULL;
+        $description = isset($massiv_data_one_event->description) ? $massiv_data_one_event->description : NULL;
         $organizer = isset($massiv_data_one_event->organizer) ? $massiv_data_one_event->organizer : 0;
-        $status = isset($massiv_data_one_event->STATUS) ? $massiv_data_one_event->STATUS : ' ';
-        $start_datetime_event = isset($date_new) ? $date_new : ' ';
-        $end_datetime_event = isset($date_and) ? $date_and : ' ';
-        $place = isset($massiv_data_one_event->place) ? $massiv_data_one_event->place : ' ';
-        $interest = isset($massiv_data_one_event->interest) ? $massiv_data_one_event->interest : ' ';
+        $status = isset($massiv_data_one_event->STATUS) ? $massiv_data_one_event->STATUS : NULL;
+        $activation = isset($massiv_data_one_event->ACTIVE) ? $massiv_data_one_event->ACTIVE : NULL;
+        $start_datetime_event = isset($date_new) ? $date_new : NULL;
+        $end_datetime_event = isset($date_and) ? $date_and : NULL;
+        $place = isset($massiv_data_one_event->place) ? $massiv_data_one_event->place : NULL;
+        $interest = isset($massiv_data_one_event->interest) ? $massiv_data_one_event->interest : NULL;
         $resource = isset(json_decode($check_id_referer)->data->id) ? trim(json_decode($check_id_referer)->data->id) : 0;
 
-        $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,$resource);
+        $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource);
 
         if (json_decode($response)->response) {
             for ($i=0; $i < count($value); $i++) {
