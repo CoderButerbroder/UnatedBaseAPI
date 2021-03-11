@@ -13,6 +13,8 @@ set_time_limit(0);
 
 $settings = new Settings;
 
+    $settings->delete_users_mister_proper();
+
     $token_tboil = $settings->get_global_settings('tboil_token');
     $hosting_name = $settings->get_global_settings('hosting_name');
 
@@ -111,7 +113,7 @@ $settings = new Settings;
       // echo "f ".$key." id_user = ".$value."\n";
       $flag_while = true;
       $err_count_not_obj = 0;
-      
+
 
       while($flag_while) {
         // echo "   w ".$key." id_user = ".$value."\n";

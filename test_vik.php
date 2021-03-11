@@ -2,6 +2,16 @@
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
+error_reporting(0);
+ignore_user_abort(true);
+set_time_limit(0);
+
+session_start();
+if (!isset($_SESSION["key_user"])) {
+  echo json_encode(array('response' => false, 'description' => 'Ошибка авторизации'), JSON_UNESCAPED_UNICODE);
+  exit();
+}
+
 include($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
 // //
 $settings = new Settings;
@@ -9,6 +19,52 @@ $settings = new Settings;
 global $database;
 
 $tboil_token = $settings->get_global_settings('tboil_token');
+
+$data_events_users = json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getEventsUsers/?token=".$tboil_token));
+echo "events count: ".count(get_object_vars($data_events_users->data));
+echo "</br>";
+//
+// $data_events =  json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getEvents/?token=".$tboil_token));
+// echo count($data_events->data);
+
+$count = 0;
+$count_iniq = 0;
+$arr_users = [];
+foreach ($data_events_users->data as $key => $value) {
+  $count += count($value);
+  if (count($value) > 0 ) {
+    foreach ($value as $key2 => $value2) {
+      array_push( $arr_users, $value2);
+    }
+  }
+}
+
+$arr_users_uniq = array_unique($arr_users);
+
+echo "users visit evetns: ".$count;
+echo "</br>";
+echo "uniq visit users: ".count($arr_users_uniq);
+echo "</br>";
+
+$statement = $database->prepare("SELECT `id_tboil` FROM `MAIN_users` WHERE `activation` = 'Y' ");
+$statement->execute();
+$data_users_sql = $statement->fetchAll(PDO::FETCH_OBJ);
+
+$data_users_sql_data = array_column($data_users_sql, 'id_tboil');
+echo "me activation users ".count($data_users_sql_data);
+echo "</br>";
+
+$count_active_users_events = 0;
+
+foreach ($arr_users_uniq as $key => $value) {
+  if (in_array($value, $data_users_sql_data ) ) {
+    $count_active_users_events++;
+  }
+}
+
+echo "result count uniq activation users visit evetns: ".$count_active_users_events;
+
+
 
 // $data_user_tboil = json_decode(file_get_contents("https://tboil.spb.ru/api/v2/getUsers/?token=".$tboil_token))->data;
 //
