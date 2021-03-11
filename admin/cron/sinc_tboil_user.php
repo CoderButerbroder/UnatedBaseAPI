@@ -13,6 +13,8 @@ set_time_limit(0);
 
 $settings = new Settings;
 
+    $settings->delete_users_mister_proper();
+
     $token_tboil = $settings->get_global_settings('tboil_token');
     $hosting_name = $settings->get_global_settings('hosting_name');
 
