@@ -19,8 +19,8 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
           <div class="card-body">
-            <div class="" style=" width: 100%;">
-                <table class="table table-hover" style="width: 100%">
+            <div class=" table-responsive"  >
+                <table class="table table-hover" style="width:100%;">
                   <thead>
                     <tr>
                       <th>#</th>
@@ -68,13 +68,13 @@
                     },
                   },
           "columns": [
-            { "data": "Row", "width": "5%", "searchable": false, visible : false },
-            { "data": "Id", "class" : "text-wrap", "width": "10%"},
-            { "data": "Type", "width": "10%" },
-            { "data": "Name", "width": "10%"},
-            { "data": "Data", "width": "2%"},
-            { "data": "Status",
-              "width": "2%",
+            { "width": "0%", "data": "Row", "searchable": false, visible : false },
+            { "width": "5%", "data": "Id", "class" : "" },
+            { "width": "30%", "data": "Type" },
+            { "width": "30%", "data": "Name"},
+            { "width": "20%", "data": "Data"},
+            { "width": "15%", "data": "Status",
+
                render: function(data) {
                  if (data == 'close') {
                    var el = '<span class="badge mr-2 btn-block badge-success" style=word-wrap: break-word">Закрыта</span>';
@@ -87,7 +87,16 @@
                  }
                 return  el ;
               }  },
-          ]
+          ],
+          'columnDefs': [{
+                          'targets': [1, 2, 3], // target columns are 0, 1 and 2 for example
+                          'render': function(data, type, full, meta){
+                                  if(type === 'display'){
+                                      data = typeof data === 'string' && data.length > 30 ? data.substring(0, 30) + '..' : data;
+                                  }
+                                  return data;
+                              }
+                          } ]
     });
 
     tab.on( 'key-focus', function ( e, datatable, cell, originalEvent ) {
