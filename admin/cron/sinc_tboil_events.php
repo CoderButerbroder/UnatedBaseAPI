@@ -93,20 +93,24 @@ $settings = new Settings;
               $massiv_data_one_event = $data_tboil_obj->data;
               $type_event = 'individ';
 
-                $date = $massiv_data_one_event->date_start.' '.$massiv_data_one_event->time_start;
-                $date_new = date('Y-m-d H:i:s', strtotime($date));
-                $date_and = '0000-00-00 00:00:00';
+                $date_start_event = $massiv_data_one_event->date_start.' '.$massiv_data_one_event->time_start;
+                $date_new = date('Y-m-d H:i:s', strtotime($date_start_event));
+                $date_end_event = $massiv_data_one_event->date_end.' '.$massiv_data_one_event->time_end;
+                $date_end = date('Y-m-d H:i:s', strtotime($date_start_event));
+
                 $name = isset($massiv_data_one_event->name) ? $massiv_data_one_event->name : NULL;
                 $description = isset($massiv_data_one_event->description) ? $massiv_data_one_event->description : NULL;
                 $organizer = isset($massiv_data_one_event->organizer) ? $massiv_data_one_event->organizer : 0;
+                $creater = isset($massiv_data_one_event->created_user_id) ? $massiv_data_one_event->created_user_id : 0;
                 $status = isset($massiv_data_one_event->STATUS) ? $massiv_data_one_event->STATUS : 'Черновик';
                 $activation = isset($massiv_data_one_event->ACTIVE) ? $massiv_data_one_event->ACTIVE : NULL;
                 $start_datetime_event = isset($date_new) ? $date_new : NULL;
-                $end_datetime_event = isset($date_and) ? $date_and : NULL;
+                $end_datetime_event = isset($date_end) ? $date_end : NULL;
                 $place = isset($massiv_data_one_event->place) ? $massiv_data_one_event->place : NULL;
+                $link_picture = isset($massiv_data_one_event->photo) ? $massiv_data_one_event->photo : '';
                 $interest = isset($massiv_data_one_event->interest) ? $massiv_data_one_event->interest : NULL;
 
-                $response_upd = json_decode($settings->add_update_new_event($key,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource_check_id_referer));
+                $response_upd = json_decode($settings->add_update_new_event($key,$type_event,$name,$description,$creater,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$link_picture,$interest,$resource_check_id_referer));
                 if ($response_upd->response) {
                   $count_check++;
                     for ($i=0; $i < count($value); $i++) {

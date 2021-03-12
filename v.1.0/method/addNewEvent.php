@@ -28,7 +28,7 @@ if ($id_event_on_referer && isset($place) && isset($interest) && isset($type_eve
       if (json_decode($check_valid_token)->response) {
           $check_id_referer = $settings->get_data_referer($resource);
           if (json_decode($check_id_referer)->response) {
-              $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$start_datetime_event,$end_datetime_event,$place,$interest,json_decode($check_id_referer)->data->id);
+              $response = $settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$creater,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$link_picture,$interest,json_decode($check_id_referer)->data->id);
                           $settings->recording_history($resource,'addNewEvent',$response);
                 echo $response;
           } else {

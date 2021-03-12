@@ -19,6 +19,10 @@ $settings = new Settings;
 
 global $database;
 
+
+// $data_event_str = file_get_contents("https://tboil.spb.ru/api/v2/getEvent/10530/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiI4MTkyMCIsImV4cCI6MTYxNTU1NjI1Nn0.RgiSLeOMbOgkWEA_h5uwU32Ek8BdV9nfAUdL3wTv9FE");
+// $data_event = json_decode($data_event_str);
+
 //проверка МЕТОДОВ
 /*
 // $tboil_token = $settings->get_global_settings('tboil_token');
@@ -71,3 +75,5 @@ if ($data_out1->response) {
 */
 
 ?>
+
+<!-- <img src="<?php //echo $data_event->data->photo; ?>" alt=""> -->

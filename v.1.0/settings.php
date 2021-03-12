@@ -93,9 +93,12 @@ $type_request = $_POST['type_request'];
 
 $id_event_on_referer = $_POST['id_event_on_referer'];
 $type_event = $_POST['type_event'];
+$creater = $_POST["creater"];
+$activation = $_POST["activation"];
 $organizer = $_POST['organizer'];
 $start_datetime_event = $_POST['start_datetime_event'];
 $end_datetime_event = $_POST['end_datetime_event'];
+$link_picture = $_POST["link_picture"];
 
 
 $type = $_POST['type'];
