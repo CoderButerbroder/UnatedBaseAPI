@@ -57,7 +57,7 @@ $settings = new Settings;
         $resource = isset(json_decode($check_id_referer)->data->id) ? trim(json_decode($check_id_referer)->data->id) : 0;
 
         if (is_object($massiv_data_one_event)) {
-          $date = $massiv_data_one_event->date.' '.$massiv_data_one_event->time;
+          $date = $massiv_data_one_event->date_start.' '.$massiv_data_one_event->time_start;
           $date_new = date('Y-m-d H:i:s', strtotime($date));
           $date_and = '0000-00-00 00:00:00';
           $name = isset($massiv_data_one_event->name) ? $massiv_data_one_event->name : NULL;
@@ -70,19 +70,19 @@ $settings = new Settings;
           $place = isset($massiv_data_one_event->place) ? $massiv_data_one_event->place : NULL;
           $interest = isset($massiv_data_one_event->interest) ? $massiv_data_one_event->interest : NULL;
         }
-        if ($massiv_data_one_event == NULL || $massiv_data_one_event == null || $massiv_data_one_event == 'NULL' || $massiv_data_one_event == 'null') {
-          $start_datetime_event = NULL;
-          $end_datetime_event = NULL;
-          $name = NULL;
-          $description = NULL;
-          $organizer = NULL;
-          $status = 'одобрено';
-          $activation = 'N';
-          $start_datetime_event = NULL;
-          $end_datetime_event = NULL;
-          $place = NULL;
-          $interest = NULL;
-        }
+        // if ($massiv_data_one_event == NULL || $massiv_data_one_event == null || $massiv_data_one_event == 'NULL' || $massiv_data_one_event == 'null') {
+        //   $start_datetime_event = NULL;
+        //   $end_datetime_event = NULL;
+        //   $name = NULL;
+        //   $description = NULL;
+        //   $organizer = NULL;
+        //   $status = 'одобрено';
+        //   $activation = 'N';
+        //   $start_datetime_event = NULL;
+        //   $end_datetime_event = NULL;
+        //   $place = NULL;
+        //   $interest = NULL;
+        // }
 
         $response = json_decode($settings->add_update_new_event($id_event_on_referer,$type_event,$name,$description,$organizer,$status,$activation,$start_datetime_event,$end_datetime_event,$place,$interest,$resource));
 
