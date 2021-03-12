@@ -1,5 +1,7 @@
 <?php
-// Регистрация нового пользователя (физического лица) через тбоил и запись данных в базу данных
+/*
+ Регистрация нового пользователя (физического лица) через тбоил и запись данных в базу данных
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}

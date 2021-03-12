@@ -7,8 +7,10 @@ $interest = интерес пользоватля
 $type_event = тип меропрития жесткий выбор
 $name = наименование мероприятия
 $description = описание мероприятия
+$creater = создатель мероприятия
 $organizer = id tboil организатора
 $status =  статус
+$link_picture = картинка превью
 $start_datetime_event = дата начал  мероприятия
 $end_datetime_event = дата окончания меропрития
 
@@ -19,7 +21,7 @@ include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 if (!$token) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется токен'),JSON_UNESCAPED_UNICODE);exit;}
 if (!$resource) {echo json_encode(array('response' => false, 'description' => 'Обязательно требуется ресурс с которого идет запрос'),JSON_UNESCAPED_UNICODE);exit;}
 
-if ($id_event_on_referer && isset($place) && isset($interest) && isset($type_event) && isset($name) && isset($description) && isset($organizer) && isset($status) && isset($start_datetime_event) && isset($end_datetime_event)) {
+if ($id_event_on_referer && isset($place) && isset($interest) && isset($type_event) && isset($name) && isset($description) && isset($creater) && isset($organizer) && isset($status) && isset($link_picture) && isset($start_datetime_event) && isset($end_datetime_event)) {
       require_once($_SERVER['DOCUMENT_ROOT'].'/general/core.php');
       $settings = new Settings;
       $check_valid_token = $settings->validate_token($token,$resource);

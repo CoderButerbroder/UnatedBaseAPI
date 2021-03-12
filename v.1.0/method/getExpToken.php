@@ -1,4 +1,8 @@
 <?php
+/*
+Получение срока годности токена
+*/
+
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {

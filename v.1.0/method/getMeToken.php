@@ -1,4 +1,7 @@
 <?php
+/*
+  Получение токена
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$key || !$pass) {

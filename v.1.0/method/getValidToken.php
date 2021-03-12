@@ -1,4 +1,7 @@
 <?php
+/*
+проверка на валидность токена
+*/
 include($_SERVER['DOCUMENT_ROOT'].'/v.1.0/settings.php');
 
 if (!$token) {

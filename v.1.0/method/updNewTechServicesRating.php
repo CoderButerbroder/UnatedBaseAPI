@@ -1,6 +1,6 @@
 <?
 /*
-Добавление рейтинга к сервису
+Обновление рейтинга у сервиса
 $id_services_rating_on_referer = id
 $id_service_on_referer = id сервиса на рефере
 $id_comment = id комментария
